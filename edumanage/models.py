@@ -43,12 +43,13 @@ class Contact(models.Model):
     Contact
     '''
 
-    name = models.CharField(max_length=80, db_column='contact_name')
+    firstname = models.CharField(max_length=80, db_column='contact_firstname')
+    lastname = models.CharField(max_length=80, db_column='contact_lastname')
     email = models.CharField(max_length=80, db_column='contact_email')
     phone = models.CharField(max_length=80, db_column='contact_phone')
 
     def __unicode__(self):
-        return '%s <%s> (%s)' % (self.name, self.email, self.phone)
+        return '%s %s <%s> (%s)' % (self.firstname, self.lastname, self.email, self.phone)
 
 class URL_i18n(models.Model):
     '''
@@ -296,7 +297,7 @@ class Realm(models.Model):
     def __unicode__(self):
         return _('Country: %(country)s, NRO: %(orgname)s') % {
         # but name is many-to-many from institution
-            'orgname': self.org_name,
+            'orgname': ', '.join([i.name for i in self.org_name.all()]),
             'country': self.country,
             }
 
