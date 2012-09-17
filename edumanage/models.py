@@ -254,9 +254,22 @@ class Institution(models.Model):
     '''
 
     realmid = models.ForeignKey("Realm")
+    org_name = models.ManyToManyField(Name_i18n)
+    
+
+    def __unicode__(self):
+        return _('Institution: %(inst)s') % {
+        # but name is many-to-many from institution
+            'inst': ', '.join([i.name for i in self.org_name.all()]),
+            }
+
+class InstitutionDetails(models.Model):
+    '''
+    Institution Details
+    '''
+    institution = models.OneToOneField(Institution)
     ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
     # TODO: multiple names can be specified [...] name in English is required
-    org_name = models.ManyToManyField(Name_i18n)
     address_street = models.CharField(max_length=32)
     address_city = models.CharField(max_length=24)
     contact = models.ManyToManyField(Contact)
@@ -271,9 +284,11 @@ class Institution(models.Model):
     def __unicode__(self):
         return _('Institution: %(inst)s, Type: %(ertype)s') % {
         # but name is many-to-many from institution
-            'inst': self.org_name,
+            'inst': ', '.join([i.name for i in self.institution.org_name.all()]),
             'ertype': self.ertype,
             }
+
+
 
 class Realm(models.Model):
     '''
