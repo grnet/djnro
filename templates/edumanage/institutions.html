@@ -1,0 +1,48 @@
+{% extends "base.html"%}
+
+{% block content %}
+	<div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="sidebar-nav">
+			<ul class="nav nav-tabs nav-stacked">
+			<li>
+				<a href="{% url manage %}">Home</a>
+				</li>
+				<li class="active">
+				<a href="#">Institution</a>
+				</li>
+				<li>
+				<a href="#">Services</a>
+				</li>
+				<li>
+				<a href="#">Servers</a>
+				</li>
+    		</ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        
+        <div class="span9">
+          <div class="row-fluid">
+            <!--/span-->
+            <div class="span12">
+              <h4>Institution</h4>
+              {% if services %}
+              		{% for service in services %}<p>{{service}}</p>{% endfor %}
+              {% else %}
+              <p>No services defined!</p>
+              {% endif %}
+              <p><a class="btn" href="#">View details &raquo;</a></p>
+            </div><!--/span-->
+          </div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Company 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+{% endblock %}
