@@ -36,10 +36,8 @@
             </div><!--/span-->
             <div class="span6">
               <h4>Institution</h4>
-              {% if institutions %}
-              {% for inst in institutions %}
-              	<p>{{inst}}</p>
-              {% endfor %}
+              {% if institution %}
+              	<p>{{institution}}</p>
               {% else %}
               <p>No institution defined!</p>
               {% endif %}

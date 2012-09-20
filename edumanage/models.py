@@ -13,6 +13,8 @@ LANGS = (
         ('el', 'Ελληνικά'),
     )
 
+
+# FIXME: use idp, sp, idpsp as keys not in the velue part. Get rid of 1,2,3
 ERTYPES = (
         (1, 'idp: IdP only' ),
         (2, 'sp: SP only'),
@@ -37,6 +39,7 @@ class Name_i18n(models.Model):
 
     def __unicode__(self):
         return self.name
+        
 
 class Contact(models.Model):
     '''
@@ -120,8 +123,9 @@ class InstServer(models.Model):
             'servername': self.name,
         # the human-readable name would be nice here
             'ertype': self.ertype,
-            }
-
+            }    
+    
+    
 class InstRealmMon(models.Model):
     '''
     Realm of an IdP Institution to be monitored
@@ -252,16 +256,29 @@ class Institution(models.Model):
     '''
     Institution
     '''
-
+    
     realmid = models.ForeignKey("Realm")
     org_name = models.ManyToManyField(Name_i18n)
     
-
-    def __unicode__(self):
-        return _('Institution: %(inst)s') % {
-        # but name is many-to-many from institution
-            'inst': ', '.join([i.name for i in self.org_name.all()]),
-            }
+    
+    def __unicode__(self, lang=None):
+        print "GOT ", lang, "DONE"
+        return self.get_name(lang)
+    
+    
+    def get_name(self, lang):
+        print "GOT name", lang, "DONE"
+        name = ', '.join([i.name for i in self.org_name.all()])
+        if not lang:
+            return name
+        else:
+            try: 
+                name = self.org_name.get(lang=lang)
+                return name
+            except Exception as e:
+                print e
+                return name
+            
 
 class InstitutionDetails(models.Model):
     '''

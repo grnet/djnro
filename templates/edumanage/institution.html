@@ -27,12 +27,17 @@
             <!--/span-->
             <div class="span12">
               <h4>Institution</h4>
-              {% if services %}
-              		{% for service in services %}<p>{{service}}</p>{% endfor %}
+              {% load tolocale %}
+              {% if institution %}
+              		<h5>{% tolocale institution.pk 'el'%}</h5>
+              		{% if institution.institutiondetails %}
+              			ErType: {{institution.institutiondetails.get_ertype_display}}
+              		{% else %}
+              			<div>No institution details defined yet <a href="{% url edit-institution institution.pk %}">(edit)</a></div>
+              		{% endif %}
               {% else %}
-              <p>No services defined!</p>
+              <p>No institution defined!</p>
               {% endif %}
-              <p><a class="btn" href="#">View details &raquo;</a></p>
             </div><!--/span-->
           </div><!--/row-->
         </div><!--/span-->
