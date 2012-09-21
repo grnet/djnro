@@ -10,3 +10,9 @@ class InstDetailsForm(forms.ModelForm):
 
     class Meta:
         model = InstitutionDetails
+        
+
+class ServiceLocForm(forms.ModelForm):
+
+    class Meta:
+        model = ServiceLoc

@@ -1,0 +1,257 @@
+{% extends "base.html"%}
+
+{% block content %}
+	<div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="sidebar-nav">
+			<ul class="nav nav-tabs nav-stacked">
+			<li>
+				<a href="{% url manage %}">Home</a>
+				</li>
+				<li class="active">
+				<a href="#">Institution</a>
+				</li>
+				<li>
+				<a href="#">Services</a>
+				</li>
+				<li>
+				<a href="#">Servers</a>
+				</li>
+    		</ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        
+        <div class="span9">
+          <div class="row-fluid">
+            <!--/span-->
+            <div class="span12">
+              <h4>Services</h4>
+              
+              		<h5>Service...</h5>
+              		
+              
+              
+              
+              
+              
+              
+              
+              
+               <form method="POST" class="form-horizontal">
+        
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <p class="error">
+                {{ form.non_field_errors}}
+            </p>
+            {% endif %}
+            <div style="display: none">
+					{{form.institutionid}}
+			</div>
+
+
+                <div class="control-group {% if form.longitude.errors %} error {% endif %}">
+	                <label class="control-label" for="id_ertype">Lng</label>
+                    <div class="controls">{{ form.longitude }}
+                    {% if form.longitude.errors %}
+                    <span class="help-inline">
+                        {{ form.longitude.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.longitude.help_text }}</span>
+                    </div> 
+                </div>
+
+                 <div class="control-group {% if form.latitude.errors %} error {% endif %}">
+	                <label class="control-label" for="id_address_street">Lat</label>
+                    <div class="controls">{{ form.latitude }}
+                    {% if form.latitude.errors %}
+                    <span class="help-inline">
+                        {{ form.latitude.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.latitude.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.loc_name.errors %} error {% endif %}">
+	                <label class="control-label" for="id_address_city">loc_name</label>
+                    <div class="controls">{{ form.loc_name }}
+                    {% if form.loc_name.errors %}
+                    <span class="help-inline">
+                        {{ form.loc_name.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.loc_name.help_text }}</span>
+                    </div> 
+                </div>
+                
+                  <div class="control-group {% if form.address_street.errors %} error {% endif %}">
+                    <label class="control-label" for="id_address_street">Address Street</label>
+                    <div class="controls">{{ form.address_street }}
+                    {% if form.address_street.errors %}
+                    <span class="help-inline">
+                        {{ form.address_street.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.address_street.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.address_city.errors %} error {% endif %}">
+                    <label class="control-label" for="id_address_city">Address City</label>
+                    <div class="controls">{{ form.address_city }}
+                    {% if form.address_city.errors %}
+                    <span class="help-inline">
+                        {{ form.address_city.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.address_city.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.SSID.errors %} error {% endif %}">
+	                <label class="control-label" for="id_url">SSID</label>
+                    <div class="controls">{{ form.SSID }}
+                    {% if form.SSID.errors %}
+                    <span class="help-inline">
+                        {{ form.SSID.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.SSID.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.enc_level.errors %} error {% endif %}">
+	                <label class="control-label" for="id_oper_name">enc_level</label>
+                    <div class="controls">{{ form.enc_level }}
+                    {% if form.enc_level.errors %}
+                    <span class="help-inline">
+                        {{ form.enc_level.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.enc_level.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.port_restrict.errors %} error {% endif %}">
+	                <label class="control-label" for="id_number_user">port_restrict</label>
+                    <div class="controls">{{ form.port_restrict }}
+                    {% if form.port_restrict.errors %}
+                    <span class="help-inline">
+                        {{ form.port_restrict.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.port_restrict.help_text }}</span>
+                    </div> 
+                </div>
+                
+                <div class="control-group {% if form.transp_proxy.errors %} error {% endif %}">
+	                <label class="control-label" for="id_number_id">transp_proxy</label>
+                    <div class="controls">{{ form.transp_proxy }}
+                    {% if form.transp_proxy.errors %}
+                    <span class="help-inline">
+                        {{ form.transp_proxy.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.transp_proxy.help_text }}</span>
+                    </div> 
+                </div>
+                
+                <div class="control-group {% if form.IPv6.errors %} error {% endif %}">
+                    <label class="control-label" for="id_number_id">IPv6</label>
+                    <div class="controls">{{ form.IPv6 }}
+                    {% if form.IPv6.errors %}
+                    <span class="help-inline">
+                        {{ form.IPv6.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.IPv6.help_text }}</span>
+                    </div> 
+                </div>
+                
+                <div class="control-group {% if form.NAT.errors %} error {% endif %}">
+                    <label class="control-label" for="id_number_id">NAT</label>
+                    <div class="controls">{{ form.NAT }}
+                    {% if form.NAT.errors %}
+                    <span class="help-inline">
+                        {{ form.NAT.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.NAT.help_text }}</span>
+                    </div> 
+                </div>
+                
+               <div class="control-group {% if form.AP_no.errors %} error {% endif %}">
+                    <label class="control-label" for="id_number_id">AP_no</label>
+                    <div class="controls">{{ form.AP_no }}
+                    {% if form.AP_no.errors %}
+                    <span class="help-inline">
+                        {{ form.AP_no.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.AP_no.help_text }}</span>
+                    </div> 
+                </div>
+                
+                <div class="control-group {% if form.wired.errors %} error {% endif %}">
+                    <label class="control-label" for="id_number_id">wired</label>
+                    <div class="controls">{{ form.wired }}
+                    {% if form.wired.errors %}
+                    <span class="help-inline">
+                        {{ form.wired.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.wired.help_text }}</span>
+                    </div> 
+                </div>
+                
+                <div class="control-group {% if form.url.errors %} error {% endif %}">
+                    <label class="control-label" for="id_url">URL(s)</label>
+                    <div class="controls">{{ form.url }}
+                    {% if form.url.errors %}
+                    <span class="help-inline">
+                        {{ form.url.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.url.help_text }}</span>
+                    </div> 
+                </div>
+                
+              
+              <div class="control-group">
+			<div class="controls">
+			<button type="submit" id="applybutton" value="Apply" class="btn btn-large btn-primary"/>Apply</button>
+			</div>
+			</div>
+              </form>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+
+
+            </div><!--/span-->
+          </div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Company 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+{% endblock %}

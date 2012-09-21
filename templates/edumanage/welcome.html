@@ -5,20 +5,22 @@
       <div class="row-fluid">
         <div class="span3">
           <div class="sidebar-nav">
+          {% block navbar %}
 			<ul class="nav nav-tabs nav-stacked">
 			<li class="active">
-				<a href="#">Home</a>
+				<a href="{% url manage %}">Home</a>
 				</li>
 				<li>
 				<a href="{% url institutions %}">Institution</a>
 				</li>
 				<li>
-				<a href="#">Services</a>
+				<a href="{% url services %}">Services</a>
 				</li>
 				<li>
 				<a href="#">Servers</a>
 				</li>
     		</ul>
+    		{% endblock %}
           </div><!--/.well -->
         </div><!--/span-->
         
@@ -36,8 +38,9 @@
             </div><!--/span-->
             <div class="span6">
               <h4>Institution</h4>
+              {% load tolocale %}
               {% if institution %}
-              	<p>{{institution}}</p>
+              	<p><a href="{% url institutions %}">{% tolocale institution LANGUAGE_CODE%}</a></p>
               {% else %}
               <p>No institution defined!</p>
               {% endif %}

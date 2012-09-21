@@ -261,22 +261,19 @@ class Institution(models.Model):
     org_name = models.ManyToManyField(Name_i18n)
     
     
-    def __unicode__(self, lang=None):
-        print "GOT ", lang, "DONE"
-        return self.get_name(lang)
+    def __unicode__(self):
+        return "%s" % ', '.join([i.name for i in self.org_name.all()])
     
     
-    def get_name(self, lang):
-        print "GOT name", lang, "DONE"
+    def get_name(self, lang=None):
         name = ', '.join([i.name for i in self.org_name.all()])
         if not lang:
             return name
         else:
-            try: 
+            try:
                 name = self.org_name.get(lang=lang)
                 return name
             except Exception as e:
-                print e
                 return name
             
 

@@ -29,9 +29,18 @@
               <h4>Institution</h4>
               {% load tolocale %}
               {% if institution %}
-              		<h5>{% tolocale institution.pk 'el'%}</h5>
+              		<h5>{% tolocale institution LANGUAGE_CODE%}</h5>(<a href="{% url edit-institution institution.pk %}">edit</a>)
               		{% if institution.institutiondetails %}
-              			ErType: {{institution.institutiondetails.get_ertype_display}}
+              		    <dl class="dl-horizontal">
+              			<dt>ErType</dt><dd>{{institution.institutiondetails.get_ertype_display}}</dd>
+              			<dt>Adress</dt><dd>{{institution.institutiondetails.address_street}}@{{institution.institutiondetails.address_city}}</dd>
+              			<dt>Contact</dt>{% if institution.institutiondetails.contact.all %}{% for con in institution.institutiondetails.contact.all %}<dd>{{con}}</dd>{% endfor %}{% else %}<dd>(no contacts)</dd>{% endif %}
+              			<dt>Url</dt>{% if institution.institutiondetails.url.all %}{% for url in institution.institutiondetails.url.all %}<dd>{{url}}</dd>{% endfor %}{% else %}<dd>(no urls)</dd>{% endif %}
+              			<dt>oper_name</dt><dd>{{institution.institutiondetails.oper_name}}</dd>
+              			<dt>Number User</dt><dd>{{institution.institutiondetails.number_user}}</dd>
+              			<dt>Number Id</dt><dd>{{institution.institutiondetails.number_id}}</dd>
+              			<dt>Ts</dt><dd>{{institution.institutiondetails.ts}}</dd>
+              			</dl>     			
               		{% else %}
               			<div>No institution details defined yet <a href="{% url edit-institution institution.pk %}">(edit)</a></div>
               		{% endif %}

@@ -5,22 +5,20 @@ register = template.Library()
 
 @register.filter
 def do_tolocale(parser, token):
-    print token
     try:
-        tag_name, inst, format_string = token.split_contents()
-        print inst
+        tag_name, objtrans, format_string = token.split_contents()
     except ValueError:
         raise template.TemplateSyntaxError, "%r tag requires exactly two arguments" % token.contents.split()[0]
-    return CurrentLocaleNode(inst, format_string)
+    return CurrentLocaleNode(objtrans, format_string)
 
 
 class CurrentLocaleNode(template.Node):
-    def __init__(self, inst, format_string):
-        self.format_string = format_string
-        self.inst = template.Variable(inst)
-        print self.format_string, "STING"
+    def __init__(self, objtrans, format_string):
+        self.format_string = template.Variable(format_string)
+        self.objtrans = template.Variable(objtrans)
     def render(self, context):
-        inst_pk = self.inst.resolve(context)
-        return Institution.objects.get(pk=inst_pk).__unicode__(lang=str(self.format_string))
+        objtrans = self.objtrans.resolve(context)
+        translang = self.format_string.resolve(context)
+        return objtrans.get_name(lang=translang)
 
 register.tag('tolocale', do_tolocale)

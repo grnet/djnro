@@ -4,6 +4,7 @@
 from django.shortcuts import render_to_response,get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect,Http404
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from edumanage.models import *
 from edumanage.forms import *
@@ -60,30 +61,41 @@ def institutions(request):
 @login_required
 def add_institution_details(request, institution_pk):
     user = request.user
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
+        
+    if (not inst) or (int(inst.pk) != int(institution_pk)):
+    #            messages.add_message(request, messages.WARNING,
+    #                             _("Insufficient rights on Institution. Contact your administrator"))
+        return HttpResponseRedirect(reverse("institutions"))
     if request.method == "GET":
-        try:
-            profile = user.get_profile()
-            inst = profile.institution
-        except UserProfile.DoesNotExist:
-            inst = False
-            
-        if (not inst) or (int(inst.pk) != int(institution_pk)):
-#            messages.add_message(request, messages.WARNING,
-#                             _("Insufficient rights on Institution. Contact your administrator"))
-            return HttpResponseRedirect(reverse("institution"))         
 
-        form = InstDetailsForm()
-        form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
+        # Determine add or edit
+        request_data = request.POST.copy()
+        try:         
+            inst_details = InstitutionDetails.objects.get(institution=inst)
+            form = InstDetailsForm(instance=inst_details)
+        except InstitutionDetails.DoesNotExist:
+            form = InstDetailsForm()
+            form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
+        
+        
         return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form},
                                   context_instance=RequestContext(request))
     elif request.method == 'POST':
         request_data = request.POST.copy()
-        form = InstDetailsForm(request_data)
+        try:         
+            inst_details = InstitutionDetails.objects.get(institution=inst)
+            form = InstDetailsForm(request_data, instance=inst_details)
+        except InstitutionDetails.DoesNotExist:
+            form = InstDetailsForm(request_data)
         if form.is_valid():
-            instdets = form.save(commit=False)
-            instdets.save()
-            form.save_m2m()
-            return HttpResponseRedirect(reverse("institution"))
+            instdets = form.save()
+            print "SAVED M2M"
+            return HttpResponseRedirect(reverse("institutions"))
         else:
             try:
                 profile = user.get_profile()
@@ -91,6 +103,79 @@ def add_institution_details(request, institution_pk):
             except UserProfile.DoesNotExist:
                 inst = False
                 form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
+            return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form},
+                                  context_instance=RequestContext(request))
+
+
+@login_required
+def services(request):
+    user = request.user
+    dict = {}
+    
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
+    try:
+        services = ServiceLoc.objects.filter(institutionid = inst)
+    except ServiceLoc.DoesNotExist:
+        services = False 
+        
+    
+    return render_to_response('edumanage/services.html', 
+                              {
+                               'institution': inst,
+                               'services': services, 
+                               },  
+                              context_instance=RequestContext(request))
+
+
+
+@login_required
+def add_services(request, service_pk):
+    user = request.user
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
+        
+#    if (not inst) or (int(inst.pk) != int(institution_pk)):
+#    #            messages.add_message(request, messages.WARNING,
+#    #                             _("Insufficient rights on Institution. Contact your administrator"))
+#        return HttpResponseRedirect(reverse("institutions"))
+    if request.method == "GET":
+
+        # Determine add or edit
+        request_data = request.POST.copy()
+        try:         
+            service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
+            form = ServiceLocForm(instance=service)
+        except ServiceLoc.DoesNotExist:
+            form = ServiceLocForm()
+            form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+        
+        
+        return render_to_response('edumanage/services_edit.html', { 'form': form},
+                                  context_instance=RequestContext(request))
+    elif request.method == 'POST':
+        request_data = request.POST.copy()
+        try:         
+            service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
+            form = ServiceLocForm(request_data, instance=service)
+        except ServiceLoc.DoesNotExist:
+            form = ServiceLocForm(request_data)
+        if form.is_valid():
+            srvcs = form.save()
+            return HttpResponseRedirect(reverse("services"))
+        else:
+            try:
+                profile = user.get_profile()
+                inst = profile.institution
+            except UserProfile.DoesNotExist:
+                inst = False
+                form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
             return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form},
                                   context_instance=RequestContext(request))
 
