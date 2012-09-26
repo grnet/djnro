@@ -236,8 +236,8 @@ class ServiceLoc(models.Model):
     latitude = models.DecimalField(max_digits=8, decimal_places=6)
     # TODO: multiple names can be specified [...] name in English is required
     loc_name = generic.GenericRelation(Name_i18n)
-    address_street = models.CharField(max_length=32)
-    address_city = models.CharField(max_length=24)
+    address_street = models.CharField(max_length=96)
+    address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact)
     SSID = models.CharField(max_length=16)
     enc_level = models.CharField(max_length=10, choices=ENCTYPES)
@@ -303,8 +303,8 @@ class InstitutionDetails(models.Model):
     institution = models.OneToOneField(Institution)
     ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
     # TODO: multiple names can be specified [...] name in English is required
-    address_street = models.CharField(max_length=32)
-    address_city = models.CharField(max_length=24)
+    address_street = models.CharField(max_length=96)
+    address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact)
     url = models.ManyToManyField(URL_i18n)
     # accept if ertype: 2 (sp) or 3 (idpsp)
