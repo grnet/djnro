@@ -8,6 +8,10 @@ TODO main description
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
+
+
 LANGS = (
         ('en', 'English' ),
         ('el', 'Ελληνικά'),
@@ -36,6 +40,9 @@ class Name_i18n(models.Model):
 
     name = models.CharField(max_length=80)
     lang = models.CharField(max_length=5, choices=LANGS)
+    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
         return self.name
@@ -228,7 +235,7 @@ class ServiceLoc(models.Model):
     longitude = models.DecimalField(max_digits=8, decimal_places=6)
     latitude = models.DecimalField(max_digits=8, decimal_places=6)
     # TODO: multiple names can be specified [...] name in English is required
-    loc_name = models.ManyToManyField(Name_i18n)
+    loc_name = generic.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=32)
     address_city = models.CharField(max_length=24)
     contact = models.ManyToManyField(Contact)
@@ -247,10 +254,22 @@ class ServiceLoc(models.Model):
     def __unicode__(self):
         return _('Institution: %(inst)s, Service Location: %(locname)s') % {
         # but name is many-to-many from institution
-            'inst': self.instid.name,
+            'inst': self.institutionid,
         # but locname is many-to-many
             'locname': self.loc_name,
             }
+    
+    
+    def get_name(self, lang=None):
+        name = ', '.join([i.name for i in self.loc_name.all()])
+        if not lang:
+            return name
+        else:
+            try:
+                name = self.loc_name.get(lang=lang)
+                return name
+            except Exception as e:
+                return name
 
 class Institution(models.Model):
     '''
@@ -258,7 +277,7 @@ class Institution(models.Model):
     '''
     
     realmid = models.ForeignKey("Realm")
-    org_name = models.ManyToManyField(Name_i18n)
+    org_name = generic.GenericRelation(Name_i18n)
     
     
     def __unicode__(self):
@@ -316,7 +335,7 @@ class Realm(models.Model):
     country = models.CharField(max_length=2, choices=COUNTRIES)
     stype = models.PositiveIntegerField(max_length=1, default=0, editable=False)
     # TODO: multiple names can be specified [...] name in English is required
-    org_name = models.ManyToManyField(Name_i18n)
+    org_name = generic.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=32)
     address_city = models.CharField(max_length=24)
     contact = models.ManyToManyField(Contact)

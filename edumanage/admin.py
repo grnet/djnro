@@ -2,6 +2,23 @@
 from django.contrib import admin
 from eduroam.edumanage.models import *
 
+from django.contrib.contenttypes import generic
+
+
+class NameInline(generic.GenericTabularInline):
+    model = Name_i18n
+
+class InstitutionAdmin(admin.ModelAdmin):
+    inlines = [
+        NameInline,
+    ]
+
+class ServiceLocAdmin(admin.ModelAdmin):
+    inlines = [
+        NameInline,
+    ]
+
+
    
 admin.site.register(Name_i18n)
 admin.site.register(Contact)
@@ -11,8 +28,8 @@ admin.site.register(InstServer)
 admin.site.register(InstRealmMon)
 admin.site.register(MonProxybackClient)
 admin.site.register(MonLocalEAPOLData)
-admin.site.register(ServiceLoc)
-admin.site.register(Institution)
+admin.site.register(ServiceLoc, ServiceLocAdmin)
+admin.site.register(Institution, InstitutionAdmin)
 admin.site.register(InstitutionDetails)
 admin.site.register(Realm)
 admin.site.register(RealmData)

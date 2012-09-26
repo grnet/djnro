@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy
 from edumanage.models import *
 from django.conf import settings
 
+from django.contrib.contenttypes.generic import BaseGenericInlineFormSet
 
 
 class InstDetailsForm(forms.ModelForm):
@@ -16,3 +17,9 @@ class ServiceLocForm(forms.ModelForm):
 
     class Meta:
         model = ServiceLoc
+
+
+class NameFormSetFact(BaseGenericInlineFormSet):
+    def clean(self):
+         super(NameFormSetFact, self).clean()
+         print "SELLLL", self.forms

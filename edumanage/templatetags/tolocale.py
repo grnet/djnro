@@ -3,7 +3,6 @@ from edumanage.models import *
 
 register = template.Library()
 
-@register.filter
 def do_tolocale(parser, token):
     try:
         tag_name, objtrans, format_string = token.split_contents()

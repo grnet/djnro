@@ -27,13 +27,20 @@
             <!--/span-->
             <div class="span12">
               <h4>Services</h4>
+              <div><a href="{% url edit-services %}">Add new service</a></div>
               {% load tolocale %}
               {% if services %}
                 {% for service in services %}
-              		{{service}}
+                <div>
+                <address>
+				<strong>{% tolocale service LANGUAGE_CODE%}</strong>  (<a href="{% url edit-services service.pk%}">edit</a>)<br>
+				{{service.address_street}}<br>
+				{{service.address_city}}<br>
+				</address>
+                	</div>
               	{% endfor %}
               {% else %}
-              <div>No services defined yet <a href="{% url edit-services '2' %}">(edit)</a></div>
+              <div>No services defined yet (<a href="{% url edit-services %}">edit</a>)</div>
               {% endif %}
             </div><!--/span-->
           </div><!--/row-->

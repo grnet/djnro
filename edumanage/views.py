@@ -9,6 +9,10 @@ from django.contrib.auth.decorators import login_required
 from edumanage.models import *
 from edumanage.forms import *
 from django import forms
+from django.forms.models import modelformset_factory
+from django.forms.models import inlineformset_factory
+from django.contrib.contenttypes.generic import generic_inlineformset_factory
+import json 
 
 def index(request):
     return render_to_response('base.html', context_instance=RequestContext(request))
@@ -135,47 +139,76 @@ def services(request):
 @login_required
 def add_services(request, service_pk):
     user = request.user
+    service = False
     try:
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
-        
-#    if (not inst) or (int(inst.pk) != int(institution_pk)):
-#    #            messages.add_message(request, messages.WARNING,
-#    #                             _("Insufficient rights on Institution. Contact your administrator"))
-#        return HttpResponseRedirect(reverse("institutions"))
+
     if request.method == "GET":
 
         # Determine add or edit
-        request_data = request.POST.copy()
         try:         
             service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
             form = ServiceLocForm(instance=service)
         except ServiceLoc.DoesNotExist:
             form = ServiceLocForm()
-            form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+        form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
         
-        
-        return render_to_response('edumanage/services_edit.html', { 'form': form},
+        NameFormSet = generic_inlineformset_factory(Name_i18n, extra=2)
+        names_form = NameFormSet()
+        if (service):
+            NameFormSet = generic_inlineformset_factory(Name_i18n, extra=0, formset=NameFormSetFact)
+            names_form = NameFormSet(instance=service)
+        return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form},
                                   context_instance=RequestContext(request))
     elif request.method == 'POST':
         request_data = request.POST.copy()
+        NameFormSet = generic_inlineformset_factory(Name_i18n, extra=0, formset=NameFormSetFact)
         try:         
             service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
             form = ServiceLocForm(request_data, instance=service)
+            print "OKOK"
+            names_form = NameFormSet(request_data, instance=service)
         except ServiceLoc.DoesNotExist:
             form = ServiceLocForm(request_data)
-        if form.is_valid():
-            srvcs = form.save()
+            names_form = NameFormSet(request_data)
+        
+        if form.is_valid() and names_form.is_valid():
+            serviceloc = form.save()
+            
+
+            for nform in names_form.forms:
+                names = nform.save(commit=False)
+                names.content_object = serviceloc
+                names.save()
             return HttpResponseRedirect(reverse("services"))
         else:
-            try:
-                profile = user.get_profile()
-                inst = profile.institution
-            except UserProfile.DoesNotExist:
-                inst = False
-                form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-            return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form},
+            form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+
+        return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form},
                                   context_instance=RequestContext(request))
 
+
+@login_required
+def get_service_points(request):
+    if request.method == "GET":
+        user = request.user
+        try:
+            profile = user.get_profile()
+            inst = profile.institution
+        except UserProfile.DoesNotExist:
+            inst = False
+        servicelocs = ServiceLoc.objects.filter(institutionid=inst)
+        locs = []
+        for sl in servicelocs:
+            response_location = {}
+            response_location['lat'] = u"%s"%sl.latitude
+            response_location['lng'] = u"%s"%sl.longitude
+            response_location['name'] = sl.loc_name.get(lang='en').name
+            response_location['key'] = u"%s"%sl.pk
+            locs.append(response_location)
+        return HttpResponse(json.dumps(locs), mimetype='application/json')
+    else:
+       return HttpResponseNotFound('<h1>Something went really wrong</h1>')

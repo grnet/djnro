@@ -1,5 +1,229 @@
 {% extends "base.html"%}
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+ <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+      
+ <script type="text/javascript">
+ 		var lat = 36.97;
+ 		var lng = 23.71;
+ 		var zoomLevel = 6;
+ 		{% if form.data.latitude or form.instance.latitude %}
+ 			var lat = {% if form.data.latitude %}{{form.data.latitude}}{% else %}{{form.instance.latitude}}{% endif %};
+ 		{% endif %}
+ 		{% if form.data.longitude or form.instance.longitude %}
+			var lng = {% if form.data.longitude %}{{form.data.longitude}}{% else %}{{form.instance.longitude}}{% endif %};
+			var zoomLevel = 14;
+			getOnce = true;
+		{% endif %}
+		var latlng = new google.maps.LatLng(lat,lng);
+		var map = '';
+		var marker = '';
+		var getOnce = false;
 
+		function setPositionValues(position) {
+			$("#id_longitude").val('');
+			$("#id_latitude").val('');
+			$("#id_address_street").val('');
+			$("#id_address_city").val('');
+
+			$("#id_longitude").val(position.lng().toPrecision(8));
+			$("#id_latitude").val(position.lat().toPrecision(8));
+			codeLatLng(position);
+		}
+
+		function getPosition(position) {
+			latlng = new google.maps.LatLng(position.coords.latitude,
+					position.coords.longitude);
+			getOnce = true;
+			map.setCenter(latlng);
+			map.setZoom(15);
+			marker.setPosition(latlng);
+			setPositionValues(latlng);
+		}
+
+		function moveMarker(position) {
+			marker.setPosition(position);
+			setPositionValues(position);
+		}
+		
+		function geocode(position){
+			geocoder
+			.geocode(
+					{
+						'latLng' : position
+					},
+					function(results, status) {
+						if (status == google.maps.GeocoderStatus.OK) {
+							if (results.length >= 1) {
+								for ( var ii = 0; ii < results[0].address_components.length; ii++) {
+									var street_number = route = street = city = state = zipcode = country = formatted_address = '';
+									var types = results[0].address_components[ii].types
+											.join(",");
+									if (types == "street_number") {
+										addr.street_number = results[0].address_components[ii].long_name;
+									}
+									if (types == "route"
+											|| types == "point_of_interest,establishment") {
+										addr.route = results[0].address_components[ii].long_name;
+									}
+									if (types == "sublocality,political"
+											|| types == "locality,political"
+											|| types == "neighborhood,political"
+											|| types == "political") {
+										addr.city = (city == '' || types == "locality,political") ? results[0].address_components[ii].long_name
+												: city;
+									}
+									if (types == "administrative_area_level_1,political") {
+										addr.state = results[0].address_components[ii].short_name;
+									}
+									if (types == "postal_code"
+											|| types == "postal_code_prefix,postal_code") {
+										addr.zipcode = results[0].address_components[ii].long_name;
+									}
+									if (types == "country,political") {
+										addr.country = results[0].address_components[ii].long_name;
+									}
+								}
+							}
+
+							if (addr.route && addr.city) {
+								addr_field = addr.route;
+								if (addr.street_number) {
+									addr_field = addr.route + " "
+											+ addr.street_number;
+								}
+								$("#id_address_street").val(addr_field);
+								city_field = addr.city;
+								if (addr.zipcode) {
+									city_field = addr.city + ", "
+											+ addr.zipcode;
+								}
+								$("#id_address_city").val(city_field);
+							}
+						}
+					});
+		}
+		
+		function codeLatLng(position) {
+			addr = {};
+			latlng = position;
+			addr_num = '';
+			addr_name = '';
+			addr_city = '';
+			addr_code = '';
+			geocode(position)
+		}
+		function initialize() {
+			image = new google.maps.MarkerImage('/static/img/edupin.png',
+					// This marker is 29 pixels wide by 40 pixels tall.
+					new google.maps.Size(29, 40),
+					// The origin for this image is 0,0.
+					new google.maps.Point(0,0),
+					// The anchor for this image is the base of the flagpole at 18,42.
+					new google.maps.Point(14, 40)
+				);
+			var styleArray = [
+			                   {
+			                       featureType: "all",
+			                       stylers: [
+			                         { saturation: -60 },
+			                         {gamma: 1.00 }
+			                       ]
+			                     },{
+			                       featureType: "poi.business",
+			                       elementType: "labels",
+			                       stylers: [
+			                         { visibility: "off" }
+			                       ]
+			                     },
+			                     { "featureType": "transit.line", "elementType": "geometry", "stylers": [ { "visibility": "off" } ] },
+			                     { "featureType": "poi", "elementType": "all", "stylers": [ { "visibility": "off" } ] },
+			                     {'featureType': "administrative.country",
+			                     'elementType': "labels",
+			                     'stylers': [
+			                         { 'visibility': "off" }
+			                     ]}
+
+			                     
+			                   ];
+			geocoder = new google.maps.Geocoder();
+			var mapOptions = {
+				center : latlng,
+				zoom : zoomLevel,
+				styles: styleArray,
+				 mapTypeId: google.maps.MapTypeId.ROADMAP,
+				    mapTypeControlOptions: {
+					      style: google.maps.MapTypeControlStyle.DEFAULT
+					    },
+					navigationControl: true,
+					mapTypeControl: false,
+			};
+			map = new google.maps.Map(document.getElementById("map_canvas"),
+					mapOptions);
+			if (getOnce == false) {
+				marker = new google.maps.Marker({
+					position : latlng,
+					draggable : true,
+					'icon': image,
+					animation : google.maps.Animation.DROP,
+
+				});
+				marker.setMap(map);
+				setPositionValues(latlng);
+			}
+			google.maps.event.addListener(map, 'idle', function() {
+				
+			{% if not form.data.latitude  %}
+				{% if not form.instance.latitude  %}
+					if (navigator.geolocation && getOnce == false) {
+						navigator.geolocation.getCurrentPosition(getPosition);
+					}
+				{% endif %}
+			{% endif %}
+
+			});
+
+			google.maps.event.addListener(map, 'click', function(event) {
+				moveMarker(event.latLng);
+			});
+			google.maps.event.addListener(marker, 'dragend', function(event) {
+				setPositionValues(marker.getPosition());
+			});
+
+		}
+
+		$(document).ready(function() {
+			
+			initialize();
+			$("#updatemap").click(function(){
+				latlng = new google.maps.LatLng($("#id_latitude").val(), $("#id_longitude").val());
+				moveMarker(latlng);
+				map.setCenter(latlng);
+				$("#updatemap").addClass('disabled');
+				$("#updatemap").attr('disabled', 'disabled');
+				return false;
+			});
+			
+			$("#myloc").click(function(){
+				navigator.geolocation.getCurrentPosition(getPosition);
+				return false;
+			});
+			
+			$("#id_latitude").keypress(function(){
+				$("#updatemap").removeClass('disabled');
+				$("#updatemap").removeAttr('disabled');
+			});
+			$("#id_longitude").keypress(function(){
+				$("#updatemap").removeClass('disabled');
+				$("#updatemap").removeAttr('disabled');
+			});
+			
+		});
+	</script>
+
+
+{% endblock %}
 {% block content %}
 	<div class="container-fluid">
       <div class="row-fluid">
@@ -35,8 +259,7 @@
               
               
               
-              
-              
+             
               
                <form method="POST" class="form-horizontal">
         
@@ -50,45 +273,52 @@
 					{{form.institutionid}}
 			</div>
 
-
-                <div class="control-group {% if form.longitude.errors %} error {% endif %}">
-	                <label class="control-label" for="id_ertype">Lng</label>
-                    <div class="controls">{{ form.longitude }}
+                <div class="control-group {% if form.longitude.errors or form.latitude.errors %} error {% endif %}">
+	                <label class="control-label" for="id_ertype"><b>Location</b></label>
+                    <div class="controls"><div id="map_canvas" style="width:100%; height:350px;"></div>
+                   	<span class="help-block">{{ form.longitude.help_text }}</span>
+                    
+                    </div>
+                     <div class="controls">
+                    Lng:{{ form.longitude }} Lat:{{ form.latitude }} <button class="btn btn-info disabled" id="updatemap" disabled="disabled">Update Map</button> <button class="btn btn-info" id="myloc">Current Location</button>
                     {% if form.longitude.errors %}
                     <span class="help-inline">
                         {{ form.longitude.errors|join:", " }}
                     </span>
                     {% endif %}
-                    <span class="help-block"> {{ form.longitude.help_text }}</span>
-                    </div> 
-                </div>
-
-                 <div class="control-group {% if form.latitude.errors %} error {% endif %}">
-	                <label class="control-label" for="id_address_street">Lat</label>
-                    <div class="controls">{{ form.latitude }}
                     {% if form.latitude.errors %}
                     <span class="help-inline">
                         {{ form.latitude.errors|join:", " }}
                     </span>
                     {% endif %}
-                    <span class="help-block"> {{ form.latitude.help_text }}</span>
+                    <span class="help-block">{{ form.longitude.help_text }}</span>
                     </div> 
                 </div>
+
+                 
                 
-                 <div class="control-group {% if form.loc_name.errors %} error {% endif %}">
-	                <label class="control-label" for="id_address_city">loc_name</label>
-                    <div class="controls">{{ form.loc_name }}
-                    {% if form.loc_name.errors %}
+                 <div class="control-group {% if services_form.errors %} error {% endif %}">
+	                <label class="control-label" for="id_address_city"><b>loc_name</b></label>
+	                {{services_form.management_form}}
+               	{% for formset in services_form.forms %}
+        			{{ formset.id }}
+       
+    
+                    <div class="controls">{{ formset.name }} {{formset.lang}}
+                    {% if formset.errors %}
                     <span class="help-inline">
-                        {{ form.loc_name.errors|join:", " }}
+                        {{ formset.errors|join:", " }}
                     </span>
                     {% endif %}
-                    <span class="help-block"> {{ form.loc_name.help_text }}</span>
-                    </div> 
+                   <span class="help-block"></span>
+                    
+                    </div>
+                    
+                    {% endfor %}
                 </div>
                 
                   <div class="control-group {% if form.address_street.errors %} error {% endif %}">
-                    <label class="control-label" for="id_address_street">Address Street</label>
+                    <label class="control-label" for="id_address_street"><b>Address Street</b></label>
                     <div class="controls">{{ form.address_street }}
                     {% if form.address_street.errors %}
                     <span class="help-inline">
@@ -100,7 +330,7 @@
                 </div>
                 
                  <div class="control-group {% if form.address_city.errors %} error {% endif %}">
-                    <label class="control-label" for="id_address_city">Address City</label>
+                    <label class="control-label" for="id_address_city"><b>Address City</b></label>
                     <div class="controls">{{ form.address_city }}
                     {% if form.address_city.errors %}
                     <span class="help-inline">
@@ -112,7 +342,7 @@
                 </div>
                 
                  <div class="control-group {% if form.SSID.errors %} error {% endif %}">
-	                <label class="control-label" for="id_url">SSID</label>
+	                <label class="control-label" for="id_url"><b>SSID</b></label>
                     <div class="controls">{{ form.SSID }}
                     {% if form.SSID.errors %}
                     <span class="help-inline">
@@ -123,8 +353,20 @@
                     </div> 
                 </div>
                 
+                <div class="control-group {% if form.contact.errors %} error {% endif %}">
+                    <label class="control-label" for="id_url"><b>Contact</b></label>
+                    <div class="controls">{{ form.contact }}
+                    {% if form.contact.errors %}
+                    <span class="help-inline">
+                        {{ form.contact.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.contact.help_text }}</span>
+                    </div> 
+                </div>
+                
                  <div class="control-group {% if form.enc_level.errors %} error {% endif %}">
-	                <label class="control-label" for="id_oper_name">enc_level</label>
+	                <label class="control-label" for="id_oper_name"><b>enc_level</b></label>
                     <div class="controls">{{ form.enc_level }}
                     {% if form.enc_level.errors %}
                     <span class="help-inline">
@@ -184,7 +426,7 @@
                 </div>
                 
                <div class="control-group {% if form.AP_no.errors %} error {% endif %}">
-                    <label class="control-label" for="id_number_id">AP_no</label>
+                    <label class="control-label" for="id_number_id"><b>AP_no</b></label>
                     <div class="controls">{{ form.AP_no }}
                     {% if form.AP_no.errors %}
                     <span class="help-inline">
@@ -208,7 +450,7 @@
                 </div>
                 
                 <div class="control-group {% if form.url.errors %} error {% endif %}">
-                    <label class="control-label" for="id_url">URL(s)</label>
+                    <label class="control-label" for="id_url"><b>URL(s)</b></label>
                     <div class="controls">{{ form.url }}
                     {% if form.url.errors %}
                     <span class="help-inline">
@@ -226,7 +468,6 @@
 			</div>
 			</div>
               </form>
-              
               
               
               
