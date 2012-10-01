@@ -212,3 +212,49 @@ def get_service_points(request):
         return HttpResponse(json.dumps(locs), mimetype='application/json')
     else:
        return HttpResponseNotFound('<h1>Something went really wrong</h1>')
+
+
+def servers(request):
+    servers = InstServer.objects.all()
+    return render_to_response('edumanage/servers.html', { 'servers': servers},
+                                  context_instance=RequestContext(request))
+
+
+@login_required
+def add_server(request, server_pk):
+    user = request.user
+    server = False
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
+
+    if request.method == "GET":
+
+        # Determine add or edit
+        try:         
+            server = InstServer.objects.get(instid=inst, pk=server_pk)
+            form = InstServerForm(instance=server)
+        except InstServer.DoesNotExist:
+            form = InstServerForm()
+        form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+        
+        return render_to_response('edumanage/servers_edit.html', { 'form': form},
+                                  context_instance=RequestContext(request))
+    elif request.method == 'POST':
+        request_data = request.POST.copy()
+        try:         
+            server = InstServer.objects.get(instid=inst, pk=server_pk)
+            form = InstServerForm(request_data, instance=server)
+        except InstServer.DoesNotExist:
+            form = InstServerForm(request_data)
+        
+        if form.is_valid():
+            instserverf = form.save()
+            return HttpResponseRedirect(reverse("servers"))
+        else:
+            form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+        print form.errors
+        return render_to_response('edumanage/servers_edit.html', { 'institution': inst, 'form': form},
+                                  context_instance=RequestContext(request))

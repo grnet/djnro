@@ -126,7 +126,7 @@ class InstServer(models.Model):
     def __unicode__(self):
         return _('Institution: %(inst)s, Server: %(servername)s, Type: %(ertype)s') % {
         # but name is many-to-many from institution
-            'inst': self.instid.name,
+            'inst': self.instid,
             'servername': self.name,
         # the human-readable name would be nice here
             'ertype': self.ertype,

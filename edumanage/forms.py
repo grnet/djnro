@@ -13,6 +13,12 @@ class InstDetailsForm(forms.ModelForm):
         model = InstitutionDetails
         
 
+
+class InstServerForm(forms.ModelForm):
+
+    class Meta:
+        model = InstServer
+
 class ServiceLocForm(forms.ModelForm):
 
     class Meta:

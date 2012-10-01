@@ -1,0 +1,219 @@
+{% extends "base.html"%}
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+ <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+      
+
+
+
+{% endblock %}
+{% block content %}
+	<div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="sidebar-nav">
+			<ul class="nav nav-tabs nav-stacked">
+			<li>
+				<a href="{% url manage %}">Home</a>
+				</li>
+				<li class="active">
+				<a href="#">Institution</a>
+				</li>
+				<li>
+				<a href="#">Services</a>
+				</li>
+				<li>
+				<a href="#">Servers</a>
+				</li>
+    		</ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        
+        <div class="span9">
+          <div class="row-fluid">
+            <!--/span-->
+            <div class="span12">
+              <h4>Servers</h4>
+              
+              		<h5>Server...</h5>
+              		
+              
+              
+              
+              
+              
+             
+              
+               <form method="POST" class="form-horizontal">
+        
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <p class="error">
+                {{ form.non_field_errors}}
+            </p>
+            {% endif %}
+            <div style="display: none">
+					{{form.instid}}
+			</div>
+
+               
+                <div class="control-group {% if form.ertype.errors %} error {% endif %}">
+                    <label class="control-label" for="id_ertype"><b>ErType</b></label>
+                    <div class="controls">{{ form.ertype }}
+                    {% if form.ertype.errors %}
+                    <span class="help-inline">
+                        {{ form.ertype.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.ertype.help_text }}</span>
+                    </div> 
+                </div>
+
+
+                
+                 <div class="control-group {% if form.name.errors %} error {% endif %}">
+                    <label class="control-label" for="id_name"><b>name</b></label>
+                    <div class="controls">{{ form.name }}
+                    {% if form.name.errors %}
+                    <span class="help-inline">
+                        {{ form.name.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.name.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.host.errors %} error {% endif %}">
+                    <label class="control-label" for="id_host"><b>host</b></label>
+                    <div class="controls">{{ form.host }}
+                    {% if form.host.errors %}
+                    <span class="help-inline">
+                        {{ form.host.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.host.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.port.errors %} error {% endif %}">
+                    <label class="control-label" for="id_port"><b>port</b></label>
+                    <div class="controls">{{ form.port }}
+                    {% if form.port.errors %}
+                    <span class="help-inline">
+                        {{ form.port.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.port.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.acct_port.errors %} error {% endif %}">
+                    <label class="control-label" for="id_acct_port"><b>acct_port</b></label>
+                    <div class="controls">{{ form.acct_port }}
+                    {% if form.acct_port.errors %}
+                    <span class="help-inline">
+                        {{ form.acct_port.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.acct_port.help_text }}</span>
+                    </div> 
+                </div>
+				
+				<div class="control-group {% if form.timeout.errors %} error {% endif %}">
+                    <label class="control-label" for="id_timeout"><b>timeout</b></label>
+                    <div class="controls">{{ form.timeout }}
+                    {% if form.timeout.errors %}
+                    <span class="help-inline">
+                        {{ form.timeout.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.ertype.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.retry.errors %} error {% endif %}">
+                    <label class="control-label" for="id_retry"><b>retry</b></label>
+                    <div class="controls">{{ form.retry }}
+                    {% if form.retry.errors %}
+                    <span class="help-inline">
+                        {{ form.retry.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.retry.help_text }}</span>
+                    </div> 
+                </div>
+                
+                 <div class="control-group {% if form.status_server.errors %} error {% endif %}">
+                    <label class="control-label" for="id_status_server">status_server</label>
+                    <div class="controls">{{ form.status_server }}
+                    {% if form.status_server.errors %}
+                    <span class="help-inline">
+                        {{ form.status_server.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.status_server.help_text }}</span>
+                    </div> 
+                </div>
+                
+                <div class="control-group {% if form.secret.errors %} error {% endif %}">
+                    <label class="control-label" for="id_secret"><b>secret</b></label>
+                    <div class="controls">{{ form.secret }}
+                    {% if form.secret.errors %}
+                    <span class="help-inline">
+                        {{ form.secret.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.status_server.help_text }}</span>
+                    </div> 
+                </div>
+                
+                <div class="control-group {% if form.proto.errors %} error {% endif %}">
+                    <label class="control-label" for="id_proto"><b>proto</b></label>
+                    <div class="controls">{{ form.proto }}
+                    {% if form.proto.errors %}
+                    <span class="help-inline">
+                        {{ form.proto.errors|join:", " }}
+                    </span>
+                    {% endif %}
+                    <span class="help-block"> {{ form.proto.help_text }}</span>
+                    </div> 
+                </div>
+                
+                
+                
+                              <div class="control-group">
+			<div class="controls">
+			<button type="submit" id="applybutton" value="Apply" class="btn btn-large btn-primary"/>Apply</button>
+			</div>
+			</div>
+                
+              </form>
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+              
+
+
+            </div><!--/span-->
+          </div><!--/row-->
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Company 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+{% endblock %}
