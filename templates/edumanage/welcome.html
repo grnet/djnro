@@ -10,7 +10,8 @@
 	var map = '';
 	var bounds = '';
 	var image = '';
-
+	var infoWindow;
+	
 var styles = [{
 	url: '/static/img/edugroup.png',
 	height: 54,
@@ -79,9 +80,12 @@ var mapOptions = {
 	};
 	map = new google.maps.Map(document.getElementById("map_canvas"),
 	mapOptions);
+	
 	bounds = new google.maps.LatLngBounds();
+	infoWindow = new google.maps.InfoWindow();
 
 }
+
 
 function placeMarkers(){
 var markers = new Array();
@@ -90,10 +94,43 @@ $.get("{% url get-service-points %}", function(data){
 	var marker = createMarker(jsonMarker);
 	if (marker){
 	bounds.extend(marker.position);
-	markers.push(marker)
+	markers.push(marker);
+	google.maps.event.addListener(marker, 'click', function() {
+		infoWindow.content = "<div><h4>"+jsonMarker.name+"</h4>"+
+			
+	"<div class='tabbable'>"+ 
+    "<ul class='nav nav-tabs'>"+
+    "<li class='active'><a href='#tab1' data-toggle='tab'>Main</a></li>"+
+    "<li><a href='#tab2' data-toggle='tab'>Advanced</a></li>"+
+    "</ul>"+
+    "<div class='tab-content'>"+
+    "<div class='tab-pane active' id='tab1'>"+
+    "<dl class='dl-horizontal'>"+
+			"<dt>Name</dt><dd>"+jsonMarker.name+"</dd>"+
+			"<dt>Address</dt><dd>"+jsonMarker.address+"</dd>"+
+			"<dt>Encryption</dt><dd>"+jsonMarker.enc+"</dd>"+
+			"<dt>SSID</dt><dd>"+jsonMarker.SSID+"</dd>"+
+			"<dt>Number of APs</dt><dd>"+jsonMarker.AP_no+"</dd></dl>"+
+    "</div>"+
+    "<div class='tab-pane' id='tab2'>"+
+    "<dl class='dl-horizontal'>"+
+			"<dt>Port Restrict</dt><dd>"+jsonMarker.port_restrict+"</dd>"+
+			"<dt>transp_proxy</dt><dd>"+jsonMarker.transp_proxy+"</dd>"+
+			"<dt>IPv6</dt><dd>"+jsonMarker.IPv6+"</dd>"+
+			"<dt>NAT</dt><dd>"+jsonMarker.NAT+"</dd>"+
+			"<dt>Wired</dt><dd>"+jsonMarker.wired+"</dd></dl>"+
+    "</div>"+
+    "</div>"+
+    "</div>"+
+    "<div style='text-align:right;'><a href = '{% url edit-services  %}"+jsonMarker.key+"' class='btn btn-primary'>Edit</a></div>"+
+    "</div>";
+		infoWindow.open(map,marker);
+     });
 	}
 	});
 	var mcOptions = {gridSize: 50, maxZoom: 15, styles: styles};
+	
+	
 
 	var markerCluster = new MarkerClusterer(map, markers, mcOptions);
 	map.fitBounds(bounds)

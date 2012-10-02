@@ -206,7 +206,16 @@ def get_service_points(request):
             response_location = {}
             response_location['lat'] = u"%s"%sl.latitude
             response_location['lng'] = u"%s"%sl.longitude
+            response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
+            response_location['enc'] = u"%s"%(sl.enc_level)
+            response_location['AP_no'] = u"%s"%(sl.AP_no)
             response_location['name'] = sl.loc_name.get(lang='en').name
+            response_location['port_restrict'] = u"%s"%(sl.port_restrict)
+            response_location['transp_proxy'] = u"%s"%(sl.transp_proxy)
+            response_location['IPv6'] = u"%s"%(sl.IPv6)
+            response_location['NAT'] = u"%s"%(sl.NAT)
+            response_location['wired'] = u"%s"%(sl.wired)
+            response_location['SSID'] = u"%s"%(sl.SSID)
             response_location['key'] = u"%s"%sl.pk
             locs.append(response_location)
         return HttpResponse(json.dumps(locs), mimetype='application/json')
