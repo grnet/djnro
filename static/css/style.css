@@ -1,0 +1,11 @@
+.side-menu > li > a {
+    border: 1px solid #E5E5E5;
+    display: block;
+    margin: 0 0 -1px;
+    padding: 8px 14px;
+}
+
+
+.side-menu > li:first-child > a {
+    border-radius: 6px 6px 0 0;
+}

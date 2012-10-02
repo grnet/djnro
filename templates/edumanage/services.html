@@ -1,57 +1,32 @@
-{% extends "base.html"%}
+{% extends "edumanage/welcome.html"%}
 
-{% block content %}
-	<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span3">
-          <div class="sidebar-nav">
-			<ul class="nav nav-tabs nav-stacked">
-			<li>
-				<a href="{% url manage %}">Home</a>
-				</li>
-				<li>
-				<a href="#">Institution</a>
-				</li>
-				<li class="active">
-				<a href="#">Services</a>
-				</li>
-				<li>
-				<a href="#">Servers</a>
-				</li>
-    		</ul>
-          </div><!--/.well -->
-        </div><!--/span-->
-        
-        <div class="span9">
-          <div class="row-fluid">
-            <!--/span-->
-            <div class="span12">
+			{% block homeactive %}{% endblock %}
+    		{% block servicesactive %}class="active"{% endblock %}
+            {% block subcontent %}
               <h4>Services</h4>
               <div><a href="{% url edit-services %}">Add new service</a></div>
               {% load tolocale %}
               {% if services %}
-                {% for service in services %}
-                <div>
-                <address>
-				<strong>{% tolocale service LANGUAGE_CODE%}</strong>  (<a href="{% url edit-services service.pk%}">edit</a>)<br>
-				{{service.address_street}}<br>
-				{{service.address_city}}<br>
-				</address>
-                	</div>
-              	{% endfor %}
+                <table class="table .table-bordered">
+	               <thead>
+					<tr>
+					<th>Name</th>
+					<th>Street</th>
+					<th>City</th>
+					<th>Action</th>
+					<th>Action</th>
+					</tr>
+					</thead>
+					<tbody>
+	                {% for service in services %}
+	              	<tr>
+	                	<td>{% tolocale service LANGUAGE_CODE%}</td><td>{{service.address_street}}</td><td>{{service.address_city}}</td> <td><a href="{% url edit-services service.pk%}">edit</a> </td><td><a href="{% url edit-services service.pk%}">delete</a></td>
+	                </tr>
+	              	{% endfor %}
+	              	</tbody>
+	              </table>
               {% else %}
               <div>No services defined yet (<a href="{% url edit-services %}">edit</a>)</div>
               {% endif %}
-            </div><!--/span-->
-          </div><!--/row-->
-        </div><!--/span-->
-      </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <p>&copy; Company 2012</p>
-      </footer>
-
-    </div><!--/.fluid-container-->
-{% endblock %}
+           
+		{% endblock %}

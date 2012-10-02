@@ -1,186 +1,174 @@
 {% extends "base.html"%}
-{% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+{% block extrahead %} <script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="/static/js/markerclusterer.js"></script>
- <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-      
- <script type="text/javascript">
- 		var lat = 36.97;
- 		var lng = 23.71;
- 		var zoomLevel = 6;
-		var latlng = new google.maps.LatLng(lat,lng);
-		var map = '';
-		var bounds = '';
-		var image = '';
-		
-		var styles = [{
-			url: '/static/img/edugroup.png',
-	        height: 54,
-	        width: 63,
-	        textColor: '#ffffff',
-	        textSize: 11
-		},
-		{
-			url: '/static/img/edugroup.png',
-	        height: 54,
-	        width: 63,
-	        textColor: '#ffffff',
-	        textSize: 11
-		},
-		{
-			url: '/static/img/edugroup.png',
-	        height: 54,
-	        width: 63,
-	        textColor: '#ffffff',
-	        textSize: 11
-		}]
-		
-		function initialize() {
-			image = new google.maps.MarkerImage('/static/img/edupin.png',
-					// This marker is 29 pixels wide by 40 pixels tall.
-					new google.maps.Size(29, 40),
-					// The origin for this image is 0,0.
-					new google.maps.Point(0,0),
-					// The anchor for this image is the base of the flagpole at 18,42.
-					new google.maps.Point(14, 40)
-				);
-			var styleArray = [
-			                   {
-			                       featureType: "all",
-			                       stylers: [
-			                         { saturation: -60 },
-			                         {gamma: 1.00 }
-			                       ]
-			                     },{
-			                       featureType: "poi.business",
-			                       elementType: "labels",
-			                       stylers: [
-			                         { visibility: "off" }
-			                       ]
-			                     },
-			                     { "featureType": "transit.line", "elementType": "geometry", "stylers": [ { "visibility": "off" } ] },
-			                     { "featureType": "poi", "elementType": "all", "stylers": [ { "visibility": "off" } ] },
-			                     {'featureType': "administrative.country",
-			                     'elementType': "labels",
-			                     'stylers': [
-			                         { 'visibility': "off" }
-			                     ]}
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+	var lat = 36.97;
+	var lng = 23.71;
+	var zoomLevel = 6;
+	var latlng = new google.maps.LatLng(lat,lng);
+	var map = '';
+	var bounds = '';
+	var image = '';
 
-			                     
-			                   ];
-			var mapOptions = {
-				center : latlng,
-				zoom : zoomLevel,
-				mapTypeId : google.maps.MapTypeId.ROADMAP,
-				styles: styleArray,
-				mapTypeId: google.maps.MapTypeId.ROADMAP,
-				    mapTypeControlOptions: {
-					      style: google.maps.MapTypeControlStyle.DEFAULT
-					    },
-				navigationControl: true,
-				mapTypeControl: false,
-			};
-			map = new google.maps.Map(document.getElementById("map_canvas"),
-					mapOptions);
-			bounds = new google.maps.LatLngBounds();
-			
+var styles = [{
+	url: '/static/img/edugroup.png',
+	height: 54,
+	width: 63,
+	textColor: '#ffffff',
+	textSize: 11
+	},
+	{
+	url: '/static/img/edugroup.png',
+	height: 54,
+	width: 63,
+	textColor: '#ffffff',
+	textSize: 11
+	},
+	{
+	url: '/static/img/edugroup.png',
+	height: 54,
+	width: 63,
+	textColor: '#ffffff',
+	textSize: 11
+}];
 
+function initialize() {
+	image = new google.maps.MarkerImage('/static/img/edupin.png',
+	// This marker is 29 pixels wide by 40 pixels tall.
+	new google.maps.Size(29, 40),
+	// The origin for this image is 0,0.
+	new google.maps.Point(0,0),
+	// The anchor for this image is the base of the flagpole at 18,42.
+	new google.maps.Point(14, 40)
+);
+var styleArray = [
+{
+	featureType: "all",
+	stylers: [
+	{ saturation: -60 },
+	{gamma: 1.00 }
+	]
+	},{
+	featureType: "poi.business",
+	elementType: "labels",
+	stylers: [
+	{ visibility: "off" }
+	]
+	},
+	{ "featureType": "transit.line", "elementType": "geometry", "stylers": [ { "visibility": "off" } ] },
+	{ "featureType": "poi", "elementType": "all", "stylers": [ { "visibility": "off" } ] },
+	{'featureType': "administrative.country",
+	'elementType': "labels",
+	'stylers': [
+	{ 'visibility': "off" }
+	]}
 
-		}
-		
-		function placeMarkers(){
-			var markers = new Array();
-			$.get("{% url get-service-points %}", function(data){
-				$.each(data, function(index, jsonMarker) {
-					var marker = createMarker(jsonMarker);
-					if (marker){
-							bounds.extend(marker.position);
-							markers.push(marker)
-					}
-				});
-				var mcOptions = {gridSize: 50, maxZoom: 15, styles: styles};
+];
+var mapOptions = {
+	center : latlng,
+	zoom : zoomLevel,
+	mapTypeId : google.maps.MapTypeId.ROADMAP,
+	styles: styleArray,
+	mapTypeId: google.maps.MapTypeId.ROADMAP,
+	mapTypeControlOptions: {
+	style: google.maps.MapTypeControlStyle.DEFAULT
+	},
+	navigationControl: true,
+	mapTypeControl: false,
+	};
+	map = new google.maps.Map(document.getElementById("map_canvas"),
+	mapOptions);
+	bounds = new google.maps.LatLngBounds();
 
-				var markerCluster = new MarkerClusterer(map, markers, mcOptions);
-				map.fitBounds(bounds)
-			});
-		}
-		
-		function createMarker(markerObj){
-			var title = markerObj.name;
-			var latLng = new google.maps.LatLng(markerObj.lat, markerObj.lng);
-			var marker = new google.maps.Marker({
-				'position' : latLng,
-				'map' : map,
-				'title': title,
-				'icon': image,
-			});
-			return marker
-		}
-		
-		function clusterMarkers(markers){
-			var markerCluster = new MarkerClusterer(map, markers);
-		}
-		
-		$(document).ready(function() {
-			{% if services %}
-			initialize();
-			marks = placeMarkers();
-			console.log(marks);
-			clusterMarkers(marks);
-			{% endif %}
-		});
-	</script>
+}
 
+function placeMarkers(){
+var markers = new Array();
+$.get("{% url get-service-points %}", function(data){
+	$.each(data, function(index, jsonMarker) {
+	var marker = createMarker(jsonMarker);
+	if (marker){
+	bounds.extend(marker.position);
+	markers.push(marker)
+	}
+	});
+	var mcOptions = {gridSize: 50, maxZoom: 15, styles: styles};
 
+	var markerCluster = new MarkerClusterer(map, markers, mcOptions);
+	map.fitBounds(bounds)
+	});
+	}
+
+	function createMarker(markerObj){
+	var title = markerObj.name;
+	var latLng = new google.maps.LatLng(markerObj.lat, markerObj.lng);
+	var marker = new google.maps.Marker({
+	'position' : latLng,
+	'map' : map,
+	'title': title,
+	'icon': image,
+	});
+	return marker
+	}
+
+	function clusterMarkers(markers){
+	var markerCluster = new MarkerClusterer(map, markers);
+	}
+
+	$(document).ready(function() {
+{% if services %}
+	initialize();
+	marks = placeMarkers();
+	console.log(marks);
+	clusterMarkers(marks);
+
+{% endif %}});</script>
 {% endblock %}
 
 {% block content %}
-	<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2">
-          <div class="sidebar-nav">
-          {% block navbar %}
-			<ul class="nav nav-tabs nav-stacked">
-			<li class="active">
-				<a href="{% url manage %}">Home</a>
-				</li>
-				<li>
-				<a href="{% url institutions %}">My Institution</a>
-				</li>
-				<li>
-				<a href="{% url services %}">My Services</a>
-				</li>
-				<li>
-				<a href="#">My Servers</a>
-				</li>
-    		</ul>
-    		{% endblock %}
-          </div><!--/.well -->
-        </div><!--/span-->
-        
-        <div class="span10">
-          <div class="row-fluid">
-            <!--/span-->
-            <div class="span10">
-              <h4>My Services</h4>
-              {% if services %}
-              		<div id="map_canvas" style="width:100%; height:450px;"></div>
-              {% else %}
-              <p>No services defined!</p>
-              {% endif %}
-              
-            </div><!--/span-->
-            <!--/span-->
-          </div><!--/row-->
-        </div><!--/span-->
-      </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <p>&copy; Company 2012</p>
-      </footer>
-
-    </div><!--/.fluid-container-->
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<div class="sidebar-nav">
+				<ul class="nav nav-list nav-stacked side-menu">
+					<li {% block homeactive %}class="active"{% endblock %}>
+						<a href="{% url manage %}">Home</a>
+					</li>
+					<li {% block instactive %}{% endblock %}>
+						<a href="{% url institutions %}">My Institution</a>
+					</li>
+					<li {% block servicesactive %}{% endblock %}>
+						<a href="{% url services %}">My Services</a>
+					</li>
+					<li {% block serversactive %}{% endblock %}>
+						<a href="{% url servers %}">My Servers</a>
+					</li>
+				</ul>
+			</div><!--/.well -->
+		</div><!--/span-->
+		<div class="span10">
+			<div class="row-fluid">
+				<!--/span-->
+				<div class="span10">
+					{% block subcontent %} <h4>My Services</h4>
+					{% if services %} <div id="map_canvas" style="width:100%; height:450px;"></div>
+					{% else %}
+					<p>
+						No services defined!
+					</p>
+					{% endif %}
+					{% endblock %}
+				</div><!--/span-->
+				<!--/span-->
+			</div><!--/row-->
+		</div><!--/span-->
+	</div><!--/row-->
+	<hr>
+	<footer>
+		<p>
+			&copy; leopoul - GRNET NOC - GRNET S.A - 2012
+		</p>
+	</footer>
+</div><!--/.fluid-container-->
 {% endblock %}
