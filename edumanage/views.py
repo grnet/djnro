@@ -357,6 +357,53 @@ def base_response(request):
             
         }
 
+@login_required
+def del_server(request):
+    if request.method == 'GET':
+        user = request.user
+        req_data = request.GET.copy()
+        server_pk = req_data['server_pk']
+        profile = user.get_profile()
+        institution = profile.institution
+        resp = {}
+        try:
+            server = InstServer.objects.get(instid=institution, pk=server_pk)
+        except InstServer.DoesNotExist:
+            resp['error'] = "Could not get server or you have no rights to delete"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        try:
+            server.delete()
+        except:
+            resp['error'] = "Could not delete server"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp['success'] = "Server successfully deleted"
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
+    
+    
+@login_required
+def del_service(request):
+    if request.method == 'GET':
+        user = request.user
+        req_data = request.GET.copy()
+        service_pk = req_data['service_pk']
+        profile = user.get_profile()
+        institution = profile.institution
+        resp = {}
+        try:
+            service = ServiceLoc.objects.get(institutionid=institution, pk=service_pk)
+        except ServiceLoc.DoesNotExist:
+            resp['error'] = "Could not get service or you have no rights to delete"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        try:
+            service.delete()
+        except:
+            resp['error'] = "Could not delete service"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp['success'] = "Service successfully deleted"
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
+    
+
+
 def geolocate(request):
     return render_to_response('front/geolocate.html',
                                   context_instance=RequestContext(request))
