@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+    {% block title %}eduroam@Greece{% endblock %}
+    {% block extrahead %}
+    <style type="text/css">
+      html,body {
+	height: 100%;
+	overflow: hidden;
+}
+      .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
+    </style>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/markerclusterer.js"></script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+	var lat = 36.97;
+	var lng = 23.71;
+	var zoomLevel = 6;
+	var latlng = new google.maps.LatLng(lat,lng);
+	var map = '';
+	var bounds = '';
+	var image = '';
+	var infoWindow;
+	
+var styles = [{
+	url: '/static/img/edugroup.png',
+	height: 54,
+	width: 63,
+	textColor: '#ffffff',
+	textSize: 11
+	},
+	{
+	url: '/static/img/edugroup.png',
+	height: 54,
+	width: 63,
+	textColor: '#ffffff',
+	textSize: 11
+	},
+	{
+	url: '/static/img/edugroup.png',
+	height: 54,
+	width: 63,
+	textColor: '#ffffff',
+	textSize: 11
+}];
+
+function initialize() {
+	image = new google.maps.MarkerImage('/static/img/edupin.png',
+	// This marker is 29 pixels wide by 40 pixels tall.
+	new google.maps.Size(29, 40),
+	// The origin for this image is 0,0.
+	new google.maps.Point(0,0),
+	// The anchor for this image is the base of the flagpole at 18,42.
+	new google.maps.Point(14, 40)
+);
+
+	var styleArray = [ {
+			featureType : "all",
+			stylers : [ {
+				saturation : -60
+			}, {
+				gamma : 1.00
+			} ]
+		}, {
+			featureType : "poi.business",
+			elementType : "labels",
+			stylers : [ {
+				visibility : "off"
+			} ]
+		}, {
+			"featureType" : "transit.line",
+			"elementType" : "geometry",
+			"stylers" : [ {
+				"visibility" : "off"
+			} ]
+		}, {
+			"featureType" : "poi",
+			"elementType" : "all",
+			"stylers" : [ {
+				"visibility" : "off"
+			} ]
+		}, {
+			'featureType' : "administrative.country",
+			'elementType' : "labels",
+			'stylers' : [ {
+				'visibility' : "off"
+			} ]
+		}
+
+		];
+
+		var mapOptions = {
+			center : latlng,
+			zoom : zoomLevel,
+			mapTypeId : google.maps.MapTypeId.ROADMAP,
+			styles : styleArray,
+			mapTypeId : google.maps.MapTypeId.ROADMAP,
+			mapTypeControlOptions : {
+				style : google.maps.MapTypeControlStyle.DEFAULT
+			},
+			navigationControl : true,
+			mapTypeControl : false,
+		};
+		map = new google.maps.Map(document.getElementById("map_canvas"),
+				mapOptions);
+
+		bounds = new google.maps.LatLngBounds();
+		infoWindow = new google.maps.InfoWindow();
+
+	}
+
+	var markers = new Array();
+	function placeMarkers() {
+
+		$
+				.get(
+						"{% url get-all-services %}",
+						function(data) {
+							$
+									.each(
+											data,
+											function(index, jsonMarker) {
+												var marker = createMarker(jsonMarker);
+												if (marker) {
+													bounds
+															.extend(marker.position);
+													markers.push(marker);
+													google.maps.event
+															.addListener(
+																	marker,
+																	'click',
+																	function() {
+																		infoWindow.content = "<div><h4>"
+																				+ jsonMarker.inst
+																				+ "</h4>"
+																				+
+
+																				"<div class='tabbable'>"
+																				+ "<ul class='nav nav-tabs'>"
+																				+ "<li class='active'><a href='#tab1' data-toggle='tab'>Main</a></li>"
+																				+ "<li><a href='#tab2' data-toggle='tab'>Advanced</a></li>"
+																				+ "</ul>"
+																				+ "<div class='tab-content'>"
+																				+ "<div class='tab-pane active' id='tab1'>"
+																				+ "<dl class='dl-horizontal'>"
+																				+ "<dt>Name</dt><dd>"
+																				+ jsonMarker.name
+																				+ "</dd>"
+																				+ "<dt>Address</dt><dd>"
+																				+ jsonMarker.address
+																				+ "</dd>"
+																				+ "<dt>Encryption</dt><dd>"
+																				+ jsonMarker.enc
+																				+ "</dd>"
+																				+ "<dt>SSID</dt><dd>"
+																				+ jsonMarker.SSID
+																				+ "</dd>"
+																				+ "<dt>Number of APs</dt><dd>"
+																				+ jsonMarker.AP_no
+																				+ "</dd></dl>"
+																				+ "</div>"
+																				+ "<div class='tab-pane' id='tab2'>"
+																				+ "<dl class='dl-horizontal'>"
+																				+ "<dt>Port Restrict</dt><dd>"
+																				+ jsonMarker.port_restrict
+																				+ "</dd>"
+																				+ "<dt>transp_proxy</dt><dd>"
+																				+ jsonMarker.transp_proxy
+																				+ "</dd>"
+																				+ "<dt>IPv6</dt><dd>"
+																				+ jsonMarker.IPv6
+																				+ "</dd>"
+																				+ "<dt>NAT</dt><dd>"
+																				+ jsonMarker.NAT
+																				+ "</dd>"
+																				+ "<dt>Wired</dt><dd>"
+																				+ jsonMarker.wired
+																				+ "</dd></dl>"
+																				+ "</div>"
+																				+ "</div>"
+																				+ "</div>"
+																				+ "</div>";
+																		infoWindow
+																				.open(
+																						map,
+																						marker);
+																	});
+												}
+											});
+							var mcOptions = {
+								gridSize : 50,
+								maxZoom : 15,
+								styles : styles
+							};
+
+							var markerCluster = new MarkerClusterer(map,
+									markers, mcOptions);
+							map.fitBounds(bounds)
+						});
+	}
+
+	function createMarker(markerObj) {
+		var title = markerObj.name;
+		var address = markerObj.address;
+		var latLng = new google.maps.LatLng(markerObj.lat, markerObj.lng);
+		var marker = new google.maps.Marker({
+			'position' : latLng,
+			'map' : map,
+			'title' : title,
+			'address' : address,
+			'icon' : image,
+		});
+		return marker
+	}
+
+	function clusterMarkers(markers) {
+		var markerCluster = new MarkerClusterer(map, markers);
+	}
+
+	function rad(x) {
+		return x * Math.PI / 180;
+	}
+
+	function find_closest_marker(event) {
+		var lat = event.latLng.lat();
+		var lng = event.latLng.lng();
+		var R = 6371; // radius of earth in km
+		var distances = [];
+		var closest = -1;
+		for (i = 0; i < markers.length; i++) {
+			var mlat = markers[i].position.lat();
+			var mlng = markers[i].position.lng();
+			var dLat = rad(mlat - lat);
+			var dLong = rad(mlng - lng);
+			var a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+					+ Math.cos(rad(lat)) * Math.cos(rad(lat))
+					* Math.sin(dLong / 2) * Math.sin(dLong / 2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			var d = R * c;
+			distances[i] = d;
+			if (closest == -1 || d < distances[closest]) {
+				closest = i;
+			}
+		}
+
+		alert(markers[closest].address);
+	}
+
+
+	$(document).ready(function() {
+		initialize();
+		marks = placeMarkers();
+		clusterMarkers(marks);
+	});
+</script>
+{% endblock %}
+
+    {% block content %}
+	<div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+            
+              <li class="active"><a href="{% url index %}">Home</a></li>
+              <li><a href="#">News</a></li>
+              <li><a href="{% url geolocate %}" target="about:blank()">eduroam near me</a></li>
+              <li class="nav-header">Users</li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Contact</a></li>
+              <li><a href="#">About</a></li>
+              <li class="nav-header">Institutions</li>
+              <li><a href="{% url manage %}">Management</a></li>
+            </ul>
+          </div><!--/.well -->
+          <div><img src="/static/img/keep_calm_eduroam_small.png"></div>
+        </div><!--/span-->
+
+
+		<div class="span10">
+			<div class="row-fluid">
+				<!--/span-->
+				
+					{% block subcontent %} 
+					<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;"></div>
+					{% endblock %}
+				
+				<!--/span-->
+			</div><!--/row-->
+		</div><!--/span-->
+
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; Company 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+	{% endblock %}

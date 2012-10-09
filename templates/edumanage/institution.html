@@ -1,26 +1,63 @@
 {% extends "edumanage/welcome.html"%}
-
+			{% block crumbs %}
+	    			<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
+	    			<li class="active">Institution</li>
+	    			{% endblock %}
 			{% block homeactive %}{% endblock %}
     		{% block instactive %}class="active"{% endblock %}
 
             {% block subcontent %}
               <h4>Institution</h4>
+              		<hr>
               {% load tolocale %}
               {% if institution %}
-              		<h5>{% tolocale institution LANGUAGE_CODE%}</h5>(<a href="{% url edit-institution institution.pk %}">edit</a>)
               		{% if institution.institutiondetails %}
-              		    <dl class="dl-horizontal">
-              			<dt>ErType</dt><dd>{{institution.institutiondetails.get_ertype_display}}</dd>
-              			<dt>Adress</dt><dd>{{institution.institutiondetails.address_street}}@{{institution.institutiondetails.address_city}}</dd>
-              			<dt>Contact</dt>{% if institution.institutiondetails.contact.all %}{% for con in institution.institutiondetails.contact.all %}<dd>{{con}}</dd>{% endfor %}{% else %}<dd>(no contacts)</dd>{% endif %}
-              			<dt>Url</dt>{% if institution.institutiondetails.url.all %}{% for url in institution.institutiondetails.url.all %}<dd>{{url}}</dd>{% endfor %}{% else %}<dd>(no urls)</dd>{% endif %}
-              			<dt>oper_name</dt><dd>{{institution.institutiondetails.oper_name}}</dd>
-              			<dt>Number User</dt><dd>{{institution.institutiondetails.number_user}}</dd>
-              			<dt>Number Id</dt><dd>{{institution.institutiondetails.number_id}}</dd>
-              			<dt>Ts</dt><dd>{{institution.institutiondetails.ts}}</dd>
-              			</dl>     			
+              		
+              	<div class="row-fluid">
+		<div class="span12"></div>
+		</div>
+              		
+              	<table class="table table-striped" width="100%" id="table"><thead>
+					<tr>
+					<th>Name</th>
+					<th>Address</th>
+					<th>Type</th>
+					<th>Contact</th>
+					<th>Url</th>
+					<th>Oper Name</th>
+					<th># Users</th>
+					<th># Id</th>
+					<th>Action</th>
+					</tr>
+					</thead>
+					<tbody>
+	              	<tr class="info">
+	                	<td><b>{% tolocale institution LANGUAGE_CODE%}</b></td>
+              			<td>{{institution.institutiondetails.address_street}}@{{institution.institutiondetails.address_city}}</td>
+              			<td>{{institution.institutiondetails.get_ertype_display}}</td>
+              			<td>{% if institution.institutiondetails.contact.all %}{% for con in institution.institutiondetails.contact.all %}{{con}}<br>{% endfor %}{% else %}(no contacts){% endif %}</td>
+              			<td>{% if institution.institutiondetails.url.all %}{% for url in institution.institutiondetails.url.all %}{{url}}<br>{% endfor %}{% else %}(no urls){% endif %}</td>
+              			<td>{{institution.institutiondetails.oper_name}}</td>
+              			<td>{{institution.institutiondetails.number_user}}</td>
+              			<td>{{institution.institutiondetails.number_id}}</td>               	
+	                	<td style="text-align: center;"><a href="{% url edit-institution institution.pk %}" class="btn btn-small btn-primary">edit</a></td>
+	                </tr>
+	              	</tbody>
+	              </table>
+              		
+              		
+              		
+              		
+              		
+              		
+              		
+              		
+              		
+              		
+
+              		   
               		{% else %}
-              			<div>No institution details defined yet <a href="{% url edit-institution institution.pk %}">(edit)</a></div>
+              			<div>No institution details defined yet for {% tolocale institution LANGUAGE_CODE%} <a href="{% url edit-institution institution.pk %}" class="btn btn-small btn-primary">edit</a></div>
               		{% endif %}
               {% else %}
               <p>No institution defined!</p>

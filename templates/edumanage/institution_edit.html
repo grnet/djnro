@@ -1,9 +1,15 @@
-{% extends "edumanage/welcome.html"%}		
+{% extends "edumanage/welcome.html"%}
+{% block crumbs %}
+	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
+	<li><a href="{% url institutions %}">Institutions</a><span class="divider">/</span></li>
+	<li class="active">Add-Edit</li>
+{% endblock %}
 {% block homeactive %}{% endblock %}
 {% block instactive %}class="active"{% endblock %}
 {% block subcontent %}
-<h4>Institution</h4>
-{% load tolocale %} <h5>{% tolocale institution LANGUAGE_CODE%}</h5>
+<h4>Institution Edit</h4>
+<hr>
+{% load tolocale %} 
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
 	{% if form.non_field_errors %}
@@ -13,6 +19,12 @@
 	{% endif %}
 	<div style="display: none">
 		{{form.institution}}
+	</div>
+		<div class="control-group">
+		<label class="control-label" for="id_ertype">Name</label>
+		<div class="controls">
+			<input class="input" id="disabledInput" type="text" placeholder="{% tolocale institution LANGUAGE_CODE%}" disabled>
+		</div>
 	</div>
 	<div class="control-group {% if form.ertype.errors %} error {% endif %}">
 		<label class="control-label" for="id_ertype">ErType</label>

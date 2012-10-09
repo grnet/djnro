@@ -1,4 +1,8 @@
 {% extends "edumanage/welcome.html"%}
+			{% block crumbs %}
+	    			<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
+	    			<li class="active">Services</li>
+	    			{% endblock %}
 {% load i18n %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
@@ -76,6 +80,7 @@ oTable.fnDraw();
     		{% block servicesactive %}class="active"{% endblock %}
             {% block subcontent %}
               <h4>Services</h4>
+              <hr>
               <div><a href="{% url edit-services %}" class="btn btn-primary">Add new service</a></div>
 	              <div class="span10"></div>
               {% load tolocale %}

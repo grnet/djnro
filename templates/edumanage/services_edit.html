@@ -1,18 +1,29 @@
 {% extends "edumanage/welcome.html"%}
+
+{% block crumbs %}
+	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
+	<li><a href="{% url services %}">Services</a><span class="divider">/</span></li>
+	<li class="active">Add-Edit</li>
+{% endblock %}
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.formset.js"></script>
  <script type="text/javascript"
       src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
-      
- <script type="text/javascript">
+      <script src="/static/js/jquery_csrf_protect.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+		function gettext(msgid) { return msgid; }
+		
  		var lat = 36.97;
  		var lng = 23.71;
  		var zoomLevel = 6;
  		{% if form.data.latitude or form.instance.latitude %}
- 			var lat = {% if form.data.latitude %}{{form.data.latitude}}{% else %}{{form.instance.latitude}}{% endif %};
+ 			var lat = "{% if form.data.latitude %}{{form.data.latitude}}{% else %}{{form.instance.latitude}}{% endif %}";
+ 			var lat = parseFloat(lat.replace(",","."));
  		{% endif %}
  		{% if form.data.longitude or form.instance.longitude %}
-			var lng = {% if form.data.longitude %}{{form.data.longitude}}{% else %}{{form.instance.longitude}}{% endif %};
+			var lng = "{% if form.data.longitude %}{{form.data.longitude}}{% else %}{{form.instance.longitude}}{% endif %}";
+			var lng = parseFloat(lng.replace(",","."));
 			var zoomLevel = 14;
 			getOnce = true;
 		{% endif %}
@@ -219,7 +230,69 @@
 				$("#updatemap").removeAttr('disabled');
 			});
 			
+			// Initialize jquery formset
+			
+			 $('#urlsform tbody tr').formset({
+            prefix: '{{urls_form.prefix}}',
+            formCssClass: "dynamic-formset1",
+            added: addButton,
+        });
+			
+			 $('#locsform tbody tr').formset({
+		            prefix: '{{services_form.prefix}}',
+		            formCssClass: "dynamic-formset2",
+		            added: addButton
+		        });
+			 
+			 $(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
+			 $(".add-row").prepend('<i class="icon-plus-sign icon-white"></i> ').addClass('btn btn-small btn-info');
+			 
+			 $("#adduserSubmit").click(function(){
+					$.ajax({
+						url:"{% url adduser %}", 
+						data:$("#add_user_form").serialize(),
+						type: "POST",
+						cache: false,
+						success:function(data){
+								try {
+									value = data.value;
+									text = data.text;
+									if (typeof value === 'undefined' && typeof text === 'undefined'){
+										$('#mymodalbody').html(data);	
+									}
+									else{
+										$('#id_contact').append($("<option></option>").attr("value",value).text(text));
+										$('#myModal').modal('hide')
+									}
+								}
+								catch (exception) {
+									$('#mymodalbody').html(data);
+								}					
+							}
+							});
+					return false;
+				});
+			 
+			 $("#add_contact").click(function(){
+				 $('#myModal').modal('show')
+				 $.ajax({
+						url:"{% url adduser %}",
+						type: "GET",
+						success: function(data){
+							$('#mymodalbody').html(data);
+							}
+						});
+			
+				 return false;
+			 });
+			 
 		});
+		function addButton(row){
+			$(row).find(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
+		}
+		
+		
+		
 	</script>
 
 
@@ -229,8 +302,8 @@
 {% block servicesactive %}class="active"{% endblock %}
 {% block subcontent %}
 
-<h4>Services</h4>
-<h5>Service...</h5>
+<h4>Services Add/Edit</h4>
+<hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
 	{% if form.non_field_errors %}
@@ -261,17 +334,26 @@
 			{% endif %} <span class="help-block">{{ form.longitude.help_text }}</span>
 		</div>
 	</div>
-	<div class="control-group {% if services_form.errors %} error {% endif %}">
+
+	<div class="control-group {% for err in services_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if services_form.non_form_errors %}error{% endif %}">
 		<label class="control-label" for="id_address_city"><b>loc_name</b></label>
 		{{services_form.management_form}}
-		{% for formset in services_form.forms %}
-		{{ formset.id }}
 		<div class="controls">
-			{{ formset.name }} {{formset.lang}}
-			{% if formset.errors %} <span class="help-inline"> {{ formset.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"></span>
-		</div>
+		{% for err in services_form.errors %}{% if err|length > 0 %}<span class="help-inline"></span>{% endif %}{% endfor %}
+		{% if services_form.non_form_errors %} <span class="help-inline"> {{ services_form.non_form_errors|join:", "}}</span>{% endif %}
+			<table id="locsform"><thead><tr><td>Name</td><td>language</td></tr></thead><tbody>
+		{% for formset_s in services_form.forms %}
+		{{ formset_s.id }}
+		
+		
+			<tr id="{{ formset_s.prefix }}-row">
+			<td> {% if formset_s.instance.pk %}{{ formset_s.DELETE }}{% endif %}{{ formset_s.name }}{% if formset_s.name.errors %}<br><div class="help-inline"> {{ formset_s.name.errors|join:", " }} </div>{% endif %}</td> 
+             <td>{{formset_s.lang}}{% if formset_s.lang.errors %}<br><p class="help-inline"> {{ formset_s.lang.errors|join:", " }} </p>{% endif %}</td>
+             
+		</tr>
 		{% endfor %}
+		</tbody></table>
+		</div>
 	</div>
 	<div class="control-group {% if form.address_street.errors %} error {% endif %}">
 		<label class="control-label" for="id_address_street"><b>Address Street</b></label>
@@ -300,7 +382,7 @@
 	<div class="control-group {% if form.contact.errors %} error {% endif %}">
 		<label class="control-label" for="id_url"><b>Contact</b></label>
 		<div class="controls">
-			{{ form.contact }}
+			{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
 			{% if form.contact.errors %} <span class="help-inline"> {{ form.contact.errors|join:", " }} </span>
 			{% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
 		</div>
@@ -361,12 +443,25 @@
 			{% endif %} <span class="help-block"> {{ form.wired.help_text }}</span>
 		</div>
 	</div>
-	<div class="control-group {% if form.url.errors %} error {% endif %}">
-		<label class="control-label" for="id_url"><b>URL(s)</b></label>
+	<div class="control-group {% for err in urls_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if urls_form.non_form_errors %}error{% endif %}">
+		<label class="control-label" for="id_urls">Urls</label>
+		{{urls_form.management_form}}
 		<div class="controls">
-			{{ form.url }}
-			{% if form.url.errors %} <span class="help-inline"> {{ form.url.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.url.help_text }}</span>
+		{% for err in urls_form.errors %}{% if err|length > 0 %}<span class="help-inline">{{err}}</span>{% endif %}{% endfor %}
+		{% if urls_form.non_form_errors %} <span class="help-inline"> {{ urls_form.non_form_errors|join:", "}}</span>{% endif %}
+			<table id="urlsform"><thead><tr><td>url</td><td>type</td><td>language</td></tr></thead><tbody>
+		{% for formset in urls_form.forms %}
+		{{ formset.id }}
+		
+		
+			<tr id="{{ formset.prefix }}-row">
+			<td> {% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="help-inline"> {{ formset.url.errors|join:", " }} </div>{% endif %}</td> 
+             <td>{{formset.urltype}}{% if formset.urltype.errors %}<br><p class="help-inline"> {{ formset.urltype.errors|join:", " }} </p>{% endif %}</td>
+             <td>{{formset.lang}}{% if formset.lang.errors %}<br><p class="help-inline"> {{ formset.lang.errors|join:", " }} </p>{% endif %}</td>
+             
+		</tr>
+		{% endfor %}
+		</tbody></table>
 		</div>
 	</div>
 	<div class="control-group">
@@ -376,5 +471,19 @@
 		</div>
 	</div>
 </form>
+
+<div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">Add User</h3>
+</div>
+<div class="modal-body" id="mymodalbody">
+
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<a class="btn btn-primary" id="adduserSubmit" href="#">Save changes</a>
+</div>
+</div>
 
 {% endblock %}

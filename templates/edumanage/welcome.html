@@ -157,14 +157,25 @@ $.get("{% url get-service-points %}", function(data){
 {% if services %}
 	initialize();
 	marks = placeMarkers();
-	console.log(marks);
 	clusterMarkers(marks);
-
 {% endif %}});</script>
 {% endblock %}
-
+{% block headtitle %}eduroam@Greece admin{% endblock %}
 {% block content %}
 <div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2"></div>
+		<div class="span10">
+			<div class="row-fluid"><div class="span10">
+				<ul class="breadcrumb" style="display: inline-table; padding: 0">
+					{% block crumbs %}
+	    			<li class="active">Home</li>
+	    			{% endblock %}
+	    		</ul>
+			<p class="pull-right">You are logged in as: {{user}} (<a href="{% url logout %}">Logout</a>)</p>
+			</div></div>
+		</div>
+	</div>
 	<div class="row-fluid">
 		<div class="span2">
 			<div class="sidebar-nav">
@@ -173,13 +184,13 @@ $.get("{% url get-service-points %}", function(data){
 						<a href="{% url manage %}">Home</a>
 					</li>
 					<li {% block instactive %}{% endblock %}>
-						<a href="{% url institutions %}">My Institution</a>
+						<a href="{% url institutions %}">Institution ({{inst_num}})</a>
 					</li>
 					<li {% block servicesactive %}{% endblock %}>
-						<a href="{% url services %}">My Services</a>
+						<a href="{% url services %}">Services ({{services_num}})</a>
 					</li>
 					<li {% block serversactive %}{% endblock %}>
-						<a href="{% url servers %}">My Servers</a>
+						<a href="{% url servers %}">Servers ({{servers_num}})</a>
 					</li>
 				</ul>
 			</div><!--/.well -->
@@ -188,7 +199,7 @@ $.get("{% url get-service-points %}", function(data){
 			<div class="row-fluid">
 				<!--/span-->
 				<div class="span10">
-					{% block subcontent %} <h4>My Services</h4>
+					{% block subcontent %}
 					{% if services %} <div id="map_canvas" style="width:100%; height:450px;"></div>
 					{% else %}
 					<p>
@@ -204,7 +215,7 @@ $.get("{% url get-service-points %}", function(data){
 	<hr>
 	<footer>
 		<p>
-			&copy; leopoul - GRNET NOC - GRNET S.A - 2012
+			&copy;  GRNET NOC - GRNET S.A - 2012
 		</p>
 	</footer>
 </div><!--/.fluid-container-->

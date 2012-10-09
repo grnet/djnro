@@ -1,4 +1,8 @@
 {% extends "edumanage/welcome.html"%}
+			{% block crumbs %}
+	    			<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
+	    			<li class="active">Servers</li>
+	    			{% endblock %}
 {% load i18n %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
@@ -76,7 +80,8 @@ oTable.fnDraw();
             {% block subcontent %}
 
 	            	
-	              <h4>My Servers</h4>
+	              <h4>Servers</h4>
+	              <hr>
 	              <div><a href="{% url edit-servers %}" class="btn btn-primary">Add new server</a></div>
 	              <div class="span10"></div>
 	              {% if servers %}

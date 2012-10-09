@@ -73,6 +73,9 @@ class URL_i18n(models.Model):
     url = models.CharField(max_length=180, db_column='URL')
     lang = models.CharField(max_length=5, choices=LANGS)
     urltype = models.CharField(max_length=10, choices=URLTYPES, db_column='type')
+    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = generic.GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
         return self.url
@@ -248,7 +251,7 @@ class ServiceLoc(models.Model):
     AP_no = models.PositiveIntegerField(max_length=3)
     wired = models.BooleanField()
     # only urltype = 'info' should be accepted here
-    url = models.ManyToManyField(URL_i18n)
+    url = generic.GenericRelation(URL_i18n, blank=True, null=True)
     ts = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
@@ -306,7 +309,7 @@ class InstitutionDetails(models.Model):
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact)
-    url = models.ManyToManyField(URL_i18n)
+    url = generic.GenericRelation(URL_i18n)
     # accept if ertype: 2 (sp) or 3 (idpsp)
     oper_name = models.CharField(max_length=24)
     # accept if ertype: 1 (idp) or 3 (idpsp)
@@ -339,7 +342,7 @@ class Realm(models.Model):
     address_street = models.CharField(max_length=32)
     address_city = models.CharField(max_length=24)
     contact = models.ManyToManyField(Contact)
-    url = models.ManyToManyField(URL_i18n)
+    url = generic.GenericRelation(URL_i18n)
     ts = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):

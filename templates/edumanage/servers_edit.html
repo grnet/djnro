@@ -1,4 +1,9 @@
 {% extends "edumanage/welcome.html"%}
+{% block crumbs %}
+	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
+	<li><a href="{% url servers %}">Servers</a><span class="divider">/</span></li>
+	<li class="active">Add-Edit</li>
+{% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
  <script type="text/javascript"
@@ -11,8 +16,8 @@
 			
 {% block homeactive %}{% endblock %}
 {% block serversactive %}class="active"{% endblock %}
-{% block subcontent %} <h4>Servers</h4>
-<h5>Server...</h5>
+{% block subcontent %} <h4>Servers Add/Edit</h4>
+<hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
 	{% if form.non_field_errors %}
