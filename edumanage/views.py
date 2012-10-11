@@ -341,9 +341,85 @@ def add_server(request, server_pk):
             return HttpResponseRedirect(reverse("servers"))
         else:
             form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-        print form.errors
         return render_to_response('edumanage/servers_edit.html', { 'institution': inst, 'form': form},
                                   context_instance=RequestContext(request, base_response(request)))
+
+@login_required
+def realms(request):
+    user = request.user
+    servers = False
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
+    if inst:
+        realms = InstRealm.objects.filter(instid=inst)
+    return render_to_response('edumanage/realms.html', { 'realms': realms},
+                                  context_instance=RequestContext(request, base_response(request)))
+
+@login_required
+def add_realm(request, realm_pk):
+    user = request.user
+    server = False
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
+
+    if request.method == "GET":
+
+        # Determine add or edit
+        try:         
+            realm = InstRealm.objects.get(instid=inst, pk=realm_pk)
+            form = InstRealmForm(instance=realm)
+        except InstRealm.DoesNotExist:
+            form = InstRealmForm()
+        form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+        form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
+        return render_to_response('edumanage/realms_edit.html', { 'form': form},
+                                  context_instance=RequestContext(request, base_response(request)))
+    elif request.method == 'POST':
+        request_data = request.POST.copy()
+        try:         
+            realm = InstRealm.objects.get(instid=inst, pk=realm_pk)
+            form = InstRealmForm(request_data, instance=realm)
+        except InstRealm.DoesNotExist:
+            form = InstRealmForm(request_data)
+        
+        if form.is_valid():
+            instserverf = form.save()
+            return HttpResponseRedirect(reverse("realms"))
+        else:
+            form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+            form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
+        return render_to_response('edumanage/realms_edit.html', { 'institution': inst, 'form': form},
+                                  context_instance=RequestContext(request, base_response(request)))
+
+
+@login_required
+def del_realm(request):
+    if request.method == 'GET':
+        user = request.user
+        req_data = request.GET.copy()
+        realm_pk = req_data['realm_pk']
+        profile = user.get_profile()
+        institution = profile.institution
+        resp = {}
+        try:
+            realm = InstRealm.objects.get(instid=institution, pk=realm_pk)
+        except InstRealm.DoesNotExist:
+            resp['error'] = "Could not get realm or you have no rights to delete"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        try:
+            realm.delete()
+        except:
+            resp['error'] = "Could not delete realm"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp['success'] = "Realm successfully deleted"
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
+
 
 @login_required
 def base_response(request):
@@ -351,12 +427,14 @@ def base_response(request):
     inst = []
     server = []
     services = []
+    instrealms = []
     try:
         profile = user.get_profile()
         institution = profile.institution
         inst.append(institution)
         server = InstServer.objects.filter(instid=institution)
         services = ServiceLoc.objects.filter(institutionid=institution)
+        instrealms = InstRealm.objects.filter(instid=institution)
     except UserProfile.DoesNotExist:
         pass
         
@@ -364,6 +442,7 @@ def base_response(request):
             'inst_num': len(inst),
             'servers_num': len(server),
             'services_num': len(services),
+            'realms_num': len(instrealms),
             
         }
 
@@ -460,6 +539,14 @@ def getInstContacts(inst):
     for contact in contacts:
         contact_pks.append(contact.contact.pk)
     return list(set(contact_pks))
+
+def getInstServers(inst):
+    servers = InstServer.objects.filter(instid=inst)
+    server_pks = []
+    for server in servers:
+        server_pks.append(server.pk)
+    return list(set(server_pks))
+
 
 def rad(x):
     return x*math.pi/180

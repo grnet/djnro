@@ -19,6 +19,11 @@ class InstServerForm(forms.ModelForm):
     class Meta:
         model = InstServer
 
+class InstRealmForm(forms.ModelForm):
+
+    class Meta:
+        model = InstRealm
+
 class ServiceLocForm(forms.ModelForm):
 
     class Meta:

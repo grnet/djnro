@@ -93,19 +93,18 @@ class InstRealm(models.Model):
     Realm (including wildcards) of an IdP Institution
     '''
 
-    realmexpr = models.CharField(max_length=20)
-    priority = models.PositiveIntegerField(max_length=3)
+    realm = models.CharField(max_length=160)
     instid = models.ForeignKey("Institution")
     # accept if instid.ertype: 1 (idp) or 3 (idpsp)
     proxyto = models.ManyToManyField("InstServer")
 
     def __unicode__(self):
-        return _('Institution: %(inst)s, Realm: %(realmexpr)s, Priority: %(priority)s') % {
-        # but name is many-to-many from institution
-            'inst': self.instid.name,
-            'realmexpr': self.realmexpr,
-            'priority': self.priority,
-            }
+        return 'Realm: %s' % self.realm
+    
+    
+    def get_servers(self):
+        return ",".join(["%s"%x for x in self.proxyto.all()])
+            
 
 class InstServer(models.Model):
     '''
@@ -135,9 +134,9 @@ class InstServer(models.Model):
     ts = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
-        return _('Institution: %(inst)s, Server: %(servername)s, Type: %(ertype)s') % {
+        return _('Server: %(servername)s, Type: %(ertype)s') % {
         # but name is many-to-many from institution
-            'inst': self.instid,
+            #'inst': self.instid,
             'servername': self.name,
         # the human-readable name would be nice here
             'ertype': self.ertype,
