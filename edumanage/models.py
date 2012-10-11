@@ -61,6 +61,14 @@ class Contact(models.Model):
     def __unicode__(self):
         return '%s %s <%s> (%s)' % (self.firstname, self.lastname, self.email, self.phone)
 
+
+class InstitutionContactPool(models.Model):
+    contact = models.OneToOneField(Contact)
+    institution = models.ForeignKey("Institution")
+    
+    def __unicode__(self):
+        return u"%s:%s" %(self.contact, self.institution)
+
 class URL_i18n(models.Model):
     '''
     URL of a particular type in a particular language

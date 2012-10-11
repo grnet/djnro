@@ -22,6 +22,7 @@ class ServiceLocAdmin(admin.ModelAdmin):
    
 admin.site.register(Name_i18n)
 admin.site.register(Contact)
+admin.site.register(InstitutionContactPool)
 admin.site.register(URL_i18n)
 admin.site.register(InstRealm)
 admin.site.register(InstServer)

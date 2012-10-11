@@ -4,6 +4,51 @@
 	<li><a href="{% url institutions %}">Institutions</a><span class="divider">/</span></li>
 	<li class="active">Add-Edit</li>
 {% endblock %}
+{% block extrahead %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$("#adduserSubmit").click(function(){
+		$.ajax({
+			url:"{% url adduser %}", 
+			data:$("#add_user_form").serialize(),
+			type: "POST",
+			cache: false,
+			success:function(data){
+					try {
+						value = data.value;
+						text = data.text;
+						if (typeof value === 'undefined' && typeof text === 'undefined'){
+							$('#mymodalbody').html(data);	
+						}
+						else{
+							$('#id_contact').append($("<option></option>").attr("value",value).text(text));
+							$('#myModal').modal('hide')
+						}
+					}
+					catch (exception) {
+						$('#mymodalbody').html(data);
+					}					
+				}
+				});
+		return false;
+	});
+	
+	$("#add_contact").click(function(){
+	 $('#myModal').modal('show')
+	 $.ajax({
+			url:"{% url adduser %}",
+			type: "GET",
+			success: function(data){
+				$('#mymodalbody').html(data);
+				}
+			});
+	
+	 return false;
+	});
+});
+</script>
+
+{% endblock %}
 {% block homeactive %}{% endblock %}
 {% block instactive %}class="active"{% endblock %}
 {% block subcontent %}
@@ -53,7 +98,7 @@
 	<div class="control-group {% if form.contact.errors %} error {% endif %}">
 		<label class="control-label" for="id_contact">Contact(s)</label>
 		<div class="controls">
-			{{ form.contact }}
+			{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
 			{% if form.contact.errors %} <span class="help-inline"> {{ form.ertype.contact|join:", " }} </span>
 			{% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
 		</div>
@@ -97,6 +142,18 @@
 		</div>
 	</div>
 </form>
+<div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">Add User</h3>
+</div>
+<div class="modal-body" id="mymodalbody">
 
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<a class="btn btn-primary" id="adduserSubmit" href="#">Save changes</a>
+</div>
+</div>
 {% endblock %}
               

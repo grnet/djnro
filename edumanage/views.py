@@ -90,7 +90,7 @@ def add_institution_details(request, institution_pk):
             form = InstDetailsForm()
             form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
         
-        
+        form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
         return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form},
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
@@ -110,6 +110,7 @@ def add_institution_details(request, institution_pk):
             except UserProfile.DoesNotExist:
                 inst = False
                 form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
+                form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
             return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form},
                                   context_instance=RequestContext(request, base_response(request)))
 
@@ -167,6 +168,7 @@ def add_services(request, service_pk):
             names_form = NameFormSet(instance=service, prefix='namesform')
             UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFact, can_delete=True)
             urls_form = UrlFormSet(instance=service, prefix='urlsform')
+        form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
         return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form},
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
@@ -199,7 +201,7 @@ def add_services(request, service_pk):
             return HttpResponseRedirect(reverse("services"))
         else:
             form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-
+            form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
         return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form},
                                   context_instance=RequestContext(request, base_response(request)))
 
@@ -279,15 +281,23 @@ def servers(request):
 
 @login_required
 def adduser(request):
+    user = request.user
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
     if request.method == "GET":
         form = ContactForm()
-        return render_to_response('edumanage/add_user.html', { 'form': form},
+        return render_to_response('edumanage/add_user.html', { 'form' : form },
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
         request_data = request.POST.copy()
         form = ContactForm(request_data)
         if form.is_valid():
             contact = form.save()
+            instContPool = InstitutionContactPool(contact=contact, institution=inst)
+            instContPool.save()
             response_data = {}
             response_data['value'] = "%s" %contact.pk
             response_data['text'] = "%s" %contact
@@ -443,6 +453,13 @@ def closest(request):
         return HttpResponse(json.dumps(closestMarker), mimetype='application/json')
         
         
+
+def getInstContacts(inst):
+    contacts = InstitutionContactPool.objects.filter(institution=inst)
+    contact_pks = []
+    for contact in contacts:
+        contact_pks.append(contact.contact.pk)
+    return list(set(contact_pks))
 
 def rad(x):
     return x*math.pi/180
