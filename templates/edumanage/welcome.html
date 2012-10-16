@@ -195,6 +195,9 @@ $.get("{% url get-service-points %}", function(data){
 					<li {% block realmsactive %}{% endblock %}>
 						<a href="{% url realms %}">Realms ({{realms_num}})</a>
 					</li>
+					<li {% block contactsactive %}{% endblock %}>
+						<a href="{% url contacts %}">Contacts ({{contacts_num}})</a>
+					</li>
 				</ul>
 			</div><!--/.well -->
 		</div><!--/span-->

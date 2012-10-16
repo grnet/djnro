@@ -14,7 +14,7 @@ from django.forms.models import inlineformset_factory
 from django.contrib.contenttypes.generic import generic_inlineformset_factory
 import json 
 import math
-from xml.etree import cElementTree as ET
+from xml.etree import ElementTree as ET
 
 from django.conf import settings
 
@@ -421,6 +421,97 @@ def del_realm(request):
         return HttpResponse(json.dumps(resp), mimetype='application/json')
 
 
+
+@login_required
+def contacts(request):
+    user = request.user
+    servers = False
+    instcontacts = []
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
+    if inst:
+        instcontacts.extend([x.contact.pk for x in InstitutionContactPool.objects.filter(institution=inst)])
+        print instcontacts
+        contacts = Contact.objects.filter(pk__in=instcontacts)
+        print contacts
+    return render_to_response('edumanage/contacts.html', { 'contacts': contacts},
+                                  context_instance=RequestContext(request, base_response(request)))
+
+@login_required
+def add_contact(request, contact_pk):
+    user = request.user
+    server = False
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        inst = False
+
+    if request.method == "GET":
+
+        # Determine add or edit
+        try:         
+            contactinst = InstitutionContactPool.objects.get(institution=inst, contact__pk=contact_pk)
+            contact = contactinst.contact
+            form = ContactForm(instance=contact)
+        except InstitutionContactPool.DoesNotExist:
+            form = ContactForm()
+
+        return render_to_response('edumanage/contacts_edit.html', { 'form': form},
+                                  context_instance=RequestContext(request, base_response(request)))
+    elif request.method == 'POST':
+        request_data = request.POST.copy()
+        try:         
+            contactinst = InstitutionContactPool.objects.get(institution=inst, contact__pk=contact_pk)
+            contact = contactinst.contact
+            form = ContactForm(request_data, instance=contact)
+        except InstitutionContactPool.DoesNotExist:
+            form = ContactForm(request_data)
+        
+        if form.is_valid():
+            contact = form.save()
+            instContPool, created = InstitutionContactPool.objects.get_or_create(contact=contact, institution=inst)
+            instContPool.save()
+            return HttpResponseRedirect(reverse("contacts"))
+        return render_to_response('edumanage/contacts_edit.html', { 'form': form},
+                                  context_instance=RequestContext(request, base_response(request)))
+
+
+@login_required
+def del_contact(request):
+    if request.method == 'GET':
+        user = request.user
+        req_data = request.GET.copy()
+        contact_pk = req_data['contact_pk']
+        profile = user.get_profile()
+        institution = profile.institution
+        resp = {}
+        try:
+            contactinst = InstitutionContactPool.objects.get(institution=institution, contact__pk=contact_pk)
+            contact = contactinst.contact
+        except InstitutionContactPool.DoesNotExist:
+            resp['error'] = "Could not get contact or you have no rights to delete"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        try:
+            for service in ServiceLoc.objects.filter(institutionid=institution):
+                if (contact in service.contact.all() and len(service.contact.all()) == 1):
+                    resp['error'] = "Could not delete contact. It is the only contact in service <b>%s</b>.<br>Fix it and try again" %service.get_name(lang="en")
+                    return HttpResponse(json.dumps(resp), mimetype='application/json')
+            if (contact in institution.institutiondetails.contact.all() and len(institution.institutiondetails.contact.all()) == 1):
+                    resp['error'] = "Could not delete contact. It is the only contact your institution.<br>Fix it and try again"
+                    return HttpResponse(json.dumps(resp), mimetype='application/json')
+            contact.delete()
+        except Exception:
+            resp['error'] = "Could not delete contact"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp['success'] = "Contact successfully deleted"
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
+    
+
+
 @login_required
 def base_response(request):
     user = request.user
@@ -428,6 +519,8 @@ def base_response(request):
     server = []
     services = []
     instrealms = []
+    instcontacts = []
+    contacts = []
     try:
         profile = user.get_profile()
         institution = profile.institution
@@ -435,6 +528,8 @@ def base_response(request):
         server = InstServer.objects.filter(instid=institution)
         services = ServiceLoc.objects.filter(institutionid=institution)
         instrealms = InstRealm.objects.filter(instid=institution)
+        instcontacts.extend([x.contact.pk for x in InstitutionContactPool.objects.filter(institution=institution)])
+        contacts = Contact.objects.filter(pk__in=instcontacts)
     except UserProfile.DoesNotExist:
         pass
         
@@ -443,6 +538,7 @@ def base_response(request):
             'servers_num': len(server),
             'services_num': len(services),
             'realms_num': len(instrealms),
+            'contacts_num': len(contacts),
             
         }
 
@@ -531,8 +627,185 @@ def closest(request):
                     closestMarker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": j[1].text}
         return HttpResponse(json.dumps(closestMarker), mimetype='application/json')
         
+
+def instxml(request):
+    ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
+    root = ET.Element("institutions")
+    NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
+    root.set(NS_XSI + "noNamespaceSchemaLocation", "institutions.xsd")
+    #root.attrib["xsi:noNamespaceSchemaLocation"] = "institution.xsd"
+    institutions = Institution.objects.all()
+    for institution in institutions:
+        try:
+            inst = institution.institutiondetails
+            if not inst:
+                pass
+        except InstitutionDetails.DoesNotExist:
+            pass
+        
+        instElement = ET.SubElement(root, "institution")
+        
+        instCountry = ET.SubElement(instElement, "country")
+        instCountry.text = ("%s" %inst.institution.realmid.country).upper()
+        
+        instType = ET.SubElement(instElement, "type")
+        instType.text = "%s" %inst.ertype
+        
+        for realm in institution.instrealm_set.all():
+            instRealm = ET.SubElement(instElement, "inst_realm")
+            instRealm.text = realm.realm
+        
+        for name in inst.institution.org_name.all():
+            instOrgName = ET.SubElement(instElement, "org_name")
+            instOrgName.attrib["lang"] = name.lang
+            instOrgName.text = u"%s" %name.name
+        
+        instAddress = ET.SubElement(instElement, "address")
+        
+        instAddrStreet = ET.SubElement(instAddress, "street")
+        instAddrStreet.text = inst.address_street
+        
+        instAddrCity = ET.SubElement(instAddress, "city")
+        instAddrCity.text = inst.address_city
+        
+        for contact in inst.contact.all():
+            instContact = ET.SubElement(instElement, "contact")
+            
+            instContactName = ET.SubElement(instContact, "name")
+            instContactName.text = "%s %s" %(contact.firstname, contact.lastname)
+            
+            instContactEmail = ET.SubElement(instContact, "email")
+            instContactEmail.text = contact.email
+            
+            instContactPhone = ET.SubElement(instContact, "phone")
+            instContactPhone.text = contact.phone
+        
+        for url in inst.url.all():
+            instUrl = ET.SubElement(instElement, "%s_URL"%(url.urltype))
+            instUrl.attrib["lang"] = url.lang
+            instUrl.text = url.url
+        
+        #Let's go to Institution Service Locations
+
+        for serviceloc in inst.institution.serviceloc_set.all():
+            instLocation = ET.SubElement(instElement, "location")
+            
+            instLong = ET.SubElement(instLocation, "longitude")
+            instLong.text = "%s" %serviceloc.longitude
+            
+            instLat = ET.SubElement(instLocation, "latitude")
+            instLat.text = "%s" %serviceloc.latitude
+            
+            for instlocname in serviceloc.loc_name.all():
+                instLocName = ET.SubElement(instLocation, "loc_name")
+                instLocName.attrib["lang"] = instlocname.lang
+                instLocName.text = instlocname.name
+            
+            instLocAddress = ET.SubElement(instLocation, "address")
+        
+            instLocAddrStreet = ET.SubElement(instLocAddress, "street")
+            instLocAddrStreet.text = serviceloc.address_street
+        
+            instLocAddrCity = ET.SubElement(instLocAddress, "city")
+            instLocAddrCity.text = serviceloc.address_city
+            
+            instLocSSID = ET.SubElement(instLocation, "SSID")
+            instLocSSID.text = serviceloc.SSID
+            
+            instLocEncLevel = ET.SubElement(instLocation, "enc_level")
+            instLocEncLevel.text = serviceloc.enc_level
+            
+            instLocPortRestrict = ET.SubElement(instLocation, "port_restrict")
+            instLocPortRestrict.text = ("%s" %serviceloc.port_restrict).lower()
+            
+            instLocTransProxy = ET.SubElement(instLocation, "transp_proxy")
+            instLocTransProxy.text = ("%s" %serviceloc.transp_proxy).lower()
+            
+            instLocIpv6 = ET.SubElement(instLocation, "IPv6")
+            instLocIpv6.text = ("%s" %serviceloc.IPv6).lower()
+            
+            instLocNAT = ET.SubElement(instLocation, "NAT")
+            instLocNAT.text = ("%s" %serviceloc.NAT).lower()
+            
+            instLocAP_no = ET.SubElement(instLocation, "AP_no")
+            instLocAP_no.text = "%s" %int(serviceloc.AP_no)
+            
+            instLocWired = ET.SubElement(instLocation, "wired")
+            instLocWired.text = ("%s" %serviceloc.wired).lower()
+            
+            for url in serviceloc.url.all():
+                instLocUrl = ET.SubElement(instLocation, "%s_URL"%(url.urltype))
+                instLocUrl.attrib["lang"] = url.lang
+                instLocUrl.text = url.url
+
+        instTs = ET.SubElement(instElement, "ts")
+        instTs.text = "%s" %inst.ts.isoformat()
+            
+    return render_to_response("general/institution.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
         
 
+def realmxml(request):
+    realm = Realm.objects.all()[0]
+    ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
+    root = ET.Element("realms")
+    NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
+    root.set(NS_XSI + "noNamespaceSchemaLocation", "realm.xsd")
+    #root.attrib["xsi:noNamespaceSchemaLocation"] = "institution.xsd"
+    realmElement = ET.SubElement(root, "realm")
+    
+    realmCountry = ET.SubElement(realmElement, "country")
+    realmCountry.text = realm.country
+        
+    realmStype = ET.SubElement(realmElement, "stype")
+    realmStype.text = "%s" %realm.stype
+    
+    for name in realm.org_name.all():
+        realmOrgName = ET.SubElement(realmElement, "org_name")
+        realmOrgName.attrib["lang"] = name.lang
+        realmOrgName.text = u"%s" %name.name
+    
+    realmAddress = ET.SubElement(realmElement, "address")
+        
+    realmAddrStreet = ET.SubElement(realmAddress, "street")
+    realmAddrStreet.text = realm.address_street
+    
+    realmAddrCity = ET.SubElement(realmAddress, "city")
+    realmAddrCity.text = realm.address_city
+    
+    for contact in realm.contact.all():
+        realmContact = ET.SubElement(realmElement, "contact")
+        
+        realmContactName = ET.SubElement(realmContact, "name")
+        realmContactName.text = "%s %s" %(contact.firstname, contact.lastname)
+        
+        realmContactEmail = ET.SubElement(realmContact, "email")
+        realmContactEmail.text = contact.email
+        
+        realmContactPhone = ET.SubElement(realmContact, "phone")
+        realmContactPhone.text = contact.phone
+    
+    for url in realm.url.all():
+        realmUrl = ET.SubElement(realmElement, "%s_URL"%(url.urltype))
+        realmUrl.attrib["lang"] = url.lang
+        realmUrl.text = url.url
+    
+    return render_to_response("general/realm.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
+
+def realmdataxml(request):
+    realm = Realm.objects.all()[0]
+    ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
+    root = ET.Element("realm-data")
+    NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
+    root.set(NS_XSI + "noNamespaceSchemaLocation", "realm-data.xsd")
+    
+    return render_to_response("general/realm_data.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
+
+def to_xml(ele, encoding="UTF-8"):
+    "Convert and return the XML for an *ele* (:class:`~xml.etree.ElementTree.Element`) with specified *encoding*."
+    xml = ET.tostring(ele, encoding)
+    return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
+    
+    
 def getInstContacts(inst):
     contacts = InstitutionContactPool.objects.filter(institution=inst)
     contact_pks = []
