@@ -1,10 +1,12 @@
 # Django settings for eduroam project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
 
 ADMINS = (
-    # ('Your Name', 'your_email@domain.com'),
+     ('Admin','admin@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -17,7 +19,7 @@ DATABASES = {
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-        'STORAGE_ENGINE': 'INNODB',
+        'STORAGE_ENGINE': 'INNODB',        
     }
 }
 
@@ -29,6 +31,7 @@ DATABASES = {
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
 TIME_ZONE = 'Europe/Athens'
+
 
 _ = lambda s: s
 
@@ -55,12 +58,12 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = ''
 
-STATIC_URL = ''
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = ''
+
+STATIC_URL = '/path/to/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -90,6 +93,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -98,6 +102,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'eduroam.urls'
 
 TEMPLATE_DIRS = (
+    "/path/to/templaltes/"
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -109,10 +114,16 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
-    'south',
     'edumanage',
+    'accounts',
+    'south',
+    'django_extensions',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+    'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
-    # 'django.contrib.admindocs',
+    'django.contrib.admindocs',
 )
+
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+
+KML_FILE = here('all.kml')
