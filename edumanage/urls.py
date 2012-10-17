@@ -9,7 +9,7 @@ urlpatterns = patterns('edumanage.views',
     url(r'^institutions/?$', 'institutions', name="institutions"),
     url(r'^institution/edit/(?P<institution_pk>\d+)?$', 'add_institution_details', name="edit-institution"),
 
-    url(r'^services/?$', 'services', name="services"),
+    url(r'^services/(?P<service_pk>\d+)?$', 'services', name="services"),
     url(r'^services/del/?$', 'del_service', name="del-service"),
     url(r'^services/edit/(?P<service_pk>\d+)?$', 'add_services', name="edit-services"),
     url(r'^services/points/?$', 'get_service_points', name="get-service-points"),

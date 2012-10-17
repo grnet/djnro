@@ -1,0 +1,411 @@
+{% extends "edumanage/welcome.html"%}
+
+{% block crumbs %}
+    <li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
+    <li><a href="{% url services %}">Services</a><span class="divider">/</span></li>
+    <li class="active">Add-Edit</li>
+{% endblock %}
+{% block extrahead %}
+ <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+<script type="text/javascript">
+        function gettext(msgid) { return msgid; }
+        
+        var lat = 36.97;
+        var lng = 23.71;
+        var zoomLevel = 6;
+        {% if form.data.latitude or form.instance.latitude %}
+            var lat = "{% if form.data.latitude %}{{form.data.latitude}}{% else %}{{form.instance.latitude}}{% endif %}";
+            var lat = parseFloat(lat.replace(",","."));
+        {% endif %}
+        {% if form.data.longitude or form.instance.longitude %}
+            var lng = "{% if form.data.longitude %}{{form.data.longitude}}{% else %}{{form.instance.longitude}}{% endif %}";
+            var lng = parseFloat(lng.replace(",","."));
+            var zoomLevel = 14;
+            getOnce = true;
+        {% endif %}
+        var latlng = new google.maps.LatLng(lat,lng);
+        var map = '';
+        var marker = '';
+        var getOnce = false;
+
+        function setPositionValues(position) {
+            $("#id_longitude").val('');
+            $("#id_latitude").val('');
+            $("#id_address_street").val('');
+            $("#id_address_city").val('');
+
+            $("#id_longitude").val(position.lng().toPrecision(8));
+            $("#id_latitude").val(position.lat().toPrecision(8));
+            codeLatLng(position);
+        }
+
+        function getPosition(position) {
+            latlng = new google.maps.LatLng(position.coords.latitude,
+                    position.coords.longitude);
+            getOnce = true;
+            map.setCenter(latlng);
+            map.setZoom(15);
+            marker.setPosition(latlng);
+            setPositionValues(latlng);
+        }
+
+        function moveMarker(position) {
+            marker.setPosition(position);
+            setPositionValues(position);
+        }
+        
+        function geocode(position){
+            geocoder
+            .geocode(
+                    {
+                        'latLng' : position
+                    },
+                    function(results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            if (results.length >= 1) {
+                                for ( var ii = 0; ii < results[0].address_components.length; ii++) {
+                                    var street_number = route = street = city = state = zipcode = country = formatted_address = '';
+                                    var types = results[0].address_components[ii].types
+                                            .join(",");
+                                    if (types == "street_number") {
+                                        addr.street_number = results[0].address_components[ii].long_name;
+                                    }
+                                    if (types == "route"
+                                            || types == "point_of_interest,establishment") {
+                                        addr.route = results[0].address_components[ii].long_name;
+                                    }
+                                    if (types == "sublocality,political"
+                                            || types == "locality,political"
+                                            || types == "neighborhood,political"
+                                            || types == "political") {
+                                        addr.city = (city == '' || types == "locality,political") ? results[0].address_components[ii].long_name
+                                                : city;
+                                    }
+                                    if (types == "administrative_area_level_1,political") {
+                                        addr.state = results[0].address_components[ii].short_name;
+                                    }
+                                    if (types == "postal_code"
+                                            || types == "postal_code_prefix,postal_code") {
+                                        addr.zipcode = results[0].address_components[ii].long_name;
+                                    }
+                                    if (types == "country,political") {
+                                        addr.country = results[0].address_components[ii].long_name;
+                                    }
+                                }
+                            }
+
+                            if (addr.route && addr.city) {
+                                addr_field = addr.route;
+                                if (addr.street_number) {
+                                    addr_field = addr.route + " "
+                                            + addr.street_number;
+                                }
+                                $("#id_address_street").val(addr_field);
+                                city_field = addr.city;
+                                if (addr.zipcode) {
+                                    city_field = addr.city + ", "
+                                            + addr.zipcode;
+                                }
+                                $("#id_address_city").val(city_field);
+                            }
+                        }
+                    });
+        }
+        
+        function codeLatLng(position) {
+            addr = {};
+            latlng = position;
+            addr_num = '';
+            addr_name = '';
+            addr_city = '';
+            addr_code = '';
+            geocode(position)
+        }
+        function initialize() {
+            image = new google.maps.MarkerImage('/static/img/edupin.png',
+                    // This marker is 29 pixels wide by 40 pixels tall.
+                    new google.maps.Size(29, 40),
+                    // The origin for this image is 0,0.
+                    new google.maps.Point(0,0),
+                    // The anchor for this image is the base of the flagpole at 18,42.
+                    new google.maps.Point(14, 40)
+                );
+            var styleArray = [
+                               {
+                                   featureType: "all",
+                                   stylers: [
+                                     { saturation: -60 },
+                                     {gamma: 1.00 }
+                                   ]
+                                 },{
+                                   featureType: "poi.business",
+                                   elementType: "labels",
+                                   stylers: [
+                                     { visibility: "off" }
+                                   ]
+                                 },
+                                 { "featureType": "transit.line", "elementType": "geometry", "stylers": [ { "visibility": "off" } ] },
+                                 { "featureType": "poi", "elementType": "all", "stylers": [ { "visibility": "off" } ] },
+                                 {'featureType': "administrative.country",
+                                 'elementType': "labels",
+                                 'stylers': [
+                                     { 'visibility': "off" }
+                                 ]}
+
+                                 
+                               ];
+            geocoder = new google.maps.Geocoder();
+            var mapOptions = {
+                center : latlng,
+                zoom : zoomLevel,
+                styles: styleArray,
+                 mapTypeId: google.maps.MapTypeId.ROADMAP,
+                    mapTypeControlOptions: {
+                          style: google.maps.MapTypeControlStyle.DEFAULT
+                        },
+                    navigationControl: true,
+                    mapTypeControl: false,
+            };
+            map = new google.maps.Map(document.getElementById("map_canvas"),
+                    mapOptions);
+            if (getOnce == false) {
+                marker = new google.maps.Marker({
+                    position : latlng,
+                    draggable : true,
+                    'icon': image,
+                    animation : google.maps.Animation.DROP,
+
+                });
+                marker.setMap(map);
+                setPositionValues(latlng);
+            }
+            google.maps.event.addListener(map, 'idle', function() {
+                
+            {% if not form.data.latitude  %}
+                {% if not form.instance.latitude  %}
+                    if (navigator.geolocation && getOnce == false) {
+                        navigator.geolocation.getCurrentPosition(getPosition);
+                    }
+                {% endif %}
+            {% endif %}
+
+            });
+
+            google.maps.event.addListener(map, 'click', function(event) {
+                moveMarker(event.latLng);
+            });
+            google.maps.event.addListener(marker, 'dragend', function(event) {
+                setPositionValues(marker.getPosition());
+            });
+
+        }
+
+        $(document).ready(function() {
+            
+            initialize();
+            $("#updatemap").click(function(){
+                latlng = new google.maps.LatLng($("#id_latitude").val(), $("#id_longitude").val());
+                moveMarker(latlng);
+                map.setCenter(latlng);
+                $("#updatemap").addClass('disabled');
+                $("#updatemap").attr('disabled', 'disabled');
+                return false;
+            });
+            
+            $("#myloc").click(function(){
+                navigator.geolocation.getCurrentPosition(getPosition);
+                return false;
+            });
+            
+            $("#id_latitude").keypress(function(){
+                $("#updatemap").removeClass('disabled');
+                $("#updatemap").removeAttr('disabled');
+            });
+            $("#id_longitude").keypress(function(){
+                $("#updatemap").removeClass('disabled');
+                $("#updatemap").removeAttr('disabled');
+            });
+            
+            // Initialize jquery formset
+            
+             $('#urlsform tbody tr').formset({
+                prefix: '{{urls_form.prefix}}',
+                formCssClass: "dynamic-formset1",
+                added: addButton,
+            });
+            
+             $('#locsform tbody tr').formset({
+                    prefix: '{{services_form.prefix}}',
+                    formCssClass: "dynamic-formset2",
+                    added: addButton
+                });
+             
+             $(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
+             $(".add-row").prepend('<i class="icon-plus-sign icon-white"></i> ').addClass('btn btn-small btn-info');
+             
+             $("#adduserSubmit").click(function(){
+                    $.ajax({
+                        url:"{% url adduser %}", 
+                        data:$("#add_user_form").serialize(),
+                        type: "POST",
+                        cache: false,
+                        success:function(data){
+                                try {
+                                    value = data.value;
+                                    text = data.text;
+                                    if (typeof value === 'undefined' && typeof text === 'undefined'){
+                                        $('#mymodalbody').html(data);   
+                                    }
+                                    else{
+                                        $('#id_contact').append($("<option></option>").attr("value",value).text(text));
+                                        $('#myModal').modal('hide')
+                                    }
+                                }
+                                catch (exception) {
+                                    $('#mymodalbody').html(data);
+                                }                   
+                            }
+                            });
+                    return false;
+                });
+             
+             $("#add_contact").click(function(){
+                 $('#myModal').modal('show')
+                 $.ajax({
+                        url:"{% url adduser %}",
+                        type: "GET",
+                        success: function(data){
+                            $('#mymodalbody').html(data);
+                            }
+                        });
+            
+                 return false;
+             });
+             
+        });
+        function addButton(row){
+            $(row).find(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
+        }
+        
+        
+        
+    </script>
+
+
+{% endblock %}
+            
+{% block homeactive %}{% endblock %}
+{% block servicesactive %}class="active"{% endblock %}
+{% block subcontent %}
+
+<h4>Services Add/Edit</h4>
+<hr>
+
+
+    <div class="control-group {% if form.longitude.errors or form.latitude.errors %} error {% endif %}">
+        <label class="control-label" for="id_map_canvas"><b>Location</b></label>
+
+        <div class="controls">
+            Lng:{{ service.longitude }} Lat:{{ service.latitude }}
+            
+        </div>
+    </div>
+
+    <div class="control-group">
+        <label class="control-label" for="id_address_city"><b>loc_name</b></label>
+        
+        <div class="controls">
+        placeholder for loc name
+        </div>
+    </div>
+    <div class="control-group {% if form.address_street.errors %} error {% endif %}">
+        <label class="control-label" for="id_address_street"><b>Address Street</b></label>
+        <div class="controls">
+            {{ service.address_street }}
+           
+        </div>
+    </div>
+    <div class="control-group {% if form.address_city.errors %} error {% endif %}">
+        <label class="control-label" for="id_address_city"><b>Address City</b></label>
+        <div class="controls">
+            {{ service.address_city }}
+            
+        </div>
+    </div>
+    <div class="control-group {% if form.SSID.errors %} error {% endif %}">
+        <label class="control-label" for="id_url"><b>SSID</b></label>
+        <div class="controls">
+            {{ service.SSID }}
+            
+        </div>
+    </div>
+    <div class="control-group {% if form.contact.errors %} error {% endif %}">
+        <label class="control-label" for="id_contact"><b>Contact</b></label>
+        <div class="controls">
+            placeholder for contact
+        </div>
+    </div>
+    <div class="control-group {% if form.enc_level.errors %} error {% endif %}">
+        <label class="control-label" for="id_oper_name"><b>enc_level</b></label>
+        <div class="controls">
+            {{ service.enc_level }}
+            
+        </div>
+    </div>
+    <div class="control-group {% if form.port_restrict.errors %} error {% endif %}">
+        <label class="control-label" for="id_number_user">port_restrict</label>
+        <div class="controls">
+            {{ service.port_restrict }}
+           
+        </div>
+    </div>
+    <div class="control-group {% if form.transp_proxy.errors %} error {% endif %}">
+        <label class="control-label" for="id_number_id">transp_proxy</label>
+        <div class="controls">
+            {{ service.transp_proxy }}
+            
+        </div>
+    </div>
+    <div class="control-group {% if form.IPv6.errors %} error {% endif %}">
+        <label class="control-label" for="id_number_id">IPv6</label>
+        <div class="controls">
+            {{ service.IPv6 }}
+        
+        </div>
+    </div>
+    <div class="control-group {% if form.NAT.errors %} error {% endif %}">
+        <label class="control-label" for="id_number_id">NAT</label>
+        <div class="controls">
+            {{ service.NAT }}
+   
+        </div>
+    </div>
+    <div class="control-group {% if form.AP_no.errors %} error {% endif %}">
+        <label class="control-label" for="id_number_id"><b>AP_no</b></label>
+        <div class="controls">
+            {{ servcie.AP_no }}
+          
+        </div>
+    </div>
+    <div class="control-group {% if form.wired.errors %} error {% endif %}">
+        <label class="control-label" for="id_number_id">wired</label>
+        <div class="controls">
+            {{ service.wired }}
+        </div>
+    </div>
+    <div class="control-group {% for err in urls_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if urls_form.non_form_errors %}error{% endif %}">
+        <label class="control-label" for="id_urls">Urls</label>
+        <div class="controls">
+        placeholder for urls
+        </div>
+    </div>
+    <div class="control-group">
+        <div class="controls">
+            <a class="btn btn-large btn-primary" href="{% url edit-services service.pk %}">Edit</a>
+        </div>
+    </div>
+
+
+
+{% endblock %}

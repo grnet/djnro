@@ -132,7 +132,7 @@ $("#delserviceSubmit").click(function(){
 					<tbody>
 	                {% for service in services %}
 	              	<tr class="GradeC">
-	                	<td>{% tolocale service LANGUAGE_CODE%}</td>
+	                	<td><a href="{% url services service.pk %}">{% tolocale service LANGUAGE_CODE %}</a></td>
 	                	<td>{{service.address_street}}<br>{{service.address_city}}</td>
 	                	<td>{{service.SSID}}</td>
 	                	<td>{{service.enc_level}}</td>
@@ -161,6 +161,19 @@ $("#delserviceSubmit").click(function(){
 <div class="modal-footer">
 <button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
 <a class="btn btn-warning" id="delserviceSubmit" href="#">Delete</a>
+</div>
+</div>
+
+<div class="modal hide fade" id="servDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabelservdets">Service Details</h3>
+</div>
+<div class="modal-body" id="servDetsbody">
+
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
 </div>
 </div>
 		{% endblock %}

@@ -124,7 +124,7 @@ def add_institution_details(request, institution_pk):
 
 
 @login_required
-def services(request):
+def services(request, service_pk):
     user = request.user
     dict = {}
     
@@ -137,7 +137,15 @@ def services(request):
         services = ServiceLoc.objects.filter(institutionid = inst)
     except ServiceLoc.DoesNotExist:
         services = False 
-        
+    
+    if service_pk:
+        services = services.get(pk=service_pk)
+        return render_to_response('edumanage/service_details.html', 
+                              {
+                               'institution': inst,
+                               'service': services, 
+                               },  
+                              context_instance=RequestContext(request, base_response(request)))
     
     return render_to_response('edumanage/services.html', 
                               {
