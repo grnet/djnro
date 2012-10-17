@@ -5,6 +5,7 @@
 	<li class="active">Add-Edit</li>
 {% endblock %}
 {% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.formset.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$("#adduserSubmit").click(function(){
@@ -45,7 +46,23 @@ $(document).ready(function() {
 	
 	 return false;
 	});
+	
+	
+	 $('#urlsform tbody tr').formset({
+        prefix: '{{urls_form.prefix}}',
+        formCssClass: "dynamic-formset1",
+        added: addButton,
+    });
+
+     $(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
+     $(".add-row").prepend('<i class="icon-plus-sign icon-white"></i> ').addClass('btn btn-small btn-info');
+     
+     
 });
+function addButton(row){
+            $(row).find(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
+        }
+        
 </script>
 
 {% endblock %}
@@ -103,14 +120,27 @@ $(document).ready(function() {
 			{% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
 		</div>
 	</div>
-	<div class="control-group {% if form.url.errors %} error {% endif %}">
-		<label class="control-label" for="id_url">URL(s)</label>
-		<div class="controls">
-			{{ form.url }}
-			{% if form.url.errors %} <span class="help-inline"> {{ form.url.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.url.help_text }}</span>
-		</div>
-	</div>
+    <div class="control-group {% for err in urls_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if urls_form.non_form_errors %}error{% endif %}">
+        <label class="control-label" for="id_urls">Urls</label>
+        {{urls_form.management_form}}
+        <div class="controls">
+        {% for err in urls_form.errors %}{% if err|length > 0 %}<span class="help-inline">{{err}}</span>{% endif %}{% endfor %}
+        {% if urls_form.non_form_errors %} <span class="help-inline"> {{ urls_form.non_form_errors|join:", "}}</span>{% endif %}
+            <table id="urlsform"><thead><tr><td>url</td><td>type</td><td>language</td></tr></thead><tbody>
+        {% for formset in urls_form.forms %}
+        {{ formset.id }}
+        
+        
+            <tr id="{{ formset.prefix }}-row">
+            <td> {% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="help-inline"> {{ formset.url.errors|join:", " }} </div>{% endif %}</td> 
+             <td>{{formset.urltype}}{% if formset.urltype.errors %}<br><p class="help-inline"> {{ formset.urltype.errors|join:", " }} </p>{% endif %}</td>
+             <td>{{formset.lang}}{% if formset.lang.errors %}<br><p class="help-inline"> {{ formset.lang.errors|join:", " }} </p>{% endif %}</td>
+             
+        </tr>
+        {% endfor %}
+        </tbody></table>
+        </div>
+    </div>
 	<div class="control-group {% if form.oper_name.errors %} error {% endif %}">
 		<label class="control-label" for="id_oper_name">Oper Name</label>
 		<div class="controls">

@@ -86,22 +86,30 @@ def add_institution_details(request, institution_pk):
         try:         
             inst_details = InstitutionDetails.objects.get(institution=inst)
             form = InstDetailsForm(instance=inst_details)
+            UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
         except InstitutionDetails.DoesNotExist:
             form = InstDetailsForm()
             form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
-        
+            UrlFormSet =  generic_inlineformset_factory(URL_i18n, extra=2, can_delete=True)
+        urls_form = UrlFormSet(prefix='urlsform') 
         form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
-        return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form},
+        return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form, 'urls_form':urls_form},
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
         request_data = request.POST.copy()
+        UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
         try:         
             inst_details = InstitutionDetails.objects.get(institution=inst)
             form = InstDetailsForm(request_data, instance=inst_details)
+            urls_form = UrlFormSet(request_data, instance=inst_details, prefix='urlsform')
         except InstitutionDetails.DoesNotExist:
             form = InstDetailsForm(request_data)
-        if form.is_valid():
+            urls_form = UrlFormSet(request_data, prefix='urlsform')
+        UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
+        if form.is_valid() and urls_form.is_valid():
             instdets = form.save()
+            urls_form.instance = instdets
+            urls_inst = urls_form.save()
             return HttpResponseRedirect(reverse("institutions"))
         else:
             try:
@@ -109,9 +117,9 @@ def add_institution_details(request, institution_pk):
                 inst = profile.institution
             except UserProfile.DoesNotExist:
                 inst = False
-                form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
-                form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
-            return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form},
+            form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
+            form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
+            return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form, 'urls_form': urls_form},
                                   context_instance=RequestContext(request, base_response(request)))
 
 

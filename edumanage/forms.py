@@ -47,7 +47,6 @@ class NameFormSetFact(BaseGenericInlineFormSet):
         emptyForms = True
         for i in range(0, self.total_form_count()):
             form = self.forms[i]
-            pprint.pprint(form.__dict__)
             if len(form.cleaned_data) != 0:
                 emptyForms = False
             langs.append(form.cleaned_data.get('lang', None))
@@ -59,30 +58,26 @@ class NameFormSetFact(BaseGenericInlineFormSet):
 
 class UrlFormSetFact(BaseGenericInlineFormSet):
     def clean(self):
-        #raise forms.ValidationError, "Clean method called" 
         if any(self.errors):
             return
-        pprint.pprint(self.forms)
         for i in range(0, self.total_form_count()):
             form = self.forms[i]
-            
-            pprint.pprint(len(form.cleaned_data))
             if len(form.cleaned_data) == 0:
-                #raise forms.ValidationError, "Fill in at least one url "
                 pass
-                #print "ERROROROROR"
-                #self.append_non_form_error("not enough subs")
-             #   pass
         return
                 
-#        raise forms.ValidationError('Invalid date range')
-         
-    
-#    def save(self, commit=True, request=None):
-#        for uform in self.forms:
-#            urls = uform.save(commit=False)
-#            urls.content_object = self.instance
-#            urls.save()
-#        return self.save_existing_objects(commit) + self.save_new_objects(commit)
-
-
+class UrlFormSetFactInst(BaseGenericInlineFormSet):
+    def clean(self):
+        if any(self.errors):
+            return
+        url_types = []
+        emptyForms = True
+        for i in range(0, self.total_form_count()):
+            form = self.forms[i]
+            if len(form.cleaned_data) != 0:
+                emptyForms = False
+            url_types.append(form.cleaned_data.get('urltype',None))
+        if emptyForms:        
+            raise forms.ValidationError, "Fill in at least the info url"
+        if "info" not in url_types:
+            raise forms.ValidationError, "Fill in at least the info url"
