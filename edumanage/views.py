@@ -74,7 +74,6 @@ def add_institution_details(request, institution_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
-        
     if (not inst) or (int(inst.pk) != int(institution_pk)):
     #            messages.add_message(request, messages.WARNING,
     #                             _("Insufficient rights on Institution. Contact your administrator"))
@@ -87,11 +86,13 @@ def add_institution_details(request, institution_pk):
             inst_details = InstitutionDetails.objects.get(institution=inst)
             form = InstDetailsForm(instance=inst_details)
             UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
+            urls_form = UrlFormSet(prefix='urlsform', instance = inst_details) 
         except InstitutionDetails.DoesNotExist:
             form = InstDetailsForm()
             form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
             UrlFormSet =  generic_inlineformset_factory(URL_i18n, extra=2, can_delete=True)
-        urls_form = UrlFormSet(prefix='urlsform') 
+            urls_form = UrlFormSet(prefix='urlsform')
+        
         form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
         return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form, 'urls_form':urls_form},
                                   context_instance=RequestContext(request, base_response(request)))
@@ -127,7 +128,6 @@ def add_institution_details(request, institution_pk):
 def services(request, service_pk):
     user = request.user
     dict = {}
-    
     try:
         profile = user.get_profile()
         inst = profile.institution
@@ -143,7 +143,7 @@ def services(request, service_pk):
         return render_to_response('edumanage/service_details.html', 
                               {
                                'institution': inst,
-                               'service': services, 
+                               'service': services,
                                },  
                               context_instance=RequestContext(request, base_response(request)))
     
@@ -160,6 +160,7 @@ def services(request, service_pk):
 def add_services(request, service_pk):
     user = request.user
     service = False
+    edit = False
     try:
         profile = user.get_profile()
         inst = profile.institution
@@ -172,6 +173,7 @@ def add_services(request, service_pk):
         try:         
             service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
             form = ServiceLocForm(instance=service)
+            
         except ServiceLoc.DoesNotExist:
             form = ServiceLocForm()
         form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
@@ -185,7 +187,9 @@ def add_services(request, service_pk):
             UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFact, can_delete=True)
             urls_form = UrlFormSet(instance=service, prefix='urlsform')
         form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
-        return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form},
+        if service:
+            edit = True
+        return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -208,17 +212,13 @@ def add_services(request, service_pk):
             urls_form.instance = service
             names_inst = names_form.save()
             urls_inst = urls_form.save()
-#            for nform in names_inst:
-#                nform.content_object = serviceloc
-#                nform.save()
-#            for uform in urls_inst:
-#                uform.content_object = serviceloc
-#                uform.save()
             return HttpResponseRedirect(reverse("services"))
         else:
             form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
             form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
-        return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form},
+        if service:
+            edit = True
+        return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
 
 
@@ -279,8 +279,8 @@ def get_all_services(request):
     return HttpResponse(json.dumps(locs), mimetype='application/json')
 
 
-
-def servers(request):
+@login_required
+def servers(request, server_pk):
     user = request.user
     servers = False
     try:
@@ -290,6 +290,14 @@ def servers(request):
         inst = False
     if inst:
         servers = InstServer.objects.filter(instid=inst)
+    if server_pk:
+        servers = servers.get(pk=server_pk)
+        return render_to_response('edumanage/server_details.html', 
+                              {
+                               'institution': inst,
+                               'server': servers,
+                               },  
+                              context_instance=RequestContext(request, base_response(request)))
     return render_to_response('edumanage/servers.html', { 'servers': servers},
                                   context_instance=RequestContext(request, base_response(request)))
 
@@ -326,6 +334,7 @@ def adduser(request):
 def add_server(request, server_pk):
     user = request.user
     server = False
+    edit = False
     try:
         profile = user.get_profile()
         inst = profile.institution
@@ -333,7 +342,6 @@ def add_server(request, server_pk):
         inst = False
 
     if request.method == "GET":
-
         # Determine add or edit
         try:         
             server = InstServer.objects.get(instid=inst, pk=server_pk)
@@ -341,8 +349,9 @@ def add_server(request, server_pk):
         except InstServer.DoesNotExist:
             form = InstServerForm()
         form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-        
-        return render_to_response('edumanage/servers_edit.html', { 'form': form},
+        if server:
+            edit = True
+        return render_to_response('edumanage/servers_edit.html', { 'form': form, 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -357,7 +366,9 @@ def add_server(request, server_pk):
             return HttpResponseRedirect(reverse("servers"))
         else:
             form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-        return render_to_response('edumanage/servers_edit.html', { 'institution': inst, 'form': form},
+        if server:
+            edit = True
+        return render_to_response('edumanage/servers_edit.html', { 'institution': inst, 'form': form, 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
 
 @login_required
@@ -378,6 +389,8 @@ def realms(request):
 def add_realm(request, realm_pk):
     user = request.user
     server = False
+    realm = False
+    edit = False
     try:
         profile = user.get_profile()
         inst = profile.institution
@@ -394,7 +407,9 @@ def add_realm(request, realm_pk):
             form = InstRealmForm()
         form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
         form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
-        return render_to_response('edumanage/realms_edit.html', { 'form': form},
+        if realm:
+            edit = True
+        return render_to_response('edumanage/realms_edit.html', { 'form': form, 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -410,7 +425,9 @@ def add_realm(request, realm_pk):
         else:
             form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
             form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
-        return render_to_response('edumanage/realms_edit.html', { 'institution': inst, 'form': form},
+        if realm:
+            edit = True
+        return render_to_response('edumanage/realms_edit.html', { 'institution': inst, 'form': form, 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
 
 
@@ -460,6 +477,8 @@ def contacts(request):
 def add_contact(request, contact_pk):
     user = request.user
     server = False
+    edit = False
+    contact = False
     try:
         profile = user.get_profile()
         inst = profile.institution
@@ -475,8 +494,9 @@ def add_contact(request, contact_pk):
             form = ContactForm(instance=contact)
         except InstitutionContactPool.DoesNotExist:
             form = ContactForm()
-
-        return render_to_response('edumanage/contacts_edit.html', { 'form': form},
+        if contact:
+            edit = True
+        return render_to_response('edumanage/contacts_edit.html', { 'form': form, "edit" : edit},
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -492,7 +512,9 @@ def add_contact(request, contact_pk):
             instContPool, created = InstitutionContactPool.objects.get_or_create(contact=contact, institution=inst)
             instContPool.save()
             return HttpResponseRedirect(reverse("contacts"))
-        return render_to_response('edumanage/contacts_edit.html', { 'form': form},
+        if contact:
+            edit = True
+        return render_to_response('edumanage/contacts_edit.html', { 'form': form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
 
 

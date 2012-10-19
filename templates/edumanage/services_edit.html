@@ -1,9 +1,9 @@
 {% extends "edumanage/welcome.html"%}
-
+{% load tolocale %}
 {% block crumbs %}
 	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
 	<li><a href="{% url services %}">Services</a><span class="divider">/</span></li>
-	<li class="active">Add-Edit</li>
+	<li class="active">{% if edit %}{% tolocale form.instance LANGUAGE_CODE %} (edit){% else %}Add Service{% endif %}</li>
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.formset.js"></script>
@@ -301,7 +301,7 @@
 {% block servicesactive %}class="active"{% endblock %}
 {% block subcontent %}
 
-<h4>Services Add/Edit</h4>
+<h4>{% if edit %}{% tolocale form.instance LANGUAGE_CODE %} (edit){% else %}Add Service{% endif %}</h4>
 <hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
@@ -320,7 +320,7 @@
 			<span class="help-block">{{ form.longitude.help_text }}</span>
 		</div>
 		<div class="controls">
-			Lng:{{ form.longitude }} Lat:{{ form.latitude }}
+			 Lat:{{ form.latitude }} Lng:{{ form.longitude }}
 			<button class="btn btn-info disabled" id="updatemap" disabled="disabled">
 				Update Map
 			</button>

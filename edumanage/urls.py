@@ -15,7 +15,7 @@ urlpatterns = patterns('edumanage.views',
     url(r'^services/points/?$', 'get_service_points', name="get-service-points"),
     url(r'^services/allpoints/?$', 'get_all_services', name="get-all-services"),
 
-    url(r'^servers/?$', 'servers', name="servers"),
+    url(r'^servers/(?P<server_pk>\d+)?$', 'servers', name="servers"),
     url(r'^servers/del/?$', 'del_server', name="del-server"),
     url(r'^servers/edit/(?P<server_pk>\d+)?$', 'add_server', name="edit-servers"),
 

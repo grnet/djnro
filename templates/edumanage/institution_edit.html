@@ -1,8 +1,9 @@
 {% extends "edumanage/welcome.html"%}
+{% load tolocale %}
 {% block crumbs %}
 	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
-	<li><a href="{% url institutions %}">Institutions</a><span class="divider">/</span></li>
-	<li class="active">Add-Edit</li>
+	<li><a href="{% url institutions %}">Institution</a><span class="divider">/</span></li>
+	<li class="active">{% tolocale institution LANGUAGE_CODE%} (Edit)</li>
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.formset.js"></script>
@@ -69,9 +70,8 @@ function addButton(row){
 {% block homeactive %}{% endblock %}
 {% block instactive %}class="active"{% endblock %}
 {% block subcontent %}
-<h4>Institution Edit</h4>
+<h4>{% tolocale institution LANGUAGE_CODE%} Edit</h4>
 <hr>
-{% load tolocale %} 
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
 	{% if form.non_field_errors %}

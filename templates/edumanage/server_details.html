@@ -1,0 +1,96 @@
+{% extends "edumanage/welcome.html"%}
+{% block crumbs %}
+	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
+	<li><a href="{% url servers %}">Servers</a><span class="divider">/</span></li>
+	<li class="active">{{server.name}}</li>
+{% endblock %}
+{% block extrahead %}
+<style type="text/css">
+	.control-label{
+		padding-top: 0px !important;
+		width: auto !important;
+	}
+</style>
+{% endblock %}
+{% block homeactive %}{% endblock %}
+{% block serversactive %}class="active"{% endblock %}
+{% block subcontent %} <h4>{{server.name}}</h4>
+<hr>
+<div class="form-horizontal">
+	{% csrf_token %}
+	{% if form.non_field_errors %}
+	<p class="error">
+		{{ form.non_field_errors}}
+	</p>
+	{% endif %}
+	<div style="display: none">
+		{{form.instid}}
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_ertype">ErType</label>
+		<div class="controls">
+			{{ server.ertype }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_name">name</label>
+		<div class="controls">
+			{{ server.name }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_host">host</label>
+		<div class="controls">
+			{{ server.host }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_port">port</label>
+		<div class="controls">
+			{{ server.port }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_acct_port">acct_port</label>
+		<div class="controls">
+			{{ server.acct_port }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_timeout">timeout</label>
+		<div class="controls">
+			{{ server.timeout }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_retry">retry</label>
+		<div class="controls">
+			{{ server.retry }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_status_server">status_server</label>
+		<div class="controls">
+			{{ server.status_server }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_secret">secret</label>
+		<div class="controls">
+			{{ server.secret }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_proto">proto</label>
+		<div class="controls">
+			{{ server.proto }}
+		</div>
+	</div>
+	 <div class="control-group">
+        <div class="controls">
+            <a class="btn btn-large btn-primary" href="{% url edit-servers service.pk %}">Edit</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+         

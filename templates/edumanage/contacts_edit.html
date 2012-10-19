@@ -1,8 +1,8 @@
 {% extends "edumanage/welcome.html"%}
 {% block crumbs %}
 	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
-	<li><a href="{% url realms %}">Realms</a><span class="divider">/</span></li>
-	<li class="active">Add-Edit</li>
+	<li><a href="{% url contacts %}">Contacts</a><span class="divider">/</span></li>
+	<li class="active">{% if edit %}{{form.instance.firstname}} {{form.instance.lastname}} (edit){% else %}Add Contact{% endif %}</li>
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
@@ -16,7 +16,7 @@
 			
 {% block homeactive %}{% endblock %}
 {% block contactsactive %}class="active"{% endblock %}
-{% block subcontent %} <h4>Contacts Add/Edit</h4>
+{% block subcontent %} <h4>{% if edit %}{{form.instance.firstname}} {{form.instance.lastname}} (edit){% else %}Add Contact{% endif %}</h4>
 <hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}

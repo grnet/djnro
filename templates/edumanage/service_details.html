@@ -1,127 +1,29 @@
 {% extends "edumanage/welcome.html"%}
-
+{% load tolocale %}
 {% block crumbs %}
     <li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
     <li><a href="{% url services %}">Services</a><span class="divider">/</span></li>
-    <li class="active">Add-Edit</li>
+    <li class="active">{% tolocale service LANGUAGE_CODE %}</li>
 {% endblock %}
 {% block extrahead %}
+<style type="text/css">
+	.control-label{
+		padding-top: 0px !important;
+		width: auto !important;
+	}
+</style>
  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
 
 <script type="text/javascript">
-        function gettext(msgid) { return msgid; }
         
-        var lat = 36.97;
-        var lng = 23.71;
-        var zoomLevel = 6;
-        {% if form.data.latitude or form.instance.latitude %}
-            var lat = "{% if form.data.latitude %}{{form.data.latitude}}{% else %}{{form.instance.latitude}}{% endif %}";
-            var lat = parseFloat(lat.replace(",","."));
-        {% endif %}
-        {% if form.data.longitude or form.instance.longitude %}
-            var lng = "{% if form.data.longitude %}{{form.data.longitude}}{% else %}{{form.instance.longitude}}{% endif %}";
-            var lng = parseFloat(lng.replace(",","."));
-            var zoomLevel = 14;
-            getOnce = true;
-        {% endif %}
-        var latlng = new google.maps.LatLng(lat,lng);
         var map = '';
-        var marker = '';
-        var getOnce = false;
-
-        function setPositionValues(position) {
-            $("#id_longitude").val('');
-            $("#id_latitude").val('');
-            $("#id_address_street").val('');
-            $("#id_address_city").val('');
-
-            $("#id_longitude").val(position.lng().toPrecision(8));
-            $("#id_latitude").val(position.lat().toPrecision(8));
-            codeLatLng(position);
-        }
-
-        function getPosition(position) {
-            latlng = new google.maps.LatLng(position.coords.latitude,
-                    position.coords.longitude);
-            getOnce = true;
-            map.setCenter(latlng);
-            map.setZoom(15);
-            marker.setPosition(latlng);
-            setPositionValues(latlng);
-        }
-
-        function moveMarker(position) {
-            marker.setPosition(position);
-            setPositionValues(position);
-        }
-        
-        function geocode(position){
-            geocoder
-            .geocode(
-                    {
-                        'latLng' : position
-                    },
-                    function(results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            if (results.length >= 1) {
-                                for ( var ii = 0; ii < results[0].address_components.length; ii++) {
-                                    var street_number = route = street = city = state = zipcode = country = formatted_address = '';
-                                    var types = results[0].address_components[ii].types
-                                            .join(",");
-                                    if (types == "street_number") {
-                                        addr.street_number = results[0].address_components[ii].long_name;
-                                    }
-                                    if (types == "route"
-                                            || types == "point_of_interest,establishment") {
-                                        addr.route = results[0].address_components[ii].long_name;
-                                    }
-                                    if (types == "sublocality,political"
-                                            || types == "locality,political"
-                                            || types == "neighborhood,political"
-                                            || types == "political") {
-                                        addr.city = (city == '' || types == "locality,political") ? results[0].address_components[ii].long_name
-                                                : city;
-                                    }
-                                    if (types == "administrative_area_level_1,political") {
-                                        addr.state = results[0].address_components[ii].short_name;
-                                    }
-                                    if (types == "postal_code"
-                                            || types == "postal_code_prefix,postal_code") {
-                                        addr.zipcode = results[0].address_components[ii].long_name;
-                                    }
-                                    if (types == "country,political") {
-                                        addr.country = results[0].address_components[ii].long_name;
-                                    }
-                                }
-                            }
-
-                            if (addr.route && addr.city) {
-                                addr_field = addr.route;
-                                if (addr.street_number) {
-                                    addr_field = addr.route + " "
-                                            + addr.street_number;
-                                }
-                                $("#id_address_street").val(addr_field);
-                                city_field = addr.city;
-                                if (addr.zipcode) {
-                                    city_field = addr.city + ", "
-                                            + addr.zipcode;
-                                }
-                                $("#id_address_city").val(city_field);
-                            }
-                        }
-                    });
-        }
-        
-        function codeLatLng(position) {
-            addr = {};
-            latlng = position;
-            addr_num = '';
-            addr_name = '';
-            addr_city = '';
-            addr_code = '';
-            geocode(position)
-        }
+        var lat = "{{service.latitude}}";
+		var lat = parseFloat(lat.replace(",","."));
+		var lng = "{{service.longitude}}";
+		var lng = parseFloat(lng.replace(",","."));
+		var latlng = new google.maps.LatLng(lat,lng);
+		var zoomLevel = 16;
+		
         function initialize() {
             image = new google.maps.MarkerImage('/static/img/edupin.png',
                     // This marker is 29 pixels wide by 40 pixels tall.
@@ -132,30 +34,27 @@
                     new google.maps.Point(14, 40)
                 );
             var styleArray = [
-                               {
-                                   featureType: "all",
-                                   stylers: [
-                                     { saturation: -60 },
-                                     {gamma: 1.00 }
-                                   ]
-                                 },{
-                                   featureType: "poi.business",
-                                   elementType: "labels",
-                                   stylers: [
-                                     { visibility: "off" }
-                                   ]
-                                 },
-                                 { "featureType": "transit.line", "elementType": "geometry", "stylers": [ { "visibility": "off" } ] },
-                                 { "featureType": "poi", "elementType": "all", "stylers": [ { "visibility": "off" } ] },
-                                 {'featureType': "administrative.country",
-                                 'elementType': "labels",
-                                 'stylers': [
-                                     { 'visibility': "off" }
-                                 ]}
-
-                                 
-                               ];
-            geocoder = new google.maps.Geocoder();
+			                   {
+			                       featureType: "all",
+			                       stylers: [
+			                         { saturation: -60 },
+			                         {gamma: 1.00 }
+			                       ]
+			                     },{
+			                       featureType: "poi.business",
+			                       elementType: "labels",
+			                       stylers: [
+			                         { visibility: "off" }
+			                       ]
+			                     },
+			                     { "featureType": "transit.line", "elementType": "geometry", "stylers": [ { "visibility": "off" } ] },
+			                     { "featureType": "poi", "elementType": "all", "stylers": [ { "visibility": "off" } ] },
+			                     {'featureType': "administrative.country",
+			                     'elementType': "labels",
+			                     'stylers': [
+			                         { 'visibility': "off" }
+			                     ]}
+			                   ];
             var mapOptions = {
                 center : latlng,
                 zoom : zoomLevel,
@@ -167,126 +66,23 @@
                     navigationControl: true,
                     mapTypeControl: false,
             };
-            map = new google.maps.Map(document.getElementById("map_canvas"),
-                    mapOptions);
-            if (getOnce == false) {
-                marker = new google.maps.Marker({
-                    position : latlng,
-                    draggable : true,
-                    'icon': image,
-                    animation : google.maps.Animation.DROP,
-
-                });
-                marker.setMap(map);
-                setPositionValues(latlng);
+            map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+        	var marker = new google.maps.Marker({
+        		'position' : latlng,
+        		'map' : map,
+        		'icon': image,
+        		});
+        	
             }
-            google.maps.event.addListener(map, 'idle', function() {
-                
-            {% if not form.data.latitude  %}
-                {% if not form.instance.latitude  %}
-                    if (navigator.geolocation && getOnce == false) {
-                        navigator.geolocation.getCurrentPosition(getPosition);
-                    }
-                {% endif %}
-            {% endif %}
 
-            });
-
-            google.maps.event.addListener(map, 'click', function(event) {
-                moveMarker(event.latLng);
-            });
-            google.maps.event.addListener(marker, 'dragend', function(event) {
-                setPositionValues(marker.getPosition());
-            });
-
-        }
 
         $(document).ready(function() {
             
             initialize();
-            $("#updatemap").click(function(){
-                latlng = new google.maps.LatLng($("#id_latitude").val(), $("#id_longitude").val());
-                moveMarker(latlng);
-                map.setCenter(latlng);
-                $("#updatemap").addClass('disabled');
-                $("#updatemap").attr('disabled', 'disabled');
-                return false;
-            });
-            
-            $("#myloc").click(function(){
-                navigator.geolocation.getCurrentPosition(getPosition);
-                return false;
-            });
-            
-            $("#id_latitude").keypress(function(){
-                $("#updatemap").removeClass('disabled');
-                $("#updatemap").removeAttr('disabled');
-            });
-            $("#id_longitude").keypress(function(){
-                $("#updatemap").removeClass('disabled');
-                $("#updatemap").removeAttr('disabled');
-            });
-            
-            // Initialize jquery formset
-            
-             $('#urlsform tbody tr').formset({
-                prefix: '{{urls_form.prefix}}',
-                formCssClass: "dynamic-formset1",
-                added: addButton,
-            });
-            
-             $('#locsform tbody tr').formset({
-                    prefix: '{{services_form.prefix}}',
-                    formCssClass: "dynamic-formset2",
-                    added: addButton
-                });
-             
-             $(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
-             $(".add-row").prepend('<i class="icon-plus-sign icon-white"></i> ').addClass('btn btn-small btn-info');
-             
-             $("#adduserSubmit").click(function(){
-                    $.ajax({
-                        url:"{% url adduser %}", 
-                        data:$("#add_user_form").serialize(),
-                        type: "POST",
-                        cache: false,
-                        success:function(data){
-                                try {
-                                    value = data.value;
-                                    text = data.text;
-                                    if (typeof value === 'undefined' && typeof text === 'undefined'){
-                                        $('#mymodalbody').html(data);   
-                                    }
-                                    else{
-                                        $('#id_contact').append($("<option></option>").attr("value",value).text(text));
-                                        $('#myModal').modal('hide')
-                                    }
-                                }
-                                catch (exception) {
-                                    $('#mymodalbody').html(data);
-                                }                   
-                            }
-                            });
-                    return false;
-                });
-             
-             $("#add_contact").click(function(){
-                 $('#myModal').modal('show')
-                 $.ajax({
-                        url:"{% url adduser %}",
-                        type: "GET",
-                        success: function(data){
-                            $('#mymodalbody').html(data);
-                            }
-                        });
-            
-                 return false;
-             });
+           
              
         });
-        function addButton(row){
-            $(row).find(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
-        }
+       
         
         
         
@@ -299,55 +95,53 @@
 {% block servicesactive %}class="active"{% endblock %}
 {% block subcontent %}
 
-<h4>Services Add/Edit</h4>
+<h4>{% tolocale service LANGUAGE_CODE %}</h4>
 <hr>
-
+<div class="form-horizontal span7">
 
     <div class="control-group {% if form.longitude.errors or form.latitude.errors %} error {% endif %}">
-        <label class="control-label" for="id_map_canvas"><b>Location</b></label>
+        <label class="control-label" for="id_map_canvas">Location</label>
 
         <div class="controls">
-            Lng:{{ service.longitude }} Lat:{{ service.latitude }}
-            
+            Lat: {{ service.latitude }}<br>
+            Lng: {{ service.longitude }}
         </div>
     </div>
 
     <div class="control-group">
-        <label class="control-label" for="id_address_city"><b>loc_name</b></label>
+        <label class="control-label" for="id_address_city">loc_name</label>
         
         <div class="controls">
-        placeholder for loc name
+        	{% for name in service.loc_name.all %}
+        		{{name.name}} ({{name.get_lang_display}}){% if not forloop.last %}<br>{% endif %}
+        	{% endfor %}
         </div>
     </div>
     <div class="control-group {% if form.address_street.errors %} error {% endif %}">
-        <label class="control-label" for="id_address_street"><b>Address Street</b></label>
+        <label class="control-label" for="id_address_street">Address</label>
         <div class="controls">
-            {{ service.address_street }}
+            {{ service.address_street }}<br>
+            {{ service.address_city }}
            
         </div>
     </div>
-    <div class="control-group {% if form.address_city.errors %} error {% endif %}">
-        <label class="control-label" for="id_address_city"><b>Address City</b></label>
-        <div class="controls">
-            {{ service.address_city }}
-            
-        </div>
-    </div>
     <div class="control-group {% if form.SSID.errors %} error {% endif %}">
-        <label class="control-label" for="id_url"><b>SSID</b></label>
+        <label class="control-label" for="id_url">SSID</label>
         <div class="controls">
             {{ service.SSID }}
             
         </div>
     </div>
     <div class="control-group {% if form.contact.errors %} error {% endif %}">
-        <label class="control-label" for="id_contact"><b>Contact</b></label>
+        <label class="control-label" for="id_contact">Contact</label>
         <div class="controls">
-            placeholder for contact
+           	{% for contact in service.contact.all %}
+        		{{contact.firstname}} {{contact.lastname}} (<a href="mailto:{{contact.email}}">{{contact.email}}</a> - tel:{{contact.phone}}){% if not forloop.last %}<br>{% endif %}
+        	{% endfor %}
         </div>
     </div>
     <div class="control-group {% if form.enc_level.errors %} error {% endif %}">
-        <label class="control-label" for="id_oper_name"><b>enc_level</b></label>
+        <label class="control-label" for="id_oper_name">enc_level</label>
         <div class="controls">
             {{ service.enc_level }}
             
@@ -382,9 +176,9 @@
         </div>
     </div>
     <div class="control-group {% if form.AP_no.errors %} error {% endif %}">
-        <label class="control-label" for="id_number_id"><b>AP_no</b></label>
+        <label class="control-label" for="id_number_id">AP_no</label>
         <div class="controls">
-            {{ servcie.AP_no }}
+            {{ service.AP_no }}
           
         </div>
     </div>
@@ -397,7 +191,9 @@
     <div class="control-group {% for err in urls_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if urls_form.non_form_errors %}error{% endif %}">
         <label class="control-label" for="id_urls">Urls</label>
         <div class="controls">
-        placeholder for urls
+       		{% for url in service.url.all %}
+        		<a href="{{url.url}}">{{url.url}}</a> - {{url.get_urltype_display}} ({{url.get_lang_display}}){% if not forloop.last %}<br>{% endif %}
+        	{% endfor %}
         </div>
     </div>
     <div class="control-group">
@@ -407,5 +203,7 @@
     </div>
 
 
-
+</div>
+<div class="span4"><div id="map_canvas" style="width:300px; height: 300px;"></div>
+</div>
 {% endblock %}

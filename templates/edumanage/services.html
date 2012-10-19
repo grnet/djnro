@@ -29,21 +29,6 @@ var oTable = $('#table').dataTable({
         "bSearchable": true,
         "bSortable": true
     }, {
-        "bSearchable": true,
-        "bSortable": true
-    }, {
-        "bSearchable": true,
-        "bSortable": true
-    }, {
-        "bSearchable": true,
-        "bSortable": true
-    }, {
-        "bSearchable": true,
-        "bSortable": true
-    },{
-        "bSearchable": true,
-        "bSortable": true
-    },{
         "bVisible": true,
         "bSearchable": false,
         "bSortable": false
@@ -120,12 +105,7 @@ $("#delserviceSubmit").click(function(){
 					<th>Address</th>
 					<th>SSID</th>
 					<th>enc_level</th>
-					<th>port_restrict</th>
-					<th>transp_proxy</th>
-					<th>NAT</th>
-					<th>IPv6</th>
 					<th>AP no</th>
-					<th>wired</th>
 					<th>Actions</th>
 					</tr>
 					</thead>
@@ -136,12 +116,7 @@ $("#delserviceSubmit").click(function(){
 	                	<td>{{service.address_street}}<br>{{service.address_city}}</td>
 	                	<td>{{service.SSID}}</td>
 	                	<td>{{service.enc_level}}</td>
-	                	<td>{{service.port_restrict}}</td>
-	                	<td>{{service.transp_proxy}}</td>
-	                	<td>{{service.NAT}}</td>
-	                	<td>{{service.IPv6}}</td>
 	                	<td>{{service.AP_no}}</td>
-	                	<td>{{service.wired}}</td>               	
 	                	<td style="text-align: center;"><a href="{% url edit-services service.pk %}" class="btn btn-small">edit</a> <a href="#" id="del_service_{{service.pk}}" data-servicename="{% tolocale service LANGUAGE_CODE%}" class="btn btn-small btn-warning">delete</a></td>
 	                </tr>
 	              	{% endfor %}

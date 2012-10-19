@@ -1,11 +1,18 @@
 {% extends "edumanage/welcome.html"%}
+{% block extrahead %}
+	<style type="text/css">
+		.control-label{
+			padding-top: 0px !important;
+			width: auto !important;
+		}
+	</style>
+{% endblock %}
 			{% block crumbs %}
 	    			<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
 	    			<li class="active">Institution</li>
 	    			{% endblock %}
 			{% block homeactive %}{% endblock %}
     		{% block instactive %}class="active"{% endblock %}
-
             {% block subcontent %}
               <h4>Institution</h4>
               		<hr>
@@ -13,49 +20,74 @@
               {% if institution %}
               		{% if institution.institutiondetails %}
               		
-              	<div class="row-fluid">
-		<div class="span12"></div>
-		</div>
-              		
-              	<table class="table table-striped" width="100%" id="table"><thead>
-					<tr>
-					<th>Name</th>
-					<th>Address</th>
-					<th>Type</th>
-					<th>Contact</th>
-					<th>Url</th>
-					<th>Oper Name</th>
-					<th># Users</th>
-					<th># Id</th>
-					<th>Action</th>
-					</tr>
-					</thead>
-					<tbody>
-	              	<tr class="info">
-	                	<td><b>{% tolocale institution LANGUAGE_CODE%}</b></td>
-              			<td>{{institution.institutiondetails.address_street}}@{{institution.institutiondetails.address_city}}</td>
-              			<td>{{institution.institutiondetails.get_ertype_display}}</td>
-              			<td>{% if institution.institutiondetails.contact.all %}{% for con in institution.institutiondetails.contact.all %}{{con}}<br>{% endfor %}{% else %}(no contacts){% endif %}</td>
-              			<td>{% if institution.institutiondetails.url.all %}{% for url in institution.institutiondetails.url.all %}{{url}}<br>{% endfor %}{% else %}(no urls){% endif %}</td>
-              			<td>{{institution.institutiondetails.oper_name}}</td>
-              			<td>{{institution.institutiondetails.number_user}}</td>
-              			<td>{{institution.institutiondetails.number_id}}</td>               	
-	                	<td style="text-align: center;"><a href="{% url edit-institution institution.pk %}" class="btn btn-small btn-primary">edit</a></td>
-	                </tr>
-	              	</tbody>
-	              </table>
-              		
-              		
-              		
-              		
-              		
-              		
-              		
-              		
-              		
-              		
+<div class="form-horizontal">
 
-              		   
+
+		<div class="control-group">
+		<label class="control-label" for="id_ertype">Name</label>
+		<div class="controls">
+			{% tolocale institution LANGUAGE_CODE %}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_ertype">ErType</label>
+		<div class="controls">
+			{{ institution.institutiondetails.get_ertype_display }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_address_street">Address Street</label>
+		<div class="controls">
+			{{ institution.institutiondetails.address_street }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_address_city">Address City</label>
+		<div class="controls">
+			{{ institution.institutiondetails.address_city }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_contact">Contact(s)</label>
+		<div class="controls">
+				{% for contact in institution.institutiondetails.contact.all %}
+        		{{contact.firstname}} {{contact.lastname}} (<a href="mailto:{{contact.email}}">{{contact.email}}</a> - tel:{{contact.phone}}){% if not forloop.last %}<br>{% endif %}
+        	{% endfor %}
+		</div>
+	</div>
+    <div class="control-group ">
+        <label class="control-label" for="id_urls">Urls</label>
+        
+        <div class="controls">
+        {% for url in institution.institutiondetails.url.all %}
+        		<a href="{{url.url}}" target="_blank">{{url.url}}</a> - {{url.get_urltype_display}} ({{url.get_lang_display}}){% if not forloop.last %}<br>{% endif %}
+        {% endfor %}
+        </div>
+    </div>
+	<div class="control-group">
+		<label class="control-label" for="id_oper_name">Oper Name</label>
+		<div class="controls">
+			{{ institution.institutiondetails.oper_name }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_number_user">Number User</label>
+		<div class="controls">
+			{{ institution.institutiondetails.number_user }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_number_id">Number Id</label>
+		<div class="controls">
+			{{ institution.institutiondetails.number_id }}
+		</div>
+	</div>
+	<div class="control-group">
+        <div class="controls">
+            <a class="btn btn-large btn-primary" href="{% url edit-institution institution.pk %}">Edit</a>
+        </div>
+    </div>
+            </div>   
               		{% else %}
               			<div>No institution details defined yet for {% tolocale institution LANGUAGE_CODE%} <a href="{% url edit-institution institution.pk %}" class="btn btn-small btn-primary">edit</a></div>
               		{% endif %}

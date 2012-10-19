@@ -29,15 +29,6 @@ var oTable = $('#table').dataTable({
         "bSearchable": true,
         "bSortable": true
     }, {
-        "bSearchable": true,
-        "bSortable": true
-    }, {
-        "bSearchable": true,
-        "bSortable": true
-    }, {
-        "bSearchable": true,
-        "bSortable": true
-    }, {
         "bVisible": true,
         "bSearchable": false,
         "bSortable": false
@@ -123,9 +114,6 @@ $("#delserverSubmit").click(function(){
 						<th>Type</th>
 						<th>Port</th>
 						<th>acct_port</th>
-						<th>timeout</th>
-						<th>retry</th>
-						<th>status_server</th>
 						<th>proto</th>
 						<th style="text-align: center;">Action</th>
 					</tr>
@@ -134,13 +122,10 @@ $("#delserverSubmit").click(function(){
 					<tbody>
 	                {% for server in servers %}
 	              	<tr class="GradeC">
-	                	<td>{{server.name}}</td>
+	                	<td><a href = "{% url servers server.pk %}">{{server.name}}</a></td>
 	                	<td>{{server.get_ertype_display}}</td>
 	                	<td>{{server.port}}</td>
 	                	<td>{{server.acct_port}}</td>
-	                	<td>{{server.timeout}}</td>
-	                	<td>{{server.retry}}</td>
-	                	<td>{{server.status_server}}</td>
 	                	<td>{{server.proto}}</td>
 	                	<td style="text-align: center;"><a href="{% url edit-servers server.pk %}" class="btn btn-small">edit</a> <a href="#" id="del_server_{{server.pk}}" data-servername="{{server.name}}" class="btn btn-small btn-warning">delete</a></td>
 	                </tr>
