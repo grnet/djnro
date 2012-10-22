@@ -47,6 +47,7 @@
 			{% endif %} <span class="help-block"> {{ form.host.help_text }}</span>
 		</div>
 	</div>
+	{% if instdets.ertype == 1 or instdets.ertype == 3 %}
 	<div class="control-group {% if form.port.errors %} error {% endif %}">
 		<label class="control-label" for="id_port"><b>port</b></label>
 		<div class="controls">
@@ -79,6 +80,7 @@
 			{% endif %} <span class="help-block"> {{ form.retry.help_text }}</span>
 		</div>
 	</div>
+	{% endif %}
 	<div class="control-group {% if form.status_server.errors %} error {% endif %}">
 		<label class="control-label" for="id_status_server">status_server</label>
 		<div class="controls">
