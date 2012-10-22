@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
     {% block title %}eduroam@Greece{% endblock %}
     {% block extrahead %}
     <style type="text/css">
@@ -261,7 +262,7 @@ function initialize() {
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
             
-              <li class="active"><a href="{% url index %}">Home</a></li>
+              <li class="active"><a href="{% url index %}">{% trans "Home" %}</a></li>
               <li><a href="#">News</a></li>
               <li><a href="{% url geolocate %}" target="about:blank()">eduroam near me</a></li>
               <li class="nav-header">Users</li>
@@ -269,7 +270,7 @@ function initialize() {
               <li><a href="#">Contact</a></li>
               <li><a href="#">About</a></li>
               <li class="nav-header">Institutions</li>
-              <li><a href="{% url manage %}">Management</a></li>
+              <li><a href="{% url manage %}">{% trans "Management" %}</a></li>
             </ul>
           </div><!--/.well -->
           <div><img src="/static/img/keep_calm_eduroam_small.png"></div>
@@ -294,7 +295,7 @@ function initialize() {
       <hr>
 
       <footer>
-        <p>&copy; Company 2012</p>
+        <p>&copy; @ GRNET NOC 2012</p>
       </footer>
 
     </div><!--/.fluid-container-->
