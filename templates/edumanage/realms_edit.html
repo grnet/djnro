@@ -16,8 +16,16 @@
 			
 {% block homeactive %}{% endblock %}
 {% block realmsactive %}class="active"{% endblock %}
-{% block subcontent %} <h4>{% if edit %}{{form.instance.realm}} (edit){% else %}Add Realm{% endif %}</h4>
+{% block subcontent %}<h4>{% if edit %}{{form.instance.realm}} (edit){% else %}Add Realm{% endif %}</h4>
 <hr>
+{% if messages %}
+	<table class="table table-condensed">
+	    {% for message in messages %}
+	    <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+	    {% endfor %}
+	</table>
+{% endif %}
+{% if instdets.ertype == 1 or instdets.ertype == 3 %}
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
 	{% if form.non_field_errors %}
@@ -51,5 +59,6 @@
 		</div>
 	</div>
 </form>
+{% endif %}
 {% endblock %}
          

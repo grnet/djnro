@@ -94,30 +94,38 @@ $("#delrealmSubmit").click(function(){
 	            	
 	              <h4>Realms</h4>
 	              <hr>
-	              <div><a href="{% url edit-realms %}" class="btn btn-primary">Add new realm</a></div>
-	              <div class="span10"></div>
-	              {% if realms %}
-	              <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
-					<thead>
-					<tr>
-						<th>Realm</th>
-						<th>Server(s)</th>
-						<th style="text-align: center;">Action</th>
-					</tr>
-					</thead>
+	              {% if messages %}
+	                <table class="table table-condensed">
 					
-					<tbody>
-	                {% for realm in realms %}
-	              	<tr class="GradeC">
-	                	<td>{{realm.realm}}</td>
-	                	<td>{{realm.get_servers}}</td>
-	                	<td style="text-align: center;"><a href="{% url edit-realms realm.pk %}" class="btn btn-small">edit</a> <a href="#" id="del_realm_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">delete</a></td>
-	                </tr>
-	              	{% endfor %}
-	              	</tbody>
-	              </table>
-	              {% else %}
-	              <div>No realms defined yet (<a href="{% url edit-realms %}">add</a>)</div>
+					    {% for message in messages %}
+					    <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+					    {% endfor %}
+					</table>
+				  {% endif %}
+	              <div>{% if instdets.ertype == 1 or instdets.ertype == 3 %}<a href="{% url edit-realms %}" class="btn btn-primary">Add new realm</a>{% endif %}</div>
+	              <div class="span10"></div>
+	              {% if instdets.ertype == 1 or instdets.ertype == 3 %}
+		              {% if realms %}
+		              <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
+						<thead>
+						<tr>
+							<th>Realm</th>
+							<th>Server(s)</th>
+							<th style="text-align: center;">Action</th>
+						</tr>
+						</thead>
+						
+						<tbody>
+		                {% for realm in realms %}
+		              	<tr class="GradeC">
+		                	<td>{{realm.realm}}</td>
+		                	<td>{{realm.get_servers}}</td>
+		                	<td style="text-align: center;"><a href="{% url edit-realms realm.pk %}" class="btn btn-small">edit</a> <a href="#" id="del_realm_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">delete</a></td>
+		                </tr>
+		              	{% endfor %}
+		              	</tbody>
+		              </table>
+		              {% endif %}
 	              {% endif %}
 <div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
