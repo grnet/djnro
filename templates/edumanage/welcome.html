@@ -184,8 +184,9 @@ $.get("{% url get-service-points %}", function(data){
 						<a href="{% url manage %}">Home</a>
 					</li>
 					<li {% block instactive %}{% endblock %}>
-						<a href="{% url institutions %}">Institution ({{inst_num}})</a>
+						<a href="{% url institutions %}">Institution {% if not instdets %}<font style="color: red; font-weight: bold; font-size: 14px;">(!)</font>{% endif %}</a>
 					</li>
+					{% if instdets %}
 					<li {% block servicesactive %}{% endblock %}>
 						<a href="{% url services %}">Services ({{services_num}})</a>
 					</li>
@@ -198,6 +199,7 @@ $.get("{% url get-service-points %}", function(data){
 					<li {% block contactsactive %}{% endblock %}>
 						<a href="{% url contacts %}">Contacts ({{contacts_num}})</a>
 					</li>
+					{% endif %}
 				</ul>
 			</div><!--/.well -->
 		</div><!--/span-->
@@ -206,11 +208,11 @@ $.get("{% url get-service-points %}", function(data){
 				<!--/span-->
 				<div class="span10">
 					{% block subcontent %}
+					<h4>Home - Service Locations</h4>
+              		<hr>
 					{% if services %} <div id="map_canvas" style="width:100%; height:450px;"></div>
 					{% else %}
-					<p>
-						No services defined!
-					</p>
+					<div>{% if instdets %}No services defined yet! <a href="{% url edit-services %}" class="btn btn-primary">Add new service</a>{% else %}Specify your institution details to proceed <a class="btn btn-small btn-primary" href="{% url edit-institution institution.pk %}">Edit</a>{% endif %}</div>
 					{% endif %}
 					{% endblock %}
 				</div><!--/span-->
