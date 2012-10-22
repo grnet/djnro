@@ -6,6 +6,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
+    (r'^setlang/?$', 'django.views.i18n.set_language'),
+    
     (r'', include('eduroam.edumanage.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
