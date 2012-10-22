@@ -94,9 +94,18 @@ $("#delserviceSubmit").click(function(){
             {% block subcontent %}
               <h4>Services</h4>
               <hr>
-              <div><a href="{% url edit-services %}" class="btn btn-primary">Add new service</a></div>
+              {% if messages %}
+	                <table class="table table-condensed">
+					
+					    {% for message in messages %}
+					    <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+					    {% endfor %}
+					</table>
+			  {% endif %}
+              <div>{% if instdets.ertype == 2 or instdets.ertype == 3 %}<a href="{% url edit-services %}" class="btn btn-primary">Add new service</a>{% endif %}</div>
 	              <div class="span10"></div>
               {% load tolocale %}
+              {% if instdets.ertype == 2 or instdets.ertype == 3 %}
               {% if services %}
                <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
 	               <thead>
@@ -122,8 +131,7 @@ $("#delserviceSubmit").click(function(){
 	              	{% endfor %}
 	              	</tbody>
 	              </table>
-              {% else %}
-              <div>No services defined yet (<a href="{% url edit-services %}">edit</a>)</div>
+	              {% endif %}
               {% endif %}
 <div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
