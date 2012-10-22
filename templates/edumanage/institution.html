@@ -64,18 +64,22 @@
         {% endfor %}
         </div>
     </div>
+    {% if instdets.ertype == 2 or instdets.ertype == 3 %}
 	<div class="control-group">
 		<label class="control-label" for="id_oper_name">Oper Name</label>
 		<div class="controls">
 			{{ institution.institutiondetails.oper_name }}
 		</div>
 	</div>
+	{% endif %}
+	{% if instdets.ertype == 1 or instdets.ertype == 3 %}
 	<div class="control-group">
 		<label class="control-label" for="id_number_user">Number User</label>
 		<div class="controls">
 			{{ institution.institutiondetails.number_user }}
 		</div>
 	</div>
+	{% endif %}
 	<div class="control-group">
 		<label class="control-label" for="id_number_id">Number Id</label>
 		<div class="controls">

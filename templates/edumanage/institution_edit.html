@@ -141,6 +141,7 @@ function addButton(row){
         </tbody></table>
         </div>
     </div>
+    {% if instdets.ertype == 2 or instdets.ertype == 3 %}
 	<div class="control-group {% if form.oper_name.errors %} error {% endif %}">
 		<label class="control-label" for="id_oper_name">Oper Name</label>
 		<div class="controls">
@@ -149,6 +150,8 @@ function addButton(row){
 			{% endif %} <span class="help-block"> {{ form.oper_name.help_text }}</span>
 		</div>
 	</div>
+	{% endif %}
+	{% if instdets.ertype == 1 or instdets.ertype == 3 %}
 	<div class="control-group {% if form.number_user.errors %} error {% endif %}">
 		<label class="control-label" for="id_number_user">Number User</label>
 		<div class="controls">
@@ -157,6 +160,7 @@ function addButton(row){
 			{% endif %} <span class="help-block"> {{ form.number_user.help_text }}</span>
 		</div>
 	</div>
+	{% endif %}
 	<div class="control-group {% if form.number_id.errors %} error {% endif %}">
 		<label class="control-label" for="id_number_id">Number Id</label>
 		<div class="controls">
