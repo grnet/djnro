@@ -17,6 +17,7 @@ import math
 from xml.etree import ElementTree as ET
 
 from django.conf import settings
+from django.contrib import messages
 
 def index(request):
     return render_to_response('front/index.html', context_instance=RequestContext(request, base_response(request)))
@@ -133,6 +134,10 @@ def services(request, service_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
+    if inst.institutiondetails.ertype not in [2,3]:
+        messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
+        return render_to_response('edumanage/services.html', { 'institution': inst },
+                              context_instance=RequestContext(request, base_response(request)))
     try:
         services = ServiceLoc.objects.filter(institutionid = inst)
     except ServiceLoc.DoesNotExist:
@@ -166,7 +171,10 @@ def add_services(request, service_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
-
+    if inst.institutiondetails.ertype not in [2,3]:
+        messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
+        return render_to_response('edumanage/services_edit.html', { 'edit': edit },
+                                  context_instance=RequestContext(request, base_response(request)))
     if request.method == "GET":
 
         # Determine add or edit
@@ -382,7 +390,9 @@ def realms(request):
         inst = False
     if inst:
         realms = InstRealm.objects.filter(instid=inst)
-    return render_to_response('edumanage/realms.html', { 'realms': realms},
+    if inst.institutiondetails.ertype not in [1,3]:
+        messages.add_message(request, messages.ERROR, 'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP')
+    return render_to_response('edumanage/realms.html', { 'realms': realms },
                                   context_instance=RequestContext(request, base_response(request)))
 
 @login_required
@@ -396,7 +406,10 @@ def add_realm(request, realm_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
-
+    if inst.institutiondetails.ertype not in [1,3]:
+        messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
+        return render_to_response('edumanage/realms_edit.html', { 'edit': edit },
+                                  context_instance=RequestContext(request, base_response(request)))
     if request.method == "GET":
 
         # Determine add or edit
@@ -570,6 +583,10 @@ def base_response(request):
         contacts = Contact.objects.filter(pk__in=instcontacts)
     except UserProfile.DoesNotExist:
         pass
+    try:
+        instdets = institution.institutiondetails
+    except InstitutionDetails.DoesNotExist:
+        instdets = False
         
     return { 
             'inst_num': len(inst),
@@ -577,6 +594,7 @@ def base_response(request):
             'services_num': len(services),
             'realms_num': len(instrealms),
             'contacts_num': len(contacts),
+            'instdets': instdets,
             
         }
 
