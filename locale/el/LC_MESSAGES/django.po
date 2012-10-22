@@ -1,0 +1,145 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-10-22 13:06+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: settings.py:39
+msgid "Greek"
+msgstr "Ελληνικά"
+
+#: settings.py:40
+msgid "English"
+msgstr "Αγγλικά"
+
+#: edumanage/models.py:137
+#, python-format
+msgid "Server: %(servername)s, Type: %(ertype)s"
+msgstr ""
+
+#: edumanage/models.py:161
+#, python-format
+msgid ""
+"Institution: %(inst)s, Monitored Realm: %(monrealm)s, Monitoring Type: "
+"%(montype)s"
+msgstr ""
+
+#: edumanage/models.py:184
+#, python-format
+msgid ""
+"Institution: %(inst)s, Monitored Realm: %(monrealm)s, Proxyback Client: "
+"%(servername)s"
+msgstr ""
+
+#: edumanage/models.py:222
+#, python-format
+msgid ""
+"Institution: %(inst)s, Monitored Realm: %(monrealm)s, EAP Method: "
+"%(eapmethod)s, Phase 2: %(phase2)s, Username: %(username)s"
+msgstr ""
+
+#: edumanage/models.py:265
+#, python-format
+msgid "Institution: %(inst)s, Service Location: %(locname)s"
+msgstr ""
+
+#: edumanage/models.py:328
+#, python-format
+msgid "Institution: %(inst)s, Type: %(ertype)s"
+msgstr ""
+
+#: edumanage/models.py:356
+#, python-format
+msgid "Country: %(country)s, NRO: %(orgname)s"
+msgstr ""
+
+#: edumanage/models.py:386
+#, python-format
+msgid ""
+"Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
+"%(idp)s, SPs: %(sp)s, IdPSPs: %(idpsp)s, Users: %(numuser)s, Identities: "
+"%(numid)s"
+msgstr ""
+
+#: templates/edumanage/contacts.html:34 templates/edumanage/realms.html:31
+#: templates/edumanage/servers.html:40 templates/edumanage/services.html:40
+msgid "Display"
+msgstr ""
+
+#: templates/edumanage/contacts.html:34 templates/edumanage/realms.html:31
+#: templates/edumanage/servers.html:40 templates/edumanage/services.html:40
+msgid "All"
+msgstr ""
+
+#: templates/edumanage/contacts.html:34
+msgid "contacts"
+msgstr ""
+
+#: templates/edumanage/contacts.html:36 templates/edumanage/realms.html:33
+#: templates/edumanage/servers.html:42 templates/edumanage/services.html:42
+msgid "No records to display"
+msgstr ""
+
+#: templates/edumanage/contacts.html:38 templates/edumanage/realms.html:35
+#: templates/edumanage/servers.html:44 templates/edumanage/services.html:44
+msgid "Showing 0 to 0 of 0 entries"
+msgstr ""
+
+#: templates/edumanage/contacts.html:41 templates/edumanage/realms.html:38
+#: templates/edumanage/servers.html:47 templates/edumanage/services.html:47
+msgid "Search:"
+msgstr "Αναζήτηση"
+
+#: templates/edumanage/contacts.html:44 templates/edumanage/realms.html:41
+#: templates/edumanage/servers.html:50 templates/edumanage/services.html:50
+msgid "First"
+msgstr ""
+
+#: templates/edumanage/contacts.html:45 templates/edumanage/realms.html:42
+#: templates/edumanage/servers.html:51 templates/edumanage/services.html:51
+msgid "Previous"
+msgstr "Προηγούμενο"
+
+#: templates/edumanage/contacts.html:46 templates/edumanage/realms.html:43
+#: templates/edumanage/servers.html:52 templates/edumanage/services.html:52
+msgid "Next"
+msgstr "Επόμενο"
+
+#: templates/edumanage/contacts.html:47 templates/edumanage/realms.html:44
+#: templates/edumanage/servers.html:53 templates/edumanage/services.html:53
+msgid "Last"
+msgstr ""
+
+#: templates/edumanage/realms.html:31
+msgid "realms"
+msgstr ""
+
+#: templates/edumanage/servers.html:40
+msgid "servers"
+msgstr ""
+
+#: templates/edumanage/services.html:40
+msgid "services"
+msgstr ""
+
+#: templates/front/index.html:265
+msgid "Home"
+msgstr "Αρχική"
+
+#: templates/front/index.html:273
+msgid "Management"
+msgstr "Διαχείριση"
