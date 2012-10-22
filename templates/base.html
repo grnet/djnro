@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,7 +37,15 @@ body {
 .navbar .brand { max-height: 40px; overflow: visible;padding-top: 0;padding-bottom: 0; }
 </style>
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-	<script src="/static/js/bootstrap.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+
+  	function setlang(lang){
+		$("#langsel").val(lang);
+		$("#langform").submit();
+	}
+
+</script>
 {% block extrahead %}{% endblock %}
 </head>
 <body>
@@ -83,32 +92,24 @@ body {
         <li>
             <a href="#">Link</a>
         </li>
-        <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a href="#">Action</a>
-                </li>
-                <li>
-                    <a href="#">Another action</a>
-                </li>
-                <li>
-                    <a href="#">Something else here</a>
-                </li>
-                <li class="divider"></li>
-                <li class="nav-header">
-                    Nav header
-                </li>
-                <li>
-                    <a href="#">Separated link</a>
-                </li>
-                <li>
-                    <a href="#">One more separated link</a>
-                </li>
-            </ul>
-        </li>
+
     </ul>
     <ul class="nav pull-right">
+         <li class="dropdown pull-right">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+            <form action="{% url django.views.i18n.set_language %}" method="post" style="display:inline;" id="langform">
+								{% csrf_token %}
+								<input name="next" type="hidden" value="{{ next }}" />
+								<input id="langsel" name="language" type="hidden" value="" />
+							</form>
+            	{% for lang in LANGUAGES %}
+                <li>
+                    <a class="select_lang" href="#" onclick="setlang('{{ lang.0 }}'); return false;" title="{{lang.1}}">{% trans lang.1 %}{% ifequal LANGUAGE_CODE lang.0 %}  <i class="icon-ok"></i>{% endifequal %}</a>
+                </li>
+              {% endfor %}
+            </ul>
+        </li>
         <li>
             <a href="http://www.grnet.gr" style="padding: 0px; margin: 0px;"><img src="/static/img/grnet_small.png"></a>
         </li>
@@ -117,6 +118,7 @@ body {
     </div>    
 </div>
 </div>
+
 	{% block content %}
 	<div class="container-fluid">
       <div class="row-fluid">
