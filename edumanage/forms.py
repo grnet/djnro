@@ -18,6 +18,20 @@ class InstServerForm(forms.ModelForm):
 
     class Meta:
         model = InstServer
+    
+    def clean_ertype(self):
+        ertype = self.cleaned_data['ertype']
+        institution = self.cleaned_data['instid']
+        inst_type = institution.institutiondetails.ertype
+        type_list = [inst_type]
+        if inst_type == 3:
+            type_list = [1, 2, 3]
+        if ertype:
+            if ertype not in type_list:
+                raise forms.ValidationError('Server type cannot be different than institution type (%s)' %dict(self.fields['ertype'].choices)[inst_type])
+            return self.cleaned_data["ertype"]
+        else:
+            raise forms.ValidationError('This field is required.')
 
 class ContactForm(forms.ModelForm):
 
