@@ -20,9 +20,9 @@ LANGS = (
 
 # FIXME: use idp, sp, idpsp as keys not in the velue part. Get rid of 1,2,3
 ERTYPES = (
-        (1, 'idp: IdP only' ),
-        (2, 'sp: SP only'),
-        (3, 'idpsp: IdP and SP'),
+        (1, 'IdP only' ),
+        (2, 'SP only'),
+        (3, 'IdP and SP'),
     )
 
 RADPROTOS = (
@@ -117,16 +117,16 @@ class InstServer(models.Model):
     # 2: accept if instid.ertype: 2 (sp) or 3 (idpsp)
     # 3: accept if instid.ertype: 3 (idpsp)
 
-    # hostname/ipaddr or descriptive label of server
-    name = models.CharField(max_length=80)
+    # hostname/ipaddr or descriptive label of server 
+    name = models.CharField(max_length=80) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
-    host = models.CharField(max_length=80)
-
-    # accept if type: 1 (idp) or 3 (idpsp)
-    port = models.PositiveIntegerField(max_length=5)
-    acct_port = models.PositiveIntegerField(max_length=5)
-    timeout = models.PositiveIntegerField(max_length=2)
-    retry = models.PositiveIntegerField(max_length=2)
+    host = models.CharField(max_length=80) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
+    #TODO: Add description field or label field
+    # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
+    port = models.PositiveIntegerField(max_length=5, null=True, blank=True) # TODO: Also ignore while exporting XML
+    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True)
+    timeout = models.PositiveIntegerField(max_length=2, null=True, blank=True)
+    retry = models.PositiveIntegerField(max_length=2, null=True, blank=True)
 
     status_server = models.BooleanField()
     secret = models.CharField(max_length=16)
@@ -240,7 +240,7 @@ class ServiceLoc(models.Model):
                 ('WPA2/AES', 'WPA2-AES'),
                )
 
-    # accept if institutionid.ertype: 2 (sp) or 3 (idpsp)
+    # accept if institutionid.ertype: 2 (sp) or 3 (idpsp) 
     institutionid = models.ForeignKey("Institution")
     longitude = models.DecimalField(max_digits=8, decimal_places=6)
     latitude = models.DecimalField(max_digits=8, decimal_places=6)
@@ -257,7 +257,7 @@ class ServiceLoc(models.Model):
     NAT = models.BooleanField()
     AP_no = models.PositiveIntegerField(max_length=3)
     wired = models.BooleanField()
-    # only urltype = 'info' should be accepted here
+    # only urltype = 'info' should be accepted here (TODO: DELETE POLICY FROM OPTIONS)
     url = generic.GenericRelation(URL_i18n, blank=True, null=True)
     ts = models.DateTimeField(auto_now=True)
 
@@ -317,10 +317,10 @@ class InstitutionDetails(models.Model):
     address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact)
     url = generic.GenericRelation(URL_i18n)
-    # accept if ertype: 2 (sp) or 3 (idpsp)
-    oper_name = models.CharField(max_length=24)
-    # accept if ertype: 1 (idp) or 3 (idpsp)
-    number_user = models.PositiveIntegerField(max_length=6)
+    # accept if ertype: 2 (sp) or 3 (idpsp) (Applies to the following field)
+    oper_name = models.CharField(max_length=24, null=True, blank=True)
+    # accept if ertype: 1 (idp) or 3 (idpsp) (Applies to the following field)
+    number_user = models.PositiveIntegerField(max_length=6, null=True, blank=True)
     number_id = models.PositiveIntegerField(max_length=6)
     ts = models.DateTimeField(auto_now=True)
 
