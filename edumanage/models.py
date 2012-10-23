@@ -330,7 +330,7 @@ class InstitutionDetails(models.Model):
         return _('Institution: %(inst)s, Type: %(ertype)s') % {
         # but name is many-to-many from institution
             'inst': ', '.join([i.name for i in self.institution.org_name.all()]),
-            'ertype': self.ertype,
+            'ertype': self.institution.ertype,
             }
 
 

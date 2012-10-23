@@ -20,6 +20,9 @@ from xml.etree import ElementTree as ET
 from django.conf import settings
 from django.contrib import messages
 
+from django.db.models import Max
+
+
 def index(request):
     return render_to_response('front/index.html', context_instance=RequestContext(request))
 
@@ -725,7 +728,7 @@ def instxml(request):
         instCountry.text = ("%s" %inst.institution.realmid.country).upper()
         
         instType = ET.SubElement(instElement, "type")
-        instType.text = "%s" %inst.ertype
+        instType.text = "%s" %inst.institution.ertype
         
         for realm in institution.instrealm_set.all():
             instRealm = ET.SubElement(instElement, "inst_realm")
@@ -830,7 +833,7 @@ def realmxml(request):
     realmElement = ET.SubElement(root, "realm")
     
     realmCountry = ET.SubElement(realmElement, "country")
-    realmCountry.text = realm.country
+    realmCountry.text = realm.country.upper()
         
     realmStype = ET.SubElement(realmElement, "stype")
     realmStype.text = "%s" %realm.stype
@@ -865,14 +868,65 @@ def realmxml(request):
         realmUrl.attrib["lang"] = url.lang
         realmUrl.text = url.url
     
+    instTs = ET.SubElement(realmElement, "ts")
+    instTs.text = "%s" %realm.ts.isoformat()
+    
     return render_to_response("general/realm.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
 
 def realmdataxml(request):
     realm = Realm.objects.all()[0]
     ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
-    root = ET.Element("realm-data")
+    root = ET.Element("realm_data_root")
     NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
     root.set(NS_XSI + "noNamespaceSchemaLocation", "realm-data.xsd")
+    
+    realmdataElement = ET.SubElement(root, "realm_data")
+    
+    realmCountry = ET.SubElement(realmdataElement, "country")
+    realmCountry.text = realm.country.upper()
+    
+    nIdpCountry = ET.SubElement(realmdataElement, "number_Idp")
+    nIdpCountry.text = "%s" %len(realm.institution_set.filter(ertype=1))
+    
+    nSPCountry = ET.SubElement(realmdataElement, "number_SP")
+    nSPCountry.text = "%s" %len(realm.institution_set.filter(ertype=2))
+    
+    nSPIdpCountry = ET.SubElement(realmdataElement, "number_SPIdP")
+    nSPIdpCountry.text = "%s" %len(realm.institution_set.filter(ertype=3))
+    
+    ninstCountry = ET.SubElement(realmdataElement, "number_inst")
+    ninstCountry.text = "%s" %len(realm.institution_set.all())
+    
+    nuserCountry = ET.SubElement(realmdataElement, "number_user")
+    insts = realm.institution_set.all()
+    users = 0
+    for inst in insts:
+        try:
+            users = users + inst.institutiondetails.number_user
+        except InstitutionDetails.DoesNotExist:
+            pass
+    nuserCountry.text = "%s" %users
+    
+    nIdCountry = ET.SubElement(realmdataElement, "number_id")
+    insts = realm.institution_set.all()
+    ids = 0
+    for inst in insts:
+        try:
+            ids = ids + inst.institutiondetails.number_id
+        except InstitutionDetails.DoesNotExist:
+            pass
+    nIdCountry.text = "%s" %ids
+    
+    # Get the latest ts from all tables...
+    datetimes = []
+    datetimes.append(InstitutionDetails.objects.aggregate(Max('ts'))['ts__max'])
+    datetimes.append(Realm.objects.aggregate(Max('ts'))['ts__max'])
+    datetimes.append(InstServer.objects.aggregate(Max('ts'))['ts__max'])
+    datetimes.append(ServiceLoc.objects.aggregate(Max('ts'))['ts__max'])
+    
+    instTs = ET.SubElement(realmdataElement, "ts")
+    instTs.text = "%s" %max(datetimes).isoformat()
+    
     
     return render_to_response("general/realm_data.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
 

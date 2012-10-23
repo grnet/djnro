@@ -14,7 +14,12 @@ class UrlInline(generic.GenericTabularInline):
 
 class InstitutionAdmin(admin.ModelAdmin):
     inlines = [
-        NameInline,
+        NameInline, 
+    ]
+
+class InstitutionDetailsAdmin(admin.ModelAdmin):
+    inlines = [
+        UrlInline, 
     ]
 
 class ServiceLocAdmin(admin.ModelAdmin):
@@ -39,6 +44,6 @@ admin.site.register(MonProxybackClient)
 admin.site.register(MonLocalEAPOLData)
 admin.site.register(ServiceLoc, ServiceLocAdmin)
 admin.site.register(Institution, InstitutionAdmin)
-admin.site.register(InstitutionDetails)
+admin.site.register(InstitutionDetails, InstitutionDetailsAdmin)
 admin.site.register(Realm, RealmInLine)
 admin.site.register(RealmData)

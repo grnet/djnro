@@ -123,7 +123,6 @@ function addButton(row){
         <label class="control-label" for="id_urls">{% trans "Urls" %}</label>
         {{urls_form.management_form}}
         <div class="controls">
-        {% for err in urls_form.errors %}{% if err|length > 0 %}<span class="help-inline">{{err}}</span>{% endif %}{% endfor %}
         {% if urls_form.non_form_errors %} <span class="help-inline"> {{ urls_form.non_form_errors|join:", "}}</span>{% endif %}
             <table id="urlsform"><thead><tr><td>url</td><td>type</td><td>language</td></tr></thead><tbody>
         {% for formset in urls_form.forms %}
