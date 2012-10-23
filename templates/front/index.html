@@ -22,39 +22,37 @@
 	var image = '';
 	var infoWindow;
 	
-var styles = [{
-	url: '/static/img/edugroup.png',
-	height: 54,
-	width: 63,
-	textColor: '#ffffff',
-	textSize: 11
-	},
-	{
-	url: '/static/img/edugroup.png',
-	height: 54,
-	width: 63,
-	textColor: '#ffffff',
-	textSize: 11
-	},
-	{
-	url: '/static/img/edugroup.png',
-	height: 54,
-	width: 63,
-	textColor: '#ffffff',
-	textSize: 11
-}];
 
-function initialize() {
-	image = new google.maps.MarkerImage('/static/img/edupin.png',
-	// This marker is 29 pixels wide by 40 pixels tall.
-	new google.maps.Size(29, 40),
-	// The origin for this image is 0,0.
-	new google.maps.Point(0,0),
-	// The anchor for this image is the base of the flagpole at 18,42.
-	new google.maps.Point(14, 40)
-);
+	var styles = [ {
+		url : '/static/img/edugroup.png',
+		height : 54,
+		width : 63,
+		textColor : '#ffffff',
+		textSize : 11
+	}, {
+		url : '/static/img/edugroup.png',
+		height : 54,
+		width : 63,
+		textColor : '#ffffff',
+		textSize : 11
+	}, {
+		url : '/static/img/edugroup.png',
+		height : 54,
+		width : 63,
+		textColor : '#ffffff',
+		textSize : 11
+	} ];
 
-	var styleArray = [ {
+	function initialize() {
+		image = new google.maps.MarkerImage('/static/img/edupin.png',
+		// This marker is 29 pixels wide by 40 pixels tall.
+		new google.maps.Size(29, 40),
+		// The origin for this image is 0,0.
+		new google.maps.Point(0, 0),
+		// The anchor for this image is the base of the flagpole at 18,42.
+		new google.maps.Point(14, 40));
+
+		var styleArray = [ {
 			featureType : "all",
 			stylers : [ {
 				saturation : -60
@@ -89,7 +87,8 @@ function initialize() {
 
 		];
 
-		var mapOptions = {
+		
+	var mapOptions = {
 			center : latlng,
 			zoom : zoomLevel,
 			mapTypeId : google.maps.MapTypeId.ROADMAP,
@@ -246,7 +245,6 @@ function initialize() {
 		alert(markers[closest].address);
 	}
 
-
 	$(document).ready(function() {
 		initialize();
 		marks = placeMarkers();
@@ -266,8 +264,8 @@ function initialize() {
               <li><a href="#">News</a></li>
               <li><a href="{% url geolocate %}" target="about:blank()">eduroam near me</a></li>
               <li class="nav-header">Users</li>
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Contact</a></li>
+              <li><a href="#">Where</a></li>
+              <li><a href="/how/en/">How</a></li>
               <li><a href="#">About</a></li>
               <li class="nav-header">Institutions</li>
               <li><a href="{% url manage %}">{% trans "Management" %}</a></li>
@@ -281,7 +279,7 @@ function initialize() {
 			<div class="row-fluid">
 				<!--/span-->
 				
-					{% block subcontent %} 
+					{% block subcontent %}
 					<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;"></div>
 					{% endblock %}
 				

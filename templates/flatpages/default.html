@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% load i18n %}
+    {% block title %}{{ flatpage.title }}{% endblock %}
+    {% block extrahead %}
+    <style type="text/css">
+      html,body {
+	height: 100%;
+	overflow: hidden;
+}
+      .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
+    </style>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+
+{% endblock %}
+
+    {% block content %}
+	<div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+            
+              <li class="active"><a href="{% url index %}">{% trans "Home" %}</a></li>
+              <li><a href="#">News</a></li>
+              <li><a href="{% url geolocate %}" target="about:blank()">eduroam near me</a></li>
+              <li class="nav-header">Users</li>
+              <li><a href="#">Where</a></li>
+              <li><a href="#">How</a></li>
+              <li><a href="#">About</a></li>
+              <li class="nav-header">Institutions</li>
+              <li><a href="{% url manage %}">{% trans "Management" %}</a></li>
+            </ul>
+          </div><!--/.well -->
+          <div><img src="/static/img/keep_calm_eduroam_small.png"></div>
+        </div><!--/span-->
+
+
+		<div class="span10">
+			<div class="row-fluid">
+				<!--/span-->
+				
+					{% block subcontent %}
+					<h4>{{ flatpage.title }}</h4>
+					<hr>
+					{{ flatpage.content|linebreaks }}
+					{% endblock %}
+				
+				<!--/span-->
+			</div><!--/row-->
+		</div><!--/span-->
+
+        </div><!--/span-->
+      </div><!--/row-->
+
+      <hr>
+
+      <footer>
+        <p>&copy; @ GRNET NOC 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+	{% endblock %}
