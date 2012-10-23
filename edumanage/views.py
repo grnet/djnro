@@ -7,6 +7,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from edumanage.models import *
+from accounts.models import *
 from edumanage.forms import *
 from django import forms
 from django.forms.models import modelformset_factory
@@ -20,7 +21,7 @@ from django.conf import settings
 from django.contrib import messages
 
 def index(request):
-    return render_to_response('front/index.html', context_instance=RequestContext(request, base_response(request)))
+    return render_to_response('front/index.html', context_instance=RequestContext(request))
 
 @login_required
 def manage(request):
@@ -31,7 +32,9 @@ def manage(request):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
+        return render_to_response('edumanage/welcome.html',
+                              context_instance=RequestContext(request, base_response(request)))
+        
     services = ServiceLoc.objects.filter(institutionid=inst)
     services_list.extend([s for s in services])
     servers = InstServer.objects.filter(instid=inst)
@@ -48,13 +51,12 @@ def manage(request):
 def institutions(request):
     user = request.user
     dict = {}
-    
     try:
         profile = user.get_profile()
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
-        inst = False
+        return HttpResponseRedirect(reverse("manage"))
     dict['institution'] = inst.pk
     form = InstDetailsForm(initial=dict)
     form.fields['institution'].widget.attrs['readonly'] = True
@@ -74,13 +76,9 @@ def add_institution_details(request, institution_pk):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
-    if (not inst) or (int(inst.pk) != int(institution_pk)):
-    #            messages.add_message(request, messages.WARNING,
-    #                             _("Insufficient rights on Institution. Contact your administrator"))
-        return HttpResponseRedirect(reverse("institutions"))
+        return HttpResponseRedirect(reverse("manage"))
+    
     if request.method == "GET":
-
         # Determine add or edit
         request_data = request.POST.copy()
         try:         
@@ -133,7 +131,7 @@ def services(request, service_pk):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
+        return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [2,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
         return render_to_response('edumanage/services.html', { 'institution': inst },
@@ -170,7 +168,7 @@ def add_services(request, service_pk):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
+        return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [2,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
         return render_to_response('edumanage/services_edit.html', { 'edit': edit },
@@ -244,6 +242,7 @@ def get_service_points(request):
             inst = profile.institution
         except UserProfile.DoesNotExist:
             inst = False
+            return HttpResponseNotFound('<h1>Something went really wrong</h1>')
         servicelocs = ServiceLoc.objects.filter(institutionid=inst)
         
         locs = []
@@ -300,6 +299,7 @@ def servers(request, server_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
+        return HttpResponseRedirect(reverse("manage"))
     if inst:
         servers = InstServer.objects.filter(instid=inst)
     if server_pk:
@@ -322,7 +322,7 @@ def adduser(request):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
+        return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
         form = ContactForm()
         return render_to_response('edumanage/add_user.html', { 'form' : form },
@@ -351,8 +351,7 @@ def add_server(request, server_pk):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
-
+        return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
         # Determine add or edit
         try:         
@@ -391,7 +390,7 @@ def realms(request):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
+        return HttpResponseRedirect(reverse("manage"))
     if inst:
         realms = InstRealm.objects.filter(instid=inst)
     if inst.ertype not in [1,3]:
@@ -409,7 +408,7 @@ def add_realm(request, realm_pk):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
+        return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [1,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
         return render_to_response('edumanage/realms_edit.html', { 'edit': edit },
@@ -454,8 +453,12 @@ def del_realm(request):
         user = request.user
         req_data = request.GET.copy()
         realm_pk = req_data['realm_pk']
-        profile = user.get_profile()
-        institution = profile.institution
+        try:
+            profile = user.get_profile()
+            institution = profile.institution
+        except UserProfile.DoesNotExist:
+            resp['error'] = "Not enough rights"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp = {}
         try:
             realm = InstRealm.objects.get(instid=institution, pk=realm_pk)
@@ -481,12 +484,10 @@ def contacts(request):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        inst = False
+        return HttpResponseRedirect(reverse("manage"))
     if inst:
         instcontacts.extend([x.contact.pk for x in InstitutionContactPool.objects.filter(institution=inst)])
-        print instcontacts
         contacts = Contact.objects.filter(pk__in=instcontacts)
-        print contacts
     return render_to_response('edumanage/contacts.html', { 'contacts': contacts},
                                   context_instance=RequestContext(request, base_response(request)))
 
@@ -501,7 +502,7 @@ def add_contact(request, contact_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
-
+        return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
 
         # Determine add or edit
@@ -541,8 +542,12 @@ def del_contact(request):
         user = request.user
         req_data = request.GET.copy()
         contact_pk = req_data['contact_pk']
-        profile = user.get_profile()
-        institution = profile.institution
+        try:
+            profile = user.get_profile()
+            institution = profile.institution
+        except UserProfile.DoesNotExist:
+            resp['error'] = "Could not delete contact. Not enough rights"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp = {}
         try:
             contactinst = InstitutionContactPool.objects.get(institution=institution, contact__pk=contact_pk)
@@ -576,16 +581,22 @@ def base_response(request):
     instrealms = []
     instcontacts = []
     contacts = []
+    institution = False
+    institution_exists = False
     try:
         profile = user.get_profile()
         institution = profile.institution
+        institution_exists = True
+    except UserProfile.DoesNotExist:
+        institution_exists = False
+    try:
         inst.append(institution)
         server = InstServer.objects.filter(instid=institution)
         services = ServiceLoc.objects.filter(institutionid=institution)
         instrealms = InstRealm.objects.filter(instid=institution)
         instcontacts.extend([x.contact.pk for x in InstitutionContactPool.objects.filter(institution=institution)])
         contacts = Contact.objects.filter(pk__in=instcontacts)
-    except UserProfile.DoesNotExist:
+    except:
         pass
         
     return { 
@@ -595,6 +606,7 @@ def base_response(request):
             'realms_num': len(instrealms),
             'contacts_num': len(contacts),
             'instdets': institution,
+            'institution_exists': institution_exists,
             
         }
 
@@ -604,8 +616,12 @@ def del_server(request):
         user = request.user
         req_data = request.GET.copy()
         server_pk = req_data['server_pk']
-        profile = user.get_profile()
-        institution = profile.institution
+        try:
+            profile = user.get_profile()
+            institution = profile.institution
+        except UserProfile.DoesNotExist:
+            resp['error'] = "Could not delete server. Not enough rights"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp = {}
         try:
             server = InstServer.objects.get(instid=institution, pk=server_pk)
@@ -627,8 +643,12 @@ def del_service(request):
         user = request.user
         req_data = request.GET.copy()
         service_pk = req_data['service_pk']
-        profile = user.get_profile()
-        institution = profile.institution
+        try:
+            profile = user.get_profile()
+            institution = profile.institution
+        except UserProfile.DoesNotExist:
+            resp['error'] = "Could not delete service. Not enough rights"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp = {}
         try:
             service = ServiceLoc.objects.get(institutionid=institution, pk=service_pk)
