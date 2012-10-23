@@ -22,6 +22,10 @@ from django.contrib import messages
 
 from django.db.models import Max
 
+from django.views.decorators.cache import never_cache
+from django.utils.translation import ugettext as _
+from django.contrib.auth import authenticate, login
+
 
 def index(request):
     return render_to_response('front/index.html', context_instance=RequestContext(request))
@@ -666,11 +670,106 @@ def del_service(request):
         resp['success'] = "Service successfully deleted"
         return HttpResponse(json.dumps(resp), mimetype='application/json')
     
-
+@never_cache
+def user_login(request):
+    try:
+        error_username = False
+        error_orgname = False
+        error_entitlement = False
+        error_mail = False
+        has_entitlement = False
+        error = ''
+        username = request.META['HTTP_EPPN']
+        if not username:
+            error_username = True
+        firstname = request.META['HTTP_SHIB_INETORGPERSON_GIVENNAME']
+        lastname = request.META['HTTP_SHIB_PERSON_SURNAME']
+        mail = request.META['HTTP_SHIB_INETORGPERSON_MAIL']
+        #organization = request.META['HTTP_SHIB_HOMEORGANIZATION']
+        entitlement = request.META['HTTP_SHIB_EP_ENTITLEMENT']
+        if settings.SHIB_AUTH_ENTITLEMENT in entitlement.split(";"):
+            has_entitlement = True
+        if not has_entitlement:
+            error_entitlement = True
+#        if not organization:
+#            error_orgname = True
+        if not mail:
+            error_mail = True
+        if error_username:
+            error = _("Your idP should release the HTTP_EPPN attribute towards this service<br>")
+        if error_orgname:
+            error = error + _("Your idP should release the HTTP_SHIB_HOMEORGANIZATION attribute towards this service<br>")
+        if error_entitlement:
+            error = error + _("Your idP should release an appropriate HTTP_SHIB_EP_ENTITLEMENT attribute towards this service<br>")
+        if error_mail:
+            error = error + _("Your idP should release the HTTP_SHIB_INETORGPERSON_MAIL attribute towards this service")
+        if error_username or error_orgname or error_entitlement or error_mail:
+            return render_to_response('error.html', {'error': error, "missing_attributes": True},
+                                  context_instance=RequestContext(request))
+        try:
+            user = User.objects.get(username__exact=username)
+            user.email = mail
+            user.first_name = firstname
+            user.last_name = lastname
+            user.save()
+            user_exists = True
+        except User.DoesNotExist:
+            user_exists = False
+        user = authenticate(username=username, firstname=firstname, lastname=lastname, mail=mail, authsource='shibboleth')
+        if user is not None:
+#            try:
+#                peer = Peer.objects.get(domain_name=organization)
+#                up = UserProfile.objects.get_or_create(user=user,peer=peer)
+#            except:
+#                error = _("Your organization's domain name does not match our peers' domain names<br>Please contact Helpdesk to resolve this issue")
+#                return render_to_response('error.html', {'error': error}, context_instance=RequestContext(request))
+#            if not user_exists:
+#                user_activation_notify(user)
+            # user does not exist... forward to an institution selection form to create profile
+            try:
+                profile = user.get_profile()
+                inst = profile.institution
+            except UserProfile.DoesNotExist:
+                form = UserProfileForm()
+                form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
+                form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
+                return render_to_response('registration/select_institution.html', {'form': form}, context_instance=RequestContext(request))
+            if user.is_active:
+               login(request, user)
+               return HttpResponseRedirect(reverse("manage"))
+            else:
+                error = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
+                return render_to_response('error.html', {'error': error, 'inactive': True},
+                                  context_instance=RequestContext(request))
+        else:
+            error = _("Something went wrong during user authentication. Contact your administrator %s" %user)
+            return render_to_response('error.html', {'error': error,},
+                                  context_instance=RequestContext(request))
+    except Exception as e:
+        error = _("Invalid login procedure %s" %e)
+        return render_to_response('error.html', {'error': error,},
+                                  context_instance=RequestContext(request))
+        # Return an 'invalid login' error message.
+#    return HttpResponseRedirect(reverse("user-routes"))
 
 def geolocate(request):
     return render_to_response('front/geolocate.html',
                                   context_instance=RequestContext(request))
+
+def selectinst(request):
+    if request.method == 'POST':
+        request_data = request.POST.copy()
+        user = request_data['user']
+        form = UserProfileForm(request_data)
+        if form.is_valid():
+            userprofile = form.save()
+            error = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %userprofile.user.username
+            return render_to_response('error.html', {'error': error, 'inactive': True},
+                                  context_instance=RequestContext(request))
+        else:
+            form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
+            form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
+            return render_to_response('registration/select_institution.html', {'form': form}, context_instance=RequestContext(request))
 
 
 def closest(request):

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block content %}
+<div class="container-fluid">
+
+    <div class="row-fluid">
+        <div class="span2">
+        </div><!--/span-->
+        <div class="span10">
+            <div class="row-fluid">
+                <!--/span-->
+                <div class="span10">
+                <h4>Select you institution</h4>
+<hr>
+<div class="span1"></div>
+<div class="span7">
+Excellent! You are a click away from getting into your institution eduroam management.
+Select your institution to proceed. Our administrators will activate your account and notify you via e-mail.
+</div>
+<div class="span12"></div>
+<div class="span12">
+<form method="POST" class="form-horizontal" action="{% url selectinst %}">
+    {% csrf_token %}
+    {% if form.non_field_errors %}
+    <p class="error">
+        {{ form.non_field_errors}}
+    </p>
+    {% endif %}
+    <div style="display: none">
+        {{form.user}}
+    </div>
+    <div class="control-group {% if form.institution.errors %} error {% endif %}">
+        <label class="control-label" for="id_institution"><b>{% trans "Institution" %}</b></label>
+        <div class="controls">
+            {{ form.institution }}
+            {% if form.institution.errors %} <span class="help-inline"> {{ form.institution.errors|join:", " }} </span>
+            {% endif %} <span class="help-block"> {{ form.institution.help_text }}</span>
+        </div>
+    </div>
+        
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" id="applybutton" value="Apply" class="btn btn-primary"/>
+            {% trans "Apply" %}</button>
+        </div>
+    </div>
+</form>
+</div>
+                </div><!--/span-->
+                <!--/span-->
+            </div><!--/row-->
+        </div><!--/span-->
+    </div><!--/row-->
+    <hr>
+    <footer>
+        <p>
+            &copy;  GRNET NOC - GRNET S.A - 2012
+        </p>
+    </footer>
+</div><!--/.fluid-container-->
+{% endblock %}
+
+
+{% block subcontent %} 
+{% endblock %}

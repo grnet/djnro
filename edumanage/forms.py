@@ -2,6 +2,7 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from edumanage.models import *
+from accounts.models import *
 from django.conf import settings
 
 from django.contrib.contenttypes.generic import BaseGenericInlineFormSet
@@ -13,6 +14,11 @@ import re
 
 FQDN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
 #FQDN_RE = r'(^[a-z0-9.-]{1,255}$)'
+
+class UserProfileForm(forms.ModelForm):
+
+    class Meta:
+        model = UserProfile
 
 class InstDetailsForm(forms.ModelForm):
 

@@ -35,6 +35,7 @@ urlpatterns = patterns('edumanage.views',
 
     url(r'^manage/adduser/?$', 'adduser', name="adduser"),
     
+    url(r'^manage/selectinst/?$', 'selectinst', name="selectinst"),
 
     
 
