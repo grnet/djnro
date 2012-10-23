@@ -134,7 +134,7 @@ def services(request, service_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
-    if inst.institutiondetails.ertype not in [2,3]:
+    if inst.ertype not in [2,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
         return render_to_response('edumanage/services.html', { 'institution': inst },
                               context_instance=RequestContext(request, base_response(request)))
@@ -171,7 +171,7 @@ def add_services(request, service_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
-    if inst.institutiondetails.ertype not in [2,3]:
+    if inst.ertype not in [2,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
         return render_to_response('edumanage/services_edit.html', { 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
@@ -187,7 +187,7 @@ def add_services(request, service_pk):
         form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
         UrlFormSet =  generic_inlineformset_factory(URL_i18n, extra=2, can_delete=True)
         NameFormSet = generic_inlineformset_factory(Name_i18n, extra=2, can_delete=True)
-        urls_form = UrlFormSet(prefix='urlsform') 
+        urls_form = UrlFormSet(prefix='urlsform')
         names_form = NameFormSet(prefix='namesform')
         if (service):
             NameFormSet = generic_inlineformset_factory(Name_i18n, extra=1, formset=NameFormSetFact, can_delete=True)
@@ -197,6 +197,8 @@ def add_services(request, service_pk):
         form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
         if service:
             edit = True
+        for url_form in urls_form.forms:
+            url_form.fields['urltype'] = forms.ChoiceField(choices=(('', '----------'),('info', 'Info'),))
         return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
@@ -226,6 +228,8 @@ def add_services(request, service_pk):
             form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
         if service:
             edit = True
+        for url_form in urls_form.forms:
+            url_form.fields['urltype'] = forms.ChoiceField(choices=(('', '----------'),('info', 'Info'),))
         return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
 
@@ -390,7 +394,7 @@ def realms(request):
         inst = False
     if inst:
         realms = InstRealm.objects.filter(instid=inst)
-    if inst.institutiondetails.ertype not in [1,3]:
+    if inst.ertype not in [1,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP')
     return render_to_response('edumanage/realms.html', { 'realms': realms },
                                   context_instance=RequestContext(request, base_response(request)))
@@ -406,7 +410,7 @@ def add_realm(request, realm_pk):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
-    if inst.institutiondetails.ertype not in [1,3]:
+    if inst.ertype not in [1,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
         return render_to_response('edumanage/realms_edit.html', { 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
@@ -583,10 +587,6 @@ def base_response(request):
         contacts = Contact.objects.filter(pk__in=instcontacts)
     except UserProfile.DoesNotExist:
         pass
-    try:
-        instdets = institution.institutiondetails
-    except InstitutionDetails.DoesNotExist:
-        instdets = False
         
     return { 
             'inst_num': len(inst),
@@ -594,7 +594,7 @@ def base_response(request):
             'services_num': len(services),
             'realms_num': len(instrealms),
             'contacts_num': len(contacts),
-            'instdets': instdets,
+            'instdets': institution,
             
         }
 
