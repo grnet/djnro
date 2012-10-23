@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-23 12:49+0300\n"
+"POT-Creation-Date: 2012-10-23 13:13+0300\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -357,7 +357,7 @@ msgstr ""
 
 #: templates/edumanage/realms.html:106
 msgid "Add new realm"
-msgstr "Νέο Realm"
+msgstr "Προσθήκη Realm"
 
 #: templates/edumanage/realms.html:134
 msgid "Delete Realm"
@@ -366,7 +366,7 @@ msgstr "Διαγραφή Realm"
 #: templates/edumanage/realms_edit.html:6
 #: templates/edumanage/realms_edit.html:20
 msgid "Add Realm"
-msgstr "Νέο Realm"
+msgstr "Προσθήκη Realm"
 
 #: templates/edumanage/realms_edit.html:41
 msgid "Realm"
