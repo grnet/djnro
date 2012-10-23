@@ -1,9 +1,10 @@
 {% extends "edumanage/welcome.html"%}
+{% load i18n %}
 {% load tolocale %}
 {% block crumbs %}
-	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
-	<li><a href="{% url institutions %}">Institution</a><span class="divider">/</span></li>
-	<li class="active">{% tolocale institution LANGUAGE_CODE%} (Edit)</li>
+	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url institutions %}">{% trans "Institution" %}</a><span class="divider">/</span></li>
+	<li class="active">{% tolocale institution LANGUAGE_CODE%} ({% trans "Edit" %})</li>
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.formset.js"></script>
@@ -70,7 +71,7 @@ function addButton(row){
 {% block homeactive %}{% endblock %}
 {% block instactive %}class="active"{% endblock %}
 {% block subcontent %}
-<h4>{% tolocale institution LANGUAGE_CODE%} Edit</h4>
+<h4>{% tolocale institution LANGUAGE_CODE%} {% trans "Edit" %}</h4>
 <hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
@@ -83,21 +84,19 @@ function addButton(row){
 		{{form.institution}}
 	</div>
 		<div class="control-group">
-		<label class="control-label" for="id_ertype">Name</label>
+		<label class="control-label" for="id_name">{% trans "Name" %}</label>
 		<div class="controls">
-			<input class="input" id="disabledInput" type="text" placeholder="{% tolocale institution LANGUAGE_CODE%}" disabled>
+			<input class="input" id="disabledInput" type="text" placeholder="{% tolocale institution LANGUAGE_CODE %}" disabled>
 		</div>
 	</div>
 	<div class="control-group {% if form.ertype.errors %} error {% endif %}">
-		<label class="control-label" for="id_ertype">ErType</label>
+		<label class="control-label" for="id_ertype">{% trans "Type" %}</label>
 		<div class="controls">
-			{{ form.ertype }}
-			{% if form.ertype.errors %} <span class="help-inline"> {{ form.ertype.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.ertype.help_text }}</span>
+			<input class="input" id="disabledInput" type="text" placeholder="{{institution.get_ertype_display}}" disabled>
 		</div>
 	</div>
 	<div class="control-group {% if form.address_street.errors %} error {% endif %}">
-		<label class="control-label" for="id_address_street">Address Street</label>
+		<label class="control-label" for="id_address_street">{% trans "Address Street" %}</label>
 		<div class="controls">
 			{{ form.address_street }}
 			{% if form.address_street.errors %} <span class="help-inline"> {{ form.address_street.errors|join:", " }} </span>
@@ -105,7 +104,7 @@ function addButton(row){
 		</div>
 	</div>
 	<div class="control-group {% if form.address_city.errors %} error {% endif %}">
-		<label class="control-label" for="id_address_city">Address City</label>
+		<label class="control-label" for="id_address_city">{% trans "Address City" %}</label>
 		<div class="controls">
 			{{ form.address_city }}
 			{% if form.address_city.errors %} <span class="help-inline"> {{ form.address_city.errors|join:", " }} </span>
@@ -113,7 +112,7 @@ function addButton(row){
 		</div>
 	</div>
 	<div class="control-group {% if form.contact.errors %} error {% endif %}">
-		<label class="control-label" for="id_contact">Contact(s)</label>
+		<label class="control-label" for="id_contact">{% trans "Contacts" %}</label>
 		<div class="controls">
 			{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
 			{% if form.contact.errors %} <span class="help-inline"> {{ form.ertype.contact|join:", " }} </span>
@@ -121,7 +120,7 @@ function addButton(row){
 		</div>
 	</div>
     <div class="control-group {% for err in urls_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if urls_form.non_form_errors %}error{% endif %}">
-        <label class="control-label" for="id_urls">Urls</label>
+        <label class="control-label" for="id_urls">{% trans "Urls" %}</label>
         {{urls_form.management_form}}
         <div class="controls">
         {% for err in urls_form.errors %}{% if err|length > 0 %}<span class="help-inline">{{err}}</span>{% endif %}{% endfor %}
@@ -143,7 +142,7 @@ function addButton(row){
     </div>
     {% if instdets.ertype == 2 or instdets.ertype == 3 %}
 	<div class="control-group {% if form.oper_name.errors %} error {% endif %}">
-		<label class="control-label" for="id_oper_name">Oper Name</label>
+		<label class="control-label" for="id_oper_name">{% trans "Oper Name" %}</label>
 		<div class="controls">
 			{{ form.oper_name }}
 			{% if form.oper_name.errors %} <span class="help-inline"> {{ form.oper_name.errors|join:", " }} </span>
@@ -153,7 +152,7 @@ function addButton(row){
 	{% endif %}
 	{% if instdets.ertype == 1 or instdets.ertype == 3 %}
 	<div class="control-group {% if form.number_user.errors %} error {% endif %}">
-		<label class="control-label" for="id_number_user">Number User</label>
+		<label class="control-label" for="id_number_user">{% trans "Number of Users" %}</label>
 		<div class="controls">
 			{{ form.number_user }}
 			{% if form.number_user.errors %} <span class="help-inline"> {{ form.number_user.errors|join:", " }} </span>
@@ -162,7 +161,7 @@ function addButton(row){
 	</div>
 	{% endif %}
 	<div class="control-group {% if form.number_id.errors %} error {% endif %}">
-		<label class="control-label" for="id_number_id">Number Id</label>
+		<label class="control-label" for="id_number_id">{% trans "Number Id" %}</label>
 		<div class="controls">
 			{{ form.number_id }}
 			{% if form.number_id.errors %} <span class="help-inline"> {{ form.number_id.errors|join:", " }} </span>
@@ -171,22 +170,21 @@ function addButton(row){
 	</div>
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" id="applybutton" value="Apply" class="btn btn-large btn-primary"/>
-			Apply</button>
+			<button type="submit" id="applybutton" value="Apply" class="btn btn-large btn-primary"/>{% trans "Apply" %}</button>
 		</div>
 	</div>
 </form>
 <div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabel">Add User</h3>
+<h3 id="myModalLabel">{% trans "Add User" %}</h3>
 </div>
 <div class="modal-body" id="mymodalbody">
 
 </div>
 <div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-<a class="btn btn-primary" id="adduserSubmit" href="#">Save changes</a>
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
+<a class="btn btn-primary" id="adduserSubmit" href="#">{% trans "Save changes" %}</a>
 </div>
 </div>
 {% endblock %}

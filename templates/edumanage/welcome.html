@@ -1,4 +1,5 @@
 {% extends "base.html"%}
+{% load i18n %}
 {% block extrahead %} <script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="/static/js/markerclusterer.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
@@ -169,10 +170,10 @@ $.get("{% url get-service-points %}", function(data){
 			<div class="row-fluid"><div class="span10">
 				<ul class="breadcrumb" style="display: inline-table; padding: 0">
 					{% block crumbs %}
-	    			<li class="active">Home</li>
+	    			<li class="active">{% trans "Home" %}</li>
 	    			{% endblock %}
 	    		</ul>
-			<p class="pull-right">You are logged in as: {{user}} (<a href="{% url logout %}">Logout</a>)</p>
+			<p class="pull-right">{% trans "You are logged in as" %}: {{user}} (<a href="{% url logout %}">{% trans "Logout" %}</a>)</p>
 			</div></div>
 		</div>
 	</div>
@@ -181,23 +182,23 @@ $.get("{% url get-service-points %}", function(data){
 			<div class="sidebar-nav">
 				<ul class="nav nav-list nav-stacked side-menu">
 					<li {% block homeactive %}class="active"{% endblock %}>
-						<a href="{% url manage %}">Home</a>
+						<a href="{% url manage %}">{% trans "Home" %}</a>
 					</li>
 					<li {% block instactive %}{% endblock %}>
-						<a href="{% url institutions %}">Institution {% if not instdets %}<font style="color: red; font-weight: bold; font-size: 14px;">(!)</font>{% endif %}</a>
+						<a href="{% url institutions %}">{% trans "Institution" %} {% if not instdets %}<font style="color: red; font-weight: bold; font-size: 14px;">(!)</font>{% endif %}</a>
 					</li>
 					{% if instdets %}
 					<li {% block servicesactive %}{% endblock %}>
-						<a href="{% url services %}">Services ({{services_num}})</a>
+						<a href="{% url services %}">{% trans "Services" %} ({{services_num}})</a>
 					</li>
 					<li {% block serversactive %}{% endblock %}>
-						<a href="{% url servers %}">Servers ({{servers_num}})</a>
+						<a href="{% url servers %}">{% trans "Servers" %} ({{servers_num}})</a>
 					</li>
 					<li {% block realmsactive %}{% endblock %}>
-						<a href="{% url realms %}">Realms ({{realms_num}})</a>
+						<a href="{% url realms %}">{% trans "Realms" %} ({{realms_num}})</a>
 					</li>
 					<li {% block contactsactive %}{% endblock %}>
-						<a href="{% url contacts %}">Contacts ({{contacts_num}})</a>
+						<a href="{% url contacts %}">{% trans "Contacts" %} ({{contacts_num}})</a>
 					</li>
 					{% endif %}
 				</ul>
@@ -208,11 +209,11 @@ $.get("{% url get-service-points %}", function(data){
 				<!--/span-->
 				<div class="span10">
 					{% block subcontent %}
-					<h4>Home - Service Locations</h4>
+					<h4>{% trans "Home" %} - {% trans "Service Locations" %}</h4>
               		<hr>
 					{% if services %} <div id="map_canvas" style="width:100%; height:450px;"></div>
 					{% else %}
-					<div>{% if instdets %}No services defined yet! <a href="{% url edit-services %}" class="btn btn-primary">Add new service</a>{% else %}Specify your institution details to proceed <a class="btn btn-small btn-primary" href="{% url edit-institution institution.pk %}">Edit</a>{% endif %}</div>
+					<div>{% if instdets %}{% trans "No services defined yet"%}! <a href="{% url edit-services %}" class="btn btn-primary">{% trans "Add new service" %}</a>{% else %}Specify your institution details to proceed <a class="btn btn-small btn-primary" href="{% url edit-institution institution.pk %}">{% trans "Edit" %}</a>{% endif %}</div>
 					{% endif %}
 					{% endblock %}
 				</div><!--/span-->

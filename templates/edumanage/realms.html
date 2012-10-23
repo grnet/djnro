@@ -1,7 +1,8 @@
 {% extends "edumanage/welcome.html"%}
+{% load i18n %}
 			{% block crumbs %}
-	    			<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
-	    			<li class="active">Realms</li>
+	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Realms" %}</li>
 	    			{% endblock %}
 {% load i18n %}
 {% block extrahead %}
@@ -102,7 +103,7 @@ $("#delrealmSubmit").click(function(){
 					    {% endfor %}
 					</table>
 				  {% endif %}
-	              <div>{% if instdets.ertype == 1 or instdets.ertype == 3 %}<a href="{% url edit-realms %}" class="btn btn-primary">Add new realm</a>{% endif %}</div>
+	              <div>{% if instdets.ertype == 1 or instdets.ertype == 3 %}<a href="{% url edit-realms %}" class="btn btn-primary">{% trans "Add new realm" %}</a>{% endif %}</div>
 	              <div class="span10"></div>
 	              {% if instdets.ertype == 1 or instdets.ertype == 3 %}
 		              {% if realms %}
@@ -111,7 +112,7 @@ $("#delrealmSubmit").click(function(){
 						<tr>
 							<th>Realm</th>
 							<th>Server(s)</th>
-							<th style="text-align: center;">Action</th>
+							<th style="text-align: center;">{% trans "Action" %}</th>
 						</tr>
 						</thead>
 						
@@ -120,7 +121,7 @@ $("#delrealmSubmit").click(function(){
 		              	<tr class="GradeC">
 		                	<td>{{realm.realm}}</td>
 		                	<td>{{realm.get_servers}}</td>
-		                	<td style="text-align: center;"><a href="{% url edit-realms realm.pk %}" class="btn btn-small">edit</a> <a href="#" id="del_realm_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">delete</a></td>
+		                	<td style="text-align: center;"><a href="{% url edit-realms realm.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_realm_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
 		                </tr>
 		              	{% endfor %}
 		              	</tbody>
@@ -130,14 +131,14 @@ $("#delrealmSubmit").click(function(){
 <div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabel">Delete Realm</h3>
+<h3 id="myModalLabel">{% trans "Delete Realm" %}</h3>
 </div>
 <div class="modal-body" id="mymodalbody">
 
 </div>
 <div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-<a class="btn btn-warning" id="delrealmSubmit" href="#">Delete</a>
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+<a class="btn btn-warning" id="delrealmSubmit" href="#">{% trans "Delete" %}</a>
 </div>
 </div>
             {% endblock %}

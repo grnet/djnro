@@ -1,8 +1,9 @@
 {% extends "edumanage/welcome.html"%}
+{% load i18n %}
 {% load tolocale %}
 {% block crumbs %}
-    <li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
-    <li><a href="{% url services %}">Services</a><span class="divider">/</span></li>
+    <li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+    <li><a href="{% url services %}">{% trans "Services" %}</a><span class="divider">/</span></li>
     <li class="active">{% tolocale service LANGUAGE_CODE %}</li>
 {% endblock %}
 {% block extrahead %}
@@ -100,7 +101,7 @@
 <div class="form-horizontal span7">
 
     <div class="control-group {% if form.longitude.errors or form.latitude.errors %} error {% endif %}">
-        <label class="control-label" for="id_map_canvas">Location</label>
+        <label class="control-label" for="id_map_canvas">{% trans "Location" %}</label>
 
         <div class="controls">
             Lat: {{ service.latitude }}<br>
@@ -109,7 +110,7 @@
     </div>
 
     <div class="control-group">
-        <label class="control-label" for="id_address_city">loc_name</label>
+        <label class="control-label" for="id_address_city">{% trans "Location Name" %}</label>
         
         <div class="controls">
         	{% for name in service.loc_name.all %}
@@ -118,7 +119,7 @@
         </div>
     </div>
     <div class="control-group {% if form.address_street.errors %} error {% endif %}">
-        <label class="control-label" for="id_address_street">Address</label>
+        <label class="control-label" for="id_address_street">{% trans "Address" %}</label>
         <div class="controls">
             {{ service.address_street }}<br>
             {{ service.address_city }}
@@ -133,7 +134,7 @@
         </div>
     </div>
     <div class="control-group {% if form.contact.errors %} error {% endif %}">
-        <label class="control-label" for="id_contact">Contact</label>
+        <label class="control-label" for="id_contact">{% trans "Contacts" %}</label>
         <div class="controls">
            	{% for contact in service.contact.all %}
         		{{contact.firstname}} {{contact.lastname}} (<a href="mailto:{{contact.email}}">{{contact.email}}</a> - tel:{{contact.phone}}){% if not forloop.last %}<br>{% endif %}
@@ -141,21 +142,21 @@
         </div>
     </div>
     <div class="control-group {% if form.enc_level.errors %} error {% endif %}">
-        <label class="control-label" for="id_oper_name">enc_level</label>
+        <label class="control-label" for="id_oper_name">{% trans "Encryption Level" %}</label>
         <div class="controls">
             {{ service.enc_level }}
             
         </div>
     </div>
     <div class="control-group {% if form.port_restrict.errors %} error {% endif %}">
-        <label class="control-label" for="id_number_user">port_restrict</label>
+        <label class="control-label" for="id_number_user">{% trans "Port Restrict" %}</label>
         <div class="controls">
             {{ service.port_restrict }}
            
         </div>
     </div>
     <div class="control-group {% if form.transp_proxy.errors %} error {% endif %}">
-        <label class="control-label" for="id_number_id">transp_proxy</label>
+        <label class="control-label" for="id_number_id">{% trans "Transparent Proxy" %}</label>
         <div class="controls">
             {{ service.transp_proxy }}
             
@@ -176,20 +177,20 @@
         </div>
     </div>
     <div class="control-group {% if form.AP_no.errors %} error {% endif %}">
-        <label class="control-label" for="id_number_id">AP_no</label>
+        <label class="control-label" for="id_number_id">{% trans "AP number" %}</label>
         <div class="controls">
             {{ service.AP_no }}
           
         </div>
     </div>
     <div class="control-group {% if form.wired.errors %} error {% endif %}">
-        <label class="control-label" for="id_number_id">wired</label>
+        <label class="control-label" for="id_number_id">{% trans "Wired" %}</label>
         <div class="controls">
             {{ service.wired }}
         </div>
     </div>
     <div class="control-group {% for err in urls_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if urls_form.non_form_errors %}error{% endif %}">
-        <label class="control-label" for="id_urls">Urls</label>
+        <label class="control-label" for="id_urls">{% trans "Urls" %}</label>
         <div class="controls">
        		{% for url in service.url.all %}
         		<a href="{{url.url}}">{{url.url}}</a> - {{url.get_urltype_display}} ({{url.get_lang_display}}){% if not forloop.last %}<br>{% endif %}
@@ -198,7 +199,7 @@
     </div>
     <div class="control-group">
         <div class="controls">
-            <a class="btn btn-large btn-primary" href="{% url edit-services service.pk %}">Edit</a>
+            <a class="btn btn-large btn-primary" href="{% url edit-services service.pk %}">{% trans "Edit" %}</a>
         </div>
     </div>
 

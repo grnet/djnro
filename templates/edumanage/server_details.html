@@ -1,7 +1,8 @@
 {% extends "edumanage/welcome.html"%}
+{% load i18n %}
 {% block crumbs %}
-	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
-	<li><a href="{% url servers %}">Servers</a><span class="divider">/</span></li>
+	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url servers %}">{% trans "Servers" %}</a><span class="divider">/</span></li>
 	<li class="active">{{server.name}}</li>
 {% endblock %}
 {% block extrahead %}
@@ -14,7 +15,7 @@
 {% endblock %}
 {% block homeactive %}{% endblock %}
 {% block serversactive %}class="active"{% endblock %}
-{% block subcontent %} <h4>{{server.name}}</h4>
+{% block subcontent %} <h4>{{server.get_name}}</h4>
 <hr>
 <div class="form-horizontal">
 	{% csrf_token %}
@@ -27,70 +28,70 @@
 		{{form.instid}}
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_ertype">ErType</label>
+		<label class="control-label" for="id_ertype">{% trans "Type" %}</label>
 		<div class="controls">
-			{{ server.ertype }}
+			{{ server.get_ertype_display }}
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_name">name</label>
+		<label class="control-label" for="id_name">{% trans "Name" %}</label>
 		<div class="controls">
 			{{ server.name }}
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_host">host</label>
+		<label class="control-label" for="id_host">{% trans "Host" %}</label>
 		<div class="controls">
 			{{ server.host }}
 		</div>
 	</div>
 	{% if instdets.ertype == 1 or instdets.ertype == 3 %}
 	<div class="control-group">
-		<label class="control-label" for="id_port">port</label>
+		<label class="control-label" for="id_port">{% trans "Port" %}</label>
 		<div class="controls">
 			{{ server.port }}
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_acct_port">acct_port</label>
+		<label class="control-label" for="id_acct_port">{% trans "acct_port" %}</label>
 		<div class="controls">
 			{{ server.acct_port }}
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_timeout">timeout</label>
+		<label class="control-label" for="id_timeout">{% trans "Timeout" %}</label>
 		<div class="controls">
 			{{ server.timeout }}
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_retry">retry</label>
+		<label class="control-label" for="id_retry">{% trans "Retry" %}</label>
 		<div class="controls">
 			{{ server.retry }}
 		</div>
 	</div>
 	{% endif %}
 	<div class="control-group">
-		<label class="control-label" for="id_status_server">status_server</label>
+		<label class="control-label" for="id_status_server">{% trans "Status Server" %}</label>
 		<div class="controls">
 			{{ server.status_server }}
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_secret">secret</label>
+		<label class="control-label" for="id_secret">{% trans "Secret" %}</label>
 		<div class="controls">
 			{{ server.secret }}
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_proto">proto</label>
+		<label class="control-label" for="id_proto">{% trans "Protocol" %}</label>
 		<div class="controls">
 			{{ server.proto }}
 		</div>
 	</div>
 	 <div class="control-group">
         <div class="controls">
-            <a class="btn btn-large btn-primary" href="{% url edit-servers service.pk %}">Edit</a>
+            <a class="btn btn-primary" href="{% url edit-servers service.pk %}">{% trans "Edit" %}</a>
         </div>
     </div>
 </div>

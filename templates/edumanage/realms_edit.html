@@ -1,8 +1,9 @@
 {% extends "edumanage/welcome.html"%}
+{% load i18n %}
 {% block crumbs %}
-	<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
-	<li><a href="{% url realms %}">Realms</a><span class="divider">/</span></li>
-	<li class="active">{% if edit %}{{form.instance.realm}} (edit){% else %}Add Realm{% endif %}</li>
+	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url realms %}">{% trans "Realms" %}</a><span class="divider">/</span></li>
+	<li class="active">{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Realm" %}{% endif %}</li>
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
@@ -16,7 +17,7 @@
 			
 {% block homeactive %}{% endblock %}
 {% block realmsactive %}class="active"{% endblock %}
-{% block subcontent %}<h4>{% if edit %}{{form.instance.realm}} (edit){% else %}Add Realm{% endif %}</h4>
+{% block subcontent %}<h4>{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Realm" %}{% endif %}</h4>
 <hr>
 {% if messages %}
 	<table class="table table-condensed">
@@ -37,7 +38,7 @@
 		{{form.instid}}
 	</div>
 	<div class="control-group {% if form.realm.errors %} error {% endif %}">
-		<label class="control-label" for="id_realm"><b>Realm</b></label>
+		<label class="control-label" for="id_realm"><b>{% trans "Realm" %}</b></label>
 		<div class="controls">
 			{{ form.realm }}
 			{% if form.realm.errors %} <span class="help-inline"> {{ form.realm.errors|join:", " }} </span>
@@ -45,7 +46,7 @@
 		</div>
 	</div>
 	<div class="control-group {% if form.proxyto.errors %} error {% endif %}">
-		<label class="control-label" for="id_proxyto"><b>Proxy to Servers</b></label>
+		<label class="control-label" for="id_proxyto"><b>{% trans "Proxy to Servers" %}</b></label>
 		<div class="controls">
 			{{ form.proxyto }}
 			{% if form.proxyto.errors %} <span class="help-inline"> {{ form.proxyto.errors|join:", " }} </span>
@@ -55,7 +56,7 @@
 	<div class="control-group">
 		<div class="controls">
 			<button type="submit" id="applybutton" value="Apply" class="btn btn-large btn-primary"/>
-			Apply</button>
+			{% trans "Apply" %}</button>
 		</div>
 	</div>
 </form>

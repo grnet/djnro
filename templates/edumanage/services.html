@@ -1,7 +1,8 @@
 {% extends "edumanage/welcome.html"%}
+{% load i18n %}
 			{% block crumbs %}
-	    			<li><a href="{% url manage %}">Home</a><span class="divider">/</span></li>
-	    			<li class="active">Services</li>
+	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Services" %}</li>
 	    			{% endblock %}
 {% load i18n %}
 {% block extrahead %}
@@ -59,8 +60,8 @@ oTable.fnDraw();
 $('[id^=del_service_]').click(function(){
 	server_id = (this.id).replace("del_service_", '');
 	name = this.getAttribute("data-servicename");
-	$("#mymodalbody").html("You are about to delete service: <b>"+name+"</b><br>Press Delete to proceed or Cancel to cancel deletion");
-	$("#myModalLabel").html("Delete Service "+name);
+	$("#mymodalbody").html("{% trans 'You are about to delete service' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
+	$("#myModalLabel").html("{% trans 'Delete Service' %} "+name);
 	$('#myModal').modal('show');
 	$(".modal-footer").show();
 	$("#service_name_del").html(name)	
@@ -78,7 +79,7 @@ $("#delserviceSubmit").click(function(){
 			}
 			if (data.success){
 				$(".modal-footer").hide();
-				$("#mymodalbody").html("Service "+name+" successfully deleted");
+				$("#mymodalbody").html("{% trans 'Service' %} "+name+" {% trans 'successfully deleted' %}");
 				window.setTimeout('location.reload()', 1000);
 				
 			}
@@ -102,7 +103,7 @@ $("#delserviceSubmit").click(function(){
 					    {% endfor %}
 					</table>
 			  {% endif %}
-              <div>{% if instdets.ertype == 2 or instdets.ertype == 3 %}<a href="{% url edit-services %}" class="btn btn-primary">Add new service</a>{% endif %}</div>
+              <div>{% if instdets.ertype == 2 or instdets.ertype == 3 %}<a href="{% url edit-services %}" class="btn btn-primary">{% trans "Add new service" %}</a>{% endif %}</div>
 	              <div class="span10"></div>
               {% load tolocale %}
               {% if instdets.ertype == 2 or instdets.ertype == 3 %}
@@ -110,12 +111,12 @@ $("#delserviceSubmit").click(function(){
                <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
 	               <thead>
 					<tr>
-					<th>Name</th>
-					<th>Address</th>
-					<th>SSID</th>
-					<th>enc_level</th>
-					<th>AP no</th>
-					<th>Actions</th>
+					<th>{% trans "Name" %}</th>
+					<th>{% trans "Address" %}</th>
+					<th>{% trans "SSID" %}</th>
+					<th>{% trans "Encryption Level" %}</th>
+					<th>{% trans "AP no" %}</th>
+					<th>{% trans "Actions" %}</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -126,7 +127,7 @@ $("#delserviceSubmit").click(function(){
 	                	<td>{{service.SSID}}</td>
 	                	<td>{{service.enc_level}}</td>
 	                	<td>{{service.AP_no}}</td>
-	                	<td style="text-align: center;"><a href="{% url edit-services service.pk %}" class="btn btn-small">edit</a> <a href="#" id="del_service_{{service.pk}}" data-servicename="{% tolocale service LANGUAGE_CODE%}" class="btn btn-small btn-warning">delete</a></td>
+	                	<td style="text-align: center;"><a href="{% url edit-services service.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_service_{{service.pk}}" data-servicename="{% tolocale service LANGUAGE_CODE%}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
 	                </tr>
 	              	{% endfor %}
 	              	</tbody>
@@ -142,21 +143,21 @@ $("#delserviceSubmit").click(function(){
 
 </div>
 <div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">Cancel</button>
-<a class="btn btn-warning" id="delserviceSubmit" href="#">Delete</a>
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+<a class="btn btn-warning" id="delserviceSubmit" href="#">{% trans "Delete" %}</a>
 </div>
 </div>
 
 <div class="modal hide fade" id="servDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabelservdets">Service Details</h3>
+<h3 id="myModalLabelservdets">{% trans "Service Details" %}</h3>
 </div>
 <div class="modal-body" id="servDetsbody">
 
 </div>
 <div class="modal-footer">
-<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Close" %}</button>
 </div>
 </div>
 		{% endblock %}
