@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-23 11:40+0300\n"
+"POT-Creation-Date: 2012-10-23 12:49+0300\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -126,17 +126,17 @@ msgstr "Τηλέφωνο"
 #: templates/edumanage/services.html:4
 #: templates/edumanage/services_edit.html:5
 #: templates/edumanage/welcome.html:173 templates/edumanage/welcome.html:185
-#: templates/edumanage/welcome.html:212 templates/front/index.html:265
+#: templates/edumanage/welcome.html:222 templates/front/index.html:265
 msgid "Home"
 msgstr "Αρχική"
 
-#: templates/edumanage/contacts.html:5
+#: templates/edumanage/contacts.html:5 templates/edumanage/contacts.html:99
 #: templates/edumanage/contacts_edit.html:5
 #: templates/edumanage/institution.html:52
 #: templates/edumanage/institution_edit.html:115
 #: templates/edumanage/service_details.html:137
 #: templates/edumanage/services_edit.html:383
-#: templates/edumanage/welcome.html:201
+#: templates/edumanage/welcome.html:203
 msgid "Contacts"
 msgstr "Επαφές"
 
@@ -189,6 +189,18 @@ msgstr "Επόμενο"
 msgid "Last"
 msgstr "Τελευταία"
 
+#: templates/edumanage/contacts.html:58
+msgid "You are about to delete contact"
+msgstr "Πρόκειται να διαγράψετε την επαφή"
+
+#: templates/edumanage/contacts.html:58 templates/edumanage/services.html:63
+msgid "Press Delete to proceed or Cancel to cancel deletion"
+msgstr "Επιλέξτε Διαγραφή για να συνεχίσετε ή Άκυρο για να ακυρώσετε"
+
+#: templates/edumanage/contacts.html:59 templates/edumanage/contacts.html:129
+msgid "Delete contact"
+msgstr "Διαγραφή Επαφής"
+
 #: templates/edumanage/contacts.html:101
 msgid "Add new contact"
 msgstr "Προσθήκη Επαφής"
@@ -227,10 +239,6 @@ msgstr "επεξεργασία"
 msgid "delete"
 msgstr "διαγραφή"
 
-#: templates/edumanage/contacts.html:129
-msgid "Delete contact"
-msgstr "Διαγραφή Επαφής"
-
 #: templates/edumanage/contacts.html:135 templates/edumanage/realms.html:140
 #: templates/edumanage/servers.html:146 templates/edumanage/services.html:146
 msgid "Cancel"
@@ -255,8 +263,9 @@ msgid "Apply"
 msgstr "Εφαρμογή"
 
 #: templates/edumanage/institution.html:13
+#: templates/edumanage/institution.html:18
 #: templates/edumanage/institution_edit.html:6
-#: templates/edumanage/welcome.html:188
+#: templates/edumanage/welcome.html:189
 msgid "Institution"
 msgstr "Φορέας"
 
@@ -306,7 +315,7 @@ msgstr ""
 #: templates/edumanage/institution_edit.html:74
 #: templates/edumanage/server_details.html:94
 #: templates/edumanage/service_details.html:202
-#: templates/edumanage/welcome.html:216
+#: templates/edumanage/welcome.html:226
 msgid "Edit"
 msgstr "Επεξεργασία"
 
@@ -338,7 +347,7 @@ msgid "Save changes"
 msgstr "Αποθήκευση"
 
 #: templates/edumanage/realms.html:5 templates/edumanage/realms_edit.html:5
-#: templates/edumanage/welcome.html:198
+#: templates/edumanage/welcome.html:200
 msgid "Realms"
 msgstr ""
 
@@ -368,8 +377,9 @@ msgid "Proxy to Servers"
 msgstr "Proxy σε Εξυπηρετητές"
 
 #: templates/edumanage/server_details.html:5
-#: templates/edumanage/servers.html:5 templates/edumanage/servers_edit.html:5
-#: templates/edumanage/welcome.html:195
+#: templates/edumanage/servers.html:5 templates/edumanage/servers.html:106
+#: templates/edumanage/servers_edit.html:5
+#: templates/edumanage/welcome.html:197
 msgid "Servers"
 msgstr "Εξυπηρετητές"
 
@@ -444,9 +454,9 @@ msgid "Hostname"
 msgstr ""
 
 #: templates/edumanage/service_details.html:6
-#: templates/edumanage/services.html:5
+#: templates/edumanage/services.html:5 templates/edumanage/services.html:96
 #: templates/edumanage/services_edit.html:6
-#: templates/edumanage/welcome.html:192
+#: templates/edumanage/welcome.html:194
 msgid "Services"
 msgstr "Υπηρεσίες"
 
@@ -499,10 +509,6 @@ msgstr "υπηρεσίες"
 msgid "You are about to delete service"
 msgstr "Πρόκειται να διαγράψετε την υπηρεσία"
 
-#: templates/edumanage/services.html:63
-msgid "Press Delete to proceed or Cancel to cancel deletion"
-msgstr "Επιλέξτε Διαγραφή για να συνεχίσετε ή Άκυρο για να ακυρώσετε"
-
 #: templates/edumanage/services.html:64
 msgid "Delete Service"
 msgstr "Διαγραφή Υπηρεσίας"
@@ -515,7 +521,7 @@ msgstr "Υπηρεσία"
 msgid "successfully deleted"
 msgstr "διαγράφηκε επιτυχώς"
 
-#: templates/edumanage/services.html:106 templates/edumanage/welcome.html:216
+#: templates/edumanage/services.html:106 templates/edumanage/welcome.html:226
 msgid "Add new service"
 msgstr "Προσθήκη υπηρεσίας"
 
@@ -572,11 +578,11 @@ msgstr "Έχετε εισαχθεί ως"
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: templates/edumanage/welcome.html:212
+#: templates/edumanage/welcome.html:222
 msgid "Service Locations"
 msgstr "Τοποθεσίες Υπηρεσιών"
 
-#: templates/edumanage/welcome.html:216
+#: templates/edumanage/welcome.html:226
 msgid "No services defined yet"
 msgstr "Δεν έχουν εισαχθεί υπηρεσίες"
 

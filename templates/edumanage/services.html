@@ -93,7 +93,7 @@ $("#delserviceSubmit").click(function(){
 			{% block homeactive %}{% endblock %}
     		{% block servicesactive %}class="active"{% endblock %}
             {% block subcontent %}
-              <h4>Services</h4>
+              <h4>{% trans "Services" %}</h4>
               <hr>
               {% if messages %}
 	                <table class="table table-condensed">

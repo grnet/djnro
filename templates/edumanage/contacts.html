@@ -55,8 +55,8 @@ oTable.fnDraw();
 $('[id^=del_contact_]').click(function(){
 	contact_id = (this.id).replace("del_contact_", '');
 	name = this.getAttribute("data-contactname");
-	$("#mymodalbody").html("You are about to delete contact: <b>"+name+"</b><br>Press Delete to proceed or Cancel to cancel deletion");
-	$("#myModalLabel").html("Delete contact "+name);
+	$("#mymodalbody").html("{% trans 'You are about to delete contact' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
+	$("#myModalLabel").html("{% trans 'Delete contact' %} "+name);
 	$('#myModal').modal('show');
 	$(".modal-footer").show();
 	$("#contact_name_del").html(name)	
@@ -96,7 +96,7 @@ $("#delcontactSubmit").click(function(){
             {% block subcontent %}
 
 	            	
-	              <h4>Contacts</h4>
+	              <h4>{% trans "Contacts" %}</h4>
 	              <hr>
 	              <div><a href="{% url edit-contacts %}" class="btn btn-primary">{% trans "Add new contact" %}</a></div>
 	              <div class="span10"></div>
