@@ -18,7 +18,6 @@ LANGS = (
     )
 
 
-# FIXME: use idp, sp, idpsp as keys not in the velue part. Get rid of 1,2,3
 ERTYPES = (
         (1, 'IdP only' ),
         (2, 'SP only'),
@@ -90,12 +89,11 @@ class URL_i18n(models.Model):
 
 class InstRealm(models.Model):
     '''
-    Realm (including wildcards) of an IdP Institution
+    Realm of an IdP Institution
     '''
-
+    # accept if instid.ertype: 1 (idp) or 3 (idpsp)
     realm = models.CharField(max_length=160)
     instid = models.ForeignKey("Institution")
-    # accept if instid.ertype: 1 (idp) or 3 (idpsp)
     proxyto = models.ManyToManyField("InstServer")
 
     def __unicode__(self):
@@ -118,9 +116,9 @@ class InstServer(models.Model):
     # 3: accept if instid.ertype: 3 (idpsp)
 
     # hostname/ipaddr or descriptive label of server 
-    name = models.CharField(max_length=80) # ** (acts like a label)
+    name = models.CharField(max_length=80, help_text="Descriptive label",  null=True, blank=True) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
-    host = models.CharField(max_length=80) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
+    host = models.CharField(max_length=80, help_text="IP address of FQDN hostname") # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     #TODO: Add description field or label field
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
     port = models.PositiveIntegerField(max_length=5, null=True, blank=True) # TODO: Also ignore while exporting XML
@@ -140,7 +138,12 @@ class InstServer(models.Model):
             'servername': self.name,
         # the human-readable name would be nice here
             'ertype': self.ertype,
-            }    
+            }
+    
+    def get_name(self):
+        if self.name:
+            return self.name
+        return self.host
     
     
 class InstRealmMon(models.Model):
@@ -257,7 +260,7 @@ class ServiceLoc(models.Model):
     NAT = models.BooleanField()
     AP_no = models.PositiveIntegerField(max_length=3)
     wired = models.BooleanField()
-    # only urltype = 'info' should be accepted here (TODO: DELETE POLICY FROM OPTIONS)
+    # only urltype = 'info' should be accepted here
     url = generic.GenericRelation(URL_i18n, blank=True, null=True)
     ts = models.DateTimeField(auto_now=True)
 
@@ -288,7 +291,7 @@ class Institution(models.Model):
     
     realmid = models.ForeignKey("Realm")
     org_name = generic.GenericRelation(Name_i18n)
-    
+    ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
     
     def __unicode__(self):
         return "%s" % ', '.join([i.name for i in self.org_name.all()])
@@ -311,7 +314,6 @@ class InstitutionDetails(models.Model):
     Institution Details
     '''
     institution = models.OneToOneField(Institution)
-    ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
     # TODO: multiple names can be specified [...] name in English is required
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
