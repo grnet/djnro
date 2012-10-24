@@ -13,6 +13,9 @@ from django import forms
 from django.forms.models import modelformset_factory
 from django.forms.models import inlineformset_factory
 from django.contrib.contenttypes.generic import generic_inlineformset_factory
+from django.core.mail.message import EmailMessage
+from django.contrib.sites.models import Site
+from django.template.loader import render_to_string
 import json 
 import math
 from xml.etree import ElementTree as ET
@@ -25,7 +28,7 @@ from django.db.models import Max
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
 from django.contrib.auth import authenticate, login
-
+from registration.models import RegistrationProfile
 
 def index(request):
     return render_to_response('front/index.html', context_instance=RequestContext(request))
@@ -82,11 +85,11 @@ def add_institution_details(request, institution_pk):
     try:
         profile = user.get_profile()
         inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     
     if request.method == "GET":
-        # Determine add or edit
         request_data = request.POST.copy()
         try:         
             inst_details = InstitutionDetails.objects.get(institution=inst)
@@ -119,11 +122,6 @@ def add_institution_details(request, institution_pk):
             urls_inst = urls_form.save()
             return HttpResponseRedirect(reverse("institutions"))
         else:
-            try:
-                profile = user.get_profile()
-                inst = profile.institution
-            except UserProfile.DoesNotExist:
-                inst = False
             form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
             form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
             return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form, 'urls_form': urls_form},
@@ -137,7 +135,12 @@ def services(request, service_pk):
     try:
         profile = user.get_profile()
         inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [2,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
@@ -174,7 +177,12 @@ def add_services(request, service_pk):
     try:
         profile = user.get_profile()
         inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [2,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
@@ -238,64 +246,31 @@ def add_services(request, service_pk):
         return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
 
-
-
 @login_required
-def get_service_points(request):
-    if request.method == "GET":
+def del_service(request):
+    if request.method == 'GET':
         user = request.user
+        req_data = request.GET.copy()
+        service_pk = req_data['service_pk']
         try:
             profile = user.get_profile()
-            inst = profile.institution
+            institution = profile.institution
         except UserProfile.DoesNotExist:
-            inst = False
-            return HttpResponseNotFound('<h1>Something went really wrong</h1>')
-        servicelocs = ServiceLoc.objects.filter(institutionid=inst)
-        
-        locs = []
-        for sl in servicelocs:
-            response_location = {}
-            response_location['lat'] = u"%s"%sl.latitude
-            response_location['lng'] = u"%s"%sl.longitude
-            response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
-            response_location['enc'] = u"%s"%(sl.enc_level)
-            response_location['AP_no'] = u"%s"%(sl.AP_no)
-            response_location['name'] = sl.loc_name.get(lang='en').name
-            response_location['port_restrict'] = u"%s"%(sl.port_restrict)
-            response_location['transp_proxy'] = u"%s"%(sl.transp_proxy)
-            response_location['IPv6'] = u"%s"%(sl.IPv6)
-            response_location['NAT'] = u"%s"%(sl.NAT)
-            response_location['wired'] = u"%s"%(sl.wired)
-            response_location['SSID'] = u"%s"%(sl.SSID)
-            response_location['key'] = u"%s"%sl.pk
-            locs.append(response_location)
-        return HttpResponse(json.dumps(locs), mimetype='application/json')
-    else:
-       return HttpResponseNotFound('<h1>Something went really wrong</h1>')
-
-
-def get_all_services(request):
-    servicelocs = ServiceLoc.objects.all()
-    locs = []
-    for sl in servicelocs:
-        response_location = {}
-        response_location['lat'] = u"%s"%sl.latitude
-        response_location['lng'] = u"%s"%sl.longitude
-        response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
-        response_location['enc'] = u"%s"%(sl.enc_level)
-        response_location['AP_no'] = u"%s"%(sl.AP_no)
-        response_location['inst'] = sl.institutionid.org_name.get(lang='en').name
-        response_location['name'] = sl.loc_name.get(lang='en').name
-        response_location['port_restrict'] = u"%s"%(sl.port_restrict)
-        response_location['transp_proxy'] = u"%s"%(sl.transp_proxy)
-        response_location['IPv6'] = u"%s"%(sl.IPv6)
-        response_location['NAT'] = u"%s"%(sl.NAT)
-        response_location['wired'] = u"%s"%(sl.wired)
-        response_location['SSID'] = u"%s"%(sl.SSID)
-        response_location['key'] = u"%s"%sl.pk
-        locs.append(response_location)
-    return HttpResponse(json.dumps(locs), mimetype='application/json')
-
+            resp['error'] = "Could not delete service. Not enough rights"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp = {}
+        try:
+            service = ServiceLoc.objects.get(institutionid=institution, pk=service_pk)
+        except ServiceLoc.DoesNotExist:
+            resp['error'] = "Could not get service or you have no rights to delete"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        try:
+            service.delete()
+        except:
+            resp['error'] = "Could not delete service"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp['success'] = "Service successfully deleted"
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
 
 @login_required
 def servers(request, server_pk):
@@ -320,35 +295,6 @@ def servers(request, server_pk):
     return render_to_response('edumanage/servers.html', { 'servers': servers},
                                   context_instance=RequestContext(request, base_response(request)))
 
-
-
-@login_required
-def adduser(request):
-    user = request.user
-    try:
-        profile = user.get_profile()
-        inst = profile.institution
-    except UserProfile.DoesNotExist:
-        return HttpResponseRedirect(reverse("manage"))
-    if request.method == "GET":
-        form = ContactForm()
-        return render_to_response('edumanage/add_user.html', { 'form' : form },
-                                  context_instance=RequestContext(request, base_response(request)))
-    elif request.method == 'POST':
-        request_data = request.POST.copy()
-        form = ContactForm(request_data)
-        if form.is_valid():
-            contact = form.save()
-            instContPool = InstitutionContactPool(contact=contact, institution=inst)
-            instContPool.save()
-            response_data = {}
-            response_data['value'] = "%s" %contact.pk
-            response_data['text'] = "%s" %contact
-            return HttpResponse(json.dumps(response_data), mimetype='application/json')
-        else:
-            return render_to_response('edumanage/add_user.html', {'form': form,},
-                                      context_instance=RequestContext(request, base_response(request)))
-
 @login_required
 def add_server(request, server_pk):
     user = request.user
@@ -357,7 +303,12 @@ def add_server(request, server_pk):
     try:
         profile = user.get_profile()
         inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
         # Determine add or edit
@@ -390,6 +341,33 @@ def add_server(request, server_pk):
                                   context_instance=RequestContext(request, base_response(request)))
 
 @login_required
+def del_server(request):
+    if request.method == 'GET':
+        user = request.user
+        req_data = request.GET.copy()
+        server_pk = req_data['server_pk']
+        try:
+            profile = user.get_profile()
+            institution = profile.institution
+        except UserProfile.DoesNotExist:
+            resp['error'] = "Could not delete server. Not enough rights"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp = {}
+        try:
+            server = InstServer.objects.get(instid=institution, pk=server_pk)
+        except InstServer.DoesNotExist:
+            resp['error'] = "Could not get server or you have no rights to delete"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        try:
+            server.delete()
+        except:
+            resp['error'] = "Could not delete server"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp['success'] = "Server successfully deleted"
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
+
+
+@login_required
 def realms(request):
     user = request.user
     servers = False
@@ -414,7 +392,12 @@ def add_realm(request, realm_pk):
     try:
         profile = user.get_profile()
         inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [1,3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
@@ -481,7 +464,6 @@ def del_realm(request):
         return HttpResponse(json.dumps(resp), mimetype='application/json')
 
 
-
 @login_required
 def contacts(request):
     user = request.user
@@ -490,7 +472,12 @@ def contacts(request):
     try:
         profile = user.get_profile()
         inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst:
         instcontacts.extend([x.contact.pk for x in InstitutionContactPool.objects.filter(institution=inst)])
@@ -507,8 +494,12 @@ def add_contact(request, contact_pk):
     try:
         profile = user.get_profile()
         inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
-        inst = False
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
 
@@ -577,7 +568,34 @@ def del_contact(request):
         resp['success'] = "Contact successfully deleted"
         return HttpResponse(json.dumps(resp), mimetype='application/json')
     
+@login_required
+def adduser(request):
+    user = request.user
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+    except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
 
+    if request.method == "GET":
+        form = ContactForm()
+        return render_to_response('edumanage/add_user.html', { 'form' : form },
+                                  context_instance=RequestContext(request, base_response(request)))
+    elif request.method == 'POST':
+        request_data = request.POST.copy()
+        form = ContactForm(request_data)
+        if form.is_valid():
+            contact = form.save()
+            instContPool = InstitutionContactPool(contact=contact, institution=inst)
+            instContPool.save()
+            response_data = {}
+            response_data['value'] = "%s" %contact.pk
+            response_data['text'] = "%s" %contact
+            return HttpResponse(json.dumps(response_data), mimetype='application/json')
+        else:
+            return render_to_response('edumanage/add_user.html', {'form': form,},
+                                      context_instance=RequestContext(request, base_response(request)))
 
 @login_required
 def base_response(request):
@@ -605,71 +623,80 @@ def base_response(request):
         contacts = Contact.objects.filter(pk__in=instcontacts)
     except:
         pass
-        
+    try:
+        instututiondetails = institution.institutiondetails
+    except:
+        instututiondetails = False
     return { 
             'inst_num': len(inst),
             'servers_num': len(server),
             'services_num': len(services),
             'realms_num': len(instrealms),
             'contacts_num': len(contacts),
-            'instdets': institution,
+            'institution': institution,
+            'institutiondetails': instututiondetails,
             'institution_exists': institution_exists,
             
         }
 
+
 @login_required
-def del_server(request):
-    if request.method == 'GET':
+def get_service_points(request):
+    if request.method == "GET":
         user = request.user
-        req_data = request.GET.copy()
-        server_pk = req_data['server_pk']
         try:
             profile = user.get_profile()
-            institution = profile.institution
+            inst = profile.institution
         except UserProfile.DoesNotExist:
-            resp['error'] = "Could not delete server. Not enough rights"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp = {}
-        try:
-            server = InstServer.objects.get(instid=institution, pk=server_pk)
-        except InstServer.DoesNotExist:
-            resp['error'] = "Could not get server or you have no rights to delete"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
-        try:
-            server.delete()
-        except:
-            resp['error'] = "Could not delete server"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp['success'] = "Server successfully deleted"
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
-    
-    
-@login_required
-def del_service(request):
-    if request.method == 'GET':
-        user = request.user
-        req_data = request.GET.copy()
-        service_pk = req_data['service_pk']
-        try:
-            profile = user.get_profile()
-            institution = profile.institution
-        except UserProfile.DoesNotExist:
-            resp['error'] = "Could not delete service. Not enough rights"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp = {}
-        try:
-            service = ServiceLoc.objects.get(institutionid=institution, pk=service_pk)
-        except ServiceLoc.DoesNotExist:
-            resp['error'] = "Could not get service or you have no rights to delete"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
-        try:
-            service.delete()
-        except:
-            resp['error'] = "Could not delete service"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp['success'] = "Service successfully deleted"
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
-    
+            inst = False
+            return HttpResponseNotFound('<h1>Something went really wrong</h1>')
+        servicelocs = ServiceLoc.objects.filter(institutionid=inst)
+        
+        locs = []
+        for sl in servicelocs:
+            response_location = {}
+            response_location['lat'] = u"%s"%sl.latitude
+            response_location['lng'] = u"%s"%sl.longitude
+            response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
+            response_location['enc'] = u"%s"%(sl.enc_level)
+            response_location['AP_no'] = u"%s"%(sl.AP_no)
+            response_location['name'] = sl.loc_name.get(lang='en').name
+            response_location['port_restrict'] = u"%s"%(sl.port_restrict)
+            response_location['transp_proxy'] = u"%s"%(sl.transp_proxy)
+            response_location['IPv6'] = u"%s"%(sl.IPv6)
+            response_location['NAT'] = u"%s"%(sl.NAT)
+            response_location['wired'] = u"%s"%(sl.wired)
+            response_location['SSID'] = u"%s"%(sl.SSID)
+            response_location['key'] = u"%s"%sl.pk
+            locs.append(response_location)
+        return HttpResponse(json.dumps(locs), mimetype='application/json')
+    else:
+       return HttpResponseNotFound('<h1>Something went really wrong</h1>')
+
+
+def get_all_services(request):
+    servicelocs = ServiceLoc.objects.all()
+    locs = []
+    for sl in servicelocs:
+        response_location = {}
+        response_location['lat'] = u"%s"%sl.latitude
+        response_location['lng'] = u"%s"%sl.longitude
+        response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
+        response_location['enc'] = u"%s"%(sl.enc_level)
+        response_location['AP_no'] = u"%s"%(sl.AP_no)
+        response_location['inst'] = sl.institutionid.org_name.get(lang='en').name
+        response_location['name'] = sl.loc_name.get(lang='en').name
+        response_location['port_restrict'] = u"%s"%(sl.port_restrict)
+        response_location['transp_proxy'] = u"%s"%(sl.transp_proxy)
+        response_location['IPv6'] = u"%s"%(sl.IPv6)
+        response_location['NAT'] = u"%s"%(sl.NAT)
+        response_location['wired'] = u"%s"%(sl.wired)
+        response_location['SSID'] = u"%s"%(sl.SSID)
+        response_location['key'] = u"%s"%sl.pk
+        locs.append(response_location)
+    return HttpResponse(json.dumps(locs), mimetype='application/json')
+
+
 @never_cache
 def user_login(request):
     try:
@@ -704,7 +731,7 @@ def user_login(request):
         if error_mail:
             error = error + _("Your idP should release the HTTP_SHIB_INETORGPERSON_MAIL attribute towards this service")
         if error_username or error_orgname or error_entitlement or error_mail:
-            return render_to_response('error.html', {'error': error, "missing_attributes": True},
+            return render_to_response('status.html', {'error': error, "missing_attributes": True},
                                   context_instance=RequestContext(request))
         try:
             user = User.objects.get(username__exact=username)
@@ -717,15 +744,6 @@ def user_login(request):
             user_exists = False
         user = authenticate(username=username, firstname=firstname, lastname=lastname, mail=mail, authsource='shibboleth')
         if user is not None:
-#            try:
-#                peer = Peer.objects.get(domain_name=organization)
-#                up = UserProfile.objects.get_or_create(user=user,peer=peer)
-#            except:
-#                error = _("Your organization's domain name does not match our peers' domain names<br>Please contact Helpdesk to resolve this issue")
-#                return render_to_response('error.html', {'error': error}, context_instance=RequestContext(request))
-#            if not user_exists:
-#                user_activation_notify(user)
-            # user does not exist... forward to an institution selection form to create profile
             try:
                 profile = user.get_profile()
                 inst = profile.institution
@@ -738,19 +756,18 @@ def user_login(request):
                login(request, user)
                return HttpResponseRedirect(reverse("manage"))
             else:
-                error = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
-                return render_to_response('error.html', {'error': error, 'inactive': True},
+                status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
+                return render_to_response('status.html', {'status': status, 'inactive': True},
                                   context_instance=RequestContext(request))
         else:
             error = _("Something went wrong during user authentication. Contact your administrator %s" %user)
-            return render_to_response('error.html', {'error': error,},
+            return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
-    except Exception as e:
-        error = _("Invalid login procedure %s" %e)
-        return render_to_response('error.html', {'error': error,},
+    except Exception:
+        error = _("Invalid login procedure")
+        return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
-        # Return an 'invalid login' error message.
-#    return HttpResponseRedirect(reverse("user-routes"))
+
 
 def geolocate(request):
     return render_to_response('front/geolocate.html',
@@ -760,17 +777,43 @@ def selectinst(request):
     if request.method == 'POST':
         request_data = request.POST.copy()
         user = request_data['user']
+        try:
+            existingProfile = UserProfile.objects.get(user=user)
+            error = _("Violation warning: User account is already associated with an institution.The event has been logged and our administrators will be notified about it")
+            return render_to_response('status.html', {'error': error, 'inactive': True},
+                                  context_instance=RequestContext(request))
+        except UserProfile.DoesNotExist:
+            pass
+            
         form = UserProfileForm(request_data)
         if form.is_valid():
             userprofile = form.save()
+            user_activation_notify(userprofile)
             error = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %userprofile.user.username
-            return render_to_response('error.html', {'error': error, 'inactive': True},
+            return render_to_response('status.html', {'status': error, 'inactive': True},
                                   context_instance=RequestContext(request))
         else:
             form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
             form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
             return render_to_response('registration/select_institution.html', {'form': form}, context_instance=RequestContext(request))
 
+
+def user_activation_notify(userprofile):
+    current_site = Site.objects.get_current()
+    subject = render_to_string('registration/activation_email_subject.txt',
+                                   { 'site': current_site })
+    # Email subject *must not* contain newlines
+    subject = ''.join(subject.splitlines())
+    registration_profile = RegistrationProfile.objects.create_profile(userprofile.user)
+    message = render_to_string('registration/activation_email.txt',
+                                   { 'activation_key': registration_profile.activation_key,
+                                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+                                     'site': current_site,
+                                     'user': userprofile.user,
+                                     'institution': userprofile.institution })
+    send_new_mail(settings.EMAIL_SUBJECT_PREFIX + subject, 
+                              message, settings.SERVER_EMAIL,
+                             settings.NOTIFY_ADMIN_MAILS, [])
 
 def closest(request):
     if request.method == 'GET':
@@ -1052,3 +1095,8 @@ def getInstServers(inst):
 
 def rad(x):
     return x*math.pi/180
+
+
+def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
+    return EmailMessage(subject, message, from_email, recipient_list, bcc_list).send()
+

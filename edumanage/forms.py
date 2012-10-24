@@ -177,3 +177,5 @@ class UrlFormSetFactInst(BaseGenericInlineFormSet):
             raise forms.ValidationError, _("Fill in at least the info url")
         if "info" not in url_types:
             raise forms.ValidationError, _("Fill in at least the info url")
+
+
