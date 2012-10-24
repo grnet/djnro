@@ -1,0 +1,11 @@
+Ο λογαριασμός σας με όνομα χρήστη «{{user.username}}» ενεργοποιήθηκε.
+Μπορείτε να χρησιμοποιήσετε την υπηρεσία eduroam management, κάνοντας login στην παρακάτω
+διεύθυνση:
+
+	http://{{ site.domain }}{% url login %}
+
+---------------------------------------------------------------------------
+Your account with username “{{ user.username }}” has been activated.
+You may login to eduroam management using the following URL:
+
+	http://{{ site.domain }}{% url login %}

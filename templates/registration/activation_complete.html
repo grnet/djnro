@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans "Activation Complete" %}{% endblock %}
+    {% block topmenu %}
+    <ul class="nav">
+        <li>
+            <a href="{% url index %}">{% trans "Home" %}</a>
+        </li>
+        <li>
+            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
+        </li>
+        <li>
+            <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
+        </li>
+    </ul>
+    {% endblock %}
+
+    {% block content %}
+	<div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+        </div><!--/span-->
+
+		<div class="span10">
+			<div class="row-fluid">
+				<!--/span-->
+				<h3>{% trans "Activation Complete" %}</h3>
+				<hr>
+					{% block subcontent %}
+					<div class="span10 alert alert-success">
+					{% trans "The user will be notified about his/her account activation" %}
+					</div>
+					{% endblock %}
+				<!--/span-->
+			</div><!--/row-->
+		</div><!--/span-->
+
+        </div><!--/span-->
+      <hr>
+      <footer>
+        <p>&copy; @ GRNET NOC 2012</p>
+      </footer>
+
+    </div><!--/.fluid-container-->
+	{% endblock %}
