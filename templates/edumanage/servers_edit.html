@@ -48,7 +48,7 @@
 			{% endif %} <span class="help-block"> {{ form.host.help_text }}</span>
 		</div>
 	</div>
-	{% if instdets.ertype == 1 or instdets.ertype == 3 %}
+	{% if institution.ertype == 1 or institution.ertype == 3 %}
 	<div class="control-group {% if form.port.errors %} error {% endif %}">
 		<label class="control-label" for="id_port"><b>{% trans "Port" %}</b></label>
 		<div class="controls">

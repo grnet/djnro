@@ -103,10 +103,10 @@ $("#delserviceSubmit").click(function(){
 					    {% endfor %}
 					</table>
 			  {% endif %}
-              <div>{% if instdets.ertype == 2 or instdets.ertype == 3 %}<a href="{% url edit-services %}" class="btn btn-primary">{% trans "Add new service" %}</a>{% endif %}</div>
+              <div>{% if institution.ertype == 2 or institution.ertype == 3 %}<a href="{% url edit-services %}" class="btn btn-primary">{% trans "Add new service" %}</a>{% endif %}</div>
 	              <div class="span10"></div>
               {% load tolocale %}
-              {% if instdets.ertype == 2 or instdets.ertype == 3 %}
+              {% if institution.ertype == 2 or institution.ertype == 3 %}
               {% if services %}
                <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
 	               <thead>

@@ -10,9 +10,41 @@
       .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
     </style>
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+ 
+<script type="text/javascript">
+
+        function setlang(lang) {
+                $("#langsel").val(lang);
+                var form = $("#langform");
+                $.ajax({
+        			url: form.attr('action'), 
+        			data: form.serialize(),
+        			type: "POST",
+        			cache: false,
+        			success:function(data){
+        					window.location.href=location.href + "../" + lang + "/";
+        				}
+                });
+                
+        }
+</script>
+    
 
 {% endblock %}
+    {% block topmenu %}
+    <ul class="nav">
+        <li>
+            <a href="{% url index %}">Home</a>
+        </li>
+        <li {% if "faq" in flatpage.url %} class="active" {% endif %}>
+            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
+        </li>
+        <li>
+            <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
+        </li>
 
+    </ul>
+    {% endblock %}
     {% block content %}
 	<div class="container-fluid">
       <div class="row-fluid">
@@ -20,13 +52,9 @@
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
             
-              <li class="active"><a href="{% url index %}">{% trans "Home" %}</a></li>
-              <li><a href="#">News</a></li>
+              <li><a href="{% url index %}">{% trans "Home" %}</a></li>
               <li><a href="{% url geolocate %}" target="about:blank()">eduroam near me</a></li>
-              <li class="nav-header">Users</li>
-              <li><a href="#">Where</a></li>
-              <li><a href="#">How</a></li>
-              <li><a href="#">About</a></li>
+              <li class="active"><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
               <li class="nav-header">Institutions</li>
               <li><a href="{% url manage %}">{% trans "Management" %}</a></li>
             </ul>

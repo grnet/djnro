@@ -43,6 +43,7 @@ body {
   	function setlang(lang){
 		$("#langsel").val(lang);
 		$("#langform").submit();
+		
 	}
 
 </script>
@@ -81,16 +82,20 @@ body {
 <div class="navbar-inner">
     <div class="container" style="padding-left: 0px; width: auto;">
         <a class="brand" href="#"><img src="/static/img/logo_holder.png" /></a>
-        
+    {% block topmenu %}
     <ul class="nav">
         <li class="active">
-            <a href="#">Home</a>
+            <a href="{% url index %}">Home</a>
         </li>
         <li>
-            <a href="/faq/en/">FAQ</a>
+            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
+        </li>
+        <li>
+            <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
         </li>
 
     </ul>
+    {% endblock %}
     <ul class="nav pull-right">
          <li class="dropdown pull-right">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %}<b class="caret"></b></a>

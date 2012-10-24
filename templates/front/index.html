@@ -261,12 +261,8 @@
             <ul class="nav nav-list">
             
               <li class="active"><a href="{% url index %}">{% trans "Home" %}</a></li>
-              <li><a href="#">News</a></li>
               <li><a href="{% url geolocate %}" target="about:blank()">eduroam near me</a></li>
-              <li class="nav-header">Users</li>
-              <li><a href="#">Where</a></li>
-              <li><a href="/how/en/">How</a></li>
-              <li><a href="#">About</a></li>
+              <li><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
               <li class="nav-header">Institutions</li>
               <li><a href="{% url login %}">{% trans "Management" %}</a></li>
             </ul>
@@ -278,7 +274,8 @@
 		<div class="span10">
 			<div class="row-fluid">
 				<!--/span-->
-				
+					<h4>{% trans "Eduroam in Greece" %}</h4>
+					<hr>
 					{% block subcontent %}
 					<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;"></div>
 					{% endblock %}
@@ -288,7 +285,6 @@
 		</div><!--/span-->
 
         </div><!--/span-->
-      </div><!--/row-->
 
       <hr>
 

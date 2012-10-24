@@ -162,6 +162,15 @@ $.get("{% url get-service-points %}", function(data){
 {% endif %}});</script>
 {% endblock %}
 {% block headtitle %}eduroam@Greece admin{% endblock %}
+    {% block topmenu %}
+    <ul class="nav">
+        <li class="disabled">
+           <a class="brand" href="#">Management</a>
+        </li>
+        
+
+    </ul>
+    {% endblock %}
 {% block content %}
 <div class="container-fluid">
 	<div class="row-fluid">
@@ -186,10 +195,10 @@ $.get("{% url get-service-points %}", function(data){
 					</li>
 					{% if institution_exists %}
 					<li {% block instactive %}{% endblock %}>
-						<a href="{% url institutions %}">{% trans "Institution" %} {% if not instdets %}<font style="color: red; font-weight: bold; font-size: 14px;">(!)</font>{% endif %}</a>
+						<a href="{% url institutions %}">{% trans "Institution" %} {% if not institutiondetails %}<font style="color: red; font-weight: bold; font-size: 14px;">(!)</font>{% endif %}</a>
 					</li>
 					{% endif %}
-					{% if instdets %}
+					{% if institutiondetails %}
 					<li {% block servicesactive %}{% endblock %}>
 						<a href="{% url services %}">{% trans "Services" %} ({{services_num}})</a>
 					</li>
@@ -223,7 +232,7 @@ $.get("{% url get-service-points %}", function(data){
               		<hr>
 					{% if services %} <div id="map_canvas" style="width:100%; height:450px;"></div>
 					{% else %}
-					<div>{% if instdets %}{% trans "No services defined yet"%}! <a href="{% url edit-services %}" class="btn btn-primary">{% trans "Add new service" %}</a>{% else %}Specify your institution details to proceed <a class="btn btn-small btn-primary" href="{% url edit-institution institution.pk %}">{% trans "Edit" %}</a>{% endif %}</div>
+					<div>{% if institutiondetails %}{% trans "No services defined yet"%}! <a href="{% url edit-services %}" class="btn btn-primary">{% trans "Add new service" %}</a>{% else %}Specify your institution details to proceed <a class="btn btn-small btn-primary" href="{% url edit-institution institution.pk %}">{% trans "Edit" %}</a>{% endif %}</div>
 					{% endif %}
 				
 					{% endblock %}{% endif %}

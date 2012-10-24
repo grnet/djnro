@@ -84,19 +84,19 @@ function addButton(row){
 		{{form.institution}}
 	</div>
 		<div class="control-group">
-		<label class="control-label" for="id_name">{% trans "Name" %}</label>
+		<label class="control-label" for="id_name"><b>{% trans "Name" %}</b></label>
 		<div class="controls">
 			<input class="input" id="disabledInput" type="text" placeholder="{% tolocale institution LANGUAGE_CODE %}" disabled>
 		</div>
 	</div>
 	<div class="control-group {% if form.ertype.errors %} error {% endif %}">
-		<label class="control-label" for="id_ertype">{% trans "Type" %}</label>
+		<label class="control-label" for="id_ertype"><b>{% trans "Type" %}</b></label>
 		<div class="controls">
-			<input class="input" id="disabledInput" type="text" placeholder="{{institution.get_ertype_display}}" disabled>
+			<input class="input" id="disabledInput2" type="text" placeholder="{{institution.get_ertype_display}}" disabled>
 		</div>
 	</div>
 	<div class="control-group {% if form.address_street.errors %} error {% endif %}">
-		<label class="control-label" for="id_address_street">{% trans "Address Street" %}</label>
+		<label class="control-label" for="id_address_street"><b>{% trans "Address Street" %}</b></label>
 		<div class="controls">
 			{{ form.address_street }}
 			{% if form.address_street.errors %} <span class="help-inline"> {{ form.address_street.errors|join:", " }} </span>
@@ -104,7 +104,7 @@ function addButton(row){
 		</div>
 	</div>
 	<div class="control-group {% if form.address_city.errors %} error {% endif %}">
-		<label class="control-label" for="id_address_city">{% trans "Address City" %}</label>
+		<label class="control-label" for="id_address_city"><b>{% trans "Address City" %}</b></label>
 		<div class="controls">
 			{{ form.address_city }}
 			{% if form.address_city.errors %} <span class="help-inline"> {{ form.address_city.errors|join:", " }} </span>
@@ -112,7 +112,7 @@ function addButton(row){
 		</div>
 	</div>
 	<div class="control-group {% if form.contact.errors %} error {% endif %}">
-		<label class="control-label" for="id_contact">{% trans "Contacts" %}</label>
+		<label class="control-label" for="id_contact"><b>{% trans "Contacts" %}</b></label>
 		<div class="controls">
 			{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
 			{% if form.contact.errors %} <span class="help-inline"> {{ form.ertype.contact|join:", " }} </span>
@@ -120,7 +120,7 @@ function addButton(row){
 		</div>
 	</div>
     <div class="control-group {% for err in urls_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if urls_form.non_form_errors %}error{% endif %}">
-        <label class="control-label" for="id_urls">{% trans "Urls" %}</label>
+        <label class="control-label" for="id_urls"><b>{% trans "Urls" %}</b></label>
         {{urls_form.management_form}}
         <div class="controls">
         {% if urls_form.non_form_errors %} <span class="help-inline"> {{ urls_form.non_form_errors|join:", "}}</span>{% endif %}
@@ -139,9 +139,9 @@ function addButton(row){
         </tbody></table>
         </div>
     </div>
-    {% if instdets.ertype == 2 or instdets.ertype == 3 %}
+    {% if institution.ertype == 2 or institution.ertype == 3 %}
 	<div class="control-group {% if form.oper_name.errors %} error {% endif %}">
-		<label class="control-label" for="id_oper_name">{% trans "Oper Name" %}</label>
+		<label class="control-label" for="id_oper_name"><b>{% trans "Oper Name" %}</b></label>
 		<div class="controls">
 			{{ form.oper_name }}
 			{% if form.oper_name.errors %} <span class="help-inline"> {{ form.oper_name.errors|join:", " }} </span>
@@ -149,9 +149,9 @@ function addButton(row){
 		</div>
 	</div>
 	{% endif %}
-	{% if instdets.ertype == 1 or instdets.ertype == 3 %}
+	{% if institution.ertype == 1 or institution.ertype == 3 %}
 	<div class="control-group {% if form.number_user.errors %} error {% endif %}">
-		<label class="control-label" for="id_number_user">{% trans "Number of Users" %}</label>
+		<label class="control-label" for="id_number_user"><b>{% trans "Number of Users" %}</b></label>
 		<div class="controls">
 			{{ form.number_user }}
 			{% if form.number_user.errors %} <span class="help-inline"> {{ form.number_user.errors|join:", " }} </span>
@@ -160,7 +160,7 @@ function addButton(row){
 	</div>
 	{% endif %}
 	<div class="control-group {% if form.number_id.errors %} error {% endif %}">
-		<label class="control-label" for="id_number_id">{% trans "Number Id" %}</label>
+		<label class="control-label" for="id_number_id"><b>{% trans "Number Id" %}</b></label>
 		<div class="controls">
 			{{ form.number_id }}
 			{% if form.number_id.errors %} <span class="help-inline"> {{ form.number_id.errors|join:", " }} </span>
