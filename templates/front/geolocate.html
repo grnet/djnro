@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en" style="height: 100%">
   <head>
@@ -278,7 +279,7 @@ function autocomplete() {
 
 
 	$(document).ready(function() {
-
+		alert("Beware that the accuracy of your geolocation depends highly on your connection type (wired, wireless, mobile data plan)");
 		initialize();
 	
 
@@ -311,10 +312,6 @@ function autocomplete() {
 
 <div id="map_canvas"></div>
 	
-
-
-    
-
 
   </body>
 </html>
