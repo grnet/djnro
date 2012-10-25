@@ -147,7 +147,7 @@ $.get("{% url get-service-points %}", function(data){
 	'title': title,
 	'icon': image,
 	});
-	return marker
+	return marker;
 	}
 
 	function clusterMarkers(markers){
@@ -188,8 +188,8 @@ $.get("{% url get-service-points %}", function(data){
 	</div>
 	<div class="row-fluid">
 		<div class="span2">
-			<div class="sidebar-nav">
-				<ul class="nav nav-list nav-stacked side-menu">
+			<div class="well sidebar-nav">
+				<ul class="nav nav-list">
 					<li {% block homeactive %}class="active"{% endblock %}>
 						<a href="{% url manage %}">{% trans "Home" %}</a>
 					</li>

@@ -84,13 +84,13 @@ body {
         <a class="brand" href="#"><img src="/static/img/logo_holder.png" /></a>
     {% block topmenu %}
     <ul class="nav">
-        <li class="active">
+        <li {% block hometop %}{% endblock %}>
             <a href="{% url index %}">Home</a>
         </li>
-        <li>
+        <li {% block faqtop %}{% endblock %}>
             <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
         </li>
-        <li>
+        <li {% block managetop %}{% endblock %}>
             <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
         </li>
 
@@ -124,76 +124,41 @@ body {
 	{% block content %}
 	<div class="container-fluid">
       <div class="row-fluid">
-        <div class="span3">
+        <div class="span2">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
-              <li class="active"><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Sidebar</li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li><a href="#">Link</a></li>
-              <li class="nav-header">Admin Area</li>
-              <li><a href="{% url manage %}">Login</a></li>
-              
+            
+              <li {% block homepage %}{% endblock %}><a href="{% url index %}">{% trans "Home" %}</a></li>
+              <li {% block closest %}{% endblock %}><a href="{% url geolocate %}" target="about:blank()">Closest</a></li>
+              <li {% block faq %}{% endblock %}><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
+              <li {% block whatis %}{% endblock %}><a href="/what/{{LANGUAGE_CODE}}/">{% trans "What" %}?</a></li>
+              <li {% block where %}{% endblock %}><a href="#">{% trans "What" %}?</a></li>
+              <li class="nav-header">Institutions</li>
+              <li {% block mgmt %}{% endblock %}><a href="{% url manage %}">{% trans "Management" %}</a></li>
             </ul>
           </div><!--/.well -->
+          <div><img src="/static/img/keep_calm_eduroam_small.png"></div>
         </div><!--/span-->
-        <div class="span9">
 
 
-            <div class="span6">
-              <h4>EduroamGR Tweets</h4>
-              <p><a class="twitter-timeline"  href="https://twitter.com/eduroamGR" data-widget-id="247968968848056320" width="300" height="400">Tweets by @eduroamGR</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
-             
-              </p>
-              
+		<div class="span10">
+			<div class="row-fluid">
+				<!--/span-->
+				
+					{% block subcontent %}
+					{% endblock %}
+				
+				<!--/span-->
+			</div><!--/row-->
+		</div><!--/span-->
 
-          </div>
-          <div class="row-fluid">
-            <!--/span-->
-            <div class="span4">
-              <h4>Heading</h4>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h4>Heading</h4>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-          </div><!--/row-->
-          <div class="row-fluid">
-            <div class="span4">
-              <h4>Heading</h4>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-            <div class="span4">
-              <h2>Heading</h2>
-              <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
-              <p><a class="btn" href="#">View details &raquo;</a></p>
-            </div><!--/span-->
-          </div><!--/row-->
         </div><!--/span-->
       </div><!--/row-->
 
       <hr>
 
       <footer>
-        <p>&copy; Company 2012</p>
+        <p>&copy; @ GRNET NOC 2012</p>
       </footer>
 
     </div><!--/.fluid-container-->

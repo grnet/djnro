@@ -1,6 +1,13 @@
 {% extends "base.html" %}
+
 {% load i18n %}
     {% block title %}{{ flatpage.title }}{% endblock %}
+    {% block homepage %}{% endblock %}
+    {% block hometop %}{% endblock %}
+    {% block faq %}{% if "faq" in flatpage.url %}class="active"{% endif %}{% endblock %}
+    {% block faqtop %}{% if "faq" in flatpage.url %}class="active"{% endif %}{% endblock %}
+    {% block whatis %}{% if "what" in flatpage.url %}class="active"{% endif %}{% endblock %}
+              
     {% block extrahead %}
     <style type="text/css">
       html,body {
@@ -31,60 +38,10 @@
     
 
 {% endblock %}
-    {% block topmenu %}
-    <ul class="nav">
-        <li>
-            <a href="{% url index %}">Home</a>
-        </li>
-        <li {% if "faq" in flatpage.url %} class="active" {% endif %}>
-            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
-        </li>
-        <li>
-            <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
-        </li>
 
-    </ul>
-    {% endblock %}
-    {% block content %}
-	<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-            
-              <li><a href="{% url index %}">{% trans "Home" %}</a></li>
-              <li><a href="{% url geolocate %}" target="about:blank()">eduroam near me</a></li>
-              <li class="active"><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
-              <li class="nav-header">Institutions</li>
-              <li><a href="{% url manage %}">{% trans "Management" %}</a></li>
-            </ul>
-          </div><!--/.well -->
-          <div><img src="/static/img/keep_calm_eduroam_small.png"></div>
-        </div><!--/span-->
+		{% block subcontent %}
+			<h4>{{ flatpage.title }}</h4>
+			<hr>
+			{{ flatpage.content|linebreaks }}
+		{% endblock %}
 
-
-		<div class="span10">
-			<div class="row-fluid">
-				<!--/span-->
-				
-					{% block subcontent %}
-					<h4>{{ flatpage.title }}</h4>
-					<hr>
-					{{ flatpage.content|linebreaks }}
-					{% endblock %}
-				
-				<!--/span-->
-			</div><!--/row-->
-		</div><!--/span-->
-
-        </div><!--/span-->
-      </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <p>&copy; @ GRNET NOC 2012</p>
-      </footer>
-
-    </div><!--/.fluid-container-->
-	{% endblock %}
