@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
     {% block title %}eduroam@Greece{% endblock %}
+    {% block homepage %}class="active"{% endblock %}
+    {% block hometop %}class="active"{% endblock %}
     {% block extrahead %}
     <style type="text/css">
       html,body {
@@ -21,6 +23,7 @@
 	var bounds = '';
 	var image = '';
 	var infoWindow;
+	addr = {};
 	
 
 	var styles = [ {
@@ -87,7 +90,7 @@
 
 		];
 
-		
+	geocoder = new google.maps.Geocoder();
 	var mapOptions = {
 			center : latlng,
 			zoom : zoomLevel,
@@ -102,9 +105,36 @@
 		};
 		map = new google.maps.Map(document.getElementById("map_canvas"),
 				mapOptions);
+		
+		
+		var homeControlDiv = document.createElement('div');
+		homeControlDiv.className='roundButtonHolder';
+		homeControlDiv.id="locationButton";
+		var homeControl = new HomeControl(homeControlDiv, map);
+
+		homeControlDiv.index = 1;
+		map.controls[google.maps.ControlPosition.TOP_LEFT].push(homeControlDiv);
 
 		bounds = new google.maps.LatLngBounds();
 		infoWindow = new google.maps.InfoWindow();
+		google.maps.event.addListener(map, 'idle', function() {
+			center = map.getCenter();
+			geocode(center);
+			zoom = map.getZoom();
+			if (zoom > 12){
+				$("#showCityBtn").show();
+				$("#showCountryBtn").hide();
+			}
+			else if ((zoom <= 12) && (zoom > 7)){
+				$("#showCityBtn").hide();
+				$("#showCountryBtn").show();
+			}
+			else {
+				$("#showCityBtn").hide();
+				$("#showCountryBtn").hide();
+			}
+		});
+		
 
 	}
 
@@ -245,6 +275,83 @@
 		alert(markers[closest].address);
 	}
 
+	function geocode(position){
+		addr = {};
+		geocoder
+		.geocode(
+				{
+					'latLng' : position
+				},
+				function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						if (results.length >= 1) {
+							for ( var ii = 0; ii < results[0].address_components.length; ii++) {
+								var street_number = route = street = city = state = zipcode = country = formatted_address = '';
+								var types = results[0].address_components[ii].types
+										.join(",");
+								if (types == "sublocality,political"
+										|| types == "locality,political"
+										|| types == "neighborhood,political"
+										|| types == "political") {
+									addr.city = (city == '' || types == "locality,political") ? results[0].address_components[ii].long_name
+											: city;
+								}
+								if (types == "country,political") {
+									addr.country = results[0].address_components[ii].long_name;
+								}
+							}
+						}
+					}
+				});
+	}
+	
+	function codeAddress(address) {
+	    geocoder.geocode( { 'address': address}, function(results, status) {
+	      if (status == google.maps.GeocoderStatus.OK) {
+	        map.setCenter(results[0].geometry.location);
+	    	map.fitBounds(results[0].geometry.bounds)
+	      } else {
+	        alert("Geocode was not successful for the following reason: " + status);
+	      }
+	    });
+	  }
+
+	function HomeControl(controlDiv, map) {
+
+		  // Set CSS styles for the DIV containing the control
+		  // Setting padding to 5 px will offset the control
+		  // from the edge of the map.
+		  controlDiv.style.padding = '5px';
+
+		  // Set CSS for the control border.
+		  var controlUI = document.createElement('button');
+		  controlUI.className='btn btn-warning roundButton';
+		  controlUI.id = "showCityBtn";
+		  extraCSS = 'background-image: url(/static/img/city.png);background-position: center center; background-repeat: no-repeat;';
+		  controlUI.style.cssText='display:none; cursor:pointer; white-space:nowrap; position:absolute; '+extraCSS;
+		  controlUI.title = "City View";
+
+		  // Set CSS for the control border.
+		  var controlUI2 = document.createElement('button');
+		  controlUI2.className='btn btn-warning roundButton';
+		  controlUI2.id = "showCountryBtn";
+		  extraCSS2 = 'background-image: url(/static/img/country.png);background-position: center center; background-repeat: no-repeat;';
+		  controlUI2.style.cssText='display:none; cursor:pointer; white-space:nowrap; position:absolute; '+extraCSS2;
+		  controlUI2.title = "Country View";
+		  
+		  controlDiv.appendChild(controlUI);
+		  controlDiv.appendChild(controlUI2);
+		  
+		  // Setup the click event listeners: simply set the map to Chicago.
+		  google.maps.event.addDomListener(controlUI, 'click', function() {
+		    codeAddress(addr.city+','+addr.country);
+		  });
+		  google.maps.event.addDomListener(controlUI2, 'click', function() {
+			    codeAddress(addr.country);
+			  });
+		  
+		}
+	
 	$(document).ready(function() {
 		initialize();
 		marks = placeMarkers();
@@ -253,44 +360,12 @@
 </script>
 {% endblock %}
 
-    {% block content %}
-	<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2">
-          <div class="well sidebar-nav">
-            <ul class="nav nav-list">
-            
-              <li class="active"><a href="{% url index %}">{% trans "Home" %}</a></li>
-              <li><a href="{% url geolocate %}" target="about:blank()">eduroam near me</a></li>
-              <li><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
-              <li class="nav-header">Institutions</li>
-              <li><a href="{% url login %}">{% trans "Management" %}</a></li>
-            </ul>
-          </div><!--/.well -->
-          <div><img src="/static/img/keep_calm_eduroam_small.png"></div>
-        </div><!--/span-->
 
-
-		<div class="span10">
-			<div class="row-fluid">
-				<!--/span-->
+					{% block subcontent %}
 					<h4>{% trans "Eduroam in Greece" %}</h4>
 					<hr>
-					{% block subcontent %}
+					
 					<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;"></div>
 					{% endblock %}
 				
-				<!--/span-->
-			</div><!--/row-->
-		</div><!--/span-->
-
-        </div><!--/span-->
-
-      <hr>
-
-      <footer>
-        <p>&copy; @ GRNET NOC 2012</p>
-      </footer>
-
-    </div><!--/.fluid-container-->
-	{% endblock %}
+				

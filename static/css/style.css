@@ -1,3 +1,19 @@
+body{
+	font-size: 13px;
+}
+
+label, input, button, select, textarea {
+    font-size: 13px;
+   }
+
+input, textarea {
+    width: 140px;
+}
+
+select {
+    width: 140px;
+}
+
 .side-menu > li > a {
     border: 1px solid #E5E5E5;
     display: block;
@@ -5,6 +21,9 @@
     padding: 8px 14px;
 }
 
+select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
+    font-size: 13px;
+}
 
 .side-menu > li:first-child > a {
     border-radius: 6px 6px 0 0;
@@ -77,4 +96,15 @@ tr.even {
 
 .breadcrumb{
 	background-color: white;
+}
+
+.roundButton {
+    border-radius: 55px 55px 55px 55px !important;
+    height: 55px !important;
+    width: 55px !important;
+}
+
+.roundButtonHolder {    
+    left: 74px !important;
+    top: 12px !important;
 }
