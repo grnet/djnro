@@ -182,7 +182,7 @@ $.get("{% url get-service-points %}", function(data){
 	    			<li class="active">{% trans "Home" %}</li>
 	    			{% endblock %}
 	    		</ul>
-			<p class="pull-right">{% trans "You are logged in as" %}: {{user}} (<a href="{% url logout %}">{% trans "Logout" %}</a>)</p>
+			<p class="pull-right"><strong>{{user}}</strong> (<a href="{% url logout %}">{% trans "Logout" %}</a>)</p>
 			</div></div>
 		</div>
 	</div>
