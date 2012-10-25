@@ -129,10 +129,10 @@ body {
             <ul class="nav nav-list">
             
               <li {% block homepage %}{% endblock %}><a href="{% url index %}">{% trans "Home" %}</a></li>
-              <li {% block closest %}{% endblock %}><a href="{% url geolocate %}" target="about:blank()">Closest</a></li>
-              <li {% block faq %}{% endblock %}><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
+              <li {% block closest %}{% endblock %}><a href="{% url geolocate %}" target="about:blank()">{% trans "Closest eduroam" %}</a></li>
               <li {% block whatis %}{% endblock %}><a href="/what/{{LANGUAGE_CODE}}/">{% trans "What" %}?</a></li>
-              <li {% block where %}{% endblock %}><a href="#">{% trans "What" %}?</a></li>
+              <li {% block participants %}{% endblock %}><a href="{% url participants %}">{% trans "Participants" %}</a></li>
+              <li {% block faq %}{% endblock %}><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
               <li class="nav-header">Institutions</li>
               <li {% block mgmt %}{% endblock %}><a href="{% url manage %}">{% trans "Management" %}</a></li>
             </ul>

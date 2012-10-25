@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load i18n %}
+    {% block title %}eduroam@Greece{% endblock %}
+    {% block homepage %}{% endblock %}
+    {% block hometop %}{% endblock %}
+    {% block participants %}class="active"{% endblock %}
+    {% block extrahead %}
+    <style type="text/css">
+      html,body {
+	height: 100%;
+	overflow: hidden;
+}
+      .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
+    </style>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+{% endblock %}
+
+
+					{% block subcontent %}
+					{% load tolocale %}
+					<h4>{% trans "Participating Institutions" %}</h4>
+					<hr>
+					<div>{% blocktrans %}In Greece eduroam is provided by the following instituitons/organizations{% endblocktrans %}</div><br>
+					<div>{% for i in institutions %}
+					<address>
+						<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br>
+						{{i.address_street}}<br>
+						{{i.address_city}}
+						{% if i.url.all|length > 0 %}
+						    <dl style="margin-top: 0px;">
+    							<dt style="font-weight: normal;">urls</dt>
+    							<dd>
+						{% for u in i.url.all %}{% if u %}<a href="{{u.url}}">{{u.url}}</a>  {{u.get_urltype_display}} ({{u.get_lang_display}})<br>{% endif %}{% endfor %}
+						</dd>
+    						</dl>
+    						{% endif %}
+					</address>
+						
+						
+						
+					{% endfor %}</div>
+					{% endblock %}
+				
+				

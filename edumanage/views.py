@@ -773,6 +773,17 @@ def geolocate(request):
     return render_to_response('front/geolocate.html',
                                   context_instance=RequestContext(request))
 
+def participants(request):
+    institutions = Institution.objects.all()
+    dets = []
+    for i in institutions:
+        try:
+            dets.append(i.institutiondetails)
+        except InstitutionDetails.DoesNotExist:
+            pass
+    return render_to_response('front/participants.html', {'institutions': dets},
+                                  context_instance=RequestContext(request))
+
 def selectinst(request):
     if request.method == 'POST':
         request_data = request.POST.copy()
