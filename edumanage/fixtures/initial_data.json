@@ -1,6 +1,15 @@
 [
 	{
 		"pk": 1,
+		"model": "edumanage.contact",
+		"fields": {
+			"lastname": "Mousmoulas",
+			"email": "zmouzm@grnet.gr",
+			"firstname": "Zenon",
+			"phone": "00302107474244"
+		}
+	}, {
+		"pk": 1,
 		"model": "edumanage.realm",
 		"fields": {
 			"address_city": "Athens, Greece",
@@ -58,15 +67,6 @@
 				"name": "GRNET",
 				"content_type": ["edumanage", "realm"],
 				"object_id": 1
-			}
-		}, {
-			"pk": 1,
-			"model": "edumanage.contact",
-			"fields": {
-				"lastname": "Mousmoulas",
-				"email": "zmouzm@grnet.gr",
-				"firstname": "Zenon",
-				"phone": "00302107474244"
 			}
 		}
 ]
