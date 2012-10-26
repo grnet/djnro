@@ -1,0 +1,74 @@
+[
+	{
+		"pk": 1,
+		"model": "edumanage.realm",
+		"fields": {
+			"address_city": "Athens, Greece",
+			"country": "gr",
+			"ts": "2012-10-26 17:55:00",
+			"contact": [1],
+			"address_street": "Leoforos Mesogeion 56",
+			"stype": 0
+		}
+	}, {
+			"pk": 1,
+			"model": "edumanage.url_i18n",
+			"fields": {
+				"url": "http://www.eduroam.gr",
+				"lang": "el",
+				"urltype": "info",
+				"object_id": 1,
+				"content_type": ["edumanage", "realm"]
+			}
+		}, {
+			"pk": 2,
+			"model": "edumanage.url_i18n",
+			"fields": {
+				"url": "http://www.eduroam.gr",
+				"lang": "en",
+				"urltype": "info",
+				"object_id": 1,
+				"content_type": ["edumanage", "realm"]
+			}
+		}, {
+			"pk": 3,
+			"model": "edumanage.url_i18n",
+			"fields": {
+				"url": "http://www.eduroam.gr",
+				"lang": "el",
+				"urltype": "policy",
+				"object_id": 1,
+				"content_type": ["edumanage", "realm"]
+			}
+		}, {
+			"pk": 4,
+			"model": "edumanage.url_i18n",
+			"fields": {
+				"url": "http://www.eduroam.gr",
+				"lang": "en",
+				"urltype": "policy",
+				"object_id": 1,
+				"content_type": ["edumanage", "realm"]
+			}
+		}, {
+			"pk": 1,
+			"model": "edumanage.name_i18n",
+			"fields": {
+				"lang": "en",
+				"name": "GRNET",
+				"content_type": ["edumanage", "realm"],
+				"object_id": 1
+			}
+		}, {
+			"pk": 1,
+			"model": "edumanage.contact",
+			"fields": {
+				"lastname": "Mousmoulas",
+				"email": "zmouzm@grnet.gr",
+				"firstname": "Zenon",
+				"phone": "00302107474244"
+			}
+		}
+]
+
+
