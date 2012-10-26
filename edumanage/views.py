@@ -16,7 +16,7 @@ from django.contrib.contenttypes.generic import generic_inlineformset_factory
 from django.core.mail.message import EmailMessage
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
-import json 
+import json, bz2
 import math
 from xml.etree import ElementTree as ET
 
@@ -29,11 +29,15 @@ from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
 from django.contrib.auth import authenticate, login
 from registration.models import RegistrationProfile
+from django.core.cache import cache
+
 
 def index(request):
     return render_to_response('front/index.html', context_instance=RequestContext(request))
 
+
 @login_required
+@never_cache
 def manage(request):
     services_list = []
     servers_list = []
@@ -58,6 +62,7 @@ def manage(request):
                               context_instance=RequestContext(request, base_response(request)))
 
 @login_required
+@never_cache
 def institutions(request):
     user = request.user
     dict = {}
@@ -80,6 +85,7 @@ def institutions(request):
 
 
 @login_required
+@never_cache
 def add_institution_details(request, institution_pk):
     user = request.user
     try:
@@ -129,6 +135,7 @@ def add_institution_details(request, institution_pk):
 
 
 @login_required
+@never_cache
 def services(request, service_pk):
     user = request.user
     dict = {}
@@ -170,6 +177,7 @@ def services(request, service_pk):
 
 
 @login_required
+@never_cache
 def add_services(request, service_pk):
     user = request.user
     service = False
@@ -246,7 +254,9 @@ def add_services(request, service_pk):
         return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
 
+
 @login_required
+@never_cache
 def del_service(request):
     if request.method == 'GET':
         user = request.user
@@ -272,7 +282,9 @@ def del_service(request):
         resp['success'] = "Service successfully deleted"
         return HttpResponse(json.dumps(resp), mimetype='application/json')
 
+
 @login_required
+@never_cache
 def servers(request, server_pk):
     user = request.user
     servers = False
@@ -295,7 +307,9 @@ def servers(request, server_pk):
     return render_to_response('edumanage/servers.html', { 'servers': servers},
                                   context_instance=RequestContext(request, base_response(request)))
 
+
 @login_required
+@never_cache
 def add_server(request, server_pk):
     user = request.user
     server = False
@@ -340,7 +354,9 @@ def add_server(request, server_pk):
         return render_to_response('edumanage/servers_edit.html', { 'institution': inst, 'form': form, 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
 
+
 @login_required
+@never_cache
 def del_server(request):
     if request.method == 'GET':
         user = request.user
@@ -368,6 +384,7 @@ def del_server(request):
 
 
 @login_required
+@never_cache
 def realms(request):
     user = request.user
     servers = False
@@ -383,7 +400,9 @@ def realms(request):
     return render_to_response('edumanage/realms.html', { 'realms': realms },
                                   context_instance=RequestContext(request, base_response(request)))
 
+
 @login_required
+@never_cache
 def add_realm(request, realm_pk):
     user = request.user
     server = False
@@ -438,6 +457,7 @@ def add_realm(request, realm_pk):
 
 
 @login_required
+@never_cache
 def del_realm(request):
     if request.method == 'GET':
         user = request.user
@@ -465,6 +485,7 @@ def del_realm(request):
 
 
 @login_required
+@never_cache
 def contacts(request):
     user = request.user
     servers = False
@@ -485,7 +506,9 @@ def contacts(request):
     return render_to_response('edumanage/contacts.html', { 'contacts': contacts},
                                   context_instance=RequestContext(request, base_response(request)))
 
+
 @login_required
+@never_cache
 def add_contact(request, contact_pk):
     user = request.user
     server = False
@@ -535,6 +558,7 @@ def add_contact(request, contact_pk):
 
 
 @login_required
+@never_cache
 def del_contact(request):
     if request.method == 'GET':
         user = request.user
@@ -567,8 +591,10 @@ def del_contact(request):
             return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp['success'] = "Contact successfully deleted"
         return HttpResponse(json.dumps(resp), mimetype='application/json')
-    
+
+
 @login_required
+@never_cache
 def adduser(request):
     user = request.user
     try:
@@ -596,6 +622,7 @@ def adduser(request):
         else:
             return render_to_response('edumanage/add_user.html', {'form': form,},
                                       context_instance=RequestContext(request, base_response(request)))
+
 
 @login_required
 def base_response(request):
@@ -641,6 +668,7 @@ def base_response(request):
 
 
 @login_required
+@never_cache
 def get_service_points(request):
     if request.method == "GET":
         user = request.user
@@ -673,8 +701,9 @@ def get_service_points(request):
     else:
        return HttpResponseNotFound('<h1>Something went really wrong</h1>')
 
-
+@never_cache
 def get_all_services(request):
+    lang = request.LANGUAGE_CODE
     servicelocs = ServiceLoc.objects.all()
     locs = []
     for sl in servicelocs:
@@ -684,8 +713,14 @@ def get_all_services(request):
         response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
         response_location['enc'] = u"%s"%(sl.enc_level)
         response_location['AP_no'] = u"%s"%(sl.AP_no)
-        response_location['inst'] = sl.institutionid.org_name.get(lang='en').name
-        response_location['name'] = sl.loc_name.get(lang='en').name
+        try:
+            response_location['inst'] = sl.institutionid.org_name.get(lang=lang).name
+        except Name_i18n.DoesNotExist:
+            response_location['inst'] = sl.institutionid.org_name.get(lang='en').name
+        try:
+            response_location['name'] = sl.loc_name.get(lang=lang).name
+        except Name_i18n.DoesNotExist:
+            response_location['name'] = sl.loc_name.get(lang='en').name
         response_location['port_restrict'] = u"%s"%(sl.port_restrict)
         response_location['transp_proxy'] = u"%s"%(sl.transp_proxy)
         response_location['IPv6'] = u"%s"%(sl.IPv6)
@@ -695,7 +730,6 @@ def get_all_services(request):
         response_location['key'] = u"%s"%sl.pk
         locs.append(response_location)
     return HttpResponse(json.dumps(locs), mimetype='application/json')
-
 
 @never_cache
 def user_login(request):
@@ -768,11 +802,11 @@ def user_login(request):
         return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
 
-
+@never_cache
 def geolocate(request):
     return render_to_response('front/geolocate.html',
                                   context_instance=RequestContext(request))
-
+@never_cache
 def participants(request):
     institutions = Institution.objects.all()
     dets = []
@@ -783,7 +817,7 @@ def participants(request):
             pass
     return render_to_response('front/participants.html', {'institutions': dets},
                                   context_instance=RequestContext(request))
-
+@never_cache
 def selectinst(request):
     if request.method == 'POST':
         request_data = request.POST.copy()
@@ -825,7 +859,7 @@ def user_activation_notify(userprofile):
     send_new_mail(settings.EMAIL_SUBJECT_PREFIX + subject, 
                               message, settings.SERVER_EMAIL,
                              settings.NOTIFY_ADMIN_MAILS, [])
-
+@never_cache
 def closest(request):
     if request.method == 'GET':
         locs = []
@@ -839,6 +873,41 @@ def closest(request):
         distances = {}
         closestMarker = {}
         closest = -1
+        points = getPoints()
+        for (counter, i) in enumerate(points):
+            pointname = i['text']
+            pointlng = i['lng'] 
+            pointlat = i['lat']
+            pointtext = i['text']
+            dLat = rad(float(pointlat)-float(lat))
+            dLong = rad(float(pointlng)-float(lng))
+            a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(rad(lat)) * math.cos(rad(float(pointlat))) * math.sin(dLong/2) * math.sin(dLong/2) 
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+            d = R * c
+            distances[counter] = d
+            if (closest == -1 or d < distances[closest]):
+                closest = counter
+                closestMarker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": pointtext}
+        return HttpResponse(json.dumps(closestMarker), mimetype='application/json')
+
+@never_cache
+def worldPoints(request):
+    if request.method == 'GET':
+        points = getPoints()
+        return HttpResponse(json.dumps(points), mimetype='application/json')
+
+@never_cache
+def world(request):
+        return render_to_response('front/world.html',
+                                  context_instance=RequestContext(request))
+
+def getPoints():
+    points = cache.get('points')
+    if points:
+        points = bz2.decompress(points)
+        return json.loads(points)
+    else:
+        point_list = []
         doc = ET.parse(settings.KML_FILE)
         root = doc.getroot()
         r = root.getchildren()[0]
@@ -848,18 +917,14 @@ def closest(request):
                 pointname = j[0].text
                 point = j[2].getchildren()[0].text
                 pointlng, pointlat, pointele = point.split(',')
-                dLat = rad(float(pointlat)-float(lat))
-                dLong = rad(float(pointlng)-float(lng))
-                a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(rad(lat)) * math.cos(rad(float(pointlat))) * math.sin(dLong/2) * math.sin(dLong/2) 
-                c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
-                d = R * c
-                distances[counter] = d
-                if (closest == -1 or d < distances[closest]):
-                    closest = counter
-                    closestMarker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": j[1].text}
-        return HttpResponse(json.dumps(closestMarker), mimetype='application/json')
-        
+                Marker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": j[1].text}
+                point_list.append(Marker);
+        points = json.dumps(point_list)
+        cache.set('points', bz2.compress(points), 60 * 3600 * 24)
+        return json.loads(points)
 
+
+@never_cache
 def instxml(request):
     ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
     root = ET.Element("institutions")
@@ -975,7 +1040,7 @@ def instxml(request):
             
     return render_to_response("general/institution.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
         
-
+@never_cache
 def realmxml(request):
     realm = Realm.objects.all()[0]
     ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
@@ -1026,6 +1091,7 @@ def realmxml(request):
     
     return render_to_response("general/realm.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
 
+@never_cache
 def realmdataxml(request):
     realm = Realm.objects.all()[0]
     ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
@@ -1088,7 +1154,6 @@ def to_xml(ele, encoding="UTF-8"):
     xml = ET.tostring(ele, encoding)
     return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
     
-    
 def getInstContacts(inst):
     contacts = InstitutionContactPool.objects.filter(institution=inst)
     contact_pks = []
@@ -1106,7 +1171,6 @@ def getInstServers(inst):
 
 def rad(x):
     return x*math.pi/180
-
 
 def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
     return EmailMessage(subject, message, from_email, recipient_list, bcc_list).send()
