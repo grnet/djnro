@@ -29,6 +29,9 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     border-radius: 6px 6px 0 0;
 }
 
+.btn{
+	font-size: 13px;
+}
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Everything below this line is the same as demo_table.css. This file is

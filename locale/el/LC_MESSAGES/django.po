@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-23 13:13+0300\n"
+"POT-Creation-Date: 2012-10-25 17:58+0300\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -25,20 +25,25 @@ msgstr "Ελληνικά"
 msgid "English"
 msgstr "Αγγλικά"
 
-#: edumanage/forms.py:66 edumanage/forms.py:75 edumanage/forms.py:84
-#: edumanage/forms.py:93 edumanage/forms.py:108
+#: accounts/views.py:76
+#, python-format
+msgid "%sUser account activated"
+msgstr ""
+
+#: edumanage/forms.py:72 edumanage/forms.py:81 edumanage/forms.py:90
+#: edumanage/forms.py:99 edumanage/forms.py:114
 msgid "This field is required."
 msgstr "Αυτό το πεδίο είναι απαραίτητο"
 
-#: edumanage/forms.py:105
+#: edumanage/forms.py:111
 msgid "Invalid network address/hostname format"
 msgstr "Λανθασμένη IP διεύθυνση ή όνομα host"
 
-#: edumanage/forms.py:144 edumanage/forms.py:146
+#: edumanage/forms.py:150 edumanage/forms.py:152
 msgid "Fill in at least one location name in English"
 msgstr "Συμπληρώστε τουλάχιστον ένα όνομα στα Αγγλικά"
 
-#: edumanage/forms.py:171 edumanage/forms.py:173
+#: edumanage/forms.py:177 edumanage/forms.py:179
 msgid "Fill in at least the info url"
 msgstr "Συμπληρώστε τουλάχιστον το info url"
 
@@ -91,9 +96,118 @@ msgid ""
 "%(numid)s"
 msgstr ""
 
-#: templates/base.html:99 templates/edumanage/services_edit.html:344
+#: edumanage/views.py:733
+msgid ""
+"Your idP should release the HTTP_EPPN attribute towards this service<br>"
+msgstr ""
+
+#: edumanage/views.py:735
+msgid ""
+"Your idP should release the HTTP_SHIB_HOMEORGANIZATION attribute towards "
+"this service<br>"
+msgstr ""
+
+#: edumanage/views.py:737
+msgid ""
+"Your idP should release an appropriate HTTP_SHIB_EP_ENTITLEMENT attribute "
+"towards this service<br>"
+msgstr ""
+
+#: edumanage/views.py:739
+msgid ""
+"Your idP should release the HTTP_SHIB_INETORGPERSON_MAIL attribute towards "
+"this service"
+msgstr ""
+
+#: edumanage/views.py:766 edumanage/views.py:810
+#, python-format
+msgid ""
+"User account <strong>%s</strong> is pending activation. Administrators have "
+"been notified and will activate this account within the next days. <br>If "
+"this account has remained inactive for a long time contact your technical "
+"coordinator or GRNET Helpdesk"
+msgstr ""
+"Εκκρεμεί ενεργοποίηση του λογαριασμού <strong>%s</strong>. Οι διαχειριστές "
+"της υπηρεσίας έχουν ενημερωθεί και πρόκειται να ενεργοποιήσουν το λογαριασμό "
+"εντός των επόμενων ημερών.<br>Εάν ο λογαριασμός δεν έχει ενεργοποιηθεί για "
+"μεγάλο<br>χρονικό διάστημα, επικοινωνήστε με τον τεχνικό σας υπεύθυνο ή το "
+"Helpdesk της ΕΔΕΤ"
+
+#: edumanage/views.py:770
+#, python-format
+msgid ""
+"Something went wrong during user authentication. Contact your administrator "
+"%s"
+msgstr ""
+
+#: edumanage/views.py:774
+msgid "Invalid login procedure"
+msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση"
+
+#: edumanage/views.py:800
+msgid ""
+"Violation warning: User account is already associated with an institution."
+"The event has been logged and our administrators will be notified about it"
+msgstr ""
+
+#: longerusername/forms.py:11
+#, python-format
+msgid ""
+"Required, %s characters or fewer. Only letters, numbers, and characters such "
+"as @.+_- are allowed."
+msgstr ""
+
+#: longerusername/models.py:18
+#, python-format
+msgid ""
+"Required, %s characters or fewer. Only letters, numbers, and @, ., +, -, or "
+"_ characters."
+msgstr ""
+
+#: templates/base.html:94 templates/status.html:12
+#: templates/registration/activate.html:13
+#: templates/registration/activation_complete.html:13
+#: templates/registration/select_institution.html:12
+msgid "Manage"
+msgstr "Διαχείριση"
+
+#: templates/base.html:101 templates/edumanage/services_edit.html:344
 msgid "Language"
 msgstr "Γλώσσα"
+
+#: templates/base.html:131 templates/status.html:6
+#: templates/edumanage/contacts.html:4
+#: templates/edumanage/contacts_edit.html:4
+#: templates/edumanage/institution.html:12
+#: templates/edumanage/institution_edit.html:5
+#: templates/edumanage/realms.html:4 templates/edumanage/realms_edit.html:4
+#: templates/edumanage/server_details.html:4
+#: templates/edumanage/servers.html:4 templates/edumanage/servers_edit.html:4
+#: templates/edumanage/service_details.html:5
+#: templates/edumanage/services.html:4
+#: templates/edumanage/services_edit.html:5
+#: templates/edumanage/welcome.html:182 templates/edumanage/welcome.html:194
+#: templates/edumanage/welcome.html:231 templates/registration/activate.html:7
+#: templates/registration/activation_complete.html:7
+#: templates/registration/select_institution.html:6
+msgid "Home"
+msgstr "Αρχική"
+
+#: templates/base.html:132
+msgid "Closest eduroam"
+msgstr "Πλησιέστερο eduroam"
+
+#: templates/base.html:133
+msgid "What"
+msgstr "Τι είναι"
+
+#: templates/base.html:134
+msgid "Participants"
+msgstr "Συμμετέχοντες"
+
+#: templates/base.html:137
+msgid "Management"
+msgstr "Διαχείριση"
 
 #: templates/edumanage/add_user.html:6
 #: templates/edumanage/contacts_edit.html:33
@@ -115,28 +229,13 @@ msgstr ""
 msgid "Phone"
 msgstr "Τηλέφωνο"
 
-#: templates/edumanage/contacts.html:4
-#: templates/edumanage/contacts_edit.html:4
-#: templates/edumanage/institution.html:12
-#: templates/edumanage/institution_edit.html:5
-#: templates/edumanage/realms.html:4 templates/edumanage/realms_edit.html:4
-#: templates/edumanage/server_details.html:4
-#: templates/edumanage/servers.html:4 templates/edumanage/servers_edit.html:4
-#: templates/edumanage/service_details.html:5
-#: templates/edumanage/services.html:4
-#: templates/edumanage/services_edit.html:5
-#: templates/edumanage/welcome.html:173 templates/edumanage/welcome.html:185
-#: templates/edumanage/welcome.html:222 templates/front/index.html:265
-msgid "Home"
-msgstr "Αρχική"
-
 #: templates/edumanage/contacts.html:5 templates/edumanage/contacts.html:99
 #: templates/edumanage/contacts_edit.html:5
 #: templates/edumanage/institution.html:52
 #: templates/edumanage/institution_edit.html:115
 #: templates/edumanage/service_details.html:137
 #: templates/edumanage/services_edit.html:383
-#: templates/edumanage/welcome.html:203
+#: templates/edumanage/welcome.html:212
 msgid "Contacts"
 msgstr "Επαφές"
 
@@ -210,7 +309,7 @@ msgstr "Προσθήκη Επαφής"
 #: templates/edumanage/institution_edit.html:87
 #: templates/edumanage/server_details.html:37
 #: templates/edumanage/servers.html:114 templates/edumanage/services.html:114
-#: templates/edumanage/services_edit.html:344
+#: templates/edumanage/services_edit.html:344 templates/front/index.html:175
 msgid "Name"
 msgstr "Όνομα"
 
@@ -255,17 +354,20 @@ msgid "Add Contact"
 msgstr "Προσθήκη Επαφής"
 
 #: templates/edumanage/contacts_edit.html:67
-#: templates/edumanage/institution_edit.html:173
+#: templates/edumanage/institution_edit.html:172
 #: templates/edumanage/realms_edit.html:59
 #: templates/edumanage/servers_edit.html:112
 #: templates/edumanage/services_edit.html:470
+#: templates/registration/select_institution.html:57
 msgid "Apply"
 msgstr "Εφαρμογή"
 
 #: templates/edumanage/institution.html:13
 #: templates/edumanage/institution.html:18
 #: templates/edumanage/institution_edit.html:6
-#: templates/edumanage/welcome.html:189
+#: templates/edumanage/welcome.html:198
+#: templates/registration/activate_edit.html:36
+#: templates/registration/select_institution.html:46
 msgid "Institution"
 msgstr "Φορέας"
 
@@ -297,7 +399,7 @@ msgid "Urls"
 msgstr "Σύνδεσμοι"
 
 #: templates/edumanage/institution.html:70
-#: templates/edumanage/institution_edit.html:145
+#: templates/edumanage/institution_edit.html:144
 msgid "Oper Name"
 msgstr ""
 
@@ -306,7 +408,7 @@ msgid "Number User"
 msgstr "Αριθμός Χρηστών"
 
 #: templates/edumanage/institution.html:85
-#: templates/edumanage/institution_edit.html:164
+#: templates/edumanage/institution_edit.html:163
 msgid "Number Id"
 msgstr ""
 
@@ -315,7 +417,7 @@ msgstr ""
 #: templates/edumanage/institution_edit.html:74
 #: templates/edumanage/server_details.html:94
 #: templates/edumanage/service_details.html:202
-#: templates/edumanage/welcome.html:226
+#: templates/edumanage/welcome.html:235
 msgid "Edit"
 msgstr "Επεξεργασία"
 
@@ -327,27 +429,27 @@ msgstr "Δεν έχουν καθοριστεί λεπτομέρειες για �
 msgid "No institution defined"
 msgstr "Δεν έχει καθοριστεί φορέας"
 
-#: templates/edumanage/institution_edit.html:155
+#: templates/edumanage/institution_edit.html:154
 msgid "Number of Users"
 msgstr "Αριθμός Χρηστών"
 
-#: templates/edumanage/institution_edit.html:180
+#: templates/edumanage/institution_edit.html:179
 #: templates/edumanage/services_edit.html:478
 msgid "Add User"
 msgstr "Νέος Χρήστης"
 
-#: templates/edumanage/institution_edit.html:186
+#: templates/edumanage/institution_edit.html:185
 #: templates/edumanage/services.html:160
 #: templates/edumanage/services_edit.html:484
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: templates/edumanage/institution_edit.html:187
+#: templates/edumanage/institution_edit.html:186
 msgid "Save changes"
 msgstr "Αποθήκευση"
 
 #: templates/edumanage/realms.html:5 templates/edumanage/realms_edit.html:5
-#: templates/edumanage/welcome.html:200
+#: templates/edumanage/welcome.html:209
 msgid "Realms"
 msgstr ""
 
@@ -379,7 +481,7 @@ msgstr "Proxy σε Εξυπηρετητές"
 #: templates/edumanage/server_details.html:5
 #: templates/edumanage/servers.html:5 templates/edumanage/servers.html:106
 #: templates/edumanage/servers_edit.html:5
-#: templates/edumanage/welcome.html:197
+#: templates/edumanage/welcome.html:206
 msgid "Servers"
 msgstr "Εξυπηρετητές"
 
@@ -456,7 +558,7 @@ msgstr ""
 #: templates/edumanage/service_details.html:6
 #: templates/edumanage/services.html:5 templates/edumanage/services.html:96
 #: templates/edumanage/services_edit.html:6
-#: templates/edumanage/welcome.html:194
+#: templates/edumanage/welcome.html:203
 msgid "Services"
 msgstr "Υπηρεσίες"
 
@@ -471,7 +573,7 @@ msgid "Location Name"
 msgstr "Όνομα Τοποθεσίας"
 
 #: templates/edumanage/service_details.html:122
-#: templates/edumanage/services.html:115
+#: templates/edumanage/services.html:115 templates/front/index.html:178
 msgid "Address"
 msgstr "Διεύθυνση"
 
@@ -482,7 +584,7 @@ msgid "Encryption Level"
 msgstr "Επίπεδο Κρυπτογράφησης"
 
 #: templates/edumanage/service_details.html:152
-#: templates/edumanage/services_edit.html:399
+#: templates/edumanage/services_edit.html:399 templates/front/index.html:193
 msgid "Port Restrict"
 msgstr ""
 
@@ -497,7 +599,7 @@ msgid "AP number"
 msgstr "Αριθμός APs"
 
 #: templates/edumanage/service_details.html:187
-#: templates/edumanage/services_edit.html:439
+#: templates/edumanage/services_edit.html:439 templates/front/index.html:205
 msgid "Wired"
 msgstr ""
 
@@ -521,11 +623,11 @@ msgstr "Υπηρεσία"
 msgid "successfully deleted"
 msgstr "διαγράφηκε επιτυχώς"
 
-#: templates/edumanage/services.html:106 templates/edumanage/welcome.html:226
+#: templates/edumanage/services.html:106 templates/edumanage/welcome.html:235
 msgid "Add new service"
 msgstr "Προσθήκη υπηρεσίας"
 
-#: templates/edumanage/services.html:116
+#: templates/edumanage/services.html:116 templates/front/index.html:184
 msgid "SSID"
 msgstr ""
 
@@ -570,22 +672,81 @@ msgstr "γλώσσα"
 msgid "Save Changes"
 msgstr "Αποθήκευση Αλλαγών"
 
-#: templates/edumanage/welcome.html:176
-msgid "You are logged in as"
-msgstr "Έχετε εισαχθεί ως"
-
-#: templates/edumanage/welcome.html:176
+#: templates/edumanage/welcome.html:185
 msgid "Logout"
 msgstr "Έξοδος"
 
-#: templates/edumanage/welcome.html:222
+#: templates/edumanage/welcome.html:231
 msgid "Service Locations"
 msgstr "Τοποθεσίες Υπηρεσιών"
 
-#: templates/edumanage/welcome.html:226
+#: templates/edumanage/welcome.html:235
 msgid "No services defined yet"
 msgstr "Δεν έχουν εισαχθεί υπηρεσίες"
 
-#: templates/front/index.html:273
-msgid "Management"
-msgstr "Διαχείριση"
+#: templates/front/index.html:169
+msgid "Main"
+msgstr "Βασικές"
+
+#: templates/front/index.html:170
+msgid "Advanced"
+msgstr "Προηγμένες"
+
+#: templates/front/index.html:181
+msgid "Encryption"
+msgstr "Κρυπτογράφηση"
+
+#: templates/front/index.html:187
+msgid "Number of APs"
+msgstr "Αριθμός APs"
+
+#: templates/front/index.html:196
+msgid "transp_proxy"
+msgstr ""
+
+#: templates/front/index.html:365
+msgid "Eduroam in Greece"
+msgstr "Eduroam στην Ελλάδα"
+
+#: templates/front/participants.html:21
+msgid "Participating Institutions"
+msgstr "Συμμετέχοντες Φορείς"
+
+#: templates/front/participants.html:23
+msgid ""
+"In Greece eduroam is provided by the following instituitons/organizations"
+msgstr ""
+"Στην Ελλάδα το eduroam παρέχεται από τους ακόλουθους φορείς/οργανισμούς"
+
+#: templates/registration/activate.html:3
+#: templates/registration/activation_complete.html:3
+#: templates/registration/activation_complete.html:27
+msgid "Activation Complete"
+msgstr "Ολοκλήρωση Ενεργοποίησης"
+
+#: templates/registration/activate.html:27
+msgid "Activation Status"
+msgstr "Κατάσταση Ενεργοποίησης"
+
+#: templates/registration/activate.html:32
+msgid "succesfully activated"
+msgstr "ενεργοποιήθηκε επιτυχώς"
+
+#: templates/registration/activate.html:34
+msgid "The user has probably been already activated."
+msgstr "Ο χρήστης φαίνεται να έχει ήδη ενεργοποιηθεί"
+
+#: templates/registration/activate_edit.html:28
+msgid "User"
+msgstr "Χρήστης"
+
+#: templates/registration/activate_edit.html:47
+msgid "Activate"
+msgstr "Ενεργοποίηση"
+
+#: templates/registration/activation_complete.html:31
+msgid "The user will be notified about his/her account activation"
+msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
+
+#~ msgid "You are logged in as"
+#~ msgstr "Έχετε εισαχθεί ως"

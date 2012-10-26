@@ -81,7 +81,7 @@ body {
 
 <div class="navbar-inner">
     <div class="container" style="padding-left: 0px; width: auto;">
-        <a class="brand" href="#"><img src="/static/img/logo_holder.png" /></a>
+        <a class="brand" href="{% block logourl %}{% url index %}{% endblock %}"><img src="/static/img/logo_holder.png" /></a>
     {% block topmenu %}
     <ul class="nav">
         <li {% block hometop %}{% endblock %}>
@@ -91,7 +91,7 @@ body {
             <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
         </li>
         <li {% block managetop %}{% endblock %}>
-            <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
+            <a href="{% url manage %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
         </li>
 
     </ul>
@@ -130,6 +130,7 @@ body {
             
               <li {% block homepage %}{% endblock %}><a href="{% url index %}">{% trans "Home" %}</a></li>
               <li {% block closest %}{% endblock %}><a href="{% url geolocate %}" target="about:blank()">{% trans "Closest eduroam" %}</a></li>
+              <li {% block world %}{% endblock %}><a href="{% url world %}">{% trans "World eduroam" %}</a></li>
               <li {% block whatis %}{% endblock %}><a href="/what/{{LANGUAGE_CODE}}/">{% trans "What" %}?</a></li>
               <li {% block participants %}{% endblock %}><a href="{% url participants %}">{% trans "Participants" %}</a></li>
               <li {% block faq %}{% endblock %}><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
