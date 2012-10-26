@@ -29,7 +29,7 @@ class ServiceLocAdmin(admin.ModelAdmin):
 
 class RealmInLine(admin.ModelAdmin):
     inlines = [
-        UrlInline,
+        UrlInline, NameInline
     ]
 
    

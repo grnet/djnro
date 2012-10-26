@@ -6,7 +6,7 @@ TEMPLATE_DEBUG = DEBUG
 here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
 
 ADMINS = (
-     ('Admin','admin@example.com'),
+     ('Admin', 'admin@example.com'),
 )
 
 MANAGERS = ADMINS
@@ -42,7 +42,7 @@ LANGUAGES = (
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 
@@ -63,7 +63,7 @@ MEDIA_ROOT = ''
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = ''
 
-STATIC_URL = '/path/to/static/'
+STATIC_URL = '/example/static'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -72,6 +72,13 @@ ADMIN_MEDIA_PREFIX = '/media/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'x)gmuyo2h=l@tmpyh4b(-!gki%@u$-=3^@z+vf&&!ci7$*!+k9'
+
+
+AUTHENTICATION_BACKENDS = (
+    'eduroam.djangobackends.shibauthBackend.shibauthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -91,39 +98,69 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware'
 )
 
 ROOT_URLCONF = 'eduroam.urls'
 
 TEMPLATE_DIRS = (
-    "/path/to/templaltes/"
+    "/example/templates"
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
 
 INSTALLED_APPS = (
+    'longerusername',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.messages',
+    'django.contrib.flatpages',
+    'django.contrib.markup',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
     'edumanage',
     'accounts',
     'south',
+    'registration',
     'django_extensions',
-    # Uncomment the next line to enable the admin:
-    'django.contrib.admin',
-    # Uncomment the next line to enable admin documentation:
-    'django.contrib.admindocs',
+    'tinymce',
+    
 )
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
+LOGIN_URL = '/login/'
+
 KML_FILE = here('all.kml')
+
+SHIB_AUTH_ENTITLEMENT = 'urn:mace:'
+SHIB_LOGOUT_URL = 'https://example.com/Logout'
+
+SERVER_EMAIL = "eduroam Service <noreply@example.com>"
+EMAIL_SUBJECT_PREFIX = "[eduroam] "
+ACCOUNT_ACTIVATION_DAYS = 7
+NOTIFY_ADMIN_MAILS = ["mail1@example.com", "mail2@example.com"]
+
+
+TINYMCE_JS_URL = '/static/js/tinymce/tiny_mce.js'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'extended_valid_elements' :  'iframe[src|width|height|name|align]',
+    'plugins': "table,spellchecker,paste,searchreplace",
+    'theme': "advanced",
+}
+
+CACHE_BACKEND = 'dummy://'
+
