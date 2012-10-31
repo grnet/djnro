@@ -31,7 +31,7 @@ from django.contrib.auth import authenticate, login
 from registration.models import RegistrationProfile
 from django.core.cache import cache
 
-
+@never_cache
 def index(request):
     return render_to_response('front/index.html', context_instance=RequestContext(request))
 

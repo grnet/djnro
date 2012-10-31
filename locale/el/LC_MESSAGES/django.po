@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-25 17:58+0300\n"
+"POT-Creation-Date: 2012-10-29 16:35+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -96,30 +96,30 @@ msgid ""
 "%(numid)s"
 msgstr ""
 
-#: edumanage/views.py:733
+#: edumanage/views.py:760
 msgid ""
 "Your idP should release the HTTP_EPPN attribute towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:735
+#: edumanage/views.py:762
 msgid ""
 "Your idP should release the HTTP_SHIB_HOMEORGANIZATION attribute towards "
 "this service<br>"
 msgstr ""
 
-#: edumanage/views.py:737
+#: edumanage/views.py:764
 msgid ""
 "Your idP should release an appropriate HTTP_SHIB_EP_ENTITLEMENT attribute "
 "towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:739
+#: edumanage/views.py:766
 msgid ""
 "Your idP should release the HTTP_SHIB_INETORGPERSON_MAIL attribute towards "
 "this service"
 msgstr ""
 
-#: edumanage/views.py:766 edumanage/views.py:810
+#: edumanage/views.py:793 edumanage/views.py:837
 #, python-format
 msgid ""
 "User account <strong>%s</strong> is pending activation. Administrators have "
@@ -133,18 +133,18 @@ msgstr ""
 "μεγάλο<br>χρονικό διάστημα, επικοινωνήστε με τον τεχνικό σας υπεύθυνο ή το "
 "Helpdesk της ΕΔΕΤ"
 
-#: edumanage/views.py:770
+#: edumanage/views.py:797
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
 "%s"
 msgstr ""
 
-#: edumanage/views.py:774
+#: edumanage/views.py:801
 msgid "Invalid login procedure"
 msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση"
 
-#: edumanage/views.py:800
+#: edumanage/views.py:827
 msgid ""
 "Violation warning: User account is already associated with an institution."
 "The event has been logged and our administrators will be notified about it"
@@ -194,20 +194,36 @@ msgid "Home"
 msgstr "Αρχική"
 
 #: templates/base.html:132
+msgid "USERS"
+msgstr "ΧΡΗΣΤΕΣ"
+
+#: templates/base.html:133
+msgid "The service"
+msgstr "Η υπηρεσία"
+
+#: templates/base.html:135
+msgid "INSTITUTIONS"
+msgstr "ΦΟΡΕΙΣ"
+
+#: templates/base.html:136
+msgid "Management"
+msgstr "Διαχείριση"
+
+#: templates/base.html:137
+msgid "SERVICE"
+msgstr "ΥΠΗΡΕΣΙΑ"
+
+#: templates/base.html:138
 msgid "Closest eduroam"
 msgstr "Πλησιέστερο eduroam"
 
-#: templates/base.html:133
-msgid "What"
-msgstr "Τι είναι"
+#: templates/base.html:139
+msgid "World eduroam"
+msgstr "Eduroam στον κόσμο"
 
-#: templates/base.html:134
+#: templates/base.html:140
 msgid "Participants"
 msgstr "Συμμετέχοντες"
-
-#: templates/base.html:137
-msgid "Management"
-msgstr "Διαχείριση"
 
 #: templates/edumanage/add_user.html:6
 #: templates/edumanage/contacts_edit.html:33
@@ -708,15 +724,19 @@ msgstr ""
 msgid "Eduroam in Greece"
 msgstr "Eduroam στην Ελλάδα"
 
-#: templates/front/participants.html:21
+#: templates/front/participants.html:18
 msgid "Participating Institutions"
 msgstr "Συμμετέχοντες Φορείς"
 
-#: templates/front/participants.html:23
+#: templates/front/participants.html:20
 msgid ""
 "In Greece eduroam is provided by the following instituitons/organizations"
 msgstr ""
 "Στην Ελλάδα το eduroam παρέχεται από τους ακόλουθους φορείς/οργανισμούς"
+
+#: templates/front/world.html:282
+msgid "Eduroam Wolrdwide"
+msgstr ""
 
 #: templates/registration/activate.html:3
 #: templates/registration/activation_complete.html:3
@@ -747,6 +767,9 @@ msgstr "Ενεργοποίηση"
 #: templates/registration/activation_complete.html:31
 msgid "The user will be notified about his/her account activation"
 msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
+
+#~ msgid "What"
+#~ msgstr "Τι είναι"
 
 #~ msgid "You are logged in as"
 #~ msgstr "Έχετε εισαχθεί ως"

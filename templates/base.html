@@ -5,10 +5,11 @@
 <title>{% block title %}eduroam@Greece{% endblock %}</title>
 <link href="/static/css/bootstrap.min.css" rel="stylesheet">
 <link href="/static/css/style.css" rel="stylesheet">
+<link REL="SHORTCUT ICON" HREF="/static/img/favicon.ico">  
 <style type="text/css">
 body {
-	padding-top: 100px;
-	padding-bottom: 60px;
+	padding-top: 90px;
+	/*padding-bottom: 60px;*/
 }
 
 .sidebar-nav {
@@ -129,13 +130,16 @@ body {
             <ul class="nav nav-list">
             
               <li {% block homepage %}{% endblock %}><a href="{% url index %}">{% trans "Home" %}</a></li>
+              <li class="nav-header">{% trans "USERS" %}</li>
+              <li {% block whatis %}{% endblock %}><a href="/what/{{LANGUAGE_CODE}}/">{% trans "The service" %}</a></li>
+              <li {% block faq %}{% endblock %}><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
+              <li class="nav-header">{% trans "INSTITUTIONS" %}</li>
+              <li {% block mgmt %}{% endblock %}><a href="{% url manage %}">{% trans "Management" %}</a></li>
+              <li class="nav-header">{% trans "SERVICE" %}</li>
               <li {% block closest %}{% endblock %}><a href="{% url geolocate %}" target="about:blank()">{% trans "Closest eduroam" %}</a></li>
               <li {% block world %}{% endblock %}><a href="{% url world %}">{% trans "World eduroam" %}</a></li>
-              <li {% block whatis %}{% endblock %}><a href="/what/{{LANGUAGE_CODE}}/">{% trans "What" %}?</a></li>
               <li {% block participants %}{% endblock %}><a href="{% url participants %}">{% trans "Participants" %}</a></li>
-              <li {% block faq %}{% endblock %}><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
-              <li class="nav-header">Institutions</li>
-              <li {% block mgmt %}{% endblock %}><a href="{% url manage %}">{% trans "Management" %}</a></li>
+             
             </ul>
           </div><!--/.well -->
           <div><img src="/static/img/keep_calm_eduroam_small.png"></div>
@@ -155,14 +159,19 @@ body {
 
         </div><!--/span-->
       </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <p>&copy; @ GRNET NOC 2012</p>
-      </footer>
-
     </div><!--/.fluid-container-->
 	{% endblock %}
+	{% block footer %}
+	<hr>
+	<footer class="footer">
+      <div class="container">
+        <p>Designed and developed by <a href="http://noc.grnet.gr/" target="_blank">GRNET NOC</a></p>
+        <ul class="footer-links">
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Helpdesk</a></li>
+        </ul>
+      </div>
+    </footer>
+    {% endblock %}
 </body>
 </html>
