@@ -207,6 +207,9 @@
 		$(document).ready(function() {
 			
 			initialize();
+			
+			$("div.controls > ul").addClass('unstyled');
+			
 			$("#updatemap").click(function(){
 				latlng = new google.maps.LatLng($("#id_latitude").val(), $("#id_longitude").val());
 				moveMarker(latlng);
@@ -380,7 +383,7 @@
 		</div>
 	</div>
 	<div class="control-group {% if form.contact.errors %} error {% endif %}">
-		<label class="control-label" for="id_contact"><b>{% trans "Contacts" %}</b></label>
+		<label class="control-label" for="id_contact">{% trans "Contacts" %}</label>
 		<div class="controls">
 			{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
 			{% if form.contact.errors %} <span class="help-inline"> {{ form.contact.errors|join:", " }} </span>

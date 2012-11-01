@@ -125,7 +125,7 @@ $("#delserviceSubmit").click(function(){
 	                	<td><a href="{% url services service.pk %}">{% tolocale service LANGUAGE_CODE %}</a></td>
 	                	<td>{{service.address_street}}<br>{{service.address_city}}</td>
 	                	<td>{{service.SSID}}</td>
-	                	<td>{{service.enc_level}}</td>
+	                	<td>{% for enc in service.enc_level %}{{enc}}{% if not forloop.last%},{% endif %}{% endfor %}</td>
 	                	<td>{{service.AP_no}}</td>
 	                	<td style="text-align: center;"><a href="{% url edit-services service.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_service_{{service.pk}}" data-servicename="{% tolocale service LANGUAGE_CODE%}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
 	                </tr>

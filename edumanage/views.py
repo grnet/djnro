@@ -686,7 +686,7 @@ def get_service_points(request):
             response_location['lat'] = u"%s"%sl.latitude
             response_location['lng'] = u"%s"%sl.longitude
             response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
-            response_location['enc'] = u"%s"%(sl.enc_level)
+            response_location['enc'] = u"%s"%(','.join(sl.enc_level))
             response_location['AP_no'] = u"%s"%(sl.AP_no)
             response_location['name'] = sl.loc_name.get(lang='en').name
             response_location['port_restrict'] = u"%s"%(sl.port_restrict)
@@ -711,7 +711,7 @@ def get_all_services(request):
         response_location['lat'] = u"%s"%sl.latitude
         response_location['lng'] = u"%s"%sl.longitude
         response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
-        response_location['enc'] = u"%s"%(sl.enc_level)
+        response_location['enc'] = u"%s"%(','.join(sl.enc_level))
         response_location['AP_no'] = u"%s"%(sl.AP_no)
         try:
             response_location['inst'] = sl.institutionid.org_name.get(lang=lang).name
@@ -1006,11 +1006,23 @@ def instxml(request):
             instLocAddrCity = ET.SubElement(instLocAddress, "city")
             instLocAddrCity.text = serviceloc.address_city
             
+            for contact in serviceloc.contact.all():
+                instLocContact = ET.SubElement(instLocation, "contact")
+                
+                instLocContactName = ET.SubElement(instLocContact, "name")
+                instLocContactName.text = "%s %s" %(contact.firstname, contact.lastname)
+                
+                instLocContactEmail = ET.SubElement(instLocContact, "email")
+                instLocContactEmail.text = contact.email
+                
+                instLocContactPhone = ET.SubElement(instLocContact, "phone")
+                instLocContactPhone.text = contact.phone
+            
             instLocSSID = ET.SubElement(instLocation, "SSID")
             instLocSSID.text = serviceloc.SSID
             
             instLocEncLevel = ET.SubElement(instLocation, "enc_level")
-            instLocEncLevel.text = serviceloc.enc_level
+            instLocEncLevel.text = ', '.join(serviceloc.enc_level)
             
             instLocPortRestrict = ET.SubElement(instLocation, "port_restrict")
             instLocPortRestrict.text = ("%s" %serviceloc.port_restrict).lower()
