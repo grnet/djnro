@@ -176,7 +176,7 @@ $.get("{% url get-service-points %}", function(data){
 	<div class="row-fluid">
 		<div class="span2"></div>
 		<div class="span10">
-			<div class="row-fluid"><div class="span10">
+			<div class="row-fluid"><div class="span12">
 				<ul class="breadcrumb" style="display: inline-table; padding: 0">
 					{% block crumbs %}
 	    			<li class="active">{% trans "Home" %}</li>
@@ -218,7 +218,7 @@ $.get("{% url get-service-points %}", function(data){
 		<div class="span10">
 			<div class="row-fluid">
 				<!--/span-->
-				<div class="span10">
+				<div class="span12">
 				{% if not institution_exists %}
 	                <table class="table table-condensed">
 					    <tr class="error"><td>You are not associated with any institution. Please contact your administrator<td></tr>
