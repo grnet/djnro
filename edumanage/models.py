@@ -135,7 +135,7 @@ class InstServer(models.Model):
         return _('Server: %(servername)s, Type: %(ertype)s') % {
         # but name is many-to-many from institution
             #'inst': self.instid,
-            'servername': self.name,
+            'servername': self.get_name,
         # the human-readable name would be nice here
             'ertype': self.ertype,
             }
