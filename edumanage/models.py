@@ -288,7 +288,7 @@ class MonLocalEAPOLData(models.Model):
     EAPTYPES = (
                 ('PEAP', 'EAP-PEAP' ),
                 ('TTLS', 'EAP-TTLS'),
-                ('TLS', 'EAP-TLS'),
+#                ('TLS', 'EAP-TLS'),
                )
     EAP2TYPES = (
                 ('PAP', 'PAP' ),
@@ -307,7 +307,8 @@ class MonLocalEAPOLData(models.Model):
     # only local-part, no realm
     username = models.CharField(max_length=24)
     passwp = models.CharField(max_length=24, db_column='pass')
-    cert = models.CharField(max_length=32)
+    # TODO: In next releast change it to TextField and add a key field
+    #cert = models.CharField(max_length=32)
     exp_response = models.CharField(max_length=6, choices=MONRESPTYPES)
 
     def __unicode__(self):
