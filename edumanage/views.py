@@ -595,6 +595,121 @@ def del_contact(request):
 
 @login_required
 @never_cache
+def instrealmmon(request):
+    user = request.user
+    servers = False
+    instcontacts = []
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+    except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    if inst:
+        instrealmmons = InstRealmMon.objects.filter(realm__instid=inst)
+    return render_to_response('edumanage/instrealmmons.html', { 'realms': instrealmmons},
+                                  context_instance=RequestContext(request, base_response(request)))
+
+@login_required
+@never_cache
+def add_instrealmmon(request, instrealmmon_pk):
+    user = request.user
+    instrealmmon = False
+    edit = False
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+    except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    if request.method == "GET":
+        # Determine add or edit
+        try:         
+            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=inst)
+            form = InstRealmMonForm(instance=instrealmmon)
+        except InstRealmMon.DoesNotExist:
+            form = InstRealmMonForm()
+        if instrealmmon:
+            edit = True
+        form.fields['realm'] = forms.ModelChoiceField(queryset=InstRealm.objects.filter(instid=inst.pk).exclude(realm__startswith="*"), empty_label=None)
+        return render_to_response('edumanage/instrealmmon_edit.html', { 'form': form, "edit" : edit},
+                                  context_instance=RequestContext(request, base_response(request)))
+    elif request.method == 'POST':
+        request_data = request.POST.copy()
+        try:         
+            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=inst)
+            form = InstRealmMonForm(request_data, instance=instrealmmon)
+        except InstRealmMon.DoesNotExist:
+            form = InstRealmMonForm(request_data)
+        if form.is_valid():
+            instrealmmonobj = form.save()
+            return HttpResponseRedirect(reverse("instrealmmon"))
+        if instrealmmon:
+            edit = True
+        return render_to_response('edumanage/instrealmmon_edit.html', { 'form': form, "edit": edit},
+                                  context_instance=RequestContext(request, base_response(request)))
+
+
+@login_required
+@never_cache
+def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
+    user = request.user
+    monlocauthpar = False
+    edit = False
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+    except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    if request.method == "GET":
+        # Determine add or edit
+        try:
+            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=inst)
+            monlocauthpar = MonLocalAuthnParam.objects.get(pk=monlocauthpar_pk, instrealmmonid__realm__instid=inst)
+            form = MonLocalAuthnParamForm(instance=monlocauthpar)
+        except MonLocalAuthnParam.DoesNotExist:
+            form = MonLocalAuthnParamForm()
+        except InstRealmMon.DoesNotExist:
+            return HttpResponseRedirect(reverse("manage"))
+        if monlocauthpar:
+            edit = True
+        form.fields['instrealmmonid'] = forms.ModelChoiceField(queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk), empty_label=None)
+        return render_to_response('edumanage/monlocauthpar_edit.html', { 'form': form, "edit" : edit, "realm":instrealmmon },
+                                  context_instance=RequestContext(request, base_response(request)))
+    elif request.method == 'POST':
+        request_data = request.POST.copy()
+        try:         
+            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=inst)
+            monlocauthpar = MonLocalAuthnParam.objects.get(pk=monlocauthpar_pk, instrealmmonid__realm__instid=inst)
+            form = MonLocalAuthnParamForm(request_data, instance=monlocauthpar)
+        except MonLocalAuthnParam.DoesNotExist:
+            form = MonLocalAuthnParamForm(request_data)
+        except InstRealmMon.DoesNotExist:
+            return HttpResponseRedirect(reverse("manage"))
+        if form.is_valid():
+            monlocauthparobj = form.save()
+            return HttpResponseRedirect(reverse("instrealmmon"))
+        if monlocauthpar:
+            edit = True
+        form.fields['instrealmmonid'] = forms.ModelChoiceField(queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk), empty_label=None)
+        return render_to_response('edumanage/monlocauthpar_edit.html', { 'form': form, "edit": edit, "realm":instrealmmon},
+                                  context_instance=RequestContext(request, base_response(request)))
+
+@login_required
+@never_cache
 def adduser(request):
     user = request.user
     try:
@@ -648,6 +763,7 @@ def base_response(request):
         instrealms = InstRealm.objects.filter(instid=institution)
         instcontacts.extend([x.contact.pk for x in InstitutionContactPool.objects.filter(institution=institution)])
         contacts = Contact.objects.filter(pk__in=instcontacts)
+        instrealmmons = InstRealmMon.objects.filter(realm__instid=institution)
     except:
         pass
     try:
@@ -660,6 +776,7 @@ def base_response(request):
             'services_num': len(services),
             'realms_num': len(instrealms),
             'contacts_num': len(contacts),
+            'monrealms_num': len(instrealmmons),
             'institution': institution,
             'institutiondetails': instututiondetails,
             'institution_exists': institution_exists,

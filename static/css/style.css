@@ -40,6 +40,8 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     margin-bottom: 0;
     margin-top: 5px;
 }
+
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Everything below this line is the same as demo_table.css. This file is

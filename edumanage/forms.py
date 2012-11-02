@@ -16,6 +16,16 @@ FQDN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z
 DN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
 
 
+class MonLocalAuthnParamForm(forms.ModelForm):
+    
+    class Meta:
+        model = MonLocalAuthnParam
+
+class InstRealmMonForm(forms.ModelForm):
+    
+    class Meta:
+        model = InstRealmMon
+
 class UserProfileForm(forms.ModelForm):
 
     class Meta:

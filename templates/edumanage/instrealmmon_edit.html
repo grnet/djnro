@@ -1,0 +1,54 @@
+{% extends "edumanage/welcome.html"%}
+{% load i18n %}
+{% block crumbs %}
+	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url instrealmmon %}">{% trans "Monitored Realms" %}</a><span class="divider">/</span></li>
+	<li class="active">{% if edit %}PLACEHOLDER({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</li>
+{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+ <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+      
+
+
+
+{% endblock %}
+			
+{% block homeactive %}{% endblock %}
+{% block instrealmmon %}class="active"{% endblock %}
+{% block subcontent %} <h4>{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</h4>
+<hr>
+<form method="POST" class="form-horizontal">
+	{% csrf_token %}
+	{% if form.non_field_errors %}
+	<div class="text-error" style="color: #B94A48">{{form.non_field_errors}}</div>
+	{% endif %}
+	<div style="display: none">
+		{{form.instid}}
+	</div>
+	<div class="control-group {% if form.realm.errors %} error {% endif %}">
+		<label class="control-label" for="id_realm"><b>{% trans "Realm" %}</b></label>
+		<div class="controls">
+			{{ form.realm }}
+			{% if form.realm.errors %} <span class="help-inline"> {{ form.realm.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.realm.help_text }}</span>
+		</div>
+	</div>
+	<div class="control-group {% if form.mon_type.errors %} error {% endif %}">
+		<label class="control-label" for="id_mon_type"><b>{% trans "Monitoring Method" %}</b></label>
+		<div class="controls">
+			{{ form.mon_type }}
+			{% if form.mon_type.errors %} <span class="help-inline"> {{ form.mon_type.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.mon_type.help_text }}</span>
+		</div>
+	</div>
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" id="applybutton" value="Apply" class="btn btn-primary"/>
+			{% trans "Apply" %}</button>
+		</div>
+	</div>
+</form>
+{% endblock %}
+         

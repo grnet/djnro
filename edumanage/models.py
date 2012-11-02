@@ -184,7 +184,7 @@ class InstRealm(models.Model):
     proxyto = models.ManyToManyField("InstServer")
 
     def __unicode__(self):
-        return 'Realm: %s' % self.realm
+        return '%s' % self.realm
     
     
     def get_servers(self):
@@ -282,7 +282,7 @@ class MonProxybackClient(models.Model):
 
 class MonLocalAuthnParam(models.Model):
     '''
-    EAPOL data for an old-style monitored realm
+    Parameters for an old-style monitored realm
     '''
 
     EAPTYPES = (
@@ -312,9 +312,8 @@ class MonLocalAuthnParam(models.Model):
     #exp_response = models.CharField(max_length=6, choices=MONRESPTYPES)
 
     def __unicode__(self):
-        return _('Institution: %(inst)s, Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: %(phase2)s, Username: %(username)s') % {
+        return _('Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: %(phase2)s, Username: %(username)s') % {
         # but name is many-to-many from institution
-            'inst': self.instid.name,
             'monrealm': self.instrealmmonid.realm,
             'eapmethod': self.eap_method,
             'phase2': self.phase2,
