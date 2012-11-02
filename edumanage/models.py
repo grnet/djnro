@@ -280,7 +280,7 @@ class MonProxybackClient(models.Model):
             'servername': self.name,
             }
 
-class MonLocalEAPOLData(models.Model):
+class MonLocalAuthnParam(models.Model):
     '''
     EAPOL data for an old-style monitored realm
     '''
