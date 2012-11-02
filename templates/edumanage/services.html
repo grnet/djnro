@@ -2,7 +2,7 @@
 {% load i18n %}
 			{% block crumbs %}
 	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Services" %}</li>
+	    			<li class="active">{% trans "Locations" %}</li>
 	    			{% endblock %}
 {% load i18n %}
 {% block extrahead %}
@@ -38,7 +38,7 @@ var oTable = $('#table').dataTable({
     "iDisplayLength": 25,
     "oSearch": {"bSmart": false, "bRegex":true},
     "oLanguage": {
-    	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "services" %}',
+    	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "locations" %}',
         "sProcessing":   "Processing...",
         "sZeroRecords": '{% trans "No records to display" %}',
         "sInfo":         "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -60,8 +60,8 @@ oTable.fnDraw();
 $('[id^=del_service_]').click(function(){
 	server_id = (this.id).replace("del_service_", '');
 	name = this.getAttribute("data-servicename");
-	$("#mymodalbody").html("{% trans 'You are about to delete service' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
-	$("#myModalLabel").html("{% trans 'Delete Service' %} "+name);
+	$("#mymodalbody").html("{% trans 'You are about to delete location' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
+	$("#myModalLabel").html("{% trans 'Delete Location' %} "+name);
 	$('#myModal').modal('show');
 	$(".modal-footer").show();
 	$("#service_name_del").html(name)	
@@ -93,7 +93,7 @@ $("#delserviceSubmit").click(function(){
 			{% block homeactive %}{% endblock %}
     		{% block servicesactive %}class="active"{% endblock %}
             {% block subcontent %}
-              <h4>{% trans "Services" %}</h4>
+              <h4>{% trans "Locations" %}</h4>
               <hr>
               {% if messages %}
 	                <table class="table table-condensed">
@@ -103,7 +103,7 @@ $("#delserviceSubmit").click(function(){
 					    {% endfor %}
 					</table>
 			  {% endif %}
-              <div>{% if institution.ertype == 2 or institution.ertype == 3 %}<a href="{% url edit-services %}" class="btn btn-primary">{% trans "Add new service" %}</a>{% endif %}</div>
+              <div>{% if institution.ertype == 2 or institution.ertype == 3 %}<a href="{% url edit-services %}" class="btn btn-primary">{% trans "Add location" %}</a>{% endif %}</div>
 	              <div class="span10"></div>
               {% load tolocale %}
               {% if institution.ertype == 2 or institution.ertype == 3 %}
@@ -137,7 +137,7 @@ $("#delserviceSubmit").click(function(){
 <div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabel">Delete Service</h3>
+<h3 id="myModalLabel">{% trans "Delete Location" %}</h3>
 </div>
 <div class="modal-body" id="mymodalbody">
 
@@ -151,7 +151,7 @@ $("#delserviceSubmit").click(function(){
 <div class="modal hide fade" id="servDets" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabelservdets">{% trans "Service Details" %}</h3>
+<h3 id="myModalLabelservdets">{% trans "Location Details" %}</h3>
 </div>
 <div class="modal-body" id="servDetsbody">
 

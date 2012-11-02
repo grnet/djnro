@@ -67,7 +67,7 @@
     </div>
     {% if institution.ertype == 2 or institution.ertype == 3 %}
 	<div class="control-group">
-		<label class="control-label" for="id_oper_name">{% trans "Oper Name" %}</label>
+		<label class="control-label" for="id_oper_name">{% trans "Domain Name" %}</label>
 		<div class="controls">
 			{{ institution.institutiondetails.oper_name }}
 		</div>
@@ -82,7 +82,7 @@
 	</div>
 	{% endif %}
 	<div class="control-group">
-		<label class="control-label" for="id_number_id">{% trans "Number Id" %}</label>
+		<label class="control-label" for="id_number_id">{% trans "Number of IDs" %}</label>
 		<div class="controls">
 			{{ institution.institutiondetails.number_id }}
 		</div>

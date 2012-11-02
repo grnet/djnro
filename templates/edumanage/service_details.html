@@ -3,7 +3,7 @@
 {% load tolocale %}
 {% block crumbs %}
     <li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-    <li><a href="{% url services %}">{% trans "Services" %}</a><span class="divider">/</span></li>
+    <li><a href="{% url services %}">{% trans "Locations" %}</a><span class="divider">/</span></li>
     <li class="active">{% tolocale service LANGUAGE_CODE %}</li>
 {% endblock %}
 {% block extrahead %}

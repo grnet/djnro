@@ -32,6 +32,14 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
 .btn{
 	font-size: 13px;
 }
+
+
+.form-horizontal .help-block {
+    font-size: 10px;
+    font-style: italic;
+    margin-bottom: 0;
+    margin-top: 5px;
+}
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
  * Everything below this line is the same as demo_table.css. This file is

@@ -3,8 +3,8 @@
 {% load tolocale %}
 {% block crumbs %}
 	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	<li><a href="{% url services %}">{% trans "Services" %}</a><span class="divider">/</span></li>
-	<li class="active">{% if edit %}{% tolocale form.instance LANGUAGE_CODE %} ({% trans "edit" %}){% else %}{% trans "Add Service" %}{% endif %}</li>
+	<li><a href="{% url services %}">{% trans "Locations" %}</a><span class="divider">/</span></li>
+	<li class="active">{% if edit %}{% tolocale form.instance LANGUAGE_CODE %} ({% trans "edit" %}){% else %}{% trans "Add Location" %}{% endif %}</li>
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.formset.js"></script>
@@ -307,7 +307,7 @@
 {% block servicesactive %}class="active"{% endblock %}
 {% block subcontent %}
 
-<h4>{% if edit %}{% tolocale form.instance LANGUAGE_CODE %} ({% trans "edit" %}){% else %}{% trans "Add Service" %}{% endif %}</h4>
+<h4>{% if edit %}{% tolocale form.instance LANGUAGE_CODE %} ({% trans "edit" %}){% else %}{% trans "Add Location" %}{% endif %}</h4>
 <hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}

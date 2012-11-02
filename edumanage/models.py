@@ -6,7 +6,7 @@ TODO main description
 '''
 
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -114,9 +114,9 @@ ERTYPES = (
 
 RADPROTOS = (
         ('radius', 'traditional RADIUS over UDP' ),
-        ('radius-tcp', 'RADIUS over TCP (RFC6613)'),
-        ('radius-tls', 'RADIUS over TLS (RFC6614)'),
-        ('radius-dtls', 'RADIUS over datagram TLS (RESERVED)'),
+#        ('radius-tcp', 'RADIUS over TCP (RFC6613)'),
+#        ('radius-tls', 'RADIUS over TLS (RFC6614)'),
+#        ('radius-dtls', 'RADIUS over datagram TLS (RESERVED)'),
     )
 
 
@@ -203,17 +203,17 @@ class InstServer(models.Model):
     # 3: accept if instid.ertype: 3 (idpsp)
 
     # hostname/ipaddr or descriptive label of server 
-    name = models.CharField(max_length=80, help_text="Descriptive label",  null=True, blank=True) # ** (acts like a label)
+    name = models.CharField(max_length=80, help_text=_("Descriptive label"),  null=True, blank=True) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
-    host = models.CharField(max_length=80, help_text="IP address of FQDN hostname") # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
+    host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     #TODO: Add description field or label field
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
-    port = models.PositiveIntegerField(max_length=5, null=True, blank=True) # TODO: Also ignore while exporting XML
-    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True)
-    timeout = models.PositiveIntegerField(max_length=2, null=True, blank=True)
+    port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Defaul for Radius: 1812")) # TODO: Also ignore while exporting XML
+    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Defaul for Radius: 1813"))
+    timeout = models.PositiveIntegerField(max_length=2, null=True, blank=True, help_text=_("Timeout in seconds"))
     retry = models.PositiveIntegerField(max_length=2, null=True, blank=True)
 
-    status_server = models.BooleanField()
+    status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
     secret = models.CharField(max_length=16)
     proto = models.CharField(max_length=12, choices=RADPROTOS)
     ts = models.DateTimeField(auto_now=True)
@@ -407,10 +407,10 @@ class InstitutionDetails(models.Model):
     contact = models.ManyToManyField(Contact)
     url = generic.GenericRelation(URL_i18n)
     # accept if ertype: 2 (sp) or 3 (idpsp) (Applies to the following field)
-    oper_name = models.CharField(max_length=24, null=True, blank=True)
+    oper_name = models.CharField(max_length=24, null=True, blank=True, help_text=_('The primary, registered domain name for your institution, eg. example.com.<br>This is used to derive the Operator-Name attribute according to RFC5580, par.4.1, using the REALM namespace.'))
     # accept if ertype: 1 (idp) or 3 (idpsp) (Applies to the following field)
-    number_user = models.PositiveIntegerField(max_length=6, null=True, blank=True)
-    number_id = models.PositiveIntegerField(max_length=6)
+    number_user = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
+    number_id = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of issued e-identities (credentials) that may be used for authentication in eduroam service"))
     ts = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):

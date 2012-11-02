@@ -202,7 +202,7 @@ $.get("{% url get-service-points %}", function(data){
 					{% endif %}
 					{% if institutiondetails %}
 					<li {% block servicesactive %}{% endblock %}>
-						<a href="{% url services %}">{% trans "Services" %} ({{services_num}})</a>
+						<a href="{% url services %}">{% trans "Locations" %} ({{services_num}})</a>
 					</li>
 					<li {% block serversactive %}{% endblock %}>
 						<a href="{% url servers %}">{% trans "Servers" %} ({{servers_num}})</a>

@@ -8,7 +8,12 @@
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript"></script> 
+<script type="text/javascript"></script>
+<script>
+$(document).ready(function() {
+	$("#id_script").attr('type', 'password');
+});
+</script>
 {% endblock %}			
 {% block homeactive %}{% endblock %}
 {% block serversactive %}class="active"{% endblock %}
@@ -29,15 +34,7 @@
 		<div class="controls">
 			{{ form.ertype }}
 			{% if form.ertype.errors %} <span class="help-inline"> {{ form.ertype.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.ertype.help_text }}</span>
-		</div>
-	</div>
-	<div class="control-group {% if form.name.errors %} error {% endif %}">
-		<label class="control-label" for="id_name">{% trans "Label" %}</label>
-		<div class="controls">
-			{{ form.name }}
-			{% if form.name.errors %} <span class="help-inline"> {{ form.name.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.name.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.ertype.help_text }}</span>
 		</div>
 	</div>
 	<div class="control-group {% if form.host.errors %} error {% endif %}">
@@ -45,7 +42,15 @@
 		<div class="controls">
 			{{ form.host }}
 			{% if form.host.errors %} <span class="help-inline"> {{ form.host.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.host.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.host.help_text }}</span>
+		</div>
+	</div>
+	<div class="control-group {% if form.name.errors %} error {% endif %}">
+		<label class="control-label" for="id_name">{% trans "Label" %}</label>
+		<div class="controls">
+			{{ form.name }}
+			{% if form.name.errors %} <span class="help-inline"> {{ form.name.errors|join:", " }} </span>
+			{% endif %} <span class="help-block">{{ form.name.help_text }}</span>
 		</div>
 	</div>
 	{% if institution.ertype == 1 or institution.ertype == 3 %}
@@ -54,15 +59,15 @@
 		<div class="controls">
 			{{ form.port }}
 			{% if form.port.errors %} <span class="help-inline"> {{ form.port.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.port.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.port.help_text }}</span>
 		</div>
 	</div>
 	<div class="control-group {% if form.acct_port.errors %} error {% endif %}">
-		<label class="control-label" for="id_acct_port"><b>{% trans "acct_port" %}</b></label>
+		<label class="control-label" for="id_acct_port"><b>{% trans "Accounting Port" %}</b></label>
 		<div class="controls">
 			{{ form.acct_port }}
 			{% if form.acct_port.errors %} <span class="help-inline"> {{ form.acct_port.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.acct_port.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.acct_port.help_text }}</span>
 		</div>
 	</div>
 	<div class="control-group {% if form.timeout.errors %} error {% endif %}">
@@ -70,7 +75,7 @@
 		<div class="controls">
 			{{ form.timeout }}
 			{% if form.timeout.errors %} <span class="help-inline"> {{ form.timeout.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.ertype.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.timeout.help_text }}</span>
 		</div>
 	</div>
 	<div class="control-group {% if form.retry.errors %} error {% endif %}">
@@ -78,16 +83,16 @@
 		<div class="controls">
 			{{ form.retry }}
 			{% if form.retry.errors %} <span class="help-inline"> {{ form.retry.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.retry.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.retry.help_text }}</span>
 		</div>
 	</div>
 	{% endif %}
 	<div class="control-group {% if form.status_server.errors %} error {% endif %}">
-		<label class="control-label" for="id_status_server">{% trans "Status Server" %}</label>
+		<label class="control-label" for="id_status_server">{% trans "Status-Server" %}</label>
 		<div class="controls">
 			{{ form.status_server }}
 			{% if form.status_server.errors %} <span class="help-inline"> {{ form.status_server.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.status_server.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.status_server.help_text }}</span>
 		</div>
 	</div>
 	<div class="control-group {% if form.secret.errors %} error {% endif %}">
@@ -95,7 +100,7 @@
 		<div class="controls">
 			{{ form.secret }}
 			{% if form.secret.errors %} <span class="help-inline"> {{ form.secret.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.status_server.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.secret.help_text }}</span>
 		</div>
 	</div>
 	<div class="control-group {% if form.proto.errors %} error {% endif %}">
@@ -103,7 +108,7 @@
 		<div class="controls">
 			{{ form.proto }}
 			{% if form.proto.errors %} <span class="help-inline"> {{ form.proto.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.proto.help_text }}</span>
+			{% endif %} <span class="help-block">{{ form.proto.help_text }}</span>
 		</div>
 	</div>
 	<div class="control-group">

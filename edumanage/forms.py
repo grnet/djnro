@@ -13,7 +13,8 @@ import pprint
 import re
 
 FQDN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
-#FQDN_RE = r'(^[a-z0-9.-]{1,255}$)'
+DN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
+
 
 class UserProfileForm(forms.ModelForm):
 
@@ -30,18 +31,12 @@ class InstDetailsForm(forms.ModelForm):
         institution = self.cleaned_data['institution']
         if institution.ertype in [2,3]:
             if oper_name:
+                match = re.match(DN_RE, oper_name)
+                if not match:
+                    raise forms.ValidationError('Invalid domain name format.')
                 return self.cleaned_data["oper_name"]
             else:
                 raise forms.ValidationError('This field is required.')
-            
-    def clean_number_user(self):
-        number_user = self.cleaned_data['number_user']
-        institution = self.cleaned_data['institution']
-        if institution.ertype in [1,3]:
-            if number_user:
-                return self.cleaned_data["number_user"]
-            else:
-                raise forms.ValidationError('This field is required.')            
 
 class InstServerForm(forms.ModelForm):
 
