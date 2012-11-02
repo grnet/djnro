@@ -263,10 +263,10 @@ class MonProxybackClient(models.Model):
     '''
 
     instrealmmonid = models.ForeignKey("InstRealmMon")
-    # hostname/ipaddr or descriptive label of server
-    name = models.CharField(max_length=80)
+    # hostname/ipaddr or descriptive label of server 
+    name = models.CharField(max_length=80, help_text=_("Descriptive label"),  null=True, blank=True) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
-    host = models.CharField(max_length=80)
+    host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     status_server = models.BooleanField()
     secret = models.CharField(max_length=16)
     proto = models.CharField(max_length=12, choices=RADPROTOS)
