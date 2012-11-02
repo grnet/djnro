@@ -137,7 +137,7 @@
         <label class="control-label" for="id_contact">{% trans "Contacts" %}</label>
         <div class="controls">
            	{% for contact in service.contact.all %}
-        		{{contact.firstname}} {{contact.lastname}} (<a href="mailto:{{contact.email}}">{{contact.email}}</a> - tel:{{contact.phone}}){% if not forloop.last %}<br>{% endif %}
+        		{{contact.firstname}} (<a href="mailto:{{contact.email}}">{{contact.email}}</a> - tel:{{contact.phone}}){% if not forloop.last %}<br>{% endif %}
         	{% endfor %}
         </div>
     </div>

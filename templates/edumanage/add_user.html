@@ -10,14 +10,6 @@
 			{% endif %} <span class="help-block"> {{ form.firstname.help_text }}</span>
 		</div>
 		</div>
-		<div class="control-group {% if form.lastname.errors %} error {% endif %}">
-		<label class="control-label" for="id_lastname"><b>{% trans "Last name" %}</b></label>
-		<div class="controls">
-			{{ form.lastname }}
-			{% if form.lastname.errors %} <span class="help-inline"> {{ form.lastname.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.lastname.help_text }}</span>
-		</div>
-		</div>
 		<div class="control-group {% if form.email.errors %} error {% endif %}">
 		<label class="control-label" for="id_email"><b>{% trans "Email" %}</b></label>
 		<div class="controls">

@@ -114,10 +114,10 @@ $("#delcontactSubmit").click(function(){
 					<tbody>
 	                {% for contact in contacts %}
 	              	<tr class="GradeC">
-	                	<td>{{contact.firstname}} {{contact.lastname}}</td>
+	                	<td>{{contact.firstname}}</td>
 	                	<td>{{contact.email}}</td>
 	                	<td>{{contact.phone}}</td>
-	                	<td style="text-align: center;"><a href="{% url edit-contacts contact.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_contact_{{contact.pk}}" data-contactname="{{contact.firstname}} {{contact.lastname}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
+	                	<td style="text-align: center;"><a href="{% url edit-contacts contact.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_contact_{{contact.pk}}" data-contactname="{{contact.firstname}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
 	                </tr>
 	              	{% endfor %}
 	              	</tbody>

@@ -3,9 +3,8 @@
 		"pk": 1,
 		"model": "edumanage.contact",
 		"fields": {
-			"lastname": "Mousmoulas",
 			"email": "zmouzm@grnet.gr",
-			"firstname": "Zenon",
+			"firstname": "Zenon Mousmoulas",
 			"phone": "00302107474244"
 		}
 	}, {
