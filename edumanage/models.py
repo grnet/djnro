@@ -295,11 +295,11 @@ class MonLocalEAPOLData(models.Model):
                 ('CHAP', 'CHAP'),
                 ('MS-CHAPv2', 'MS-CHAPv2'),
                )
-    MONRESPTYPES = (
-                ('accept', 'Access-Accept expected' ),
-                ('reject', 'Access-Reject expected'),
-                ('both', 'RESERVED'),
-               )
+#    MONRESPTYPES = (
+#                ('accept', 'Access-Accept expected' ),
+#                ('reject', 'Access-Reject expected'),
+#                ('both', 'RESERVED'),
+#               )
 
     instrealmmonid = models.ForeignKey("InstRealmMon")
     eap_method = models.CharField(max_length=16, choices=EAPTYPES)
@@ -309,7 +309,7 @@ class MonLocalEAPOLData(models.Model):
     passwp = models.CharField(max_length=24, db_column='pass')
     # TODO: In next releast change it to TextField and add a key field
     #cert = models.CharField(max_length=32)
-    exp_response = models.CharField(max_length=6, choices=MONRESPTYPES)
+    #exp_response = models.CharField(max_length=6, choices=MONRESPTYPES)
 
     def __unicode__(self):
         return _('Institution: %(inst)s, Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: %(phase2)s, Username: %(username)s') % {
