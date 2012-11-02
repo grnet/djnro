@@ -240,7 +240,7 @@ class InstRealmMon(models.Model):
 
     MONTYPES = (
                 ('localauthn', 'Institution provides account for the NRO to monitor the realm' ),
-                ('loopback', 'Institution proxies the realm back to the NRO'),
+                #('loopback', 'Institution proxies the realm back to the NRO'),
                )
 
     realm = models.ForeignKey(InstRealm)
