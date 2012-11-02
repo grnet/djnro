@@ -969,7 +969,7 @@ def instxml(request):
             instContact = ET.SubElement(instElement, "contact")
             
             instContactName = ET.SubElement(instContact, "name")
-            instContactName.text = "%s" %(contact.firstname)
+            instContactName.text = "%s" %(contact.name)
             
             instContactEmail = ET.SubElement(instContact, "email")
             instContactEmail.text = contact.email
@@ -1010,7 +1010,7 @@ def instxml(request):
                 instLocContact = ET.SubElement(instLocation, "contact")
                 
                 instLocContactName = ET.SubElement(instLocContact, "name")
-                instLocContactName.text = "%s" %(contact.firstname)
+                instLocContactName.text = "%s" %(contact.name)
                 
                 instLocContactEmail = ET.SubElement(instLocContact, "email")
                 instLocContactEmail.text = contact.email
@@ -1085,7 +1085,7 @@ def realmxml(request):
         realmContact = ET.SubElement(realmElement, "contact")
         
         realmContactName = ET.SubElement(realmContact, "name")
-        realmContactName.text = "%s" %(contact.firstname)
+        realmContactName.text = "%s" %(contact.name)
         
         realmContactEmail = ET.SubElement(realmContact, "email")
         realmContactEmail.text = contact.email

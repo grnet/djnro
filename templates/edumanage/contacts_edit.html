@@ -3,7 +3,7 @@
 {% block crumbs %}
 	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li><a href="{% url contacts %}">{% trans "Contacts" %}</a><span class="divider">/</span></li>
-	<li class="active">{% if edit %}{{form.instance.firstname}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</li>
+	<li class="active">{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</li>
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
@@ -17,7 +17,7 @@
 			
 {% block homeactive %}{% endblock %}
 {% block contactsactive %}class="active"{% endblock %}
-{% block subcontent %} <h4>{% if edit %}{{form.instance.firstname}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</h4>
+{% block subcontent %} <h4>{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</h4>
 <hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
@@ -29,12 +29,12 @@
 	<div style="display: none">
 		{{form.instid}}
 	</div>
-	<div class="control-group {% if form.firstname.errors %} error {% endif %}">
-		<label class="control-label" for="id_firstname"><b>{% trans "First name" %}</b></label>
+	<div class="control-group {% if form.name.errors %} error {% endif %}">
+		<label class="control-label" for="id_name"><b>{% trans "Name" %}</b></label>
 		<div class="controls">
-			{{ form.firstname }}
-			{% if form.firstname.errors %} <span class="help-inline"> {{ form.firstname.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.firstname.help_text }}</span>
+			{{ form.name }}
+			{% if form.name.errors %} <span class="help-inline"> {{ form.name.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.name.help_text }}</span>
 		</div>
 		</div>
 		<div class="control-group {% if form.email.errors %} error {% endif %}">

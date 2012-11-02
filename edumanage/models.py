@@ -140,12 +140,12 @@ class Contact(models.Model):
     Contact
     '''
 
-    firstname = models.CharField(max_length=80, db_column='contact_firstname')
+    name = models.CharField(max_length=80, db_column='contact_name')
     email = models.CharField(max_length=80, db_column='contact_email')
     phone = models.CharField(max_length=80, db_column='contact_phone')
 
     def __unicode__(self):
-        return '%s %s <%s> (%s)' % (self.firstname, self.email, self.phone)
+        return '%s %s <%s> (%s)' % (self.name, self.email, self.phone)
 
 
 class InstitutionContactPool(models.Model):

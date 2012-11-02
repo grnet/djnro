@@ -4,7 +4,7 @@
 		"model": "edumanage.contact",
 		"fields": {
 			"email": "zmouzm@grnet.gr",
-			"firstname": "Zenon Mousmoulas",
+			"name": "Zenon Mousmoulas",
 			"phone": "00302107474244"
 		}
 	}, {

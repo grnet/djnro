@@ -2,12 +2,12 @@
 
     <form id="add_user_form" method="POST"  class="form-horizontal">
     {% csrf_token %}
-		<div class="control-group {% if form.firstname.errors %} error {% endif %}">
-		<label class="control-label" for="id_firstname"><b>{% trans "First name" %}</b></label>
+		<div class="control-group {% if form.name.errors %} error {% endif %}">
+		<label class="control-label" for="id_name"><b>{% trans "Name" %}</b></label>
 		<div class="controls">
-			{{ form.firstname }}
-			{% if form.firstname.errors %} <span class="help-inline"> {{ form.firstname.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.firstname.help_text }}</span>
+			{{ form.name }}
+			{% if form.name.errors %} <span class="help-inline"> {{ form.name.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.name.help_text }}</span>
 		</div>
 		</div>
 		<div class="control-group {% if form.email.errors %} error {% endif %}">
