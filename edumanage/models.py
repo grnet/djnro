@@ -301,7 +301,7 @@ class MonLocalAuthnParam(models.Model):
 #                ('both', 'RESERVED'),
 #               )
 
-    instrealmmonid = models.ForeignKey("InstRealmMon")
+    instrealmmonid = models.OneToOneField("InstRealmMon")
     eap_method = models.CharField(max_length=16, choices=EAPTYPES)
     phase2 = models.CharField(max_length=16, choices=EAP2TYPES)
     # only local-part, no realm
