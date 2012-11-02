@@ -239,21 +239,23 @@ class InstRealmMon(models.Model):
     '''
 
     MONTYPES = (
-                ('local', 'Institution provides account for the NRO to monitor the realm' ),
-                ('proxyback', 'Institution proxies the realm back to the NRO'),
+                ('localauthn', 'Institution provides account for the NRO to monitor the realm' ),
+                ('loopback', 'Institution proxies the realm back to the NRO'),
                )
 
-    instid = models.ForeignKey("Institution")
-    realm = models.CharField(max_length=20)
-    mon_type = models.CharField(max_length=8, choices=MONTYPES)
+    realm = models.ForeignKey(InstRealm)
+    mon_type = models.CharField(max_length=16, choices=MONTYPES)
+    
+    class Meta:
+        unique_together = ('realm','mon_type')
 
-    def __unicode__(self):
-        return _('Institution: %(inst)s, Monitored Realm: %(monrealm)s, Monitoring Type: %(montype)s') % {
-        # but name is many-to-many from institution
-            'inst': self.instid.name,
-            'monrealm': self.realm,
-            'montype': self.mon_type,
-            }
+#    def __unicode__(self):
+#        return _('Institution: %(inst)s, Monitored Realm: %(monrealm)s, Monitoring Type: %(montype)s') % {
+#        # but name is many-to-many from institution
+#            'inst': self.instid.name,
+#            'monrealm': self.realm,
+#            'montype': self.mon_type,
+#            }
 
 class MonProxybackClient(models.Model):
     '''
