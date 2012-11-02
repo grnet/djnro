@@ -31,7 +31,7 @@
 		var map = '';
 		var marker = '';
 		var getOnce = false;
-
+		
 		function setPositionValues(position) {
 			$("#id_longitude").val('');
 			$("#id_latitude").val('');
@@ -181,7 +181,9 @@
 
 				});
 				marker.setMap(map);
+				{% if not form.instance.latitude %}
 				setPositionValues(latlng);
+				{% endif %}
 			}
 			google.maps.event.addListener(map, 'idle', function() {
 				
@@ -207,7 +209,7 @@
 		$(document).ready(function() {
 			
 			initialize();
-			
+
 			$("div.controls > ul").addClass('unstyled');
 			
 			$("#updatemap").click(function(){
