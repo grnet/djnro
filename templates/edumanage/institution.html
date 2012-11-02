@@ -17,6 +17,13 @@
             {% block subcontent %}
               <h4>{% trans "Institution" %}</h4>
               		<hr>
+              		{% if messages %}
+                    <table class="table table-condensed">
+                        {% for message in messages %}
+                        <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
               {% load tolocale %}
               {% if institution %}
               		{% if institution.institutiondetails %}

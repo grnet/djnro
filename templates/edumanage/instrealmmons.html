@@ -101,6 +101,14 @@ $("#delcontactSubmit").click(function(){
 	            	
 	              <h4>{% trans "Monitored Realms" %}</h4>
 	              <hr>
+	              {% if messages %}
+                    <table class="table table-condensed">
+                    
+                        {% for message in messages %}
+                        <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+                        {% endfor %}
+                    </table>
+                  {% endif %}
 	              <div><a href="{% url edit-instrealmmon %}" class="btn btn-primary">{% trans "Add monitored realm" %}</a></div>
 	              <div class="span10"></div>
 	              {% if realms %}
@@ -132,19 +140,28 @@ $("#delcontactSubmit").click(function(){
 	                	</td>
 	                		<td style="text-align: center;">
 	                		{% if realm.monlocalauthnparam %}
-	                		<a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-small">{% trans "edit" %}</a>
-	                		<a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
-	                		<hr>
-	                		    <dl class="dl-horizontal" style=" text-align: left;">
-							    <dt>Method</dt>
-							    <dd>{{realm.monlocalauthnparam.get_eap_method_display}}</dd>
-							    <dt>Phase 2</dt>
-							    <dd>{{realm.monlocalauthnparam.get_phase2_display}}</dd>
-							    <dt>Username</dt>
-							    <dd>{{realm.monlocalauthnparam.username}}</dd>
-							    </dl>
+	                		<div class="well paramwell">
+<div class="row">
+<div class="span6">
+                            
+                                <dl class="dl-horizontal" style=" text-align: left;">
+                                <dt>Method</dt>
+                                <dd>{{realm.monlocalauthnparam.get_eap_method_display}}</dd>
+                                <dt>Phase 2</dt>
+                                <dd>{{realm.monlocalauthnparam.get_phase2_display}}</dd>
+                                <dt>Username</dt>
+                                <dd>{{realm.monlocalauthnparam.username}}</dd>
+                                </dl>
+                                </div>
+<div class="span6">
+                            <a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini">{% trans "edit" %}</a>
+                            <a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini btn-warning">{% trans "delete" %}</a>
+                            
+</div>
+</div>
+	                		    
 	                		{% else %}
-	                		{% if not realm.monlocalauthnparam %}<a href="{% url edit-monlocauthpar realm.pk %}" class="btn btn-small">{% trans "add" %}</a>{% endif %}
+	                		{% if not realm.monlocalauthnparam %}<a href="{% url edit-monlocauthpar realm.pk %}" class="btn btn-mini btn-primary">{% trans "add" %}</a>{% endif %}
 	                		{% endif %}
 	                		</td>
 	                	
@@ -166,6 +183,20 @@ $("#delcontactSubmit").click(function(){
 <div class="modal-footer">
 <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
 <a class="btn btn-warning" id="delcontactSubmit" href="#">{% trans "Delete" %}</a>
+</div>
+</div>
+
+<div class="modal hide fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel2">{% trans "Delete monitored realm" %}</h3>
+</div>
+<div class="modal-body" id="mymodalbody2">
+
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+<a class="btn btn-warning" id="delcontactSubmit2" href="#">{% trans "Delete" %}</a>
 </div>
 </div>
             {% endblock %}

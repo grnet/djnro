@@ -41,6 +41,10 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     margin-top: 5px;
 }
 
+.paramwell{
+	margin-bottom: 0px;
+    padding: 0px;
+}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *

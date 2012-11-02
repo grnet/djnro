@@ -95,6 +95,10 @@ def add_institution_details(request, institution_pk):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     
+    if institution_pk and int(inst.pk) != int(institution_pk):
+        messages.add_message(request, messages.ERROR, 'You have no rights on this Institution')
+        return HttpResponseRedirect(reverse("institutions"))
+    
     if request.method == "GET":
         request_data = request.POST.copy()
         try:         
@@ -107,6 +111,7 @@ def add_institution_details(request, institution_pk):
             form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
             UrlFormSet =  generic_inlineformset_factory(URL_i18n, extra=2, can_delete=True)
             urls_form = UrlFormSet(prefix='urlsform')
+
         
         form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
         return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form, 'urls_form':urls_form},
@@ -150,7 +155,7 @@ def services(request, service_pk):
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [2,3]:
-        messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
+        messages.add_message(request, messages.ERROR, 'Cannot add/edit Location. Your institution should be either SP or IdP/SP')
         return render_to_response('edumanage/services.html', { 'institution': inst },
                               context_instance=RequestContext(request, base_response(request)))
     try:
@@ -159,7 +164,11 @@ def services(request, service_pk):
         services = False 
     
     if service_pk:
-        services = services.get(pk=service_pk)
+        try:
+            services = services.get(pk=service_pk)
+        except:
+            messages.add_message(request, messages.ERROR, 'You have no rights to view this location')
+            return HttpResponseRedirect(reverse("services"))
         return render_to_response('edumanage/service_details.html', 
                               {
                                'institution': inst,
@@ -202,9 +211,11 @@ def add_services(request, service_pk):
         try:         
             service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
             form = ServiceLocForm(instance=service)
-            
         except ServiceLoc.DoesNotExist:
             form = ServiceLocForm()
+            if service_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this location')
+                return HttpResponseRedirect(reverse("services"))
         form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
         UrlFormSet =  generic_inlineformset_factory(URL_i18n, extra=2, can_delete=True)
         NameFormSet = generic_inlineformset_factory(Name_i18n, extra=2, can_delete=True)
@@ -235,6 +246,9 @@ def add_services(request, service_pk):
             form = ServiceLocForm(request_data)
             names_form = NameFormSet(request_data, prefix='namesform')
             urls_form = UrlFormSet(request_data, prefix='urlsform')
+            if service_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this location')
+                return HttpResponseRedirect(reverse("services"))
         
         if form.is_valid() and names_form.is_valid() and urls_form.is_valid():
             serviceloc = form.save()
@@ -331,9 +345,13 @@ def add_server(request, server_pk):
             form = InstServerForm(instance=server)
         except InstServer.DoesNotExist:
             form = InstServerForm()
+            if server_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this server')
+                return HttpResponseRedirect(reverse("servers"))  
         form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
         if server:
             edit = True
+                      
         return render_to_response('edumanage/servers_edit.html', { 'form': form, 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
@@ -343,6 +361,9 @@ def add_server(request, server_pk):
             form = InstServerForm(request_data, instance=server)
         except InstServer.DoesNotExist:
             form = InstServerForm(request_data)
+            if server_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this server')
+                return HttpResponseRedirect(reverse("servers")) 
         
         if form.is_valid():
             instserverf = form.save()
@@ -430,6 +451,9 @@ def add_realm(request, realm_pk):
             form = InstRealmForm(instance=realm)
         except InstRealm.DoesNotExist:
             form = InstRealmForm()
+            if realm_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this realm')
+                return HttpResponseRedirect(reverse("realms"))
         form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
         form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
         if realm:
@@ -443,7 +467,9 @@ def add_realm(request, realm_pk):
             form = InstRealmForm(request_data, instance=realm)
         except InstRealm.DoesNotExist:
             form = InstRealmForm(request_data)
-        
+            if realm_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this realm')
+                return HttpResponseRedirect(reverse("realms")) 
         if form.is_valid():
             instserverf = form.save()
             return HttpResponseRedirect(reverse("realms"))
@@ -533,6 +559,9 @@ def add_contact(request, contact_pk):
             form = ContactForm(instance=contact)
         except InstitutionContactPool.DoesNotExist:
             form = ContactForm()
+            if contact_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this contact')
+                return HttpResponseRedirect(reverse("contacts"))
         if contact:
             edit = True
         return render_to_response('edumanage/contacts_edit.html', { 'form': form, "edit" : edit},
@@ -545,6 +574,9 @@ def add_contact(request, contact_pk):
             form = ContactForm(request_data, instance=contact)
         except InstitutionContactPool.DoesNotExist:
             form = ContactForm(request_data)
+            if contact_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this contact')
+                return HttpResponseRedirect(reverse("contacts"))
         
         if form.is_valid():
             contact = form.save()
@@ -637,6 +669,9 @@ def add_instrealmmon(request, instrealmmon_pk):
             form = InstRealmMonForm(instance=instrealmmon)
         except InstRealmMon.DoesNotExist:
             form = InstRealmMonForm()
+            if instrealmmon_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm')
+                return HttpResponseRedirect(reverse("instrealmmon"))
         if instrealmmon:
             edit = True
         form.fields['realm'] = forms.ModelChoiceField(queryset=InstRealm.objects.filter(instid=inst.pk).exclude(realm__startswith="*"), empty_label=None)
@@ -649,6 +684,9 @@ def add_instrealmmon(request, instrealmmon_pk):
             form = InstRealmMonForm(request_data, instance=instrealmmon)
         except InstRealmMon.DoesNotExist:
             form = InstRealmMonForm(request_data)
+            if instrealmmon_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm')
+                return HttpResponseRedirect(reverse("instrealmmon"))
         if form.is_valid():
             instrealmmonobj = form.save()
             return HttpResponseRedirect(reverse("instrealmmon"))
@@ -682,8 +720,13 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
             form = MonLocalAuthnParamForm(instance=monlocauthpar)
         except MonLocalAuthnParam.DoesNotExist:
             form = MonLocalAuthnParamForm()
+            if monlocauthpar_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm Parameters')
+                return HttpResponseRedirect(reverse("instrealmmon"))
         except InstRealmMon.DoesNotExist:
-            return HttpResponseRedirect(reverse("manage"))
+            if instrealmmon_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm Parameters')
+            return HttpResponseRedirect(reverse("instrealmmon"))
         if monlocauthpar:
             edit = True
         form.fields['instrealmmonid'] = forms.ModelChoiceField(queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk), empty_label=None)
@@ -697,8 +740,13 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
             form = MonLocalAuthnParamForm(request_data, instance=monlocauthpar)
         except MonLocalAuthnParam.DoesNotExist:
             form = MonLocalAuthnParamForm(request_data)
+            if monlocauthpar_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm Parameters')
+                return HttpResponseRedirect(reverse("instrealmmon"))
         except InstRealmMon.DoesNotExist:
-            return HttpResponseRedirect(reverse("manage"))
+            if instrealmmon_pk:
+                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm Parameters')
+            return HttpResponseRedirect(reverse("instrealmmon"))
         if form.is_valid():
             monlocauthparobj = form.save()
             return HttpResponseRedirect(reverse("instrealmmon"))

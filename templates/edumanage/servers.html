@@ -102,6 +102,13 @@ $("#delserverSubmit").click(function(){
 	            	
 	              <h4>{% trans "Servers" %}</h4>
 	              <hr>
+	              {% if messages %}
+                    <table class="table table-condensed">
+                        {% for message in messages %}
+                        <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
 	              <div><a href="{% url edit-servers %}" class="btn btn-primary">{% trans "Add new server" %}</a></div>
 	              <div class="span10"></div>
 	              {% if servers %}

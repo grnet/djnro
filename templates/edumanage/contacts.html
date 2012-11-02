@@ -98,6 +98,13 @@ $("#delcontactSubmit").click(function(){
 	            	
 	              <h4>{% trans "Contacts" %}</h4>
 	              <hr>
+	              {% if messages %}
+                    <table class="table table-condensed">
+                        {% for message in messages %}
+                        <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
 	              <div><a href="{% url edit-contacts %}" class="btn btn-primary">{% trans "Add new contact" %}</a></div>
 	              <div class="span10"></div>
 	              {% if contacts %}
