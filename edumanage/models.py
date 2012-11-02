@@ -140,7 +140,7 @@ class Contact(models.Model):
     Contact
     '''
 
-    name = models.CharField(max_length=80, db_column='contact_name')
+    name = models.CharField(max_length=255, db_column='contact_name')
     email = models.CharField(max_length=80, db_column='contact_email')
     phone = models.CharField(max_length=80, db_column='contact_phone')
 
