@@ -929,7 +929,7 @@ def instxml(request):
     ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
     root = ET.Element("institutions")
     NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
-    root.set(NS_XSI + "noNamespaceSchemaLocation", "institutions.xsd")
+    root.set(NS_XSI + "noNamespaceSchemaLocation", "institution.xsd")
     #root.attrib["xsi:noNamespaceSchemaLocation"] = "institution.xsd"
     institutions = Institution.objects.all()
     for institution in institutions:
@@ -982,6 +982,8 @@ def instxml(request):
             instUrl.attrib["lang"] = url.lang
             instUrl.text = url.url
         
+        instTs = ET.SubElement(instElement, "ts")
+        instTs.text = "%s" %inst.ts.isoformat()
         #Let's go to Institution Service Locations
 
         for serviceloc in inst.institution.serviceloc_set.all():
@@ -1046,9 +1048,6 @@ def instxml(request):
                 instLocUrl = ET.SubElement(instLocation, "%s_URL"%(url.urltype))
                 instLocUrl.attrib["lang"] = url.lang
                 instLocUrl.text = url.url
-
-        instTs = ET.SubElement(instElement, "ts")
-        instTs.text = "%s" %inst.ts.isoformat()
             
     return render_to_response("general/institution.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
         
