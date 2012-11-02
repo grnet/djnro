@@ -1,5 +1,6 @@
 {% extends "base.html"%}
 {% load i18n %}
+{% block title %}eduroam | gr - Management{% endblock %}
 {% block extrahead %} <script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="/static/js/markerclusterer.js"></script>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
@@ -164,8 +165,9 @@ $.get("{% url get-service-points %}", function(data){
 {% block headtitle %}eduroam@Greece admin{% endblock %}
     {% block topmenu %}
     <ul class="nav">
-        <li class="disabled">
-           <a class="brand" href="#">Management</a>
+        <li>
+        	{% load tolocale %}
+           <a class="brand" href="{% url manage %}" style="font-size: 14px;">{% tolocale institution LANGUAGE_CODE %}</a>
         </li>
         
 
@@ -228,7 +230,7 @@ $.get("{% url get-service-points %}", function(data){
 					{% block subcontent %}
 					
 				  
-					<h4>{% trans "Home" %} - {% trans "Service Locations" %}</h4>
+					<h4>{% trans "Home" %} - {% trans "Service Locations" %} - {% tolocale institution LANGUAGE_CODE %}</h4>
               		<hr>
 					{% if services %} <div id="map_canvas" style="width:100%; height:450px;"></div>
 					{% else %}
