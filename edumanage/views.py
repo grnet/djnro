@@ -1343,7 +1343,8 @@ def realmdataxml(request):
     users = 0
     for inst in insts:
         try:
-            users = users + inst.institutiondetails.number_user
+            if inst.institutiondetails.number_user:
+                users = users + inst.institutiondetails.number_user
         except InstitutionDetails.DoesNotExist:
             pass
     nuserCountry.text = "%s" %users

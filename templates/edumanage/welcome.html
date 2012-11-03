@@ -167,7 +167,7 @@ $.get("{% url get-service-points %}", function(data){
     <ul class="nav">
         <li>
         	{% load tolocale %}
-           <a class="brand" href="{% url manage %}" style="font-size: 14px;">{% tolocale institution LANGUAGE_CODE %}</a>
+           <a class="brand" href="{% url manage %}" style="font-size: 14px;">{% if institution_exists %}{% tolocale institution LANGUAGE_CODE %}{% else %}Management{% endif %}</a>
         </li>
         
 
