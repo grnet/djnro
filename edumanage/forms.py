@@ -41,7 +41,7 @@ class InstDetailsForm(forms.ModelForm):
         institution = self.cleaned_data['institution']
         if institution.ertype in [2,3]:
             if oper_name:
-                match = re.match(DN_RE, oper_name)
+                match = re.match(FQDN_RE, oper_name)
                 if not match:
                     raise forms.ValidationError('Invalid domain name format.')
                 return self.cleaned_data["oper_name"]
