@@ -3,7 +3,7 @@
 {% block crumbs %}
 	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li><a href="{% url instrealmmon %}">{% trans "Monitored Realms" %}</a><span class="divider">/</span></li>
-	<li class="active">{% if edit %}PLACEHOLDER({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</li>
+	<li class="active">{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</li>
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
@@ -17,7 +17,7 @@
 			
 {% block homeactive %}{% endblock %}
 {% block instrealmmon %}class="active"{% endblock %}
-{% block subcontent %} <h4>{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</h4>
+{% block subcontent %} <h4>{% if edit %}Monitored realm: {{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</h4>
 <hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}

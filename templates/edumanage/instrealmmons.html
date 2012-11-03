@@ -8,9 +8,10 @@
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" src="/static/js/datatables_bootstrap.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function(){
-	 {% if contacts %}
+{% if realms %}
 var oTable = $('#table').dataTable({
 	"sPaginationType": "bootstrap",
 	"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
@@ -35,7 +36,7 @@ var oTable = $('#table').dataTable({
     "iDisplayLength": 25,
     "oSearch": {"bSmart": false, "bRegex":true},
     "oLanguage": {
-    	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "contacts" %}',
+    	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "realms" %}',
         "sProcessing":   "Processing...",
         "sZeroRecords": '{% trans "No records to display" %}',
         "sInfo":         "Showing _START_ to _END_ of _TOTAL_ entries",
@@ -55,39 +56,68 @@ var oTable = $('#table').dataTable({
 
 oTable.fnDraw();
 
-$('[id^=del_contact_]').click(function(){
-	contact_id = (this.id).replace("del_contact_", '');
-	name = this.getAttribute("data-contactname");
-	$("#mymodalbody").html("{% trans 'You are about to delete realm' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
-	$("#myModalLabel").html("{% trans 'Delete realm' %} "+name);
+$('[id^=del_instrealmmon_]').click(function(){
+	instrealmmon_pk = (this.id).replace("del_instrealmmon_", '');
+	name = this.getAttribute("data-realmname");
+	$("#mymodalbody").html("{% trans 'You are about to delete monitored realm (and its parameters if any)' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
+	$("#myModalLabel").html("{% trans 'Delete Monitored Realm' %} "+name);
 	$('#myModal').modal('show');
-	$(".modal-footer").show();
-	$("#contact_name_del").html(name)	
+	$("#modalfooter1").show();
 	return false;
 });
 
-$("#delcontactSubmit").click(function(){
+$("#delrealmSubmit").click(function(){
+    $.ajax({
+        url:"{% url del-instrealmmon %}/?instrealmmon_pk="+instrealmmon_pk,
+        type: "GET",
+        success: function(data){
+            if (data.error){
+                $("#modalfooter1").hide();
+                $("#mymodalbody").html("<font style='color:#B94A48'>"+data.error+"</font>");
+            }
+            if (data.success){
+                $(".modal-footer").hide();
+                $("#mymodalbody").html("monitored realm "+name+" successfully deleted");
+                window.setTimeout('location.reload()', 1000);
+                
+            }
+            }
+        });
+});
+
+
+$('[id^=del_monlocauthpar_]').click(function(){
+    monlocauthpar_pk = (this.id).replace("del_monlocauthpar_", '');
+    name = this.getAttribute("data-realmname");
+    $("#mymodalbody2").html("{% trans 'You are about to delete monitored realm parameters for ' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
+    $("#myModalLabel2").html("{% trans 'Delete Monitored Realm Parameters' %} "+name);
+    $('#myModal2').modal('show');
+    $("#modalfooter1").show();
+    return false;
+});
+
+$("#delmonlocauthparSubmit").click(function(){
 	$.ajax({
-		url:"{% url del-contact %}/?contact_pk="+contact_id,
+		url:"{% url del-monlocauthpar %}/?monlocauthpar_pk="+monlocauthpar_pk,
 		type: "GET",
 		success: function(data){
 			if (data.error){
-				$(".modal-footer").hide();
-				$("#mymodalbody").html("<font style='color:#B94A48'>"+data.error+"</font>");
+				$("#modalfooter2").hide();
+				$("#mymodalbody2").html("<font style='color:#B94A48'>"+data.error+"</font>");
 			}
 			if (data.success){
-				$(".modal-footer").hide();
-				$("#mymodalbody").html("contact "+name+" successfully deleted");
+				$("#modalfooter2").hide();
+				$("#mymodalbody2").html("monitored realm parameters "+name+" successfully deleted");
 				window.setTimeout('location.reload()', 1000);
 				
 			}
 			}
 		});
 });
-
 {% endif %}
 });
 </script>
+
 {% endblock %}
 
 	{% block navbar %}
@@ -98,7 +128,6 @@ $("#delcontactSubmit").click(function(){
     		{% block instrealmmon %}class="active"{% endblock %}
             {% block subcontent %}
 
-	            	
 	              <h4>{% trans "Monitored Realms" %}</h4>
 	              <hr>
 	              {% if messages %}
@@ -136,7 +165,7 @@ $("#delcontactSubmit").click(function(){
 	                	<td style="text-align: center;">
 	                		
 	                		<a href="{% url edit-instrealmmon realm.pk %}" class="btn btn-small">{% trans "edit" %}</a> 
-	                		<a href="#" id="del_contact_{{contact.pk}}" data-contactname="{{contact.name}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
+	                		<a href="#" id="del_instrealmmon_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
 	                	</td>
 	                		<td style="text-align: center;">
 	                		{% if realm.monlocalauthnparam %}
@@ -155,7 +184,7 @@ $("#delcontactSubmit").click(function(){
                                 </div>
 <div class="span6">
                             <a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini">{% trans "edit" %}</a>
-                            <a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini btn-warning">{% trans "delete" %}</a>
+                            <a href="#" id="del_monlocauthpar_{{realm.monlocalauthnparam.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
                             
 </div>
 </div>
@@ -180,9 +209,9 @@ $("#delcontactSubmit").click(function(){
 <div class="modal-body" id="mymodalbody">
 
 </div>
-<div class="modal-footer">
+<div class="modal-footer" id="modalfooter1">
 <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
-<a class="btn btn-warning" id="delcontactSubmit" href="#">{% trans "Delete" %}</a>
+<a class="btn btn-warning" id="delrealmSubmit" href="#">{% trans "Delete" %}</a>
 </div>
 </div>
 
@@ -194,9 +223,9 @@ $("#delcontactSubmit").click(function(){
 <div class="modal-body" id="mymodalbody2">
 
 </div>
-<div class="modal-footer">
+<div class="modal-footer" id="modalfooter2">
 <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
-<a class="btn btn-warning" id="delcontactSubmit2" href="#">{% trans "Delete" %}</a>
+<a class="btn btn-warning" id="delmonlocauthparSubmit" href="#">{% trans "Delete" %}</a>
 </div>
 </div>
             {% endblock %}

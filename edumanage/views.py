@@ -692,9 +692,32 @@ def add_instrealmmon(request, instrealmmon_pk):
             return HttpResponseRedirect(reverse("instrealmmon"))
         if instrealmmon:
             edit = True
+        form.fields['realm'] = forms.ModelChoiceField(queryset=InstRealm.objects.filter(instid=inst.pk).exclude(realm__startswith="*"), empty_label=None)
         return render_to_response('edumanage/instrealmmon_edit.html', { 'form': form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
 
+@login_required
+@never_cache
+def del_instrealmmon(request):
+    if request.method == 'GET':
+        user = request.user
+        req_data = request.GET.copy()
+        instrealmmon_pk = req_data['instrealmmon_pk']
+        try:
+            profile = user.get_profile()
+            institution = profile.institution
+        except UserProfile.DoesNotExist:
+            resp['error'] = "Could not delete monitored realm. Not enough rights"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp = {}
+        try:
+            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=institution)
+            instrealmmon.delete()
+        except InstRealmMon.DoesNotExist:
+            resp['error'] = "Could not get monitored realm or you have no rights to delete"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp['success'] = "Contact successfully deleted"
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
 
 @login_required
 @never_cache
@@ -755,6 +778,29 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
         form.fields['instrealmmonid'] = forms.ModelChoiceField(queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk), empty_label=None)
         return render_to_response('edumanage/monlocauthpar_edit.html', { 'form': form, "edit": edit, "realm":instrealmmon},
                                   context_instance=RequestContext(request, base_response(request)))
+
+@login_required
+@never_cache
+def del_monlocauthpar(request):
+    if request.method == 'GET':
+        user = request.user
+        req_data = request.GET.copy()
+        monlocauthpar_pk = req_data['monlocauthpar_pk']
+        try:
+            profile = user.get_profile()
+            institution = profile.institution
+        except UserProfile.DoesNotExist:
+            resp['error'] = "Could not delete realm monitoring parameters. Not enough rights"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp = {}
+        try:
+            monlocauthpar = MonLocalAuthnParam.objects.get(pk=monlocauthpar_pk, instrealmmonid__realm__instid=institution)
+            monlocauthpar.delete()
+        except MonLocalAuthnParam.DoesNotExist:
+            resp['error'] = "Could not get realm monitoring parameters or you have no rights to delete"
+            return HttpResponse(json.dumps(resp), mimetype='application/json')
+        resp['success'] = "Contact successfully deleted"
+        return HttpResponse(json.dumps(resp), mimetype='application/json')
 
 @login_required
 @never_cache
