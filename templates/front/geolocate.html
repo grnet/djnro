@@ -45,7 +45,9 @@
 margin-bottom: 0px;
 }
 
-
+.btnNoBgMove:hover {
+    background-position: 0 0;
+}
 
     </style>
     <!--[if lt IE 9]>
@@ -191,7 +193,6 @@ margin-bottom: 0px;
 		
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
 			var place = autocomplete.getPlace();
-			console.log(place);
 			if (place.geometry.viewport) {
 	            map.fitBounds(place.geometry.viewport);
 	          } else {
@@ -278,22 +279,11 @@ function autocomplete() {
 
         var input = $('#searchTextField');
         var autocomplete = new google.maps.places.Autocomplete(input);
-
         autocomplete.bindTo('bounds', map);
-
         var marker = new google.maps.Marker({
           map: map
         });
-
-        google.maps.event.addListener(autocomplete, 'place_changed', function() {
-          console.log(autocomplete)
-          
-
-
-        });
-
-        // Sets a listener on a radio button to change the filter type on Places
-        // Autocomplete.
+        
 
       }
 	
@@ -315,7 +305,14 @@ function resizeMap()
 	$(document).ready(function() {
 		initialize();
 		resizeMap();
-	    $("#localert").delay(6500).fadeOut('slow');
+		$("#myloc").click(function(){
+			navigator.geolocation.getCurrentPosition(getPosition);
+			return false;
+		});
+		$("#mylocm").click(function(){
+			navigator.geolocation.getCurrentPosition(getPosition);
+			return false;
+		});
 		
 	});
 	
@@ -342,13 +339,19 @@ function resizeMap()
           </ul>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="hidden-desktop"><span class="alert" style="font-size: 12px;padding: 0 1px;  line-height: 40px;">Accuracy depends on connection type</span></li>
-              <li>
+              <li class="hidden-desktop" style="text-align: center"><span class="alert" style="font-size: 12px;padding: 3px 2px;  line-height: 40px;">Accuracy depends on connection type</span></li>
+              <li style="text-align: center">
 				<div class="navbar-search pull-left" style="margin-left: 5px;">
                   <input type="text" class="search-query" placeholder="Search" id="searchTextField">
                 </div>
               </li>
-              <li class="visible-desktop"><span id="localert" class="alert" style="font-size: 12px;padding: 0 1px;  line-height: 40px;">Accuracy depends on connection type</span></li>
+              <li class="hidden-desktop" style="text-align: center;"><button id="mylocm" title="Current location" class="btn btnNoBgMove" style="background: url('/static/img/home_target.png') no-repeat top center; width: 80px; height: 32px; padding: 0px;" href="#"></button></li>
+              <li class="visible-desktop"><span id="localert" class="alert" style="font-size: 12px;padding: 3px; 2px;  line-height: 40px;  margin-left: 15px;">Accuracy depends on connection type</span></li>
+            </ul>
+            <ul class="nav pull-right visible-desktop">
+            	<li class="pull-right" style="text-align: center">
+            	<button id="myloc" title="Current location" class="btn btnNoBgMove" style="background: url('/static/img/home_target.png') no-repeat top center; width: 32px; height: 32px; padding: 0px;" href="#"></button>
+            	</li>
             </ul>
             
           </div><!--/.nav-collapse -->
