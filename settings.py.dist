@@ -106,8 +106,8 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware'
 )
 
 ROOT_URLCONF = 'eduroam.urls'
@@ -144,11 +144,14 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 LOGIN_URL = '/login/'
 
 KML_FILE = here('all.kml')
+INST_XML_FILE = here('institution.xml')
 
-SHIB_AUTH_ENTITLEMENT = 'urn:mace:'
-SHIB_LOGOUT_URL = 'https://example.com/Logout'
+EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-SERVER_EMAIL = "eduroam Service <noreply@example.com>"
+SHIB_AUTH_ENTITLEMENT = 'urn:mace:grnet.gr:pki:user'
+SHIB_LOGOUT_URL = 'https://netdev.grnet.gr/Shibboleth.sso/Logout'
+
+SERVER_EMAIL = "GRNET eduroam Service <noreply@grnet.gr>"
 EMAIL_SUBJECT_PREFIX = "[eduroam] "
 ACCOUNT_ACTIVATION_DAYS = 7
 NOTIFY_ADMIN_MAILS = ["mail1@example.com", "mail2@example.com"]
@@ -162,5 +165,5 @@ TINYMCE_DEFAULT_CONFIG = {
     'theme': "advanced",
 }
 
-CACHE_BACKEND = 'dummy://'
+CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
 
