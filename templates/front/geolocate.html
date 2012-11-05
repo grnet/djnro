@@ -313,9 +313,9 @@ function resizeMap()
 }
 
 	$(document).ready(function() {
-		alert("Beware that the accuracy of your geolocation depends highly on your connection type (wired, wireless, mobile data plan)");
 		initialize();
 		resizeMap();
+	    $("#localert").delay(6500).fadeOut('slow');
 		
 	});
 	
@@ -341,13 +341,14 @@ function resizeMap()
           <li id="distanceText" style="line-height:40px;" style="font-size: 14px;"></li>
           </ul>
           <div class="nav-collapse collapse">
-          	
             <ul class="nav">
-              <li></li>
-              <li></li>
-              <div class="navbar-search pull-left" style="margin-left: 5px;">
+              <li class="hidden-desktop"><span class="alert" style="font-size: 12px;padding: 0 1px;  line-height: 40px;">Accuracy depends on connection type</span></li>
+              <li>
+				<div class="navbar-search pull-left" style="margin-left: 5px;">q
                   <input type="text" class="search-query" placeholder="Search" id="searchTextField">
                 </div>
+              </li>
+              <li class="visible-desktop"><span id="localert" class="alert" style="font-size: 12px;padding: 0 1px;  line-height: 40px;">Accuracy depends on connection type</span></li>
             </ul>
             
           </div><!--/.nav-collapse -->
