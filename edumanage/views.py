@@ -17,7 +17,7 @@ from django.core.mail.message import EmailMessage
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
 import json, bz2
-import math
+import math, datetime
 from xml.etree import ElementTree as ET
 
 from django.conf import settings
@@ -1361,11 +1361,16 @@ def realmdataxml(request):
     
     # Get the latest ts from all tables...
     datetimes = []
-    datetimes.append(InstitutionDetails.objects.aggregate(Max('ts'))['ts__max'])
-    datetimes.append(Realm.objects.aggregate(Max('ts'))['ts__max'])
-    datetimes.append(InstServer.objects.aggregate(Max('ts'))['ts__max'])
-    datetimes.append(ServiceLoc.objects.aggregate(Max('ts'))['ts__max'])
-    
+    if InstitutionDetails.objects.aggregate(Max('ts'))['ts__max']:
+        datetimes.append(InstitutionDetails.objects.aggregate(Max('ts'))['ts__max'])
+    if Realm.objects.aggregate(Max('ts'))['ts__max']:
+        datetimes.append(Realm.objects.aggregate(Max('ts'))['ts__max'])
+    if InstServer.objects.aggregate(Max('ts'))['ts__max']:
+        datetimes.append(InstServer.objects.aggregate(Max('ts'))['ts__max'])
+    if ServiceLoc.objects.aggregate(Max('ts'))['ts__max']:
+        datetimes.append(ServiceLoc.objects.aggregate(Max('ts'))['ts__max'])
+    if len(datetimes) == 0:
+        datetimes.append(datetime.datetime.now())
     instTs = ET.SubElement(realmdataElement, "ts")
     instTs.text = "%s" %max(datetimes).isoformat()
     
