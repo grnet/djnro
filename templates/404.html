@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+    {% block topmenu %}
+    <ul class="nav">
+        <li>
+            <a href="{% url index %}">{% trans "Home" %}</a>
+        </li>
+        <li>
+            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
+        </li>
+        <li>
+            <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
+        </li>
+
+    </ul>
+    {% endblock %}
+    {% block content %}
+	<div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+        </div><!--/span-->
+
+
+		<div class="span10">
+			<div class="row-fluid">
+				<!--/span-->
+				<h3>Oops! You got a nice 404: Page does not exist</h3>
+				<hr>
+					{% block subcontent %}
+					<div class="span10 alert alert-error">No matter how you reached this page, it simply does not exist!</div>
+					{% endblock %}
+				
+				<!--/span-->
+			</div><!--/row-->
+		</div><!--/span-->
+
+        </div><!--/span-->
+
+    </div><!--/.fluid-container-->
+	{% endblock %}
