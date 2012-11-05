@@ -157,8 +157,10 @@ body {
       <div class="container">
         <p>Designed and developed by <a href="http://noc.grnet.gr/" target="_blank">GRNET NOC</a></p>
         <ul class="footer-links">
-          <li><a href="#">Terms</a></li>
-          <li><a href="#">Helpdesk</a></li>
+          {% comment %}<li><a href="#">Terms</a></li>{% endcomment %}
+          {% if user.is_authenticated %}
+          <li>If you have any questions or need help, contact GRNET Helpdesk at <a href="mailto: helpdesk@grnet.gr">heldesk.grnet.gr</a> or 800-11-47638</li>
+          {% endif %}
         </ul>
       </div>
     </footer>
