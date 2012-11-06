@@ -76,7 +76,7 @@ body {
     {% block topmenu %}
     <ul class="nav">
         <li {% block hometop %}{% endblock %}>
-            <a href="{% url index %}">Home</a>
+            <a href="{% url index %}">{% trans "Home" %}</a>
         </li>
         <li {% block faqtop %}{% endblock %}>
             <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
@@ -124,7 +124,7 @@ body {
               <li {% block whatis %}{% endblock %}><a href="/what/{{LANGUAGE_CODE}}/">{% trans "The service" %}</a></li>
               <li {% block faq %}{% endblock %}><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
               <li class="nav-header">{% trans "INSTITUTIONS" %}</li>
-              <li {% block mgmt %}{% endblock %}><a href="{% url manage %}">{% trans "Management" %}</a></li>
+              <li {% block mgmt %}{% endblock %}><a href="{% url managementPage %}">{% trans "Management" %}</a></li>
               <li class="nav-header">{% trans "SERVICE" %}</li>
               <li {% block closest %}{% endblock %}><a href="{% url geolocate %}" target="about:blank()">{% trans "Closest eduroam" %}</a></li>
               <li {% block world %}{% endblock %}><a href="{% url world %}">{% trans "World eduroam" %}</a></li>

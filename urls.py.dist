@@ -30,12 +30,14 @@ urlpatterns += patterns('edumanage.views',
     url(r'^geolocate/?$', 'geolocate', name="geolocate"),
     url(r'^closest/?$', 'closest', name="closest"),
     url(r'^world/?$', 'world', name="world"),
+    url(r'^management/?$', 'managementPage', name="managementPage"),
     url(r'^worldpoints/?$', 'worldPoints', name="worldPoints"),
     url(r'^participants/?$', 'participants', name="participants"),
+    url(r'^services/allpoints/?$', 'get_all_services', name="get-all-services"),
     
     url(r'^general/institution.xml', "instxml", name="instxml"),
     url(r'^general/realm.xml', "realmxml", name="realmxml"),
-    url(r'^general/realm_data.xml', "realmdataxml", name="realmdataxml"),
+    url(r'^usage/realm_data.xml', "realmdataxml", name="realmdataxml"),
     
     url(r'^manage/?$', 'manage', name="manage"),
     
@@ -47,7 +49,7 @@ urlpatterns += patterns('edumanage.views',
     url(r'^manage/services/del/?$', 'del_service', name="del-service"),
     url(r'^manage/services/edit/(?P<service_pk>\d+)?$', 'add_services', name="edit-services"),
     url(r'^manage/services/points/?$', 'get_service_points', name="get-service-points"),
-    url(r'^manage/services/allpoints/?$', 'get_all_services', name="get-all-services"),
+    
 
     url(r'^manage/servers/(?P<server_pk>\d+)?$', 'servers', name="servers"),
     url(r'^manage/servers/del/?$', 'del_server', name="del-server"),

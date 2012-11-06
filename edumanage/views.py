@@ -968,13 +968,11 @@ def user_login(request):
         if not mail:
             error_mail = True
         if error_username:
-            error = _("Your idP should release the HTTP_EPPN attribute towards this service<br>")
-        if error_orgname:
-            error = error + _("Your idP should release the HTTP_SHIB_HOMEORGANIZATION attribute towards this service<br>")
+            error = _("Your idP should release the eduPersonPrincipalName attribute towards this service<br>")
         if error_entitlement:
-            error = error + _("Your idP should release an appropriate HTTP_SHIB_EP_ENTITLEMENT attribute towards this service<br>")
+            error = error + _("Your idP should release an appropriate eduPersonEntitlement attribute towards this service<br>")
         if error_mail:
-            error = error + _("Your idP should release the HTTP_SHIB_INETORGPERSON_MAIL attribute towards this service")
+            error = error + _("Your idP should release the mail attribute towards this service")
         if error_username or error_orgname or error_entitlement or error_mail:
             return render_to_response('status.html', {'error': error, "missing_attributes": True},
                                   context_instance=RequestContext(request))
@@ -1110,6 +1108,12 @@ def worldPoints(request):
 @never_cache
 def world(request):
         return render_to_response('front/world.html',
+                                  context_instance=RequestContext(request))
+
+
+@never_cache
+def managementPage(request):
+    return render_to_response('front/management.html',
                                   context_instance=RequestContext(request))
 
 def getPoints():
