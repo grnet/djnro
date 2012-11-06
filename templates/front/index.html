@@ -271,7 +271,6 @@
 			}
 		}
 
-		alert(markers[closest].address);
 	}
 
 	function geocode(position){
@@ -310,7 +309,6 @@
 	        map.setCenter(results[0].geometry.location);
 	    	map.fitBounds(results[0].geometry.bounds)
 	      } else {
-	        alert("Geocode was not successful for the following reason: " + status);
 	      }
 	    });
 	  }
