@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-06 15:04+0200\n"
+"POT-Creation-Date: 2012-11-06 15:29+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -834,6 +834,15 @@ msgstr "γλώσσα"
 msgid "Save Changes"
 msgstr "Αποθήκευση Αλλαγών"
 
+#: templates/edumanage/welcome.html:105 templates/front/index.html:168
+#: templates/front/management.html:22
+msgid "Info"
+msgstr "Στοιχεία"
+
+#: templates/edumanage/welcome.html:106 templates/front/index.html:169
+msgid "More..."
+msgstr "Περισσότερα"
+
 #: templates/edumanage/welcome.html:187
 msgid "Logout"
 msgstr "Έξοδος"
@@ -849,14 +858,6 @@ msgstr "Δεν έχουν εισαχθεί υπηρεσίες"
 #: templates/edumanage/welcome.html:241
 msgid "Add new service"
 msgstr "Προσθήκη υπηρεσίας"
-
-#: templates/front/index.html:168
-msgid "Main"
-msgstr "Βασικές"
-
-#: templates/front/index.html:169
-msgid "Advanced"
-msgstr "Προηγμένες"
 
 #: templates/front/index.html:180
 msgid "Encryption"
@@ -921,10 +922,6 @@ msgstr ""
 #: templates/front/management.html:22
 msgid "Attribute"
 msgstr "Παράμετρος"
-
-#: templates/front/management.html:22
-msgid "Info"
-msgstr "Πληροφορίες"
 
 #: templates/front/management.html:24
 msgid "Provides a unique username for the administrator of eduroam platform"
@@ -1045,6 +1042,12 @@ msgstr "Ενεργοποίηση"
 #: templates/registration/activation_complete.html:31
 msgid "The user will be notified about his/her account activation"
 msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
+
+#~ msgid "Main"
+#~ msgstr "Βασικές"
+
+#~ msgid "Advanced"
+#~ msgstr "Προηγμένες"
 
 #~ msgid "A valid registered domain name for your institution, eg. example.com"
 #~ msgstr "Ένα έγκυρο domain name για το φορέα σας, πχ. example.com "

@@ -102,8 +102,8 @@ $.get("{% url get-service-points %}", function(data){
 			
 	"<div class='tabbable'>"+ 
     "<ul class='nav nav-tabs'>"+
-    "<li class='active'><a href='#tab1' data-toggle='tab'>Main</a></li>"+
-    "<li><a href='#tab2' data-toggle='tab'>Advanced</a></li>"+
+    "<li class='active'><a href='#tab1' data-toggle='tab'>{% trans 'Info' %}</a></li>"+
+    "<li><a href='#tab2' data-toggle='tab'>{% trans 'More...' %}</a></li>"+
     "</ul>"+
     "<div class='tab-content'>"+
     "<div class='tab-pane active' id='tab1'>"+
