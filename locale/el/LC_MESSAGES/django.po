@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-03 02:56+0200\n"
+"POT-Creation-Date: 2012-11-06 15:04+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -47,55 +47,55 @@ msgstr "Συμπληρώστε τουλάχιστον ένα όνομα στα �
 msgid "Fill in at least the info url"
 msgstr "Συμπληρώστε τουλάχιστον το info url"
 
-#: edumanage/models.py:206 edumanage/models.py:267
+#: edumanage/models.py:226 edumanage/models.py:295
 msgid "Descriptive label"
 msgstr "Περιγραφική ετικέτα"
 
-#: edumanage/models.py:208 edumanage/models.py:269
+#: edumanage/models.py:228 edumanage/models.py:297
 msgid "IP address | FQDN hostname"
 msgstr ""
 
-#: edumanage/models.py:211
+#: edumanage/models.py:231
 msgid "Defaul for Radius: 1812"
 msgstr "Προεπιλεγμένο για Radius: 1813"
 
-#: edumanage/models.py:212
+#: edumanage/models.py:232
 msgid "Defaul for Radius: 1813"
 msgstr "Προεπιλεγμένο για Radius: 1813"
 
-#: edumanage/models.py:213
+#: edumanage/models.py:233
 msgid "Timeout in seconds"
 msgstr "Όριο λήξης σε δευτερόλεπτα"
 
-#: edumanage/models.py:216
+#: edumanage/models.py:236
 msgid "Do you accept Status-Server requests?"
 msgstr "Δέχεστε αιτήματα Status-Server;"
 
-#: edumanage/models.py:222
+#: edumanage/models.py:246
 #, python-format
 msgid "Server: %(servername)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:276
+#: edumanage/models.py:308
 #, python-format
 msgid ""
 "Institution: %(inst)s, Monitored Realm: %(monrealm)s, Proxyback Client: "
 "%(servername)s"
 msgstr ""
 
-#: edumanage/models.py:315
+#: edumanage/models.py:351
 #, python-format
 msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
 "%(phase2)s, Username: %(username)s"
 msgstr ""
 
-#: edumanage/models.py:357
+#: edumanage/models.py:397
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr ""
 
-#: edumanage/models.py:412
+#: edumanage/models.py:454
 msgid ""
 "The primary, registered domain name for your institution, eg. example.com."
 "<br>This is used to derive the Operator-Name attribute according to RFC5580, "
@@ -105,7 +105,7 @@ msgstr ""
 "παράγεται το attribute Operator-Name σύμφωνα με το RFC5580, παρ. 4.1, "
 "χρησιμοποιώντας το REALM namespace, π.χ. 1example.com"
 
-#: edumanage/models.py:414
+#: edumanage/models.py:456
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -113,7 +113,7 @@ msgstr ""
 "Συνολικός αριθμός χρηστών (προσώπων) που δύνανται να συμμετέχουν στην "
 "υπηρεσία eduroam"
 
-#: edumanage/models.py:415
+#: edumanage/models.py:457
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
@@ -121,17 +121,17 @@ msgstr ""
 "Συνολικός αριθμός λογαριασμών που μπορούν να χρησιμοποιηθούν για ταυτοποίηση "
 "χρηστών στην υπηρεσία eduroam"
 
-#: edumanage/models.py:419
+#: edumanage/models.py:465
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:447
+#: edumanage/models.py:500
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr ""
 
-#: edumanage/models.py:477
+#: edumanage/models.py:530
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
@@ -141,28 +141,21 @@ msgstr ""
 
 #: edumanage/views.py:971
 msgid ""
-"Your idP should release the HTTP_EPPN attribute towards this service<br>"
+"Your idP should release the eduPersonPrincipalName attribute towards this "
+"service<br>"
 msgstr ""
 
 #: edumanage/views.py:973
 msgid ""
-"Your idP should release the HTTP_SHIB_HOMEORGANIZATION attribute towards "
-"this service<br>"
-msgstr ""
-
-#: edumanage/views.py:975
-msgid ""
-"Your idP should release an appropriate HTTP_SHIB_EP_ENTITLEMENT attribute "
+"Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:977
-msgid ""
-"Your idP should release the HTTP_SHIB_INETORGPERSON_MAIL attribute towards "
-"this service"
+#: edumanage/views.py:975
+msgid "Your idP should release the mail attribute towards this service"
 msgstr ""
 
-#: edumanage/views.py:1004 edumanage/views.py:1048
+#: edumanage/views.py:1002 edumanage/views.py:1046
 #, python-format
 msgid ""
 "User account <strong>%s</strong> is pending activation. Administrators have "
@@ -176,18 +169,18 @@ msgstr ""
 "μεγάλο<br>χρονικό διάστημα, επικοινωνήστε με τον τεχνικό σας υπεύθυνο ή το "
 "Helpdesk της ΕΔΕΤ"
 
-#: edumanage/views.py:1008
+#: edumanage/views.py:1006
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
 "%s"
 msgstr ""
 
-#: edumanage/views.py:1012
+#: edumanage/views.py:1010
 msgid "Invalid login procedure"
 msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση"
 
-#: edumanage/views.py:1038
+#: edumanage/views.py:1036
 msgid ""
 "Violation warning: User account is already associated with an institution."
 "The event has been logged and our administrators will be notified about it"
@@ -207,18 +200,8 @@ msgid ""
 "_ characters."
 msgstr ""
 
-#: templates/base.html:85 templates/status.html:12
-#: templates/registration/activate.html:13
-#: templates/registration/activation_complete.html:13
-#: templates/registration/select_institution.html:12
-msgid "Manage"
-msgstr "Διαχείριση"
-
-#: templates/base.html:92 templates/edumanage/services_edit.html:349
-msgid "Language"
-msgstr "Γλώσσα"
-
-#: templates/base.html:122 templates/status.html:6
+#: templates/404.html:6 templates/500.html:6 templates/base.html:79
+#: templates/base.html.py:122 templates/status.html:6
 #: templates/edumanage/contacts.html:4
 #: templates/edumanage/contacts_edit.html:4
 #: templates/edumanage/institution.html:12
@@ -239,6 +222,18 @@ msgstr "Γλώσσα"
 msgid "Home"
 msgstr "Αρχική"
 
+#: templates/404.html:12 templates/500.html:12 templates/base.html:85
+#: templates/status.html:12 templates/front/management.html:14
+#: templates/registration/activate.html:13
+#: templates/registration/activation_complete.html:13
+#: templates/registration/select_institution.html:12
+msgid "Manage"
+msgstr "Διαχείριση"
+
+#: templates/base.html:92 templates/edumanage/services_edit.html:349
+msgid "Language"
+msgstr "Γλώσσα"
+
 #: templates/base.html:123
 msgid "USERS"
 msgstr "ΧΡΗΣΤΕΣ"
@@ -251,7 +246,7 @@ msgstr "Η υπηρεσία"
 msgid "INSTITUTIONS"
 msgstr "ΦΟΡΕΙΣ"
 
-#: templates/base.html:127
+#: templates/base.html:127 templates/front/management.html:10
 msgid "Management"
 msgstr "Διαχείριση"
 
@@ -875,9 +870,137 @@ msgstr "Αριθμός APs"
 msgid "transp_proxy"
 msgstr ""
 
-#: templates/front/index.html:364
+#: templates/front/index.html:362
 msgid "Eduroam in Greece"
 msgstr "Eduroam στην Ελλάδα"
+
+#: templates/front/management.html:13
+msgid ""
+"If you comply with the following, you can log in to eduroam management by "
+"clicking Manage below or by selecting Manage from the top menu."
+msgstr ""
+"Έαν έχετε εφαρμόσει όσα αναφέρονται παρακάτω, μπορείτε να κάνετε log-in στη "
+"διαχείριση του eduroam είτε επιλέγοντας το κουμπί Διαχείριση είτε από την "
+"επιλογή Διαχείριση στο επάνω μέρος της σελίδας"
+
+#: templates/front/management.html:15
+msgid ""
+"Eduroam management platform provides the institutions' eduroam admins with "
+"an administrative interface\n"
+"\t\t\t\tover their institution eduroam parameters."
+msgstr ""
+"Η πλατφόρμα διαχείρισης eduroam παρέχει στους διαχειριστές των ιδρυμάτων/"
+"φορέων ένα περιβάλλον εποπτείας/μεταβολής των eduroam παραμέτρων τους"
+
+#: templates/front/management.html:18
+msgid "Authentication and authorization are carried out via Shibboleth"
+msgstr ""
+"Η ταυτοποίηση και εξουσιοδότηση των χρηστών πραγματοποιείται μέσω Shibboleth"
+
+#: templates/front/management.html:19
+msgid ""
+"Thus, the institution eduroam admins must release the following attributes \n"
+"\t\t\t\ttowards the eduroam SP"
+msgstr ""
+"Έτσι οι διαχειριστές της υπηρεσίας θα πρέπει να παρέχουν τις παρακάτω "
+"παραμέτρους στον eduroam SP"
+
+#: templates/front/management.html:20
+msgid "according to"
+msgstr "σύμφωνα με την"
+
+#: templates/front/management.html:20
+msgid "policy and procedures documentation"
+msgstr "τεκμηρίωση πολιτικής και διαδικασιών"
+
+#: templates/front/management.html:20
+msgid "of GRNET AAI federation"
+msgstr ""
+"της υποδομής ταυτοποίησης και εξουσιοδότησης (AAI) της ομοσπονδίας ΕΔΕΤ"
+
+#: templates/front/management.html:22
+msgid "Attribute"
+msgstr "Παράμετρος"
+
+#: templates/front/management.html:22
+msgid "Info"
+msgstr "Πληροφορίες"
+
+#: templates/front/management.html:24
+msgid "Provides a unique username for the administrator of eduroam platform"
+msgstr "Παρέχει ένα μοναδικό όνομα χρήστη για το διαχειριστή της πλατφόρμας"
+
+#: templates/front/management.html:25
+msgid ""
+"Must match a certain pattern eg.\"urn:mace:eduroam:site:manager\" (contact "
+"GRNET Helpdesk)"
+msgstr ""
+"Θα πρέπει να περιέχει ένα συγκεκριμένο pattern, πχ. \"urn:mace:eduroam:site:"
+"manager\" (επικοινωνήστε με το Helpdesk της ΕΔΕΤ)"
+
+#: templates/front/management.html:26
+msgid "Provides a valid e-mail address for the administrator"
+msgstr "Παρέχει μία έγκυρη διεύθυνση e-mail για το διαχειριστή"
+
+#: templates/front/management.html:27
+msgid "Provides the First Name for the user"
+msgstr "Παρέχει το όνομα του διαχειριστή"
+
+#: templates/front/management.html:28
+msgid "Provides the Last Name for the user"
+msgstr "Παρέχει το επώνυμο του διαχειριστή"
+
+#: templates/front/management.html:32
+msgid ""
+"Once your Shibboleth attribute release is setup properly you can move on to "
+"your institution eduroam management."
+msgstr ""
+"Εφόσον οι παράμετροι του Shibboleth έχουν ορισθεί ορθά, μπορείτε να "
+"διαχειριστείτε τις παραμέτρους του eduroam για το φορεά σας"
+
+#: templates/front/management.html:33
+msgid ""
+"First, you have to register your account. Registration is performed once, "
+"and logging-in is carried out by Shibboleth. If you keep cookies (or until "
+"they expire) you will automatically enter the administrative interface on "
+"each visit."
+msgstr ""
+"Αρχικά θα πρέπει να εγγραφείτε στην πλατφόρμα. Η εγγραφή πραγματοποιείται "
+"μία φορά και η είσοδος γίνεται μέσω του Shibboleth. Εάν διατηρείτε cookies "
+"στον browser σας (και μέχρι αυτά να λήξουν) η είσοδός σαςθα πραγματοποιείται "
+"αυτόματα"
+
+#: templates/front/management.html:34
+msgid ""
+"Registration is simple. Select Manage, and (after 2 redirections) provide "
+"your idp with your credentials. The platform will check your "
+"HTTP_SHIB_EP_ENTITLEMENT attribute. If you pass the check you will be "
+"presented with a list of Institutions. Once you select your institution, you "
+"will have to be approved by the platform admin. On success, you will receive "
+"a confirmation via email."
+msgstr ""
+"Η εγγραφή είναι σχετικά απλή διαδικασία. Επιλέξτε Διαχείριση και (αφού "
+"γίνετε redirect 2 φορές) εισάγετε τα στοιχεία σας στον idP σας. Η πλατφόρμα "
+"θα ελέγξει την παράμετρο HTTP_SHIB_EP_ENTITLEMENT. Εάν ο έλεγχος είναι "
+"επιτυχημένος, θα κληθείε να επιλέξετε το φορέα σας από μια λίστα φορέων. Στη "
+"συνέχεια, η αίτησή σας θα ελεγθεί από τους διαχειριστές μας και θα λάβετε με "
+"e-mail μια ειδοποίηση για την ενεργοποίηση του λογαριασμού σας"
+
+#: templates/front/management.html:35
+msgid ""
+"From then on, you have access to your institution's eduroam attributes. "
+"Apart from serving internal tools automated configuration, these attributes "
+"are released towards <a href=\"http://www.eduroam.org\">eduroam.org</a> in a "
+"dynamic manner via the "
+msgstr ""
+"Από εκεί και πέρα, αποκτάτε πρόσβαση στις παραμέτρους του eduroam για το "
+"φορέα σας. Εκτός από τη χρήση τους για την αυτοματοποίηση εσωτερικών "
+"εργαλείων, οι παράμετροί σας λαμβάνονται από το <a href=\"http://www.eduroam."
+"org\">eduroam.org</a> δυναμικά μέσω των "
+
+#: templates/front/management.html:35
+msgid "files"
+msgstr "αρχείων"
 
 #: templates/front/participants.html:18
 msgid "Participating Institutions"
