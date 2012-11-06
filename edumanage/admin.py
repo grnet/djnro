@@ -19,10 +19,11 @@ class InstitutionAdmin(admin.ModelAdmin):
 
 class InstitutionDetailsAdmin(admin.ModelAdmin):
     inlines = [
-        UrlInline, 
+        UrlInline,
     ]
 
 class ServiceLocAdmin(admin.ModelAdmin):
+    list_display = ('get_name', 'institutionid')
     inlines = [
         NameInline,
     ]
@@ -32,12 +33,14 @@ class RealmInLine(admin.ModelAdmin):
         UrlInline, NameInline
     ]
 
+class InstRealmAdmin(admin.ModelAdmin):
+    list_display = ('realm', 'instid')
    
 admin.site.register(Name_i18n)
 admin.site.register(Contact)
 admin.site.register(InstitutionContactPool)
 admin.site.register(URL_i18n)
-admin.site.register(InstRealm)
+admin.site.register(InstRealm, InstRealmAdmin)
 admin.site.register(InstServer)
 admin.site.register(InstRealmMon)
 admin.site.register(MonProxybackClient)
