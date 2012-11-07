@@ -1323,14 +1323,14 @@ def realmdataxml(request):
     ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
     root = ET.Element("realm_data_root")
     NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
-    root.set(NS_XSI + "noNamespaceSchemaLocation", "realm-data.xsd")
+    root.set(NS_XSI + "noNamespaceSchemaLocation", "realm_data.xsd")
     
     realmdataElement = ET.SubElement(root, "realm_data")
     
     realmCountry = ET.SubElement(realmdataElement, "country")
     realmCountry.text = realm.country.upper()
     
-    nIdpCountry = ET.SubElement(realmdataElement, "number_Idp")
+    nIdpCountry = ET.SubElement(realmdataElement, "number_IdP")
     nIdpCountry.text = "%s" %len(realm.institution_set.filter(ertype=1))
     
     nSPCountry = ET.SubElement(realmdataElement, "number_SP")
