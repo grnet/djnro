@@ -1074,8 +1074,12 @@ def closest(request):
         locs = []
         request_data = request.GET.copy()
         response_location = {}
-        response_location["lat"] = request_data['lat']
-        response_location["lng"] = request_data['lng']
+        if 'lat' in request.GET and 'lng' in request.GET:
+            response_location["lat"] = request_data['lat']
+            response_location["lng"] = request_data['lng']
+        else:
+            response = {"status":"Cannot parse a request without longitude or latitude. Use ?lng=<langitude>&lat=<latitude>&_=<random_num> in your query"}
+            return HttpResponse(json.dumps(response), mimetype='application/json')
         lat = float(request_data['lat'])
         lng = float(request_data['lng'])
         R = 6371
@@ -1098,6 +1102,9 @@ def closest(request):
                 closest = counter
                 closestMarker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": pointtext}
         return HttpResponse(json.dumps(closestMarker), mimetype='application/json')
+    else:
+        response = {"status":"Use a GET method for your request"}
+        return HttpResponse(json.dumps(response), mimetype='application/json')
 
 @never_cache
 def worldPoints(request):
