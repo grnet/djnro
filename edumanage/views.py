@@ -33,7 +33,7 @@ from django.core.cache import cache
 
 @never_cache
 def index(request):
-    return render_to_response('front/index.html', context_instance=RequestContext(request))
+    return render_to_response('front/index.html', {'country': settings.COUNTRY_NAME, 'map_center': settings.MAP_CENTER}, context_instance=RequestContext(request))
 
 
 @login_required
@@ -57,7 +57,9 @@ def manage(request):
                               {
                                'institution': inst, 
                                'services': services_list,
-                               'servers': servers_list
+                               'servers': servers_list,
+                               'map_center': settings.MAP_CENTER
+                               
                                },  
                               context_instance=RequestContext(request, base_response(request)))
 
@@ -231,7 +233,7 @@ def add_services(request, service_pk):
             edit = True
         for url_form in urls_form.forms:
             url_form.fields['urltype'] = forms.ChoiceField(choices=(('', '----------'),('info', 'Info'),))
-        return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
+        return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit, 'map_center': settings.MAP_CENTER},
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -265,7 +267,7 @@ def add_services(request, service_pk):
             edit = True
         for url_form in urls_form.forms:
             url_form.fields['urltype'] = forms.ChoiceField(choices=(('', '----------'),('info', 'Info'),))
-        return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
+        return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit, 'map_center': settings.MAP_CENTER},
                                   context_instance=RequestContext(request, base_response(request)))
 
 
@@ -1013,7 +1015,7 @@ def user_login(request):
 
 @never_cache
 def geolocate(request):
-    return render_to_response('front/geolocate.html',
+    return render_to_response('front/geolocate.html', {'map_center': settings.MAP_CENTER},
                                   context_instance=RequestContext(request))
 @never_cache
 def participants(request):
@@ -1024,7 +1026,7 @@ def participants(request):
             dets.append(i.institutiondetails)
         except InstitutionDetails.DoesNotExist:
             pass
-    return render_to_response('front/participants.html', {'institutions': dets},
+    return render_to_response('front/participants.html', {'institutions': dets, 'country': settings.COUNTRY_NAME},
                                   context_instance=RequestContext(request))
 @never_cache
 def selectinst(request):
@@ -1114,7 +1116,7 @@ def worldPoints(request):
 
 @never_cache
 def world(request):
-        return render_to_response('front/world.html',
+        return render_to_response('front/world.html', {'map_center': settings.MAP_CENTER},
                                   context_instance=RequestContext(request))
 
 
@@ -1152,7 +1154,6 @@ def instxml(request):
     root = ET.Element("institutions")
     NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
     root.set(NS_XSI + "noNamespaceSchemaLocation", "institution.xsd")
-    #root.attrib["xsi:noNamespaceSchemaLocation"] = "institution.xsd"
     institutions = Institution.objects.all()
     for institution in institutions:
         try:
@@ -1280,7 +1281,6 @@ def realmxml(request):
     root = ET.Element("realms")
     NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
     root.set(NS_XSI + "noNamespaceSchemaLocation", "realm.xsd")
-    #root.attrib["xsi:noNamespaceSchemaLocation"] = "institution.xsd"
     realmElement = ET.SubElement(root, "realm")
     
     realmCountry = ET.SubElement(realmElement, "country")
