@@ -95,6 +95,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.request',
+    'edumanage.context_processors.country_code',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -148,10 +149,10 @@ INST_XML_FILE = here('institution.xml')
 
 EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-SHIB_AUTH_ENTITLEMENT = 'urn:mace:grnet.gr:pki:user'
-SHIB_LOGOUT_URL = 'https://netdev.grnet.gr/Shibboleth.sso/Logout'
+SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
+SHIB_LOGOUT_URL = 'https://example.com/Shibboleth.sso/Logout'
 
-SERVER_EMAIL = "GRNET eduroam Service <noreply@grnet.gr>"
+SERVER_EMAIL = "Example domain eduroam Service <noreply@example.com>"
 EMAIL_SUBJECT_PREFIX = "[eduroam] "
 ACCOUNT_ACTIVATION_DAYS = 7
 NOTIFY_ADMIN_MAILS = ["mail1@example.com", "mail2@example.com"]
@@ -166,4 +167,15 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
+
+# Frontend country specific vars, eg. Greece
+COUNTRY_NAME = _('My Country')
+# Variable used by context_processor to display the "eduroam | <country_code>" in base.html 
+COUNTRY_CODE = 'gr'
+# main domain url used in right top icon, eg. http://www.grnet.gr
+DOMAIN_MAIN_URL = "http://www.example.com"
+# map center (lat, lng)
+MAP_CENTER = (36.97, 23.71)
+#Helpdesk, used in base.html: 
+DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
