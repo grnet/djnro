@@ -1,12 +1,14 @@
 {% extends "base.html"%}
 {% load i18n %}
-{% block title %}eduroam | gr - Management{% endblock %}
+{% block currentpagetitle %}Management{% endblock %}
 {% block extrahead %} <script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="/static/js/markerclusterer.js"></script>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
-	var lat = 36.97;
-	var lng = 23.71;
+	var lat = "{{map_center.0}}";
+	var lat = parseFloat(lat.replace(",","."));
+	var lng = "{{map_center.1}}";
+	var lng = parseFloat(lng.replace(",","."));
 	var zoomLevel = 6;
 	var latlng = new google.maps.LatLng(lat,lng);
 	var map = '';

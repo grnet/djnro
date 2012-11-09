@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+	{% block currentpagetitle %}{% trans "Home" %}{% endblock %}
     {% block homepage %}class="active"{% endblock %}
     {% block hometop %}class="active"{% endblock %}
     {% block extrahead %}
@@ -14,8 +15,10 @@
 <script type="text/javascript" src="/static/js/markerclusterer.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
-	var lat = 36.97;
-	var lng = 23.71;
+	var lat = "{{map_center.0}}";
+	var lat = parseFloat(lat.replace(",","."));
+	var lng = "{{map_center.1}}";
+	var lng = parseFloat(lng.replace(",","."));
 	var zoomLevel = 6;
 	var latlng = new google.maps.LatLng(lat,lng);
 	var map = '';
@@ -359,7 +362,7 @@
 
 
 					{% block subcontent %}
-					<h4>{% trans "Eduroam in Greece" %}</h4>
+					<h4>{% trans "Eduroam in" %} {% trans country %}</h4>
 					<hr>
 					
 					<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;"></div>

@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% load i18n %}
-    {% block title %}{{ flatpage.title }}{% endblock %}
+    {% block currentpagetitle %}{{ flatpage.title }}{% endblock %}
     {% block homepage %}{% endblock %}
     {% block hometop %}{% endblock %}
     {% block faq %}{% if "faq" in flatpage.url %}class="active"{% endif %}{% endblock %}

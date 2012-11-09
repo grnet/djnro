@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-    {% block title %}eduroam@Greece{% endblock %}
+    {% block currentpagetitle %}{% trans "Participants" %}{% endblock %}
     {% block homepage %}{% endblock %}
     {% block hometop %}{% endblock %}
     {% block participants %}class="active"{% endblock %}
@@ -17,7 +17,7 @@
 					{% load tolocale %}
 					<h4>{% trans "Participating Institutions" %}</h4>
 					<hr>
-					<div>{% blocktrans %}In Greece eduroam is provided by the following instituitons/organizations{% endblocktrans %}</div><br>
+					<div>{% trans "In"%} {%trans country %} {% trans "eduroam is provided by the following instituitons/organizations" %}</div><br>
 					<div>{% for i in institutions %}
 					<address>
 						<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br>

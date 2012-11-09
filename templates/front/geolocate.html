@@ -3,7 +3,7 @@
 <html lang="en" style="height: 100%">
   <head>
     <meta charset="utf-8">
-    <title>Eduroam</title>
+    <title>{% trans "Closest" %} Eduroam</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link REL="shortcut icon" HREF="/static/img/favicon.ico"> 
 	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/img/edu144-icon.png">
@@ -72,8 +72,10 @@ margin-bottom: 0px;
 }
 </style>
 <script type="text/javascript">
-	var lat = 36.97;
-	var lng = 23.71;
+	var lat = "{{map_center.0}}";
+	var lat = parseFloat(lat.replace(",","."));
+	var lng = "{{map_center.1}}";
+	var lng = parseFloat(lng.replace(",","."));
 	var zoomLevel = 6;
 	var latlng = new google.maps.LatLng(lat, lng);
 	var map = '';
