@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-06 15:29+0200\n"
+"POT-Creation-Date: 2012-11-16 12:59+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -24,6 +24,15 @@ msgstr "Ελληνικά"
 #: settings.py:40
 msgid "English"
 msgstr "Αγγλικά"
+
+#: settings.py:175
+#, fuzzy
+msgid "Greece"
+msgstr "Ελληνικά"
+
+#: settings.py:182
+msgid "GRNET Helpdesk"
+msgstr ""
 
 #: accounts/views.py:76
 #, python-format
@@ -223,7 +232,7 @@ msgid "Home"
 msgstr "Αρχική"
 
 #: templates/404.html:12 templates/500.html:12 templates/base.html:85
-#: templates/status.html:12 templates/front/management.html:14
+#: templates/status.html:12 templates/front/management.html:15
 #: templates/registration/activate.html:13
 #: templates/registration/activation_complete.html:13
 #: templates/registration/select_institution.html:12
@@ -835,7 +844,6 @@ msgid "Save Changes"
 msgstr "Αποθήκευση Αλλαγών"
 
 #: templates/edumanage/welcome.html:105 templates/front/index.html:168
-#: templates/front/management.html:22
 msgid "Info"
 msgstr "Στοιχεία"
 
@@ -877,127 +885,118 @@ msgstr "Eduroam στην Ελλάδα"
 
 #: templates/front/management.html:13
 msgid ""
-"If you comply with the following, you can log in to eduroam management by "
-"clicking Manage below or by selecting Manage from the top menu."
+"The management application provides an interface for administrators of "
+"federation member institutions to maintain the data that is necessary for "
+"participating in the federation."
 msgstr ""
-"Έαν έχετε εφαρμόσει όσα αναφέρονται παρακάτω, μπορείτε να κάνετε log-in στη "
-"διαχείριση του eduroam είτε επιλέγοντας το κουμπί Διαχείριση είτε από την "
-"επιλογή Διαχείριση στο επάνω μέρος της σελίδας"
+"Η εφραμογή διαχείρισης παρέχει μια διεπαφή για τους διαχειριστές των φορέων-"
+"μελών της ομοσπονδίας για τη διαχείριση των δεδομένων που είναι απαραίτητα "
+"για τη συμμετοχή του φορέα στην ομοσπονδία."
 
-#: templates/front/management.html:15
+#: templates/front/management.html:14
 msgid ""
-"Eduroam management platform provides the institutions' eduroam admins with "
-"an administrative interface\n"
-"\t\t\t\tover their institution eduroam parameters."
+"The following are the requirements for admitting administrators to the "
+"management application. Having fulfilled these, an administrator can log in "
+"by clicking Manage below or by selecting Manage from the top menu."
 msgstr ""
-"Η πλατφόρμα διαχείρισης eduroam παρέχει στους διαχειριστές των ιδρυμάτων/"
-"φορέων ένα περιβάλλον εποπτείας/μεταβολής των eduroam παραμέτρων τους"
+"Τα ακόλουθα απαιτούνται για να αποκτήσει πρόσβαση ένας διαχειριστής στην "
+"εφαρμογή.Έχοντας εκπληρώσει αυτές τις προϋποθέσεις ο διαχειριστής μπορεί να "
+"συνδεθεί στην εφαρμογή χρησιμοποιώντας την επιλογή 'Διαχείριση' παρακάτω ή "
+"την αντίστοιχη επιλογή από το μενού στο πάνω μέρος της σελίδας."
+
+#: templates/front/management.html:17
+msgid "Authentication and authorization are carried out through a"
+msgstr "Η ταυτοποίηση και εξουσιοδότηση των χρηστών πραγματοποιείται μέσω ενός"
 
 #: templates/front/management.html:18
-msgid "Authentication and authorization are carried out via Shibboleth"
-msgstr ""
-"Η ταυτοποίηση και εξουσιοδότηση των χρηστών πραγματοποιείται μέσω Shibboleth"
-
-#: templates/front/management.html:19
 msgid ""
-"Thus, the institution eduroam admins must release the following attributes \n"
-"\t\t\t\ttowards the eduroam SP"
+"The following attributes are required for administrators and must be "
+"released by their home IdPs to the SP"
 msgstr ""
-"Έτσι οι διαχειριστές της υπηρεσίας θα πρέπει να παρέχουν τις παρακάτω "
-"παραμέτρους στον eduroam SP"
+"Τα εξής χαρακτηριστικά απαιτούνται για τους διαχειριστές και πρέπει να "
+"απελευθερώνονται από τον οικείο IdP προς τον SP"
 
-#: templates/front/management.html:20
-msgid "according to"
+#: templates/front/management.html:18
+msgid "according to the"
 msgstr "σύμφωνα με την"
 
-#: templates/front/management.html:20
+#: templates/front/management.html:18
 msgid "policy and procedures documentation"
 msgstr "τεκμηρίωση πολιτικής και διαδικασιών"
 
+#: templates/front/management.html:18
+msgid "provided by the GRNET AAI federation"
+msgstr "που παρέχεται από την Ομοσπονδία AAI του ΕΔΕΤ"
+
 #: templates/front/management.html:20
-msgid "of GRNET AAI federation"
-msgstr ""
-"της υποδομής ταυτοποίησης και εξουσιοδότησης (AAI) της ομοσπονδίας ΕΔΕΤ"
+msgid "Attribute"
+msgstr "Χαρακτηριστικό"
+
+#: templates/front/management.html:20
+msgid "Description"
+msgstr "Περιγραφή"
 
 #: templates/front/management.html:22
-msgid "Attribute"
-msgstr "Παράμετρος"
+msgid ""
+"Provides a string that uniquely identifies an administrator in the "
+"management application."
+msgstr ""
+"Παρέχει μια συμβολοσειρά κειμένου που χρησιμοποιείται ως μοναδικό "
+"αναγνωριστικό του διαχεριστή στην εφαρμογή διαχείρισης."
+
+#: templates/front/management.html:23
+msgid "A specific URN value must be provided to authorize an administrator:"
+msgstr "Μια συγκεκριμένη τιμή σε μορφή URN πρέπει να επιστρέφεται προκειμένου "
+"ένας χρήστης να εξουσιοδοτείται ως διαχειριστής:"
 
 #: templates/front/management.html:24
-msgid "Provides a unique username for the administrator of eduroam platform"
-msgstr "Παρέχει ένα μοναδικό όνομα χρήστη για το διαχειριστή της πλατφόρμας"
+msgid ""
+"The e-mail address (one or more) of the administrator. It is used for "
+"notifications from the management application. It may also be used for "
+"further communication, with prior consent."
+msgstr ""
+"Διεύθυνση e-mail (μία ή περισσότερες) του διαχειριστή. Χρησιμοποιείται για "
+"ειδοποιήσεις από την εφαρμογή διαχείρισης. Μπορεί επίσης να χρησιμοποιηθεί "
+"για περαιτέρω επικοινωνία με το διαχειριστή, με προηγούμενη συγκατάθεσή του."
 
 #: templates/front/management.html:25
-msgid ""
-"Must match a certain pattern eg.\"urn:mace:eduroam:site:manager\" (contact "
-"GRNET Helpdesk)"
-msgstr ""
-"Θα πρέπει να περιέχει ένα συγκεκριμένο pattern, πχ. \"urn:mace:eduroam:site:"
-"manager\" (επικοινωνήστε με το Helpdesk της ΕΔΕΤ)"
+msgid "The person's first name."
+msgstr "Το όνομα του διαχειριστή."
 
 #: templates/front/management.html:26
-msgid "Provides a valid e-mail address for the administrator"
-msgstr "Παρέχει μία έγκυρη διεύθυνση e-mail για το διαχειριστή"
+msgid "The person's last name."
+msgstr "Το επώνυμο του διαχειριστή."
 
-#: templates/front/management.html:27
-msgid "Provides the First Name for the user"
-msgstr "Παρέχει το όνομα του διαχειριστή"
+#: templates/front/management.html:30
+msgid ""
+"Once attribute release is setup properly an administrator can login to the "
+"management application."
+msgstr ""
+"Εφόσον απελευθερώνονται τα απαραίτητα χαρακτηριστικά, ο διαχειριστής μπορεί να "
+"συνδεθεί στην εφαρμογή διαχείρισης."
 
-#: templates/front/management.html:28
-msgid "Provides the Last Name for the user"
-msgstr "Παρέχει το επώνυμο του διαχειριστή"
+#: templates/front/management.html:31
+msgid ""
+"After the first login, administrators are asked to associate their account "
+"with the institution they want to manage. Their choice must then be ratified "
+"by the operators of their management application. Following that, they will "
+"be notified through e-mail and they will then be able to start using the "
+"management application."
+msgstr ""
+"Μετά την πρώτη σύνδεση, ζητείται από το διαχειριστή να συνδέσει το λογαριασμό "
+"του με το φορέα που επιθυμεί να διαχειρίζεται. Η επιλογή του θα πρέπει να "
+"επικυρωθεί από τους διαχειριστές της εφαρμογής. Στη συνέχεια ο διαχειριστής "
+"θα ενημερωθεί μέσω e-mail ότι μπορεί να ξεκινήσει να χρησιμοποιεί την εφαρμογή "
+"διαχερίσης."
 
 #: templates/front/management.html:32
 msgid ""
-"Once your Shibboleth attribute release is setup properly you can move on to "
-"your institution eduroam management."
+"Among other things, the metadata provided by administrators through the "
+"management application are used to compile database data for the federation"
 msgstr ""
-"Εφόσον οι παράμετροι του Shibboleth έχουν ορισθεί ορθά, μπορείτε να "
-"διαχειριστείτε τις παραμέτρους του eduroam για το φορεά σας"
-
-#: templates/front/management.html:33
-msgid ""
-"First, you have to register your account. Registration is performed once, "
-"and logging-in is carried out by Shibboleth. If you keep cookies (or until "
-"they expire) you will automatically enter the administrative interface on "
-"each visit."
-msgstr ""
-"Αρχικά θα πρέπει να εγγραφείτε στην πλατφόρμα. Η εγγραφή πραγματοποιείται "
-"μία φορά και η είσοδος γίνεται μέσω του Shibboleth. Εάν διατηρείτε cookies "
-"στον browser σας (και μέχρι αυτά να λήξουν) η είσοδός σαςθα πραγματοποιείται "
-"αυτόματα"
-
-#: templates/front/management.html:34
-msgid ""
-"Registration is simple. Select Manage, and (after 2 redirections) provide "
-"your idp with your credentials. The platform will check your "
-"HTTP_SHIB_EP_ENTITLEMENT attribute. If you pass the check you will be "
-"presented with a list of Institutions. Once you select your institution, you "
-"will have to be approved by the platform admin. On success, you will receive "
-"a confirmation via email."
-msgstr ""
-"Η εγγραφή είναι σχετικά απλή διαδικασία. Επιλέξτε Διαχείριση και (αφού "
-"γίνετε redirect 2 φορές) εισάγετε τα στοιχεία σας στον idP σας. Η πλατφόρμα "
-"θα ελέγξει την παράμετρο HTTP_SHIB_EP_ENTITLEMENT. Εάν ο έλεγχος είναι "
-"επιτυχημένος, θα κληθείε να επιλέξετε το φορέα σας από μια λίστα φορέων. Στη "
-"συνέχεια, η αίτησή σας θα ελεγθεί από τους διαχειριστές μας και θα λάβετε με "
-"e-mail μια ειδοποίηση για την ενεργοποίηση του λογαριασμού σας"
-
-#: templates/front/management.html:35
-msgid ""
-"From then on, you have access to your institution's eduroam attributes. "
-"Apart from serving internal tools automated configuration, these attributes "
-"are released towards <a href=\"http://www.eduroam.org\">eduroam.org</a> in a "
-"dynamic manner via the "
-msgstr ""
-"Από εκεί και πέρα, αποκτάτε πρόσβαση στις παραμέτρους του eduroam για το "
-"φορέα σας. Εκτός από τη χρήση τους για την αυτοματοποίηση εσωτερικών "
-"εργαλείων, οι παράμετροί σας λαμβάνονται από το <a href=\"http://www.eduroam."
-"org\">eduroam.org</a> δυναμικά μέσω των "
-
-#: templates/front/management.html:35
-msgid "files"
-msgstr "αρχείων"
+"Μεταξύ άλλων, τα μεταδεδομένα που παρέχονται από τους διαχειριστές μέσω της "
+"εφαρμογής διαχείρισης χρησιμοποιούνται για την ενημέρωση της βάσης δεδομένων "
+"της ομοσπονδίας"
 
 #: templates/front/participants.html:18
 msgid "Participating Institutions"
@@ -1042,6 +1041,90 @@ msgstr "Ενεργοποίηση"
 #: templates/registration/activation_complete.html:31
 msgid "The user will be notified about his/her account activation"
 msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
+
+#~ msgid ""
+#~ "If you comply with the following, you can log in to eduroam management by "
+#~ "clicking Manage below or by selecting Manage from the top menu."
+#~ msgstr ""
+#~ "Έαν έχετε εφαρμόσει όσα αναφέρονται παρακάτω, μπορείτε να κάνετε log-in "
+#~ "στη διαχείριση του eduroam είτε επιλέγοντας το κουμπί Διαχείριση είτε από "
+#~ "την επιλογή Διαχείριση στο επάνω μέρος της σελίδας"
+
+#~ msgid ""
+#~ "Eduroam management platform provides the institutions' eduroam admins "
+#~ "with an administrative interface\n"
+#~ "\t\t\t\tover their institution eduroam parameters."
+#~ msgstr ""
+#~ "Η πλατφόρμα διαχείρισης eduroam παρέχει στους διαχειριστές των ιδρυμάτων/"
+#~ "φορέων ένα περιβάλλον εποπτείας/μεταβολής των eduroam παραμέτρων τους"
+
+#~ msgid ""
+#~ "Thus, the institution eduroam admins must release the following "
+#~ "attributes \n"
+#~ "\t\t\t\ttowards the eduroam SP"
+#~ msgstr ""
+#~ "Έτσι οι διαχειριστές της υπηρεσίας θα πρέπει να παρέχουν τις παρακάτω "
+#~ "παραμέτρους στον eduroam SP"
+
+#~ msgid "Provides a unique username for the administrator of eduroam platform"
+#~ msgstr "Παρέχει ένα μοναδικό όνομα χρήστη για το διαχειριστή της πλατφόρμας"
+
+#~ msgid ""
+#~ "Must match a certain pattern eg.\"urn:mace:eduroam:site:manager"
+#~ "\" (contact GRNET Helpdesk)"
+#~ msgstr ""
+#~ "Θα πρέπει να περιέχει ένα συγκεκριμένο pattern, πχ. \"urn:mace:eduroam:"
+#~ "site:manager\" (επικοινωνήστε με το Helpdesk της ΕΔΕΤ)"
+
+#~ msgid "Provides a valid e-mail address for the administrator"
+#~ msgstr "Παρέχει μία έγκυρη διεύθυνση e-mail για το διαχειριστή"
+
+#~ msgid "Provides the First Name for the user"
+#~ msgstr "Παρέχει το όνομα του διαχειριστή"
+
+#~ msgid "Provides the Last Name for the user"
+#~ msgstr "Παρέχει το επώνυμο του διαχειριστή"
+
+#~ msgid ""
+#~ "First, you have to register your account. Registration is performed once, "
+#~ "and logging-in is carried out by Shibboleth. If you keep cookies (or "
+#~ "until they expire) you will automatically enter the administrative "
+#~ "interface on each visit."
+#~ msgstr ""
+#~ "Αρχικά θα πρέπει να εγγραφείτε στην πλατφόρμα. Η εγγραφή πραγματοποιείται "
+#~ "μία φορά και η είσοδος γίνεται μέσω του Shibboleth. Εάν διατηρείτε "
+#~ "cookies στον browser σας (και μέχρι αυτά να λήξουν) η είσοδός σαςθα "
+#~ "πραγματοποιείται αυτόματα"
+
+#~ msgid ""
+#~ "Registration is simple. Select Manage, and (after 2 redirections) provide "
+#~ "your idp with your credentials. The platform will check your "
+#~ "HTTP_SHIB_EP_ENTITLEMENT attribute. If you pass the check you will be "
+#~ "presented with a list of Institutions. Once you select your institution, "
+#~ "you will have to be approved by the platform admin. On success, you will "
+#~ "receive a confirmation via email."
+#~ msgstr ""
+#~ "Η εγγραφή είναι σχετικά απλή διαδικασία. Επιλέξτε Διαχείριση και (αφού "
+#~ "γίνετε redirect 2 φορές) εισάγετε τα στοιχεία σας στον idP σας. Η "
+#~ "πλατφόρμα θα ελέγξει την παράμετρο HTTP_SHIB_EP_ENTITLEMENT. Εάν ο "
+#~ "έλεγχος είναι επιτυχημένος, θα κληθείε να επιλέξετε το φορέα σας από μια "
+#~ "λίστα φορέων. Στη συνέχεια, η αίτησή σας θα ελεγθεί από τους διαχειριστές "
+#~ "μας και θα λάβετε με e-mail μια ειδοποίηση για την ενεργοποίηση του "
+#~ "λογαριασμού σας"
+
+#~ msgid ""
+#~ "From then on, you have access to your institution's eduroam attributes. "
+#~ "Apart from serving internal tools automated configuration, these "
+#~ "attributes are released towards <a href=\"http://www.eduroam.org"
+#~ "\">eduroam.org</a> in a dynamic manner via the "
+#~ msgstr ""
+#~ "Από εκεί και πέρα, αποκτάτε πρόσβαση στις παραμέτρους του eduroam για το "
+#~ "φορέα σας. Εκτός από τη χρήση τους για την αυτοματοποίηση εσωτερικών "
+#~ "εργαλείων, οι παράμετροί σας λαμβάνονται από το <a href=\"http://www."
+#~ "eduroam.org\">eduroam.org</a> δυναμικά μέσω των "
+
+#~ msgid "files"
+#~ msgstr "αρχείων"
 
 #~ msgid "Main"
 #~ msgstr "Βασικές"
