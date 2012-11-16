@@ -18,7 +18,6 @@ $.fn.extend({
 showPassword: function() {
 
 var input_password	= $(this);
-console.log(input_password)
 //create the icon and assign
 var icon_password = $('<span tabindex="100" class="add-on"><i class="icon-eye-open"></i></span>').css('cursor', 'help').tooltip({trigger:'click'});
 icon_password.attr('data-original-title', $(this).attr('value'));
