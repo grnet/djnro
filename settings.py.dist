@@ -148,7 +148,7 @@ INST_XML_FILE = here('institution.xml')
 
 EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-SHIB_AUTH_ENTITLEMENT = 'urn:mace:grnet.gr:pki:user'
+SHIB_AUTH_ENTITLEMENT = 'urn:mace:grnet.gr:eduroam:admin'
 SHIB_LOGOUT_URL = 'https://netdev.grnet.gr/Shibboleth.sso/Logout'
 
 SERVER_EMAIL = "GRNET eduroam Service <noreply@grnet.gr>"
