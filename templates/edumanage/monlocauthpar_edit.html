@@ -10,7 +10,13 @@
  <script type="text/javascript"
       src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
       
-
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/showpass.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#id_passwp').showPassword();
+});
+</script>
 
 
 {% endblock %}
@@ -60,7 +66,7 @@
 	<div class="control-group {% if form.passwp.errors %} error {% endif %}">
 		<label class="control-label" for="id_passwp"><b>{% trans "Password" %}</b></label>
 		<div class="controls">
-			{{ form.passwp }}
+			<input type="password" maxlength="24" name="passwp" id="id_passwp" {% if edit %}value='{{form.instance.passwp}}'{% endif %} {% if form.data.passwp %}value='{{form.data.passwp}}'{% endif %}>
 			{% if form.passwp.errors %} <span class="help-inline"> {{ form.passwp.errors|join:", " }} </span>
 			{% endif %} <span class="help-block"> {{ form.passwp.help_text }}</span>
 		</div>

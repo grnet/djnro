@@ -7,8 +7,14 @@
 {% endblock %}
 {% block extrahead %}
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/static/js/showpass.js"></script>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+	$('#id_secret').showPassword();
+});
+</script>
 {% endblock %}			
 {% block homeactive %}{% endblock %}
 {% block serversactive %}class="active"{% endblock %}
@@ -93,7 +99,7 @@
 	<div class="control-group {% if form.secret.errors %} error {% endif %}">
 		<label class="control-label" for="id_secret"><b>{% trans "Secret" %}</b></label>
 		<div class="controls">
-			{{ form.secret }}
+			<input type="password" maxlength="16" name="secret" id="id_secret" {% if edit %}value='{{form.instance.secret}}'{% endif %} {% if form.data.secret %}value='{{form.data.secret}}'{% endif %}>
 			{% if form.secret.errors %} <span class="help-inline"> {{ form.secret.errors|join:", " }} </span>
 			{% endif %} <span class="help-block">{{ form.secret.help_text }}</span>
 		</div>

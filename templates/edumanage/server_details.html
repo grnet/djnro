@@ -78,12 +78,6 @@
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_secret">{% trans "Secret" %}</label>
-		<div class="controls">
-			{{ server.secret }}
-		</div>
-	</div>
-	<div class="control-group">
 		<label class="control-label" for="id_proto">{% trans "Protocol" %}</label>
 		<div class="controls">
 			{{ server.proto }}
@@ -91,7 +85,7 @@
 	</div>
 	 <div class="control-group">
         <div class="controls">
-            <a class="btn btn-primary" href="{% url edit-servers service.pk %}">{% trans "Edit" %}</a>
+            <a class="btn btn-primary" href="{% url edit-servers server.pk %}">{% trans "Edit" %}</a>
         </div>
     </div>
 </div>

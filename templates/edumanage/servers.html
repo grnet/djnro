@@ -130,7 +130,7 @@ $("#delserverSubmit").click(function(){
 	                	<td>{{server.get_ertype_display}}</td>
 	                	<td>{{server.port}}</td>
 	                	<td>{{server.proto}}</td>
-	                	<td style="text-align: center;"><a href="{% url edit-servers server.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_server_{{server.pk}}" data-servername="{{server.name}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
+	                	<td style="text-align: center;"><a href="{% url edit-servers server.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_server_{{server.pk}}" data-servername="{{server.get_name}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
 	                </tr>
 	              	{% endfor %}
 	              	</tbody>
