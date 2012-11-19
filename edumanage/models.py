@@ -234,7 +234,7 @@ class InstServer(models.Model):
     retry = models.PositiveIntegerField(max_length=2, null=True, blank=True)
 
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
-    secret = models.CharField(max_length=16)
+    secret = models.CharField(max_length=80)
     proto = models.CharField(max_length=12, choices=RADPROTOS)
     ts = models.DateTimeField(auto_now=True)
     
@@ -296,7 +296,7 @@ class MonProxybackClient(models.Model):
     # hostname/ipaddr of server, overrides name
     host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     status_server = models.BooleanField()
-    secret = models.CharField(max_length=16)
+    secret = models.CharField(max_length=80)
     proto = models.CharField(max_length=12, choices=RADPROTOS)
     ts = models.DateTimeField(auto_now=True)
 
