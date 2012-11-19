@@ -67,12 +67,12 @@ class InstServerForm(forms.ModelForm):
         else:
             raise forms.ValidationError('This field is required.')
     
-    def clean_port(self):
-        port = self.cleaned_data['port']
+    def clean_auth_port(self):
+        auth_port = self.cleaned_data['auth_port']
         institution = self.cleaned_data['instid']
         if institution.ertype in [1,3]:
-            if port:
-                return self.cleaned_data["port"]
+            if auth_port:
+                return self.cleaned_data["auth_port"]
             else:
                 raise forms.ValidationError(_('This field is required.'))
     
@@ -84,32 +84,12 @@ class InstServerForm(forms.ModelForm):
                 return self.cleaned_data["acct_port"]
             else:
                 raise forms.ValidationError(_('This field is required.'))
-
-    def clean_timeout(self):
-        timeout = self.cleaned_data['timeout']
-        institution = self.cleaned_data['instid']
-        if institution.ertype in [1,3]:
-            if timeout:
-                return self.cleaned_data["timeout"]
-            else:
-                raise forms.ValidationError(_('This field is required.'))
-
-    def clean_retry(self):
-        retry = self.cleaned_data['retry']
-        institution = self.cleaned_data['instid']
-        if institution.ertype in [1,3]:
-            if retry:
-                return self.cleaned_data["retry"]
-            else:
-                raise forms.ValidationError(_('This field is required.'))
-
-    
+   
     def clean_host(self):
         host = self.cleaned_data['host']
         if host:
             match = re.match(FQDN_RE, host)
             if not match:
-                print "not match"
                 try:
                     address = ipaddr.IPNetwork(host)
                 except Exception:

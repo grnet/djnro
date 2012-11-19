@@ -228,10 +228,8 @@ class InstServer(models.Model):
     host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     #TODO: Add description field or label field
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
-    port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Defaul for Radius: 1812")) # TODO: Also ignore while exporting XML
-    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Defaul for Radius: 1813"))
-    timeout = models.PositiveIntegerField(max_length=2, null=True, blank=True, help_text=_("Timeout in seconds"))
-    retry = models.PositiveIntegerField(max_length=2, null=True, blank=True)
+    auth_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
+    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
 
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
     secret = models.CharField(max_length=80)

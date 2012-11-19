@@ -55,12 +55,12 @@ $(document).ready(function() {
 		</div>
 	</div>
 	{% if institution.ertype == 1 or institution.ertype == 3 %}
-	<div class="control-group {% if form.port.errors %} error {% endif %}">
-		<label class="control-label" for="id_port"><b>{% trans "Port" %}</b></label>
+	<div class="control-group {% if form.auth_port.errors %} error {% endif %}">
+		<label class="control-label" for="id_auth_port"><b>{% trans "Auth Port" %}</b></label>
 		<div class="controls">
-			{{ form.port }}
-			{% if form.port.errors %} <span class="help-inline"> {{ form.port.errors|join:", " }} </span>
-			{% endif %} <span class="help-block">{{ form.port.help_text }}</span>
+			{{ form.auth_port }}
+			{% if form.auth_port.errors %} <span class="help-inline"> {{ form.auth_port.errors|join:", " }} </span>
+			{% endif %} <span class="help-block">{{ form.auth_port.help_text }}</span>
 		</div>
 	</div>
 	<div class="control-group {% if form.acct_port.errors %} error {% endif %}">
@@ -69,22 +69,6 @@ $(document).ready(function() {
 			{{ form.acct_port }}
 			{% if form.acct_port.errors %} <span class="help-inline"> {{ form.acct_port.errors|join:", " }} </span>
 			{% endif %} <span class="help-block">{{ form.acct_port.help_text }}</span>
-		</div>
-	</div>
-	<div class="control-group {% if form.timeout.errors %} error {% endif %}">
-		<label class="control-label" for="id_timeout"><b>{% trans "Timeout" %}</b></label>
-		<div class="controls">
-			{{ form.timeout }}
-			{% if form.timeout.errors %} <span class="help-inline"> {{ form.timeout.errors|join:", " }} </span>
-			{% endif %} <span class="help-block">{{ form.timeout.help_text }}</span>
-		</div>
-	</div>
-	<div class="control-group {% if form.retry.errors %} error {% endif %}">
-		<label class="control-label" for="id_retry"><b>{% trans "Retry" %}</b></label>
-		<div class="controls">
-			{{ form.retry }}
-			{% if form.retry.errors %} <span class="help-inline"> {{ form.retry.errors|join:", " }} </span>
-			{% endif %} <span class="help-block">{{ form.retry.help_text }}</span>
 		</div>
 	</div>
 	{% endif %}
