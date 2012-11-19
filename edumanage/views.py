@@ -897,7 +897,10 @@ def get_service_points(request):
             response_location['lat'] = u"%s"%sl.latitude
             response_location['lng'] = u"%s"%sl.longitude
             response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
-            response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+            if len(sl.enc_level[0]) != 0:
+                response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+            else:
+                response_location['enc'] = u"-"
             response_location['AP_no'] = u"%s"%(sl.AP_no)
             response_location['name'] = sl.loc_name.get(lang='en').name
             response_location['port_restrict'] = u"%s"%(sl.port_restrict)
@@ -922,7 +925,10 @@ def get_all_services(request):
         response_location['lat'] = u"%s"%sl.latitude
         response_location['lng'] = u"%s"%sl.longitude
         response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
-        response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+        if len(sl.enc_level[0]) != 0:
+            response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+        else:
+            response_location['enc'] = u"-"
         response_location['AP_no'] = u"%s"%(sl.AP_no)
         try:
             response_location['inst'] = sl.institutionid.org_name.get(lang=lang).name

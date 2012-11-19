@@ -393,7 +393,7 @@
 		</div>
 	</div>
 	<div class="control-group {% if form.enc_level.errors %} error {% endif %}">
-		<label class="control-label" for="id_oper_name"><b>{% trans "Encryption Level" %}</b></label>
+		<label class="control-label" for="id_oper_name">{% trans "Encryption Level" %}</label>
 		<div class="controls">
 			{{ form.enc_level }}
 			{% if form.enc_level.errors %} <span class="help-inline"> {{ form.enc_level.errors|join:", " }} </span>

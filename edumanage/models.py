@@ -390,7 +390,7 @@ class ServiceLoc(models.Model):
     address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact, blank=True, null=True)
     SSID = models.CharField(max_length=16)
-    enc_level = MultiSelectField(max_length=64, choices=ENCTYPES)
+    enc_level = MultiSelectField(max_length=64, choices=ENCTYPES, blank=True, null=True)
     port_restrict = models.BooleanField()
     transp_proxy = models.BooleanField()
     IPv6 = models.BooleanField()
@@ -477,7 +477,7 @@ class InstitutionDetails(models.Model):
         return _('Institution: %(inst)s, Type: %(ertype)s') % {
         # but name is many-to-many from institution
             'inst': ', '.join([i.name for i in self.institution.org_name.all()]),
-            'ertype': self.institution.ertype,
+            'ertype': self.institution.get_ertype_display(),
             }
     def get_inst_name(self):
         return join([i.name for i in self.institution.org_name.all()])
