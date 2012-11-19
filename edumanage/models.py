@@ -350,7 +350,7 @@ class MonLocalAuthnParam(models.Model):
     phase2 = models.CharField(max_length=16, choices=EAP2TYPES)
     # only local-part, no realm
     username = models.CharField(max_length=24)
-    passwp = models.CharField(max_length=24, db_column='pass')
+    passwp = models.CharField(max_length=80, db_column='pass')
     # TODO: In next releast change it to TextField and add a key field
     #cert = models.CharField(max_length=32)
     #exp_response = models.CharField(max_length=6, choices=MONRESPTYPES)
