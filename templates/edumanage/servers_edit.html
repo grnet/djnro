@@ -56,7 +56,7 @@ $(document).ready(function() {
 	</div>
 	{% if institution.ertype == 1 or institution.ertype == 3 %}
 	<div class="control-group {% if form.auth_port.errors %} error {% endif %}">
-		<label class="control-label" for="id_auth_port"><b>{% trans "Auth Port" %}</b></label>
+		<label class="control-label" for="id_auth_port"><b>{% trans "Authentication Port" %}</b></label>
 		<div class="controls">
 			{{ form.auth_port }}
 			{% if form.auth_port.errors %} <span class="help-inline"> {{ form.auth_port.errors|join:", " }} </span>

@@ -117,7 +117,7 @@ $("#delserverSubmit").click(function(){
 					<tr>
 						<th>{% trans "Name" %}</th>
 						<th>{% trans "Type" %}</th>
-						<th>{% trans "Port" %}</th>
+						<th>{% trans "Authentication Port" %}</th>
 						<th>{% trans "Protocol" %}</th>
 						<th style="text-align: center;">{% trans "Action" %}</th>
 					</tr>
@@ -128,7 +128,7 @@ $("#delserverSubmit").click(function(){
 	              	<tr class="GradeC">
 	                	<td><a href = "{% url servers server.pk %}">{{server.get_name}}</a></td>
 	                	<td>{{server.get_ertype_display}}</td>
-	                	<td>{{server.port}}</td>
+	                	<td>{{server.auth_port}}</td>
 	                	<td>{{server.proto}}</td>
 	                	<td style="text-align: center;"><a href="{% url edit-servers server.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_server_{{server.pk}}" data-servername="{{server.get_name}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
 	                </tr>

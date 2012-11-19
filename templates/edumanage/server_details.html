@@ -47,9 +47,9 @@
 	</div>
 	{% if institution.ertype == 1 or institution.ertype == 3 %}
 	<div class="control-group">
-		<label class="control-label" for="id_port">{% trans "Port" %}</label>
+		<label class="control-label" for="id_port">{% trans "Authentication Port" %}</label>
 		<div class="controls">
-			{{ server.port }}
+			{{ server.auth_port }}
 		</div>
 	</div>
 	<div class="control-group">
