@@ -248,7 +248,7 @@ class InstServer(models.Model):
             #'inst': self.instid,
             'servername': self.get_name(),
         # the human-readable name would be nice here
-            'ertype': self.ertype,
+            'ertype': self.get_ertype_display(),
             }
     
     def get_name(self):
