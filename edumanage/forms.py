@@ -87,11 +87,17 @@ class InstServerForm(forms.ModelForm):
    
     def clean_host(self):
         host = self.cleaned_data['host']
+        addr_type = self.cleaned_data['addr_type']
         if host:
             match = re.match(FQDN_RE, host)
             if not match:
                 try:
-                    address = ipaddr.IPNetwork(host)
+                    if addr_type == 'any':
+                        address = ipaddr.IPAddress(host)
+                    if addr_type == 'ipv4':
+                        address = ipaddr.IPv4Address(host)
+                    if addr_type == 'ipv6':
+                        address = ipaddr.IPv6Address(host)
                 except Exception:
                         error_text = _('Invalid network address/hostname format')
                         raise forms.ValidationError(error_text)

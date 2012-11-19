@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-19 17:08+0200\n"
+"POT-Creation-Date: 2012-11-19 18:24+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -38,68 +38,67 @@ msgstr ""
 msgid "%sUser account activated"
 msgstr ""
 
-#: edumanage/forms.py:77 edumanage/forms.py:86 edumanage/forms.py:95
-#: edumanage/forms.py:104 edumanage/forms.py:118
+#: edumanage/forms.py:77 edumanage/forms.py:86 edumanage/forms.py:105
 msgid "This field is required."
 msgstr "Αυτό το πεδίο είναι απαραίτητο"
 
-#: edumanage/forms.py:115
+#: edumanage/forms.py:102
 msgid "Invalid network address/hostname format"
 msgstr "Λανθασμένη IP διεύθυνση ή όνομα host"
 
-#: edumanage/forms.py:154 edumanage/forms.py:156
+#: edumanage/forms.py:141 edumanage/forms.py:143
 msgid "Fill in at least one location name in English"
 msgstr "Συμπληρώστε τουλάχιστον ένα όνομα στα Αγγλικά"
 
-#: edumanage/forms.py:181 edumanage/forms.py:183
+#: edumanage/forms.py:168 edumanage/forms.py:170
 msgid "Fill in at least the info url"
 msgstr "Συμπληρώστε τουλάχιστον το info url"
 
-#: edumanage/models.py:226 edumanage/models.py:293
+#: edumanage/models.py:232 edumanage/models.py:299
 msgid "Descriptive label"
 msgstr "Περιγραφική ετικέτα"
 
-#: edumanage/models.py:228 edumanage/models.py:295
+#: edumanage/models.py:235 edumanage/models.py:301
 msgid "IP address | FQDN hostname"
 msgstr ""
 
-#: edumanage/models.py:231
+#: edumanage/models.py:238
 msgid "Default for RADIUS: 1812"
 msgstr "Προεπιλεγμένο για RADIUS: 1812"
 
-#: edumanage/models.py:232
+#: edumanage/models.py:239
 msgid "Default for RADIUS: 1813"
 msgstr "Προεπιλεγμένο για RADIUS: 1813"
 
-#: edumanage/models.py:234
+#: edumanage/models.py:240
 msgid "Do you accept Status-Server requests?"
 msgstr "Δέχεστε αιτήματα Status-Server;"
 
-#: edumanage/models.py:244
+#: edumanage/models.py:250
 #, python-format
 msgid "Server: %(servername)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:306
+#: edumanage/models.py:312
 #, python-format
 msgid ""
 "Institution: %(inst)s, Monitored Realm: %(monrealm)s, Proxyback Client: "
 "%(servername)s"
 msgstr ""
 
-#: edumanage/models.py:349
+#: edumanage/models.py:355
 #, python-format
 msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
 "%(phase2)s, Username: %(username)s"
 msgstr ""
 
-#: edumanage/models.py:395
+#: edumanage/models.py:401
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr ""
 
-#: edumanage/models.py:452
+#: edumanage/models.py:458
 msgid ""
 "The primary, registered domain name for your institution, eg. example.com."
 "<br>This is used to derive the Operator-Name attribute according to RFC5580, "
@@ -109,7 +108,7 @@ msgstr ""
 "παράγεται το attribute Operator-Name σύμφωνα με το RFC5580, παρ. 4.1, "
 "χρησιμοποιώντας το REALM namespace, π.χ. 1example.com"
 
-#: edumanage/models.py:454
+#: edumanage/models.py:460
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -117,7 +116,7 @@ msgstr ""
 "Συνολικός αριθμός χρηστών (προσώπων) που δύνανται να συμμετέχουν στην "
 "υπηρεσία eduroam"
 
-#: edumanage/models.py:455
+#: edumanage/models.py:461
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
@@ -125,17 +124,17 @@ msgstr ""
 "Συνολικός αριθμός λογαριασμών που μπορούν να χρησιμοποιηθούν για ταυτοποίηση "
 "χρηστών στην υπηρεσία eduroam"
 
-#: edumanage/models.py:463
+#: edumanage/models.py:469
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:498
+#: edumanage/models.py:504
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr ""
 
-#: edumanage/models.py:528
+#: edumanage/models.py:534
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
@@ -278,7 +277,6 @@ msgstr "Συμμετέχοντες"
 #: templates/edumanage/contacts_edit.html:33
 #: templates/edumanage/institution.html:35
 #: templates/edumanage/institution_edit.html:87
-#: templates/edumanage/server_details.html:37
 #: templates/edumanage/servers.html:118 templates/edumanage/services.html:114
 #: templates/edumanage/services_edit.html:349 templates/front/index.html:174
 msgid "Name"
@@ -451,7 +449,7 @@ msgstr "Προσθήκη Επαφής"
 #: templates/edumanage/instrealmmon_edit.html:49
 #: templates/edumanage/monlocauthpar_edit.html:77
 #: templates/edumanage/realms_edit.html:59
-#: templates/edumanage/servers_edit.html:102
+#: templates/edumanage/servers_edit.html:110
 #: templates/edumanage/services_edit.html:475
 #: templates/registration/select_institution.html:57
 msgid "Apply"
@@ -511,7 +509,7 @@ msgstr "Αριθμός ΙDs"
 #: templates/edumanage/institution.html:99
 #: templates/edumanage/institution_edit.html:7
 #: templates/edumanage/institution_edit.html:74
-#: templates/edumanage/server_details.html:88
+#: templates/edumanage/server_details.html:82
 #: templates/edumanage/service_details.html:201
 #: templates/edumanage/welcome.html:241
 msgid "Edit"
@@ -656,35 +654,38 @@ msgstr "Proxy σε Εξυπηρετητές"
 msgid "Servers"
 msgstr "Εξυπηρετητές"
 
+#: templates/edumanage/server_details.html:37
+#: templates/edumanage/servers_edit.html:58
+msgid "Label"
+msgstr "Ετικέτα"
+
 #: templates/edumanage/server_details.html:43
+#: templates/edumanage/servers_edit.html:42
+msgid "Address Family"
+msgstr ""
+
+#: templates/edumanage/server_details.html:49
 msgid "Host"
 msgstr ""
 
-#: templates/edumanage/server_details.html:50
-#: templates/edumanage/servers.html:120
-msgid "Port"
-msgstr ""
-
 #: templates/edumanage/server_details.html:56
+#: templates/edumanage/servers.html:120
 #: templates/edumanage/servers_edit.html:67
-msgid "Accounting Port"
+msgid "Authentication Port"
 msgstr ""
 
 #: templates/edumanage/server_details.html:62
-msgid "Timeout"
-msgstr "Όριο Λήξης"
-
-#: templates/edumanage/server_details.html:68
-msgid "Retry"
+#: templates/edumanage/servers_edit.html:75
+msgid "Accounting Port"
 msgstr ""
 
-#: templates/edumanage/server_details.html:75
+#: templates/edumanage/server_details.html:69
 msgid "Status Server"
 msgstr ""
 
-#: templates/edumanage/server_details.html:81
+#: templates/edumanage/server_details.html:75
 #: templates/edumanage/servers.html:121
-#: templates/edumanage/servers_edit.html:92
+#: templates/edumanage/servers_edit.html:100
 msgid "Protocol"
 msgstr ""
 
@@ -705,23 +706,15 @@ msgstr "Διαγραφή Εξυπηρετητή"
 msgid "Add Server"
 msgstr "Προσθήκη Εξυπηρετητή"
 
-#: templates/edumanage/servers_edit.html:42
+#: templates/edumanage/servers_edit.html:50
 msgid "Hostname"
 msgstr ""
 
-#: templates/edumanage/servers_edit.html:50
-msgid "Label"
-msgstr "Ετικέτα"
-
-#: templates/edumanage/servers_edit.html:59
-msgid "Auth Port"
-msgstr ""
-
-#: templates/edumanage/servers_edit.html:76
+#: templates/edumanage/servers_edit.html:84
 msgid "Status-Server"
 msgstr ""
 
-#: templates/edumanage/servers_edit.html:84
+#: templates/edumanage/servers_edit.html:92
 msgid "Secret"
 msgstr "Κωδικός"
 
@@ -1041,6 +1034,9 @@ msgstr "Ενεργοποίηση"
 #: templates/registration/activation_complete.html:31
 msgid "The user will be notified about his/her account activation"
 msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
+
+#~ msgid "Timeout"
+#~ msgstr "Όριο Λήξης"
 
 #~ msgid "Timeout in seconds"
 #~ msgstr "Όριο λήξης σε δευτερόλεπτα"

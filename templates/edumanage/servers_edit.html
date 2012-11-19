@@ -38,6 +38,14 @@ $(document).ready(function() {
 			{% endif %} <span class="help-block">{{ form.ertype.help_text }}</span>
 		</div>
 	</div>
+	<div class="control-group {% if form.addr_type.errors %} error {% endif %}">
+		<label class="control-label" for="id_addr_type"><b>{% trans "Address Family" %}</b></label>
+		<div class="controls">
+			{{ form.addr_type }}
+			{% if form.addr_type.errors %} <span class="help-inline"> {{ form.addr_type.errors|join:", " }} </span>
+			{% endif %} <span class="help-block">{{ form.addr_type.help_text }}</span>
+		</div>
+	</div>
 	<div class="control-group {% if form.host.errors %} error {% endif %}">
 		<label class="control-label" for="id_host"><b>{% trans "Hostname" %}</b></label>
 		<div class="controls">

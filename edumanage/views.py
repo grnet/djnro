@@ -1365,7 +1365,8 @@ def realmdataxml(request):
     ids = 0
     for inst in insts:
         try:
-            ids = ids + inst.institutiondetails.number_id
+            if inst.institutiondetails.number_id:
+                ids = ids + inst.institutiondetails.number_id
         except InstitutionDetails.DoesNotExist:
             pass
     nIdCountry.text = "%s" %ids
