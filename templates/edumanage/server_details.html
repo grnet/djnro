@@ -53,6 +53,12 @@
 	</div>
 	{% if institution.ertype == 1 or institution.ertype == 3 %}
 	<div class="control-group">
+		<label class="control-label" for="id_port">{% trans "RADIUS Packet Types" %}</label>
+		<div class="controls">
+			{{ server.get_rad_pkt_type_display }}
+		</div>
+	</div>
+	<div class="control-group">
 		<label class="control-label" for="id_port">{% trans "Authentication Port" %}</label>
 		<div class="controls">
 			{{ server.auth_port }}

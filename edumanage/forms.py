@@ -84,6 +84,15 @@ class InstServerForm(forms.ModelForm):
                 return self.cleaned_data["acct_port"]
             else:
                 raise forms.ValidationError(_('This field is required.'))
+    
+    def clean_rad_pkt_type(self):
+        rad_pkt_type = self.cleaned_data['rad_pkt_type']
+        institution = self.cleaned_data['instid']
+        if institution.ertype in [1,3]:
+            if rad_pkt_type:
+                return self.cleaned_data["rad_pkt_type"]
+            else:
+                raise forms.ValidationError(_('This field is required.'))
    
     def clean_host(self):
         host = self.cleaned_data['host']

@@ -126,6 +126,12 @@ ADDRTYPES = (
         #('ipv6', 'IPv6 only'), # Commented for the time...not yet in use
     )
 
+RADTYPES = (
+            ('auth', 'Handles Access-Request packets only'),
+            ('acct', 'Handles Accounting-Request packets only'),
+            ('auth+acct', 'Handles both Access-Request and Accounting-Request packets'),
+            )
+
 class Name_i18n(models.Model):
     '''
     Name in a particular language
@@ -235,9 +241,11 @@ class InstServer(models.Model):
     host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     #TODO: Add description field or label field
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
+    rad_pkt_type = models.CharField(max_length=48, choices=RADTYPES, default='auth+acct', null=True, blank=True,)
     auth_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
     acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
+    
     secret = models.CharField(max_length=80)
     proto = models.CharField(max_length=12, choices=RADPROTOS, default='radius')
     ts = models.DateTimeField(auto_now=True)

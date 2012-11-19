@@ -63,6 +63,14 @@ $(document).ready(function() {
 		</div>
 	</div>
 	{% if institution.ertype == 1 or institution.ertype == 3 %}
+	<div class="control-group {% if form.rad_pkt_type.errors %} error {% endif %}">
+		<label class="control-label" for="id_rad_pkt_type"><b>{% trans "RADIUS Packet Types" %}</b></label>
+		<div class="controls">
+			{{ form.rad_pkt_type }}
+			{% if form.rad_pkt_type.errors %} <span class="help-inline"> {{ form.rad_pkt_type.errors|join:", " }} </span>
+			{% endif %} <span class="help-block">{{ form.rad_pkt_type.help_text }}</span>
+		</div>
+	</div>
 	<div class="control-group {% if form.auth_port.errors %} error {% endif %}">
 		<label class="control-label" for="id_auth_port"><b>{% trans "Authentication Port" %}</b></label>
 		<div class="controls">
