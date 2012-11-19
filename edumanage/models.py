@@ -120,6 +120,12 @@ RADPROTOS = (
     )
 
 
+ADDRTYPES = (
+        (1, 'Default'),
+        (2, 'IPv4'),
+        (3, 'IPv6'),
+    )
+
 class Name_i18n(models.Model):
     '''
     Name in a particular language
@@ -230,10 +236,10 @@ class InstServer(models.Model):
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
     auth_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
     acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
-
+    addr_type = models.PositiveIntegerField(max_length=2, choices=ADDRTYPES)
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
     secret = models.CharField(max_length=80)
-    proto = models.CharField(max_length=12, choices=RADPROTOS)
+    proto = models.CharField(max_length=12, default=2, choices=RADPROTOS)
     ts = models.DateTimeField(auto_now=True)
     
     class Meta:
