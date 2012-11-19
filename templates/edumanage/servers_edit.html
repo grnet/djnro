@@ -99,7 +99,7 @@ $(document).ready(function() {
 	<div class="control-group {% if form.secret.errors %} error {% endif %}">
 		<label class="control-label" for="id_secret"><b>{% trans "Secret" %}</b></label>
 		<div class="controls">
-			<input type="password" maxlength="16" name="secret" id="id_secret" {% if edit %}value='{{form.instance.secret}}'{% endif %} {% if form.data.secret %}value='{{form.data.secret}}'{% endif %}>
+			<input type="password" maxlength="80" name="secret" id="id_secret" {% if edit %}value='{{form.instance.secret}}'{% endif %} {% if form.data.secret %}value='{{form.data.secret}}'{% endif %}>
 			{% if form.secret.errors %} <span class="help-inline"> {{ form.secret.errors|join:", " }} </span>
 			{% endif %} <span class="help-block">{{ form.secret.help_text }}</span>
 		</div>
