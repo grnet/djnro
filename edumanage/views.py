@@ -962,7 +962,7 @@ def user_login(request):
             error_username = True
         firstname = request.META['HTTP_SHIB_INETORGPERSON_GIVENNAME']
         lastname = request.META['HTTP_SHIB_PERSON_SURNAME']
-        mail = request.META['HTTP_SHIB_INETORGPERSON_MAIL']
+        mail = request.META['mail'] or request.META['HTTP_SHIB_INETORGPERSON_MAIL']
         #organization = request.META['HTTP_SHIB_HOMEORGANIZATION']
         entitlement = request.META['HTTP_SHIB_EP_ENTITLEMENT']
         if settings.SHIB_AUTH_ENTITLEMENT in entitlement.split(";"):
