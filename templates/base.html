@@ -155,11 +155,11 @@ body {
 	<hr>
 	<footer class="footer">
       <div class="container">
-        <p>Designed and developed by <a href="http://noc.grnet.gr/" target="_blank">GRNET NOC</a></p>
+        <p>{% trans "Designed and developed by" %} <a href="http://noc.grnet.gr/" target="_blank">{% trans "GRNET NOC" %}</a></p>
         <ul class="footer-links">
           {% comment %}<li><a href="#">Terms</a></li>{% endcomment %}
           {% if user.is_authenticated %}
-          <li>If you have any questions or need help, contact GRNET Helpdesk at <a href="mailto: helpdesk@grnet.gr">heldesk.grnet.gr</a> or 800-11-47638</li>
+          <li>{% trans "If you have any questions or need help" %}, <a href="http://noc.grnet.gr/contact">{% trans "contact GRNET Helpdesk" %}</a></li>
           {% endif %}
         </ul>
       </div>
