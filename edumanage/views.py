@@ -1018,7 +1018,7 @@ def user_login(request):
             error = _("Something went wrong during user authentication. Contact your administrator %s" %user)
             return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
-    except Exception:
+    except Exception as e:
         error = _("Invalid login procedure. Error: %s"%e)
         return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
