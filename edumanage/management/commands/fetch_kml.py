@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+import warnings
+warnings.simplefilter("ignore", DeprecationWarning)
 from django.core.management.base import BaseCommand, CommandError
 import time
 from django.conf import settings
