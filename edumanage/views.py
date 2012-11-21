@@ -964,6 +964,8 @@ def user_login(request):
         lastname = request.META['HTTP_SHIB_PERSON_SURNAME']
         if 'mail' in request.META:
             mail = request.META['mail']
+        elif ('HTTP_MAIL' in request.META):
+            mail = request.META['HTTP_MAIL']
         elif ('HTTP_SHIB_INETORGPERSON_MAIL' in request.META):
             mail = request.META['HTTP_SHIB_INETORGPERSON_MAIL']
         else:
