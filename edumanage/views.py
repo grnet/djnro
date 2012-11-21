@@ -962,7 +962,13 @@ def user_login(request):
             error_username = True
         firstname = request.META['HTTP_SHIB_INETORGPERSON_GIVENNAME']
         lastname = request.META['HTTP_SHIB_PERSON_SURNAME']
-        mail = request.META['mail'] or request.META['HTTP_SHIB_INETORGPERSON_MAIL']
+        if 'mail' in request.META:
+            mail = request.META['mail']
+        elif ('HTTP_SHIB_INETORGPERSON_MAIL' in request.META):
+            mail = request.META['HTTP_SHIB_INETORGPERSON_MAIL']
+        else:
+            mail = ''
+
         #organization = request.META['HTTP_SHIB_HOMEORGANIZATION']
         entitlement = request.META['HTTP_SHIB_EP_ENTITLEMENT']
         if settings.SHIB_AUTH_ENTITLEMENT in entitlement.split(";"):
@@ -1013,7 +1019,7 @@ def user_login(request):
             return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
     except Exception:
-        error = _("Invalid login procedure")
+        error = _("Invalid login procedure. Error: %s"%e)
         return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
 
