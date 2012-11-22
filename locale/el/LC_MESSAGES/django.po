@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-21 01:06+0200\n"
+"POT-Creation-Date: 2012-11-22 12:33+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -143,23 +143,23 @@ msgid ""
 "%(numid)s"
 msgstr ""
 
-#: edumanage/views.py:977
+#: edumanage/views.py:985
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
 msgstr ""
 
-#: edumanage/views.py:979
+#: edumanage/views.py:987
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:981
+#: edumanage/views.py:989
 msgid "Your idP should release the mail attribute towards this service"
 msgstr ""
 
-#: edumanage/views.py:1008 edumanage/views.py:1052
+#: edumanage/views.py:1016 edumanage/views.py:1060
 #, python-format
 msgid ""
 "User account <strong>%s</strong> is pending activation. Administrators have "
@@ -173,18 +173,19 @@ msgstr ""
 "μεγάλο<br>χρονικό διάστημα, επικοινωνήστε με τον τεχνικό σας υπεύθυνο ή το "
 "Helpdesk της ΕΔΕΤ"
 
-#: edumanage/views.py:1012
+#: edumanage/views.py:1020
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
 "%s"
 msgstr ""
 
-#: edumanage/views.py:1016
-msgid "Invalid login procedure"
-msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση"
+#: edumanage/views.py:1024
+#, python-format
+msgid "Invalid login procedure. Error: %s"
+msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση. Σφάλμα: %s"
 
-#: edumanage/views.py:1042
+#: edumanage/views.py:1050
 msgid ""
 "Violation warning: User account is already associated with an institution."
 "The event has been logged and our administrators will be notified about it"
