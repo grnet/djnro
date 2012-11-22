@@ -13,7 +13,9 @@ import logging
 import os
 
 logger = logging.getLogger(__name__)
+from django.views.decorators.cache import never_cache
 
+@never_cache
 def activate(request, activation_key):
     account = None
     if request.method == "GET":
