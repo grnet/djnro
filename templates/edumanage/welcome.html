@@ -98,7 +98,7 @@ $.get("{% url get-service-points %}", function(data){
 	bounds.extend(marker.position);
 	markers.push(marker);
 	google.maps.event.addListener(marker, 'click', function() {
-		infoWindow.content = "<div><h4>"+jsonMarker.name+"</h4>"+
+		infoWindow.setContent( "<div><h4>"+jsonMarker.name+"</h4>"+
 			
 	"<div class='tabbable'>"+ 
     "<ul class='nav nav-tabs'>"+
@@ -125,7 +125,7 @@ $.get("{% url get-service-points %}", function(data){
     "</div>"+
     "</div>"+
     "<div style='text-align:right;'><a href = '{% url edit-services  %}"+jsonMarker.key+"' class='btn btn-primary'>Edit</a></div>"+
-    "</div>";
+    "</div>");
 		infoWindow.open(map,marker);
      });
 	}

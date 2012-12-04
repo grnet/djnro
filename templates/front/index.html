@@ -4,11 +4,7 @@
     {% block hometop %}class="active"{% endblock %}
     {% block extrahead %}
     <style type="text/css">
-/*      html,body {
-	height: 100%;
-	overflow: hidden;
-}*/
-      .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
+        .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
     </style>
     <script type="text/javascript" src="/static/js/jquery.min.js"></script>
 <script type="text/javascript" src="/static/js/markerclusterer.js"></script>
@@ -158,7 +154,7 @@
 																	marker,
 																	'click',
 																	function() {
-																		infoWindow.content = "<div><h4>"
+																		infoWindow.setContent ( "<div><h4>"
 																				+ jsonMarker.inst
 																				+ "</h4>"
 																				+
@@ -207,7 +203,7 @@
 																				+ "</div>"
 																				+ "</div>"
 																				+ "</div>"
-																				+ "</div>";
+																				+ "</div>");
 																		infoWindow
 																				.open(
 																						map,
