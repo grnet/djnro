@@ -100,7 +100,6 @@ def add_institution_details(request, institution_pk):
         return HttpResponseRedirect(reverse("institutions"))
     
     if request.method == "GET":
-        request_data = request.POST.copy()
         try:         
             inst_details = InstitutionDetails.objects.get(institution=inst)
             form = InstDetailsForm(instance=inst_details)
