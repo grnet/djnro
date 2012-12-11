@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-06 18:01+0200\n"
+"POT-Creation-Date: 2012-12-11 17:50+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -25,11 +25,11 @@ msgstr "Ελληνικά"
 msgid "English"
 msgstr "Αγγλικά"
 
-#: settings.py:175
+#: settings.py:178
 msgid "Greece"
 msgstr "Ελλάδα"
 
-#: settings.py:182
+#: settings.py:185
 msgid "GRNET Helpdesk"
 msgstr ""
 
@@ -143,23 +143,23 @@ msgid ""
 "%(numid)s"
 msgstr ""
 
-#: edumanage/views.py:985
+#: edumanage/views.py:1002
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
 msgstr ""
 
-#: edumanage/views.py:987
+#: edumanage/views.py:1004
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:989
+#: edumanage/views.py:1006
 msgid "Your idP should release the mail attribute towards this service"
 msgstr ""
 
-#: edumanage/views.py:1016 edumanage/views.py:1060
+#: edumanage/views.py:1033 edumanage/views.py:1077
 #, python-format
 msgid ""
 "User account <strong>%s</strong> is pending activation. Administrators have "
@@ -173,19 +173,19 @@ msgstr ""
 "μεγάλο<br>χρονικό διάστημα, επικοινωνήστε με τον τεχνικό σας υπεύθυνο ή το "
 "Helpdesk της ΕΔΕΤ"
 
-#: edumanage/views.py:1020
+#: edumanage/views.py:1037
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
 "%s"
 msgstr ""
 
-#: edumanage/views.py:1024
+#: edumanage/views.py:1041
 #, python-format
 msgid "Invalid login procedure. Error: %s"
 msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση. Σφάλμα: %s"
 
-#: edumanage/views.py:1050
+#: edumanage/views.py:1067
 msgid ""
 "Violation warning: User account is already associated with an institution."
 "The event has been logged and our administrators will be notified about it"
@@ -297,11 +297,12 @@ msgstr "επικοινωνήστε με το Helpdesk του ΕΔΕΤ"
 #: templates/edumanage/institution_edit.html:87
 #: templates/edumanage/servers.html:118 templates/edumanage/services.html:114
 #: templates/edumanage/services_edit.html:375 templates/front/index.html:170
+#: templates/overview/index.html:170 templates/overview/index.html.py:194
 msgid "Name"
 msgstr "Όνομα"
 
 #: templates/edumanage/add_user.html:14 templates/edumanage/contacts.html:115
-#: templates/edumanage/contacts_edit.html:41
+#: templates/edumanage/contacts_edit.html:41 templates/overview/index.html:169
 msgid "Email"
 msgstr ""
 
@@ -316,21 +317,23 @@ msgstr "Τηλέφωνο"
 #: templates/edumanage/institution_edit.html:115
 #: templates/edumanage/service_details.html:137
 #: templates/edumanage/services_edit.html:414
-#: templates/edumanage/welcome.html:217
+#: templates/edumanage/welcome.html:217 templates/overview/index.html:196
 msgid "Contacts"
 msgstr "Επαφές"
 
 #: templates/edumanage/contacts.html:35
 #: templates/edumanage/instrealmmons.html:39
 #: templates/edumanage/realms.html:32 templates/edumanage/servers.html:38
-#: templates/edumanage/services.html:41
+#: templates/edumanage/services.html:41 templates/overview/index.html:42
+#: templates/overview/index.html.py:86
 msgid "Display"
 msgstr "Προβολή"
 
 #: templates/edumanage/contacts.html:35
 #: templates/edumanage/instrealmmons.html:39
 #: templates/edumanage/realms.html:32 templates/edumanage/servers.html:38
-#: templates/edumanage/services.html:41
+#: templates/edumanage/services.html:41 templates/overview/index.html:42
+#: templates/overview/index.html.py:86
 msgid "All"
 msgstr "Όλα"
 
@@ -341,49 +344,56 @@ msgstr "επαφές"
 #: templates/edumanage/contacts.html:37
 #: templates/edumanage/instrealmmons.html:41
 #: templates/edumanage/realms.html:34 templates/edumanage/servers.html:40
-#: templates/edumanage/services.html:43
+#: templates/edumanage/services.html:43 templates/overview/index.html:44
+#: templates/overview/index.html.py:88
 msgid "No records to display"
 msgstr "Δεν υπάρχουν δεδομένα για προβολή"
 
 #: templates/edumanage/contacts.html:39
 #: templates/edumanage/instrealmmons.html:43
 #: templates/edumanage/realms.html:36 templates/edumanage/servers.html:42
-#: templates/edumanage/services.html:45
+#: templates/edumanage/services.html:45 templates/overview/index.html:46
+#: templates/overview/index.html.py:90
 msgid "Showing 0 to 0 of 0 entries"
 msgstr "Προβολή 0 έως 0 από 0 εγγραφές"
 
 #: templates/edumanage/contacts.html:42
 #: templates/edumanage/instrealmmons.html:46
 #: templates/edumanage/realms.html:39 templates/edumanage/servers.html:45
-#: templates/edumanage/services.html:48
+#: templates/edumanage/services.html:48 templates/overview/index.html:49
+#: templates/overview/index.html.py:93
 msgid "Search:"
 msgstr "Αναζήτηση"
 
 #: templates/edumanage/contacts.html:45
 #: templates/edumanage/instrealmmons.html:49
 #: templates/edumanage/realms.html:42 templates/edumanage/servers.html:48
-#: templates/edumanage/services.html:51
+#: templates/edumanage/services.html:51 templates/overview/index.html:52
+#: templates/overview/index.html.py:96
 msgid "First"
 msgstr "Πρώτη"
 
 #: templates/edumanage/contacts.html:46
 #: templates/edumanage/instrealmmons.html:50
 #: templates/edumanage/realms.html:43 templates/edumanage/servers.html:49
-#: templates/edumanage/services.html:52
+#: templates/edumanage/services.html:52 templates/overview/index.html:53
+#: templates/overview/index.html.py:97
 msgid "Previous"
 msgstr "Προηγούμενο"
 
 #: templates/edumanage/contacts.html:47
 #: templates/edumanage/instrealmmons.html:51
 #: templates/edumanage/realms.html:44 templates/edumanage/servers.html:50
-#: templates/edumanage/services.html:53
+#: templates/edumanage/services.html:53 templates/overview/index.html:54
+#: templates/overview/index.html.py:98
 msgid "Next"
 msgstr "Επόμενο"
 
 #: templates/edumanage/contacts.html:48
 #: templates/edumanage/instrealmmons.html:52
 #: templates/edumanage/realms.html:45 templates/edumanage/servers.html:51
-#: templates/edumanage/services.html:54
+#: templates/edumanage/services.html:54 templates/overview/index.html:55
+#: templates/overview/index.html.py:99
 msgid "Last"
 msgstr "Τελευταία"
 
@@ -476,7 +486,7 @@ msgstr "Εφαρμογή"
 #: templates/edumanage/institution.html:13
 #: templates/edumanage/institution.html:18
 #: templates/edumanage/institution_edit.html:6
-#: templates/edumanage/welcome.html:200
+#: templates/edumanage/welcome.html:200 templates/overview/index.html:172
 #: templates/registration/activate_edit.html:36
 #: templates/registration/select_institution.html:46
 msgid "Institution"
@@ -487,7 +497,7 @@ msgstr "Φορέας"
 #: templates/edumanage/instrealmmons.html:148
 #: templates/edumanage/server_details.html:31
 #: templates/edumanage/servers.html:119
-#: templates/edumanage/servers_edit.html:34
+#: templates/edumanage/servers_edit.html:34 templates/overview/index.html:195
 msgid "Type"
 msgstr "Τύπος"
 
@@ -636,6 +646,7 @@ msgid "EAP2 Method"
 msgstr ""
 
 #: templates/edumanage/monlocauthpar_edit.html:59
+#: templates/overview/index.html:168
 msgid "Username"
 msgstr "Όνομα Χρήστη"
 
@@ -760,6 +771,7 @@ msgstr "Όνομα Τοποθεσίας"
 
 #: templates/edumanage/service_details.html:122
 #: templates/edumanage/services.html:115 templates/front/index.html:173
+#: templates/overview/index.html:197
 msgid "Address"
 msgstr "Διεύθυνση"
 
@@ -870,7 +882,8 @@ msgstr "Στοιχεία"
 msgid "More..."
 msgstr "Περισσότερα"
 
-#: templates/edumanage/welcome.html:187
+#: templates/edumanage/welcome.html:187 templates/overview/index.html:122
+#: templates/overview/index.html.py:134
 msgid "Logout"
 msgstr "Έξοδος"
 
@@ -1031,6 +1044,50 @@ msgstr ""
 #: templates/front/world.html:282
 msgid "Eduroam Wolrdwide"
 msgstr ""
+
+#: templates/overview/index.html:42
+msgid "users"
+msgstr ""
+
+#: templates/overview/index.html:86
+msgid "institutions"
+msgstr "φορείς"
+
+#: templates/overview/index.html:119 templates/overview/index.html.py:131
+msgid "Overview"
+msgstr "Επισκόπηση"
+
+#: templates/overview/index.html:150
+msgid "Users - Institutions"
+msgstr "Χρήστες - Φορείς"
+
+#: templates/overview/index.html:157
+msgid "Users"
+msgstr "Χρήστες"
+
+#: templates/overview/index.html:158
+msgid "Institutions"
+msgstr "Φορείς"
+
+#: templates/overview/index.html:171
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: templates/overview/index.html:181
+msgid "Active"
+msgstr "Ενεργός"
+
+#: templates/overview/index.html:181
+msgid "Inactive"
+msgstr "Ανενεργός"
+
+#: templates/overview/index.html:181
+msgid "Key Expired"
+msgstr ""
+
+#: templates/overview/index.html:198
+msgid "Admin Users"
+msgstr "Διαχειριστές"
 
 #: templates/registration/activate.html:3
 #: templates/registration/activation_complete.html:3
