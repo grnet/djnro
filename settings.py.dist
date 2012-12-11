@@ -77,6 +77,7 @@ SECRET_KEY = 'x)gmuyo2h=l@tmpyh4b(-!gki%@u$-=3^@z+vf&&!ci7$*!+k9'
 AUTHENTICATION_BACKENDS = (
     'eduroam.djangobackends.shibauthBackend.shibauthBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'grnet.djangobackends.ldapBackend.ldapBackend',
 )
 
 
@@ -166,4 +167,14 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
+
+# Overview LDAP
+LDAP_AUTH_SETTINGS = (
+    {'url': 'ldap://ds.example.com',   'base': 'dc=dept,dc=example,dc=com'},
+)
+# If defined as a string new users will belong in this group. Group must exist
+LDAP_AUTH_GROUP = None
+# Whether new users will have admin access
+LDAP_AUTH_IS_STAFF = False
+
 
