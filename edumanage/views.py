@@ -915,6 +915,24 @@ def get_service_points(request):
        return HttpResponseNotFound('<h1>Something went really wrong</h1>')
 
 @never_cache
+def overview(request):
+    user = request.user
+    if user.is_authenticated():
+        if user.has_perm('accounts.overview'):
+            users = User.objects.all()
+            institutions = Institution.objects.all()
+            return render_to_response('overview/index.html', {'users': users, 'institutions': institutions},
+                                  context_instance=RequestContext(request))
+        else:
+            violation=True
+            return render_to_response('overview/index.html', {'violation': violation},
+                                  context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse("altlogin"))
+    
+
+
+@never_cache
 def get_all_services(request):
     lang = request.LANGUAGE_CODE
     servicelocs = ServiceLoc.objects.all()
