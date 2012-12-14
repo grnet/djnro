@@ -1212,10 +1212,17 @@ def instxml(request):
             instContactPhone = ET.SubElement(instContact, "phone")
             instContactPhone.text = contact.phone
         
+        urltypes = []
         for url in inst.url.all():
             instUrl = ET.SubElement(instElement, "%s_URL"%(url.urltype))
             instUrl.attrib["lang"] = url.lang
             instUrl.text = url.url
+            urltypes.append(url.urltype)
+
+        if 'policy' not in urltypes:
+            instUrl = ET.SubElement(instElement, "policy_URL")
+            instUrl.attrib["lang"] = 'en'
+            instUrl.text = '-'
         
         instTs = ET.SubElement(instElement, "ts")
         instTs.text = "%s" %inst.ts.isoformat()
