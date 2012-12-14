@@ -124,6 +124,17 @@ class InstRealmForm(forms.ModelForm):
 
     class Meta:
         model = InstRealm
+        
+    def clean_proxyto(self):
+        proxied_servers = self.cleaned_data['proxyto']
+        if proxied_servers:
+            for server in proxied_servers:
+                if server.ertype not in [1,3]:
+                    error_text = _('Only IdP and IdP/SP server types are allowed')
+                    raise forms.ValidationError(error_text)
+        else:
+            raise forms.ValidationError(_('This field is required.'))
+        return self.cleaned_data["proxyto"]
 
 class ServiceLocForm(forms.ModelForm):
 

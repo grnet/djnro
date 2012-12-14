@@ -49,8 +49,8 @@
 		<label class="control-label" for="id_proxyto"><b>{% trans "Proxy to Servers" %}</b></label>
 		<div class="controls">
 			{{ form.proxyto }}
-			{% if form.proxyto.errors %} <span class="help-inline"> {{ form.proxyto.errors|join:", " }} </span>
-			{% endif %} <span class="help-block"> {{ form.proxyto.help_text }}</span>
+			{% if form.proxyto.errors %}<span class="help-inline"> {{ form.proxyto.errors|join:", " }} </span>
+			{% endif %}<span class="help-block">{% trans "Only IdP and IdP/SP server types are allowed" %}</span>
 		</div>
 	</div>
 	<div class="control-group">

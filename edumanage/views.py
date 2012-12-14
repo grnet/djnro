@@ -454,7 +454,7 @@ def add_realm(request, realm_pk):
                 messages.add_message(request, messages.ERROR, 'You have no rights to edit this realm')
                 return HttpResponseRedirect(reverse("realms"))
         form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-        form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
+        form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst, True)))
         if realm:
             edit = True
         return render_to_response('edumanage/realms_edit.html', { 'form': form, 'edit': edit },
@@ -474,7 +474,7 @@ def add_realm(request, realm_pk):
             return HttpResponseRedirect(reverse("realms"))
         else:
             form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-            form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
+            form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst, True)))
         if realm:
             edit = True
         return render_to_response('edumanage/realms_edit.html', { 'institution': inst, 'form': form, 'edit': edit },
@@ -1414,8 +1414,10 @@ def getInstContacts(inst):
         contact_pks.append(contact.contact.pk)
     return list(set(contact_pks))
 
-def getInstServers(inst):
+def getInstServers(inst, idpsp=False):
     servers = InstServer.objects.filter(instid=inst)
+    if idpsp:
+        servers = servers.filter(ertype__in=[1,3])
     server_pks = []
     for server in servers:
         server_pks.append(server.pk)

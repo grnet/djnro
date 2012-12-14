@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-06 18:01+0200\n"
+"POT-Creation-Date: 2012-12-14 12:17+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -25,11 +25,11 @@ msgstr "Ελληνικά"
 msgid "English"
 msgstr "Αγγλικά"
 
-#: settings.py:175
+#: settings.py:183
 msgid "Greece"
 msgstr "Ελλάδα"
 
-#: settings.py:182
+#: settings.py:190
 msgid "GRNET Helpdesk"
 msgstr ""
 
@@ -39,7 +39,7 @@ msgid "%sUser account activated"
 msgstr ""
 
 #: edumanage/forms.py:77 edumanage/forms.py:86 edumanage/forms.py:95
-#: edumanage/forms.py:114
+#: edumanage/forms.py:114 edumanage/forms.py:136
 msgid "This field is required."
 msgstr "Αυτό το πεδίο είναι απαραίτητο"
 
@@ -47,11 +47,16 @@ msgstr "Αυτό το πεδίο είναι απαραίτητο"
 msgid "Invalid network address/hostname format"
 msgstr "Λανθασμένη IP διεύθυνση ή όνομα host"
 
-#: edumanage/forms.py:150 edumanage/forms.py:152
+#: edumanage/forms.py:133 edumanage/models.py:212
+#: templates/edumanage/realms_edit.html:53
+msgid "Only IdP and IdP/SP server types are allowed"
+msgstr "Επιτρέπονται servers τύπου IdP ή IdP/SP"
+
+#: edumanage/forms.py:161 edumanage/forms.py:163
 msgid "Fill in at least one location name in English"
 msgstr "Συμπληρώστε τουλάχιστον ένα όνομα στα Αγγλικά"
 
-#: edumanage/forms.py:177 edumanage/forms.py:179
+#: edumanage/forms.py:188 edumanage/forms.py:190
 msgid "Fill in at least the info url"
 msgstr "Συμπληρώστε τουλάχιστον το info url"
 
@@ -143,23 +148,23 @@ msgid ""
 "%(numid)s"
 msgstr ""
 
-#: edumanage/views.py:985
+#: edumanage/views.py:984
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
 msgstr ""
 
-#: edumanage/views.py:987
+#: edumanage/views.py:986
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:989
+#: edumanage/views.py:988
 msgid "Your idP should release the mail attribute towards this service"
 msgstr ""
 
-#: edumanage/views.py:1016 edumanage/views.py:1060
+#: edumanage/views.py:1015 edumanage/views.py:1059
 #, python-format
 msgid ""
 "User account <strong>%s</strong> is pending activation. Administrators have "
@@ -173,19 +178,19 @@ msgstr ""
 "μεγάλο<br>χρονικό διάστημα, επικοινωνήστε με τον τεχνικό σας υπεύθυνο ή το "
 "Helpdesk της ΕΔΕΤ"
 
-#: edumanage/views.py:1020
+#: edumanage/views.py:1019
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
 "%s"
 msgstr ""
 
-#: edumanage/views.py:1024
+#: edumanage/views.py:1023
 #, python-format
 msgid "Invalid login procedure. Error: %s"
 msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση. Σφάλμα: %s"
 
-#: edumanage/views.py:1050
+#: edumanage/views.py:1049
 msgid ""
 "Violation warning: User account is already associated with an institution."
 "The event has been logged and our administrators will be notified about it"

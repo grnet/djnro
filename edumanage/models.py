@@ -209,7 +209,7 @@ class InstRealm(models.Model):
     # accept if instid.ertype: 1 (idp) or 3 (idpsp)
     realm = models.CharField(max_length=160)
     instid = models.ForeignKey("Institution",verbose_name="Institution")
-    proxyto = models.ManyToManyField("InstServer")
+    proxyto = models.ManyToManyField("InstServer", help_text=_("Only IdP and IdP/SP server types are allowed"))
     
     class Meta:
         verbose_name = "Institution Realm"
