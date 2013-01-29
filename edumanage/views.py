@@ -977,16 +977,10 @@ def user_login(request):
         username = request.META['HTTP_EPPN']
         if not username:
             error_username = True
-        firstname = request.META['HTTP_SHIB_INETORGPERSON_GIVENNAME']
-        lastname = request.META['HTTP_SHIB_PERSON_SURNAME']
-        if 'mail' in request.META:
-            mail = request.META['mail']
-        elif ('HTTP_MAIL' in request.META):
-            mail = request.META['HTTP_MAIL']
-        elif ('HTTP_SHIB_INETORGPERSON_MAIL' in request.META):
-            mail = request.META['HTTP_SHIB_INETORGPERSON_MAIL']
-        else:
-            mail = ''
+        firstname = lookupShibAttr(settings.SHIB_FIRSTNAME, request.META)
+        lastname = lookupShibAttr(settings.SHIB_LASTNAME, request.META)
+        mail = lookupShibAttr(settings.SHIB_MAIL, request.META)
+        entitlement = lookupShibAttr(settings.SHIB_ENTITLEMENT, request.META)
 
         #organization = request.META['HTTP_SHIB_HOMEORGANIZATION']
         entitlement = request.META['HTTP_SHIB_EP_ENTITLEMENT']
@@ -1493,3 +1487,8 @@ def rad(x):
 def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
     return EmailMessage(subject, message, from_email, recipient_list, bcc_list).send()
 
+def lookupShibAttr(attrmap, requestMeta):
+    for attr in attrmap:
+        if (attr in requestMeta) & (len(requestMeta[attr]) > 0):
+            return requestMeta[attr]
+    return ''

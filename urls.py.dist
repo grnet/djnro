@@ -7,6 +7,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
+    (r'^accounts/', include('social_auth.urls')),
+
     (r'^setlang/?$', 'django.views.i18n.set_language'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
