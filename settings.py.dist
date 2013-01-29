@@ -137,6 +137,7 @@ INSTALLED_APPS = (
     'registration',
     'django_extensions',
     'tinymce',
+    'social_auth',
     
 )
 
@@ -178,3 +179,39 @@ LDAP_AUTH_GROUP = None
 LDAP_AUTH_IS_STAFF = False
 
 
+# DJANGO SOCIAL AUTH PLUGIN SETTINGS
+
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+
+FACEBOOK_APP_ID = ''
+FACEBOOK_API_SECRET = ''
+
+LINKEDIN_CONSUMER_KEY        = ''
+LINKEDIN_CONSUMER_SECRET     = ''
+
+LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
+LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
+LINKEDIN_EXTRA_DATA = [('id', 'id'),
+                       ('first-name', 'first_name'),
+                       ('last-name', 'last_name'),
+                       ('email-address', 'email_address'),
+                       ('headline', 'headline'),
+                       ('industry', 'industry')]
+
+YAHOO_CONSUMER_KEY = ''
+YAHOO_CONSUMER_SECRET = ''
+
+GOOGLE_SREG_EXTRA_DATA = []
+
+SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+
+FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+
+LOGIN_REDIRECT_URL = '/check'
+
+SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+
+SOCIAL_AUTH_CREATE_USERS = True
+SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
+SOCIAL_AUTH_SANITIZE_REDIRECTS = False
