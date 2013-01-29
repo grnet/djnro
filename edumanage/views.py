@@ -1037,7 +1037,7 @@ def user_login(request):
         return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
 
-
+@never_cache
 @login_required
 def check_user_inst(request):
     user = request.user
