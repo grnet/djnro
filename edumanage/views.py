@@ -1489,6 +1489,8 @@ def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
 
 def lookupShibAttr(attrmap, requestMeta):
     for attr in attrmap:
-        if (attr in requestMeta) & (len(requestMeta[attr]) > 0):
-            return requestMeta[attr]
+        if (attr in requestMeta.keys()):
+            if len(requestMeta[attr]) > 0:
+                return requestMeta[attr]
     return ''
+
