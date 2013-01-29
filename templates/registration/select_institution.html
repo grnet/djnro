@@ -8,9 +8,7 @@
         <li>
             <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
         </li>
-        <li>
-            <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
-        </li>
+        {% include "front/management_dropdown.html" %}
     </ul>
     {% endblock %}
 {% block content %}
@@ -42,6 +40,20 @@ Select your institution to proceed. Our administrators will activate your accoun
     <div style="display: none">
         {{form.user}}
     </div>
+   {% if nomail %}
+    <div class="control-group {% if form.email.errors %} error {% endif %}">
+        <label class="control-label" for="id_email"><b>{% trans "Email" %}</b></label>
+        <div class="controls">
+            {{ form.email }}
+            {% if form.email.errors %} <span class="help-inline"> {{ form.email.errors|join:", " }} </span>
+            {% endif %} <span class="help-block"> {{ form.institution.help_text }}</span>
+        </div>
+    </div>
+    {% else %}
+    <div style="display: none">
+        {{form.email}}
+    </div>
+    {% endif %}
     <div class="control-group {% if form.institution.errors %} error {% endif %}">
         <label class="control-label" for="id_institution"><b>{% trans "Institution" %}</b></label>
         <div class="controls">

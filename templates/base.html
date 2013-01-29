@@ -43,6 +43,10 @@ body {
 	width: 300px;
 }
 .navbar .brand { max-height: 40px; overflow: visible;padding-top: 0;padding-bottom: 0; }
+.dropdown-menu.loginoptions a {
+    width: 80px;
+    display: inline-table;
+}
 </style>
 <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet">
 <script type="text/javascript" src="/static/js/jquery.min.js"></script>
@@ -80,9 +84,9 @@ body {
         <li {% block faqtop %}{% endblock %}>
             <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
         </li>
-        <li {% block managetop %}{% endblock %}>
-            <a href="{% url manage %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img class="hidden-phone" src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
-        </li>
+        
+        
+        {% include "front/management_dropdown.html" %}
 
     </ul>
     {% endblock %}
