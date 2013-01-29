@@ -75,9 +75,16 @@ SECRET_KEY = 'x)gmuyo2h=l@tmpyh4b(-!gki%@u$-=3^@z+vf&&!ci7$*!+k9'
 
 
 AUTHENTICATION_BACKENDS = (
-    'eduroam.djangobackends.shibauthBackend.shibauthBackend',
-    'django.contrib.auth.backends.ModelBackend',
-    'grnet.djangobackends.ldapBackend.ldapBackend',
+    'eduroam.djangobackends.shibauthBackend.shibauthBackend',    
+    'eduroam.djangobackends.ldapBackend.ldapBackend',    
+    'social_auth.backends.twitter.TwitterBackend',
+    'social_auth.backends.facebook.FacebookBackend',
+    'social_auth.backends.google.GoogleBackend',
+    'social_auth.backends.contrib.linkedin.LinkedinBackend',
+    'social_auth.backends.contrib.yahoo.YahooOAuthBackend',
+    'social_auth.backends.yahoo.YahooBackend',
+    'social_auth.backends.OpenIDBackend',
+	'django.contrib.auth.backends.ModelBackend',
 )
 
 
@@ -96,6 +103,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.media',
     'django.core.context_processors.request',
+    'social_auth.context_processors.social_auth_by_type_backends',
 )
 
 MIDDLEWARE_CLASSES = (
