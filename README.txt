@@ -14,6 +14,9 @@
 * apache2-mod-rewrite
 * apache2-shibboleth : The server should be setup as a Shibboleth SP
 * A mail server - Tested with exim
+* python-django-social-auth
+ *  OpenId support depends on python-openid
+ *  OAuth support depends on python-oauth2 
 
 
 
