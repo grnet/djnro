@@ -1025,6 +1025,7 @@ def user_login(request):
                 form = UserProfileForm()
                 form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
                 form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
+                form.fields['email'] = forms.CharField(initial = user.email)
                 return render_to_response('registration/select_institution.html', {'form': form}, context_instance=RequestContext(request))
             if user.is_active:
                login(request, user)
@@ -1041,6 +1042,32 @@ def user_login(request):
         error = _("Invalid login procedure. Error: %s"%e)
         return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
+
+
+@login_required
+def check_user_inst(request):
+    user = request.user
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+        if user.is_active:
+            return HttpResponseRedirect(reverse("manage"))
+        else:
+           status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
+           return render_to_response('status.html', {'status': status, 'inactive': True},
+                                  context_instance=RequestContext(request))
+    except UserProfile.DoesNotExist:
+        form = UserProfileForm()
+        form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
+        nomail = False
+        if not user.email:
+            nomail = True
+            form.fields['email'] = forms.CharField()
+        else:
+            form.fields['email'] = forms.CharField(initial = user.email)
+        form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
+        return render_to_response('registration/select_institution.html', {'form': form, 'nomail': nomail}, context_instance=RequestContext(request))
+
 
 @never_cache
 def geolocate(request):
@@ -1072,15 +1099,26 @@ def selectinst(request):
             
         form = UserProfileForm(request_data)
         if form.is_valid():
+            mailField = form.cleaned_data.pop('email')
             userprofile = form.save()
+            useradded = userprofile.user
+            useradded.email = mailField
+            useradded.save()
             user_activation_notify(userprofile)
             error = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %userprofile.user.username
             return render_to_response('status.html', {'status': error, 'inactive': True},
                                   context_instance=RequestContext(request))
         else:
-            form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
+            form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user), empty_label=None)
             form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
-            return render_to_response('registration/select_institution.html', {'form': form}, context_instance=RequestContext(request))
+            nomail = False
+            userObj = User.objects.get(pk=user)
+            if not userObj.email:
+                nomail = True
+                form.fields['email'] = forms.CharField()
+            else:
+                form.fields['email'] = forms.CharField(initial = userObj.email)
+            return render_to_response('registration/select_institution.html', {'form': form, 'nomail': nomail}, context_instance=RequestContext(request))
 
 
 def user_activation_notify(userprofile):

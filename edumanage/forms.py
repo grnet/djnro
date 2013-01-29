@@ -27,7 +27,9 @@ class InstRealmMonForm(forms.ModelForm):
         model = InstRealmMon
 
 class UserProfileForm(forms.ModelForm):
-
+    
+    email = forms.EmailField(required=True)
+    
     class Meta:
         model = UserProfile
 
