@@ -65,6 +65,8 @@ def activate(request, activation_key):
         try:
             rp = RegistrationProfile.objects.get(activation_key=activation_key)
             account = RegistrationProfile.objects.activate_user(activation_key)
+            up.is_social_active = True
+            up.save()
             logger.info("Activating user %s" %rp.user.username)
         except Exception as e:
             logger.info("An error occured: %s" %e)
