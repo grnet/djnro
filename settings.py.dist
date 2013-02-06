@@ -222,10 +222,25 @@ SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
 
 FACEBOOK_EXTENDED_PERMISSIONS = ['email']
 
-LOGIN_REDIRECT_URL = '/check'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
+LOGIN_REDIRECT_URL = '/manage/'
+SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
 
 SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 SOCIAL_AUTH_CREATE_USERS = True
 SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
 SOCIAL_AUTH_SANITIZE_REDIRECTS = False
+
+
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_auth.backends.pipeline.social.social_auth_user',
+    'social_auth.backends.pipeline.user.get_username',
+    'social_auth.backends.pipeline.user.create_user',
+    'social_auth.backends.pipeline.social.associate_user',
+    'social_auth.backends.pipeline.social.load_extra_data',
+    'social_auth.backends.pipeline.user.update_user_details',
+)
+
+
