@@ -118,6 +118,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'edumanage.middleware.WrongBackendExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'eduroam.urls'
@@ -179,15 +180,22 @@ TINYMCE_DEFAULT_CONFIG = {
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
 
 # Frontend country specific vars, eg. Greece
-COUNTRY_NAME = _('My Country')
+NRO_COUNTRY_NAME = _('My Country')
 # Variable used by context_processor to display the "eduroam | <country_code>" in base.html 
-COUNTRY_CODE = 'gr'
+NRO_COUNTRY_CODE = 'gr'
 # main domain url used in right top icon, eg. http://www.grnet.gr
-DOMAIN_MAIN_URL = "http://www.example.com"
+NRO_DOMAIN_MAIN_URL = "http://www.example.com"
+# developer info for footer
+NRO_DEV_BY_DICT = {"name": "EXAMPLE DEV TEAM", "url": "http://devteam.example.com"}
+#NRO social media contact (Use: // to preserve https)
+NRO_DEV_SOCIAL_MEDIA_CONTACT = [
+                                {"url":"//soc.media.url", "icon":"icon.png", "name":"NAME1(eg. Facebook)"}, 
+                                {"url":"//soc.media.url", "icon":"icon.png",  "name":"NAME2(eg. Twitter)"},
+                                ]
 # map center (lat, lng)
 MAP_CENTER = (36.97, 23.71)
 #Helpdesk, used in base.html: 
-DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
+NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
 # Overview LDAP
 LDAP_AUTH_SETTINGS = (
