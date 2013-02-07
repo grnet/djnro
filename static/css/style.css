@@ -35,6 +35,12 @@ select {
     width: 140px;
 }
 
+.btnlogin{
+	width: 70px;
+	height: 50px;
+	text-align: center;
+}
+
 .side-menu > li > a {
     border: 1px solid #E5E5E5;
     display: block;

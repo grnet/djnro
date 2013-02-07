@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 
-from django.shortcuts import render_to_response,get_object_or_404
+from django.shortcuts import render_to_response,get_object_or_404,redirect
 from django.http import HttpResponse,HttpResponseRedirect,Http404
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
 from edumanage.models import *
 from accounts.models import *
 from edumanage.forms import *
@@ -37,6 +38,22 @@ from edumanage.decorators import social_active_required
 def index(request):
     return render_to_response('front/index.html', context_instance=RequestContext(request))
 
+@never_cache
+def manage_login_front(request):
+    user = request.user
+    try:
+        profile = user.get_profile()
+    except UserProfile.DoesNotExist:
+        return render_to_response('edumanage/welcome_manage.html',
+                              context_instance=RequestContext(request, base_response(request)))
+    except AttributeError:
+        return render_to_response('edumanage/welcome_manage.html',
+                              context_instance=RequestContext(request, base_response(request)))
+    if user.is_authenticated() and user.is_active and profile.is_social_active:
+        return redirect(reverse('manage'))
+    else:
+        return render_to_response('edumanage/welcome_manage.html',
+                              context_instance=RequestContext(request, base_response(request)))
 
 @login_required
 @social_active_required
@@ -989,6 +1006,15 @@ def get_all_services(request):
         response_location['key'] = u"%s"%sl.pk
         locs.append(response_location)
     return HttpResponse(json.dumps(locs), mimetype='application/json')
+
+@never_cache
+def manage_login(request,backend):
+    logout(request)
+    qs = request.GET.urlencode()
+    qs = '?%s' % qs if qs else ''
+    if backend == 'shibboleth':
+        return redirect(reverse('login'))
+    return redirect(reverse('socialauth_begin', args=[backend])+qs)
 
 @never_cache
 def user_login(request):
