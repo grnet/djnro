@@ -1,0 +1,13 @@
+{% load i18n %}
+	<footer class="footer">
+      <div id="footcontainer" class="container">
+        {% if user.is_authenticated %}
+	<p>{% trans "If you have any questions or need help, contact" %} {{DOMAIN_HELPDESK_DICT.name}} (<a href="{{DOMAIN_HELPDESK_DICT.uri}}">{{DOMAIN_HELPDESK_DICT.uri}}</a>) - {{DOMAIN_HELPDESK_DICT.phone}}</p>
+	{% endif %}
+	<div style="padding-top: 10px;">{% trans "Designed and developed by" %} <a href="{{DEV_TEAM.url}}" target="_blank">{{DEV_TEAM.name}}</a> 
+	{% for media in SOCIAL_MEDIA_LIST %}
+	<a href="{{media.url}}" target="_blank"><img src="{{media.icon}}" alt="{{DEV_TEAM.name}} on {{media.name}}" title="{{DEV_TEAM.name}} on {{media.name}}"/></a>  
+	{% endfor %}
+	</div>
+      </div>
+    </footer>

@@ -153,19 +153,6 @@ body {
       </div><!--/row-->
     </div><!--/.fluid-container-->
 	{% endblock %}
-	{% block footer %}
-	<hr>
-	<footer class="footer">
-      <div class="container">
-        <p>{% trans "Designed and developed by" %} <a href="http://noc.grnet.gr/" target="_blank">{% trans "GRNET NOC" %}</a></p>
-        <ul class="footer-links">
-          {% comment %}<li><a href="#">Terms</a></li>{% endcomment %}
-          {% if user.is_authenticated %}
-          <li>{% trans "If you have any questions or need help, contact" %} {{DOMAIN_HELPDESK_DICT.name}} (<a href="{{DOMAIN_HELPDESK_DICT.uri}}">{{DOMAIN_HELPDESK_DICT.uri}}</a>) or {{DOMAIN_HELPDESK_DICT.phone}}</li>
-          {% endif %}
-        </ul>
-      </div>
-    </footer>
-    {% endblock %}
+	{% include "footer.html" %}
 </body>
 </html>
