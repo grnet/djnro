@@ -31,12 +31,15 @@ from django.contrib.auth import authenticate, login
 from registration.models import RegistrationProfile
 from django.core.cache import cache
 
+from edumanage.decorators import social_active_required
+
 @never_cache
 def index(request):
     return render_to_response('front/index.html', {'country': settings.COUNTRY_NAME, 'map_center': settings.MAP_CENTER}, context_instance=RequestContext(request))
 
 
 @login_required
+@social_active_required
 @never_cache
 def manage(request):
     services_list = []
@@ -64,6 +67,7 @@ def manage(request):
                               context_instance=RequestContext(request, base_response(request)))
 
 @login_required
+@social_active_required
 @never_cache
 def institutions(request):
     user = request.user
@@ -87,6 +91,7 @@ def institutions(request):
 
 
 @login_required
+@social_active_required
 @never_cache
 def add_institution_details(request, institution_pk):
     user = request.user
@@ -102,7 +107,6 @@ def add_institution_details(request, institution_pk):
         return HttpResponseRedirect(reverse("institutions"))
     
     if request.method == "GET":
-        request_data = request.POST.copy()
         try:         
             inst_details = InstitutionDetails.objects.get(institution=inst)
             form = InstDetailsForm(instance=inst_details)
@@ -142,6 +146,7 @@ def add_institution_details(request, institution_pk):
 
 
 @login_required
+@social_active_required
 @never_cache
 def services(request, service_pk):
     user = request.user
@@ -188,6 +193,7 @@ def services(request, service_pk):
 
 
 @login_required
+@social_active_required
 @never_cache
 def add_services(request, service_pk):
     user = request.user
@@ -272,6 +278,7 @@ def add_services(request, service_pk):
 
 
 @login_required
+@social_active_required
 @never_cache
 def del_service(request):
     if request.method == 'GET':
@@ -300,6 +307,7 @@ def del_service(request):
 
 
 @login_required
+@social_active_required
 @never_cache
 def servers(request, server_pk):
     user = request.user
@@ -325,6 +333,7 @@ def servers(request, server_pk):
 
 
 @login_required
+@social_active_required
 @never_cache
 def add_server(request, server_pk):
     user = request.user
@@ -379,6 +388,7 @@ def add_server(request, server_pk):
 
 
 @login_required
+@social_active_required
 @never_cache
 def del_server(request):
     if request.method == 'GET':
@@ -407,6 +417,7 @@ def del_server(request):
 
 
 @login_required
+@social_active_required
 @never_cache
 def realms(request):
     user = request.user
@@ -425,6 +436,7 @@ def realms(request):
 
 
 @login_required
+@social_active_required
 @never_cache
 def add_realm(request, realm_pk):
     user = request.user
@@ -457,7 +469,7 @@ def add_realm(request, realm_pk):
                 messages.add_message(request, messages.ERROR, 'You have no rights to edit this realm')
                 return HttpResponseRedirect(reverse("realms"))
         form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-        form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
+        form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst, True)))
         if realm:
             edit = True
         return render_to_response('edumanage/realms_edit.html', { 'form': form, 'edit': edit },
@@ -477,7 +489,7 @@ def add_realm(request, realm_pk):
             return HttpResponseRedirect(reverse("realms"))
         else:
             form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-            form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst)))
+            form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst, True)))
         if realm:
             edit = True
         return render_to_response('edumanage/realms_edit.html', { 'institution': inst, 'form': form, 'edit': edit },
@@ -485,6 +497,7 @@ def add_realm(request, realm_pk):
 
 
 @login_required
+@social_active_required
 @never_cache
 def del_realm(request):
     if request.method == 'GET':
@@ -513,6 +526,7 @@ def del_realm(request):
 
 
 @login_required
+@social_active_required
 @never_cache
 def contacts(request):
     user = request.user
@@ -536,6 +550,7 @@ def contacts(request):
 
 
 @login_required
+@social_active_required
 @never_cache
 def add_contact(request, contact_pk):
     user = request.user
@@ -592,6 +607,7 @@ def add_contact(request, contact_pk):
 
 
 @login_required
+@social_active_required
 @never_cache
 def del_contact(request):
     if request.method == 'GET':
@@ -628,6 +644,7 @@ def del_contact(request):
 
 
 @login_required
+@social_active_required
 @never_cache
 def instrealmmon(request):
     user = request.user
@@ -649,6 +666,7 @@ def instrealmmon(request):
                                   context_instance=RequestContext(request, base_response(request)))
 
 @login_required
+@social_active_required
 @never_cache
 def add_instrealmmon(request, instrealmmon_pk):
     user = request.user
@@ -699,6 +717,7 @@ def add_instrealmmon(request, instrealmmon_pk):
                                   context_instance=RequestContext(request, base_response(request)))
 
 @login_required
+@social_active_required
 @never_cache
 def del_instrealmmon(request):
     if request.method == 'GET':
@@ -722,6 +741,7 @@ def del_instrealmmon(request):
         return HttpResponse(json.dumps(resp), mimetype='application/json')
 
 @login_required
+@social_active_required
 @never_cache
 def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
     user = request.user
@@ -782,6 +802,7 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
                                   context_instance=RequestContext(request, base_response(request)))
 
 @login_required
+@social_active_required
 @never_cache
 def del_monlocauthpar(request):
     if request.method == 'GET':
@@ -805,6 +826,7 @@ def del_monlocauthpar(request):
         return HttpResponse(json.dumps(resp), mimetype='application/json')
 
 @login_required
+@social_active_required
 @never_cache
 def adduser(request):
     user = request.user
@@ -836,6 +858,7 @@ def adduser(request):
 
 
 @login_required
+@social_active_required
 def base_response(request):
     user = request.user
     inst = []
@@ -881,6 +904,7 @@ def base_response(request):
 
 
 @login_required
+@social_active_required
 @never_cache
 def get_service_points(request):
     if request.method == "GET":
@@ -899,7 +923,10 @@ def get_service_points(request):
             response_location['lat'] = u"%s"%sl.latitude
             response_location['lng'] = u"%s"%sl.longitude
             response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
-            response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+            if len(sl.enc_level[0]) != 0:
+                response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+            else:
+                response_location['enc'] = u"-"
             response_location['AP_no'] = u"%s"%(sl.AP_no)
             response_location['name'] = sl.loc_name.get(lang='en').name
             response_location['port_restrict'] = u"%s"%(sl.port_restrict)
@@ -915,6 +942,24 @@ def get_service_points(request):
        return HttpResponseNotFound('<h1>Something went really wrong</h1>')
 
 @never_cache
+def overview(request):
+    user = request.user
+    if user.is_authenticated():
+        if user.has_perm('accounts.overview'):
+            users = User.objects.all()
+            institutions = Institution.objects.all()
+            return render_to_response('overview/index.html', {'users': users, 'institutions': institutions},
+                                  context_instance=RequestContext(request))
+        else:
+            violation=True
+            return render_to_response('overview/index.html', {'violation': violation},
+                                  context_instance=RequestContext(request))
+    else:
+        return HttpResponseRedirect(reverse("altlogin"))
+    
+
+
+@never_cache
 def get_all_services(request):
     lang = request.LANGUAGE_CODE
     servicelocs = ServiceLoc.objects.all()
@@ -924,7 +969,10 @@ def get_all_services(request):
         response_location['lat'] = u"%s"%sl.latitude
         response_location['lng'] = u"%s"%sl.longitude
         response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
-        response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+        if len(sl.enc_level[0]) != 0:
+            response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+        else:
+            response_location['enc'] = u"-"
         response_location['AP_no'] = u"%s"%(sl.AP_no)
         try:
             response_location['inst'] = sl.institutionid.org_name.get(lang=lang).name
@@ -956,9 +1004,11 @@ def user_login(request):
         username = request.META['HTTP_EPPN']
         if not username:
             error_username = True
-        firstname = request.META['HTTP_SHIB_INETORGPERSON_GIVENNAME']
-        lastname = request.META['HTTP_SHIB_PERSON_SURNAME']
-        mail = request.META['HTTP_SHIB_INETORGPERSON_MAIL']
+        firstname = lookupShibAttr(settings.SHIB_FIRSTNAME, request.META)
+        lastname = lookupShibAttr(settings.SHIB_LASTNAME, request.META)
+        mail = lookupShibAttr(settings.SHIB_MAIL, request.META)
+        entitlement = lookupShibAttr(settings.SHIB_ENTITLEMENT, request.META)
+
         #organization = request.META['HTTP_SHIB_HOMEORGANIZATION']
         entitlement = request.META['HTTP_SHIB_EP_ENTITLEMENT']
         if settings.SHIB_AUTH_ENTITLEMENT in entitlement.split(";"):
@@ -996,6 +1046,7 @@ def user_login(request):
                 form = UserProfileForm()
                 form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
                 form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
+                form.fields['email'] = forms.CharField(initial = user.email)
                 return render_to_response('registration/select_institution.html', {'form': form}, context_instance=RequestContext(request))
             if user.is_active:
                login(request, user)
@@ -1008,10 +1059,37 @@ def user_login(request):
             error = _("Something went wrong during user authentication. Contact your administrator %s" %user)
             return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
-    except Exception:
-        error = _("Invalid login procedure")
+    except Exception as e:
+        error = _("Invalid login procedure. Error: %s"%e)
         return render_to_response('status.html', {'error': error,},
                                   context_instance=RequestContext(request))
+
+@never_cache
+def check_user_inst(request):
+    u = request.user.__dict__
+    s = request.session.keys()
+    raise Exception
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+        if user.is_active:
+            return HttpResponseRedirect(reverse("manage"))
+        else:
+           status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
+           return render_to_response('status.html', {'status': status, 'inactive': True},
+                                  context_instance=RequestContext(request))
+    except UserProfile.DoesNotExist:
+        form = UserProfileForm()
+        form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
+        nomail = False
+        if not user.email:
+            nomail = True
+            form.fields['email'] = forms.CharField()
+        else:
+            form.fields['email'] = forms.CharField(initial = user.email)
+        form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
+        return render_to_response('registration/select_institution.html', {'form': form, 'nomail': nomail}, context_instance=RequestContext(request))
+
 
 @never_cache
 def geolocate(request):
@@ -1043,15 +1121,26 @@ def selectinst(request):
             
         form = UserProfileForm(request_data)
         if form.is_valid():
+            mailField = form.cleaned_data.pop('email')
             userprofile = form.save()
+            useradded = userprofile.user
+            useradded.email = mailField
+            useradded.save()
             user_activation_notify(userprofile)
             error = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %userprofile.user.username
             return render_to_response('status.html', {'status': error, 'inactive': True},
                                   context_instance=RequestContext(request))
         else:
-            form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
+            form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user), empty_label=None)
             form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
-            return render_to_response('registration/select_institution.html', {'form': form}, context_instance=RequestContext(request))
+            nomail = False
+            userObj = User.objects.get(pk=user)
+            if not userObj.email:
+                nomail = True
+                form.fields['email'] = forms.CharField()
+            else:
+                form.fields['email'] = forms.CharField(initial = userObj.email)
+            return render_to_response('registration/select_institution.html', {'form': form, 'nomail': nomail}, context_instance=RequestContext(request))
 
 
 def user_activation_notify(userprofile):
@@ -1200,10 +1289,17 @@ def instxml(request):
             instContactPhone = ET.SubElement(instContact, "phone")
             instContactPhone.text = contact.phone
         
+        urltypes = []
         for url in inst.url.all():
             instUrl = ET.SubElement(instElement, "%s_URL"%(url.urltype))
             instUrl.attrib["lang"] = url.lang
             instUrl.text = url.url
+            urltypes.append(url.urltype)
+
+        if 'policy' not in urltypes:
+            instUrl = ET.SubElement(instElement, "policy_URL")
+            instUrl.attrib["lang"] = 'en'
+            instUrl.text = '-'
         
         instTs = ET.SubElement(instElement, "ts")
         instTs.text = "%s" %inst.ts.isoformat()
@@ -1365,7 +1461,8 @@ def realmdataxml(request):
     ids = 0
     for inst in insts:
         try:
-            ids = ids + inst.institutiondetails.number_id
+            if inst.institutiondetails.number_id:
+                ids = ids + inst.institutiondetails.number_id
         except InstitutionDetails.DoesNotExist:
             pass
     nIdCountry.text = "%s" %ids
@@ -1400,8 +1497,10 @@ def getInstContacts(inst):
         contact_pks.append(contact.contact.pk)
     return list(set(contact_pks))
 
-def getInstServers(inst):
+def getInstServers(inst, idpsp=False):
     servers = InstServer.objects.filter(instid=inst)
+    if idpsp:
+        servers = servers.filter(ertype__in=[1,3])
     server_pks = []
     for server in servers:
         server_pks.append(server.pk)
@@ -1413,4 +1512,14 @@ def rad(x):
 
 def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
     return EmailMessage(subject, message, from_email, recipient_list, bcc_list).send()
+
+def lookupShibAttr(attrmap, requestMeta):
+    for attr in attrmap:
+        if (attr in requestMeta.keys()):
+            if len(requestMeta[attr]) > 0:
+                return requestMeta[attr]
+    return ''
+
+
+
 

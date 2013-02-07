@@ -27,7 +27,9 @@ class InstRealmMonForm(forms.ModelForm):
         model = InstRealmMon
 
 class UserProfileForm(forms.ModelForm):
-
+    
+    email = forms.EmailField(required=True)
+    
     class Meta:
         model = UserProfile
 
@@ -67,12 +69,12 @@ class InstServerForm(forms.ModelForm):
         else:
             raise forms.ValidationError('This field is required.')
     
-    def clean_port(self):
-        port = self.cleaned_data['port']
+    def clean_auth_port(self):
+        auth_port = self.cleaned_data['auth_port']
         institution = self.cleaned_data['instid']
         if institution.ertype in [1,3]:
-            if port:
-                return self.cleaned_data["port"]
+            if auth_port:
+                return self.cleaned_data["auth_port"]
             else:
                 raise forms.ValidationError(_('This field is required.'))
     
@@ -84,34 +86,29 @@ class InstServerForm(forms.ModelForm):
                 return self.cleaned_data["acct_port"]
             else:
                 raise forms.ValidationError(_('This field is required.'))
-
-    def clean_timeout(self):
-        timeout = self.cleaned_data['timeout']
-        institution = self.cleaned_data['instid']
-        if institution.ertype in [1,3]:
-            if timeout:
-                return self.cleaned_data["timeout"]
-            else:
-                raise forms.ValidationError(_('This field is required.'))
-
-    def clean_retry(self):
-        retry = self.cleaned_data['retry']
-        institution = self.cleaned_data['instid']
-        if institution.ertype in [1,3]:
-            if retry:
-                return self.cleaned_data["retry"]
-            else:
-                raise forms.ValidationError(_('This field is required.'))
-
     
+    def clean_rad_pkt_type(self):
+        rad_pkt_type = self.cleaned_data['rad_pkt_type']
+        institution = self.cleaned_data['instid']
+        if institution.ertype in [1,3]:
+            if rad_pkt_type:
+                return self.cleaned_data["rad_pkt_type"]
+            else:
+                raise forms.ValidationError(_('This field is required.'))
+   
     def clean_host(self):
         host = self.cleaned_data['host']
+        addr_type = self.cleaned_data['addr_type']
         if host:
             match = re.match(FQDN_RE, host)
             if not match:
-                print "not match"
                 try:
-                    address = ipaddr.IPNetwork(host)
+                    if addr_type == 'any':
+                        address = ipaddr.IPAddress(host)
+                    if addr_type == 'ipv4':
+                        address = ipaddr.IPv4Address(host)
+                    if addr_type == 'ipv6':
+                        address = ipaddr.IPv6Address(host)
                 except Exception:
                         error_text = _('Invalid network address/hostname format')
                         raise forms.ValidationError(error_text)
@@ -129,6 +126,17 @@ class InstRealmForm(forms.ModelForm):
 
     class Meta:
         model = InstRealm
+        
+    def clean_proxyto(self):
+        proxied_servers = self.cleaned_data['proxyto']
+        if proxied_servers:
+            for server in proxied_servers:
+                if server.ertype not in [1,3]:
+                    error_text = _('Only IdP and IdP/SP server types are allowed')
+                    raise forms.ValidationError(error_text)
+        else:
+            raise forms.ValidationError(_('This field is required.'))
+        return self.cleaned_data["proxyto"]
 
 class ServiceLocForm(forms.ModelForm):
 

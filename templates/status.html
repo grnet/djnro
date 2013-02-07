@@ -8,9 +8,7 @@
         <li>
             <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
         </li>
-        <li>
-            <a href="{% url login %}" style="padding-top: 3px; padding-bottom: 0px;">{% trans "Manage" %}<img src="/static/img/image_shibboleth_logo_color.png" style="padding: 0px;"></a>
-        </li>
+        {% include "front/management_dropdown.html" %}
 
     </ul>
     {% endblock %}

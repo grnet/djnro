@@ -202,7 +202,7 @@ margin-bottom: 0px;
 	            map.setZoom(17);  // Why 17? Because it looks good.
 	          }
 			moveMarker(place.geometry.location);
-		})
+		});
 	}
 	
 	function calcRoute(start, end) {
@@ -264,9 +264,9 @@ margin-bottom: 0px;
 																	eduMarker,
 																	'click',
 																	function() {
-																		infoWindow.content = "<div>"
+																		infoWindow.setContent( "<div>"
 																				+ data.text 
-																				+ "</div>";
+																				+ "</div>");
 																		infoWindow
 																				.open(
 																						map,

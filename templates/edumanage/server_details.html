@@ -34,9 +34,15 @@
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_name">{% trans "Name" %}</label>
+		<label class="control-label" for="id_name">{% trans "Label" %}</label>
 		<div class="controls">
 			{{ server.name }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_addr_type">{% trans "Address Family" %}</label>
+		<div class="controls">
+			{{ server.get_addr_type_display }}
 		</div>
 	</div>
 	<div class="control-group">
@@ -47,27 +53,21 @@
 	</div>
 	{% if institution.ertype == 1 or institution.ertype == 3 %}
 	<div class="control-group">
-		<label class="control-label" for="id_port">{% trans "Port" %}</label>
+		<label class="control-label" for="id_port">{% trans "RADIUS Packet Types" %}</label>
 		<div class="controls">
-			{{ server.port }}
+			{{ server.get_rad_pkt_type_display }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_port">{% trans "Authentication Port" %}</label>
+		<div class="controls">
+			{{ server.auth_port }}
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label" for="id_acct_port">{% trans "Accounting Port" %}</label>
 		<div class="controls">
 			{{ server.acct_port }}
-		</div>
-	</div>
-	<div class="control-group">
-		<label class="control-label" for="id_timeout">{% trans "Timeout" %}</label>
-		<div class="controls">
-			{{ server.timeout }}
-		</div>
-	</div>
-	<div class="control-group">
-		<label class="control-label" for="id_retry">{% trans "Retry" %}</label>
-		<div class="controls">
-			{{ server.retry }}
 		</div>
 	</div>
 	{% endif %}
@@ -78,12 +78,6 @@
 		</div>
 	</div>
 	<div class="control-group">
-		<label class="control-label" for="id_secret">{% trans "Secret" %}</label>
-		<div class="controls">
-			{{ server.secret }}
-		</div>
-	</div>
-	<div class="control-group">
 		<label class="control-label" for="id_proto">{% trans "Protocol" %}</label>
 		<div class="controls">
 			{{ server.proto }}
@@ -91,7 +85,7 @@
 	</div>
 	 <div class="control-group">
         <div class="controls">
-            <a class="btn btn-primary" href="{% url edit-servers service.pk %}">{% trans "Edit" %}</a>
+            <a class="btn btn-primary" href="{% url edit-servers server.pk %}">{% trans "Edit" %}</a>
         </div>
     </div>
 </div>

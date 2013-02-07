@@ -75,8 +75,16 @@ SECRET_KEY = 'x)gmuyo2h=l@tmpyh4b(-!gki%@u$-=3^@z+vf&&!ci7$*!+k9'
 
 
 AUTHENTICATION_BACKENDS = (
-    'eduroam.djangobackends.shibauthBackend.shibauthBackend',
-    'django.contrib.auth.backends.ModelBackend',
+    'eduroam.djangobackends.shibauthBackend.shibauthBackend',    
+    'eduroam.djangobackends.ldapBackend.ldapBackend',    
+    'social_auth.backends.twitter.TwitterBackend',
+    #'social_auth.backends.facebook.FacebookBackend',
+    'social_auth.backends.google.GoogleBackend',
+    #'social_auth.backends.contrib.linkedin.LinkedinBackend',
+    #'social_auth.backends.contrib.yahoo.YahooOAuthBackend',
+    #'social_auth.backends.yahoo.YahooBackend',
+    'social_auth.backends.OpenIDBackend',
+	'django.contrib.auth.backends.ModelBackend',
 )
 
 
@@ -96,6 +104,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.request',
     'edumanage.context_processors.country_code',
+    'social_auth.context_processors.social_auth_by_type_backends',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -137,6 +146,7 @@ INSTALLED_APPS = (
     'registration',
     'django_extensions',
     'tinymce',
+    'social_auth',
     
 )
 
@@ -178,4 +188,71 @@ DOMAIN_MAIN_URL = "http://www.example.com"
 MAP_CENTER = (36.97, 23.71)
 #Helpdesk, used in base.html: 
 DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
+
+# Overview LDAP
+LDAP_AUTH_SETTINGS = (
+    {'url': 'ldap://ds.example.com',   'base': 'dc=dept,dc=example,dc=com'},
+)
+# If defined as a string new users will belong in this group. Group must exist
+LDAP_AUTH_GROUP = None
+# Whether new users will have admin access
+LDAP_AUTH_IS_STAFF = False
+
+#Shibboleth attribute map
+SHIB_USERNAME = ['HTTP_EPPN']
+SHIB_MAIL = ['mail', 'HTTP_MAIL', 'HTTP_SHIB_INETORGPERSON_MAIL']
+SHIB_FIRSTNAME = ['HTTP_SHIB_INETORGPERSON_GIVENNAME']
+SHIB_LASTNAME = ['HTTP_SHIB_PERSON_SURNAME']
+SHIB_ENTITLEMENT = ['HTTP_SHIB_EP_ENTITLEMENT']
+
+# DJANGO SOCIAL AUTH PLUGIN SETTINGS
+
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+
+FACEBOOK_APP_ID = ''
+FACEBOOK_API_SECRET = ''
+
+LINKEDIN_CONSUMER_KEY        = ''
+LINKEDIN_CONSUMER_SECRET     = ''
+
+LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
+LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
+LINKEDIN_EXTRA_DATA = [('id', 'id'),
+                       ('first-name', 'first_name'),
+                       ('last-name', 'last_name'),
+                       ('email-address', 'email_address'),
+                       ('headline', 'headline'),
+                       ('industry', 'industry')]
+
+YAHOO_CONSUMER_KEY = ''
+YAHOO_CONSUMER_SECRET = ''
+
+GOOGLE_SREG_EXTRA_DATA = []
+
+SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+
+FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
+LOGIN_REDIRECT_URL = '/manage/'
+SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
+
+SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+SOCIAL_AUTH_CREATE_USERS = True
+SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
+SOCIAL_AUTH_SANITIZE_REDIRECTS = False
+
+
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_auth.backends.pipeline.social.social_auth_user',
+    'social_auth.backends.pipeline.user.get_username',
+    'social_auth.backends.pipeline.user.create_user',
+    'social_auth.backends.pipeline.social.associate_user',
+    'social_auth.backends.pipeline.social.load_extra_data',
+    'social_auth.backends.pipeline.user.update_user_details',
+)
+
 

@@ -10,31 +10,25 @@
 			<h4>{% trans "Management" %}</h4>
 			<hr>
 			<div class="span6">
-				<p>{% blocktrans %}If you comply with the following, you can log in to eduroam management by clicking Manage below or by selecting Manage from the top menu.{% endblocktrans %}</p>
+				<p>{% blocktrans %}The management application provides an interface for administrators of federation member institutions to maintain the data that is necessary for participating in the federation.{% endblocktrans %}</p>
+				<p>{% blocktrans %}The following are the requirements for admitting administrators to the management application. Having fulfilled these, an administrator can log in by clicking Manage below or by selecting Manage from the top menu.{% endblocktrans %}</p>
 				<p style="text-align: center;"><a href="{% url manage %}" class="btn btn-info" >{% trans "Manage" %}</a></p>
-				<p>{% blocktrans %}Eduroam management platform provides the institutions' eduroam admins with an administrative interface
-				over their institution eduroam parameters.{% endblocktrans %}</p>
-				
-				<p>{% blocktrans %}Authentication and authorization are carried out via Shibboleth{% endblocktrans %}<img src="/static/img/shibboleth_logo_res.png"></p>
-				<p>{% blocktrans %}Thus, the institution eduroam admins must release the following attributes 
-				towards the eduroam SP{% endblocktrans %} {% trans "according to" %} <a href="http://aai.grnet.gr/documentation">{% trans "policy and procedures documentation" %}</a> {% trans "of GRNET AAI federation" %}:
+
+				<p>{% blocktrans %}Authentication and authorization are carried out through a{% endblocktrans %} <a href="http://shibboleth.net/products/service-provider.html">Shibboleth SP</a>.</p>
+				<p>{% blocktrans %}The following attributes are required for administrators and must be released by their home IdPs to the SP{% endblocktrans %} {% trans "according to the" %} <a href="http://aai.grnet.gr/documentation">{% trans "policy and procedures documentation" %}</a> {% trans "provided by the GRNET AAI federation" %}:
 					<table class="table table-bordered">
-						<thead><tr><th>{% trans "Attribute" %}</th><th>{% trans "Info" %}</th></tr></thead>
+						<thead><tr><th>{% trans "Attribute" %}</th><th>{% trans "Description" %}</th></tr></thead>
 						<tbody>
-						<tr class="success"><td>eduPersonPrincipalName</td><td>{% trans "Provides a unique username for the administrator of eduroam platform" %}</td></tr>
-						<tr class="success"><td>eduPersonEntitlement</td><td>{% trans 'Must match a certain pattern eg."urn:mace:eduroam:site:manager" (contact GRNET Helpdesk)' %}</td></tr>
-						<tr class="success"><td>mail</td><td>{% trans "Provides a valid e-mail address for the administrator" %}</td></tr>
-						<tr class="info"><td>givenName (optional)</td><td>{% trans "Provides the First Name for the user" %}</td></tr>
-						<tr class="info"><td>sn (optional)</td><td>{% trans "Provides the Last Name for the user" %}</td></tr>
+						<tr class="success"><td>eduPersonPrincipalName</td><td>{% trans "Provides a string that uniquely identifies an administrator in the management application." %}</td></tr>
+						<tr class="success"><td>eduPersonEntitlement</td><td>{% trans "A specific URN value must be provided to authorize an administrator:" %} <strong>urn:mace:grnet.gr:eduroam:admin</strong></td></tr>
+						<tr class="success"><td>mail</td><td>{% trans "The e-mail address (one or more) of the administrator. It is used for notifications from the management application. It may also be used for further communication, with prior consent." %}</td></tr>
+						<tr class="info"><td>givenName (optional)</td><td>{% trans "The person's first name." %}</td></tr>
+						<tr class="info"><td>sn (optional)</td><td>{% trans "The person's last name." %}</td></tr>
 						</tbody>
 					</table>
 				</p>
-				<p>{% blocktrans %}Once your Shibboleth attribute release is setup properly you can move on to your institution eduroam management.{% endblocktrans %}</p>
-				<p>{% blocktrans %}First, you have to register your account. Registration is performed once, and logging-in is carried out by Shibboleth. If you keep cookies (or until they expire) you will automatically enter the administrative interface on each visit.{% endblocktrans %}</p>
-				<p>{% blocktrans %}Registration is simple. Select Manage, and (after 2 redirections) provide your idp with your credentials. The platform will check your HTTP_SHIB_EP_ENTITLEMENT attribute. If you pass the check you will be presented with a list of Institutions. Once you select your institution, you will have to be approved by the platform admin. On success, you will receive a confirmation via email.{% endblocktrans %}</p>
-				<p>{% blocktrans %}From then on, you have access to your institution's eduroam attributes. Apart from serving internal tools automated configuration, these attributes are released towards <a href="http://www.eduroam.org">eduroam.org</a> in a dynamic manner via the {% endblocktrans %}<a href="{% url instxml %}">institution.xml</a>, <a href="{% url realmxml %}">realm.xml</a> and <a href="{% url realmdataxml %}">realm_data.xml</a> {% trans "files" %}.</p>
+				<p>{% blocktrans %}Once attribute release is setup properly an administrator can login to the management application.{% endblocktrans %}</p>
+				<p>{% blocktrans %}After the first login, administrators are asked to associate their account with the institution they want to manage. Their choice must then be ratified by the operators of their management application. Following that, they will be notified through e-mail and they will then be able to start using the management application.{% endblocktrans %}</p>
+				<p>{% blocktrans %}Among other things, the metadata provided by administrators through the management application are used to compile database data for the federation{% endblocktrans %}: <a href="{% url instxml %}">institution.xml</a>, <a href="{% url realmxml %}">realm.xml</a>, <a href="{% url realmdataxml %}">realm_data.xml</a></p>
 			</div>
 		{% endblock %}
-
-				
-				

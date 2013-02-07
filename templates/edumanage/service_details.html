@@ -144,7 +144,7 @@
     <div class="control-group {% if form.enc_level.errors %} error {% endif %}">
         <label class="control-label" for="id_oper_name">{% trans "Encryption Level" %}</label>
         <div class="controls">
-            {% for enc in service.enc_level %}{{enc}}{% if not forloop.last%}, {% endif %}{% endfor %}
+            {% for enc in service.enc_level %}{% if enc == '' %}-{% else %}{{enc}}{% if not forloop.last%},{% endif %}{% endif %}{% endfor %}
         </div>
     </div>
     <div class="control-group {% if form.port_restrict.errors %} error {% endif %}">

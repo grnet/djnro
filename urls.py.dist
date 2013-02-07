@@ -7,6 +7,8 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Example:
+    (r'^accounts/', include('social_auth.urls')),
+
     (r'^setlang/?$', 'django.views.i18n.set_language'),
 
     # Uncomment the admin/doc line below to enable admin documentation:
@@ -15,6 +17,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/', include(admin.site.urls)),
     url(r'^login/?', 'eduroam.edumanage.views.user_login', name="login"),
+    url(r'^altlogin/?', 'django.contrib.auth.views.login', {'template_name': 'overview/login.html'}, name="altlogin"),
     url(r'^logout/?', 'django.contrib.auth.views.logout', {'next_page': '/'}, name="logout"),
     
     url(r'^registration/accounts/activate/(?P<activation_key>\w+)/$', 'accounts.views.activate', name='activate_account'),
@@ -73,7 +76,10 @@ urlpatterns += patterns('edumanage.views',
     
     url(r'^manage/monlocauthpar/edit/(?P<instrealmmon_pk>\d+)/(?P<monlocauthpar_pk>\d+)?$', 'add_monlocauthpar', name="edit-monlocauthpar"),
     url(r'^manage/monlocauthpar/del/?$', 'del_monlocauthpar', name="del-monlocauthpar"),
-
+    
+    
+    url(r'^overview/?$', 'overview', name="overview"),
+    url(r'check/?$', 'check_user_inst', name="check")
 )
 
 if settings.DEBUG:

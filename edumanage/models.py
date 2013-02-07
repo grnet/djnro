@@ -120,6 +120,18 @@ RADPROTOS = (
     )
 
 
+ADDRTYPES = (
+        ('any', 'Default'),
+        ('ipv4', 'IPv4 only'),
+        #('ipv6', 'IPv6 only'), # Commented for the time...not yet in use
+    )
+
+RADTYPES = (
+            ('auth', 'Handles Access-Request packets only'),
+            ('acct', 'Handles Accounting-Request packets only'),
+            ('auth+acct', 'Handles both Access-Request and Accounting-Request packets'),
+            )
+
 class Name_i18n(models.Model):
     '''
     Name in a particular language
@@ -197,7 +209,7 @@ class InstRealm(models.Model):
     # accept if instid.ertype: 1 (idp) or 3 (idpsp)
     realm = models.CharField(max_length=160)
     instid = models.ForeignKey("Institution",verbose_name="Institution")
-    proxyto = models.ManyToManyField("InstServer")
+    proxyto = models.ManyToManyField("InstServer", help_text=_("Only IdP and IdP/SP server types are allowed"))
     
     class Meta:
         verbose_name = "Institution Realm"
@@ -225,17 +237,17 @@ class InstServer(models.Model):
     # hostname/ipaddr or descriptive label of server 
     name = models.CharField(max_length=80, help_text=_("Descriptive label"),  null=True, blank=True) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
+    addr_type = models.CharField(max_length=16, choices=ADDRTYPES, default='ipv4')
     host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     #TODO: Add description field or label field
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
-    port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Defaul for Radius: 1812")) # TODO: Also ignore while exporting XML
-    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Defaul for Radius: 1813"))
-    timeout = models.PositiveIntegerField(max_length=2, null=True, blank=True, help_text=_("Timeout in seconds"))
-    retry = models.PositiveIntegerField(max_length=2, null=True, blank=True)
-
+    rad_pkt_type = models.CharField(max_length=48, choices=RADTYPES, default='auth+acct', null=True, blank=True,)
+    auth_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
+    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
-    secret = models.CharField(max_length=16)
-    proto = models.CharField(max_length=12, choices=RADPROTOS)
+    
+    secret = models.CharField(max_length=80)
+    proto = models.CharField(max_length=12, choices=RADPROTOS, default='radius')
     ts = models.DateTimeField(auto_now=True)
     
     class Meta:
@@ -248,7 +260,7 @@ class InstServer(models.Model):
             #'inst': self.instid,
             'servername': self.get_name(),
         # the human-readable name would be nice here
-            'ertype': self.ertype,
+            'ertype': self.get_ertype_display(),
             }
     
     def get_name(self):
@@ -296,7 +308,7 @@ class MonProxybackClient(models.Model):
     # hostname/ipaddr of server, overrides name
     host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     status_server = models.BooleanField()
-    secret = models.CharField(max_length=16)
+    secret = models.CharField(max_length=80)
     proto = models.CharField(max_length=12, choices=RADPROTOS)
     ts = models.DateTimeField(auto_now=True)
 
@@ -337,8 +349,8 @@ class MonLocalAuthnParam(models.Model):
     eap_method = models.CharField(max_length=16, choices=EAPTYPES)
     phase2 = models.CharField(max_length=16, choices=EAP2TYPES)
     # only local-part, no realm
-    username = models.CharField(max_length=24)
-    passwp = models.CharField(max_length=24, db_column='pass')
+    username = models.CharField(max_length=36)
+    passwp = models.CharField(max_length=80, db_column='pass')
     # TODO: In next releast change it to TextField and add a key field
     #cert = models.CharField(max_length=32)
     #exp_response = models.CharField(max_length=6, choices=MONRESPTYPES)
@@ -378,7 +390,7 @@ class ServiceLoc(models.Model):
     address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact, blank=True, null=True)
     SSID = models.CharField(max_length=16)
-    enc_level = MultiSelectField(max_length=64, choices=ENCTYPES)
+    enc_level = MultiSelectField(max_length=64, choices=ENCTYPES, blank=True, null=True)
     port_restrict = models.BooleanField()
     transp_proxy = models.BooleanField()
     IPv6 = models.BooleanField()
@@ -465,7 +477,7 @@ class InstitutionDetails(models.Model):
         return _('Institution: %(inst)s, Type: %(ertype)s') % {
         # but name is many-to-many from institution
             'inst': ', '.join([i.name for i in self.institution.org_name.all()]),
-            'ertype': self.institution.ertype,
+            'ertype': self.institution.get_ertype_display(),
             }
     def get_inst_name(self):
         return join([i.name for i in self.institution.org_name.all()])
