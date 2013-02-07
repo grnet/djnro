@@ -11,8 +11,14 @@
 			<hr>
 			<div class="span6">
 				<p>{% blocktrans %}The management application provides an interface for administrators of federation member institutions to maintain the data that is necessary for participating in the federation.{% endblocktrans %}</p>
-				<p>{% blocktrans %}The following are the requirements for admitting administrators to the management application. Having fulfilled these, an administrator can log in by clicking Manage below or by selecting Manage from the top menu.{% endblocktrans %}</p>
-				<p style="text-align: center;"><a href="{% url manage %}" class="btn btn-info" >{% trans "Manage" %}</a></p>
+				<p>{% blocktrans %}Administrators can login to management either via a social media account or via Shibboleth: {% endblocktrans %}</p>
+				<h5>Social Media</h5>
+				<hr>
+				<p>{% blocktrans %}Management can be carried out by users with a valid social media account. The supported social media are depicted under the <b>manage</b> drop down menu on top. Users can authenticate via their social media account. Once they are activated they can manage their data{% endblocktrans %}</p>
+				<h5>Shibboleth</h5>
+				<hr>
+				<p>{% blocktrans %}The following are the requirements for admitting administrators to the management application. Having fulfilled these, an administrator can log in by selecting Shibboleth from the <b>manage</b> drop down menu on top.{% endblocktrans %}</p>
+				
 
 				<p>{% blocktrans %}Authentication and authorization are carried out through a{% endblocktrans %} <a href="http://shibboleth.net/products/service-provider.html">Shibboleth SP</a>.</p>
 				<p>{% blocktrans %}The following attributes are required for administrators and must be released by their home IdPs to the SP{% endblocktrans %} {% trans "according to the" %} <a href="http://aai.grnet.gr/documentation">{% trans "policy and procedures documentation" %}</a> {% trans "provided by the GRNET AAI federation" %}:
@@ -28,7 +34,11 @@
 					</table>
 				</p>
 				<p>{% blocktrans %}Once attribute release is setup properly an administrator can login to the management application.{% endblocktrans %}</p>
+				<h5>Activation</h5>
+				<hr>
 				<p>{% blocktrans %}After the first login, administrators are asked to associate their account with the institution they want to manage. Their choice must then be ratified by the operators of their management application. Following that, they will be notified through e-mail and they will then be able to start using the management application.{% endblocktrans %}</p>
+				<h5>Metadata</h5>
+				<hr>
 				<p>{% blocktrans %}Among other things, the metadata provided by administrators through the management application are used to compile database data for the federation{% endblocktrans %}: <a href="{% url instxml %}">institution.xml</a>, <a href="{% url realmxml %}">realm.xml</a>, <a href="{% url realmdataxml %}">realm_data.xml</a></p>
 			</div>
 		{% endblock %}
