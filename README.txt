@@ -68,6 +68,15 @@ Once the accounts are acitvated, local eduroam admins can manage their eduroam l
 * To start with, you must create a Realm with a related contact.
 * It is suggested to do this via the admin interface.
 
+The suggested web server setup is apache with mod_wsgi and mod_shib. 
+Static folder should be served as /static Alias (Apache configuration).
+
+3. Logos/Branding
+
+Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder
+
+4. Done!
+
 Invite your users to use it.
 
 
