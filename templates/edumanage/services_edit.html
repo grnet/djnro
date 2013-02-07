@@ -14,9 +14,9 @@
 <script type="text/javascript">
 		function gettext(msgid) { return msgid; }
 		
-		var lat = "{{map_center.0}}";
+		var lat = "{{MAP_CENTER.0}}";
 		var lat = parseFloat(lat.replace(",","."));
-		var lng = "{{map_center.1}}";
+		var lng = "{{MAP_CENTER.1}}";
 		var lng = parseFloat(lng.replace(",","."));
  		var zoomLevel = 6;
  		{% if form.data.latitude or form.instance.latitude %}

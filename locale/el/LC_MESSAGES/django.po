@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-06 17:26+0200\n"
+"POT-Creation-Date: 2013-02-07 11:37+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -25,21 +25,21 @@ msgstr "Ελληνικά"
 msgid "English"
 msgstr "Αγγλικά"
 
-#: settings.py:191
+#: settings.py:192
 msgid "Greece"
 msgstr "Ελλάδα"
 
-#: settings.py:198
+#: settings.py:208
 msgid "GRNET Helpdesk"
-msgstr ""
+msgstr "Helpdesk ΕΔΕΤ"
 
 #: accounts/views.py:80
 #, python-format
 msgid "%sUser account activated"
 msgstr ""
 
-#: edumanage/decorators.py:18 edumanage/views.py:1055 edumanage/views.py:1078
-#: edumanage/views.py:1130
+#: edumanage/decorators.py:18 edumanage/views.py:1053 edumanage/views.py:1076
+#: edumanage/views.py:1127
 #, python-format
 msgid ""
 "User account <strong>%s</strong> is pending activation. Administrators have "
@@ -163,35 +163,35 @@ msgid ""
 "%(numid)s"
 msgstr ""
 
-#: edumanage/views.py:1023
+#: edumanage/views.py:1021
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
 msgstr ""
 
-#: edumanage/views.py:1025
+#: edumanage/views.py:1023
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:1027
+#: edumanage/views.py:1025
 msgid "Your idP should release the mail attribute towards this service"
 msgstr ""
 
-#: edumanage/views.py:1059
+#: edumanage/views.py:1057
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
 "%s"
 msgstr ""
 
-#: edumanage/views.py:1063
+#: edumanage/views.py:1061
 #, python-format
 msgid "Invalid login procedure. Error: %s"
 msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση. Σφάλμα: %s"
 
-#: edumanage/views.py:1116
+#: edumanage/views.py:1113
 msgid ""
 "Violation warning: User account is already associated with an institution."
 "The event has been logged and our administrators will be notified about it"
@@ -300,17 +300,13 @@ msgstr "Eduroam στον κόσμο"
 msgid "Participants"
 msgstr "Συμμετέχοντες"
 
-#: templates/base.html:160
-msgid "Designed and developed by"
-msgstr "Σχεδιάζεται και αναπτύσσεται από"
-
-#: templates/base.html:160
-msgid "GRNET NOC"
-msgstr "το NOC του ΕΔΕΤ"
-
-#: templates/base.html:164
+#: templates/footer.html:5
 msgid "If you have any questions or need help, contact"
 msgstr "Αν έχετε απορίες ή χρειάζεστε βοήθεια, επικοινωνήστε με το"
+
+#: templates/footer.html:7
+msgid "Designed and developed by"
+msgstr "Σχεδιάζεται και αναπτύσσεται από το"
 
 #: templates/edumanage/add_user.html:6 templates/edumanage/contacts.html:114
 #: templates/edumanage/contacts_edit.html:33
@@ -1146,6 +1142,9 @@ msgstr "Ενεργοποίηση"
 #: templates/registration/activation_complete.html:29
 msgid "The user will be notified about his/her account activation"
 msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
+
+#~ msgid "GRNET NOC"
+#~ msgstr "το NOC του ΕΔΕΤ"
 
 #~ msgid "contact GRNET Helpdesk"
 #~ msgstr "επικοινωνήστε με το Helpdesk του ΕΔΕΤ"

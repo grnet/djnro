@@ -17,7 +17,7 @@
 					{% load tolocale %}
 					<h4>{% trans "Participating Institutions" %}</h4>
 					<hr>
-					<div>{% trans "In"%} {%trans country %} {% trans "eduroam is provided by the following instituitons/organizations" %}</div><br>
+					<div>{% trans "In"%} {% trans COUNTRY_NAME %} {% trans "eduroam is provided by the following instituitons/organizations" %}</div><br>
 					<div>{% for i in institutions %}
 					<address>
 						<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br>

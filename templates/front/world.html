@@ -13,9 +13,9 @@
 <script type="text/javascript" src="/static/js/markerclusterer.js"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
-	var lat = "{{map_center.0}}";
+	var lat = "{{MAP_CENTER.0}}";
 	var lat = parseFloat(lat.replace(",","."));
-	var lng = "{{map_center.1}}";
+	var lng = "{{MAP_CENTER.1}}";
 	var lng = parseFloat(lng.replace(",","."));
 	var zoomLevel = 6;
 	var latlng = new google.maps.LatLng(lat,lng);

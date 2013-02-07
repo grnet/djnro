@@ -35,7 +35,7 @@ from edumanage.decorators import social_active_required
 
 @never_cache
 def index(request):
-    return render_to_response('front/index.html', {'country': settings.COUNTRY_NAME, 'map_center': settings.MAP_CENTER}, context_instance=RequestContext(request))
+    return render_to_response('front/index.html', context_instance=RequestContext(request))
 
 
 @login_required
@@ -60,9 +60,7 @@ def manage(request):
                               {
                                'institution': inst, 
                                'services': services_list,
-                               'servers': servers_list,
-                               'map_center': settings.MAP_CENTER
-                               
+                               'servers': servers_list,                               
                                },  
                               context_instance=RequestContext(request, base_response(request)))
 
@@ -239,7 +237,7 @@ def add_services(request, service_pk):
             edit = True
         for url_form in urls_form.forms:
             url_form.fields['urltype'] = forms.ChoiceField(choices=(('', '----------'),('info', 'Info'),))
-        return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit, 'map_center': settings.MAP_CENTER},
+        return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -273,7 +271,7 @@ def add_services(request, service_pk):
             edit = True
         for url_form in urls_form.forms:
             url_form.fields['urltype'] = forms.ChoiceField(choices=(('', '----------'),('info', 'Info'),))
-        return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit, 'map_center': settings.MAP_CENTER},
+        return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
                                   context_instance=RequestContext(request, base_response(request)))
 
 
@@ -1093,8 +1091,7 @@ def check_user_inst(request):
 
 @never_cache
 def geolocate(request):
-    return render_to_response('front/geolocate.html', {'map_center': settings.MAP_CENTER},
-                                  context_instance=RequestContext(request))
+    return render_to_response('front/geolocate.html', context_instance=RequestContext(request))
 @never_cache
 def participants(request):
     institutions = Institution.objects.all()
@@ -1104,7 +1101,7 @@ def participants(request):
             dets.append(i.institutiondetails)
         except InstitutionDetails.DoesNotExist:
             pass
-    return render_to_response('front/participants.html', {'institutions': dets, 'country': settings.COUNTRY_NAME},
+    return render_to_response('front/participants.html', { 'institutions': dets } ,
                                   context_instance=RequestContext(request))
 @never_cache
 def selectinst(request):
@@ -1205,8 +1202,7 @@ def worldPoints(request):
 
 @never_cache
 def world(request):
-        return render_to_response('front/world.html', {'map_center': settings.MAP_CENTER},
-                                  context_instance=RequestContext(request))
+        return render_to_response('front/world.html', context_instance=RequestContext(request))
 
 
 @never_cache
