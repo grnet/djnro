@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-07 11:37+0200\n"
+"POT-Creation-Date: 2013-02-07 12:37+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -29,7 +29,7 @@ msgstr "Αγγλικά"
 msgid "Greece"
 msgstr "Ελλάδα"
 
-#: settings.py:208
+#: settings.py:207
 msgid "GRNET Helpdesk"
 msgstr "Helpdesk ΕΔΕΤ"
 
@@ -256,12 +256,6 @@ msgstr ""
 #: templates/registration/select_institution.html:6
 msgid "Home"
 msgstr "Αρχική"
-
-#: templates/404.html:12 templates/500.html:12
-#: templates/front/management.html:15
-#: templates/front/management_dropdown.html:3
-msgid "Manage"
-msgstr "Διαχείριση"
 
 #: templates/base.html:94 templates/edumanage/services_edit.html:377
 msgid "Language"
@@ -949,20 +943,35 @@ msgstr ""
 
 #: templates/front/management.html:14
 msgid ""
+"Administrators can login to management either via a social media account or "
+"via Shibboleth: "
+msgstr ""
+
+#: templates/front/management.html:17
+msgid ""
+"Management can be carried out by users with a valid social media account. "
+"The supported social media are depicted under the <b>manage</b> drop down "
+"menu on top. Users can authenticate via their social media account. Once "
+"they are activated they can manage their data"
+msgstr ""
+
+#: templates/front/management.html:20
+#, fuzzy
+msgid ""
 "The following are the requirements for admitting administrators to the "
 "management application. Having fulfilled these, an administrator can log in "
-"by clicking Manage below or by selecting Manage from the top menu."
+"by selecting Shibboleth from the <b>manage</b> drop down menu on top."
 msgstr ""
 "Τα ακόλουθα απαιτούνται για να αποκτήσει πρόσβαση ένας διαχειριστής στην "
 "εφαρμογή. Έχοντας εκπληρώσει αυτές τις προϋποθέσεις ο διαχειριστής μπορεί να "
 "συνδεθεί στην εφαρμογή χρησιμοποιώντας την επιλογή 'Διαχείριση' παρακάτω ή "
 "την αντίστοιχη επιλογή από το μενού στο πάνω μέρος της σελίδας."
 
-#: templates/front/management.html:17
+#: templates/front/management.html:23
 msgid "Authentication and authorization are carried out through a"
 msgstr "Η ταυτοποίηση και εξουσιοδότηση των χρηστών πραγματοποιείται μέσω ενός"
 
-#: templates/front/management.html:18
+#: templates/front/management.html:24
 msgid ""
 "The following attributes are required for administrators and must be "
 "released by their home IdPs to the SP"
@@ -970,27 +979,27 @@ msgstr ""
 "Τα εξής χαρακτηριστικά απαιτούνται για τους διαχειριστές και πρέπει να "
 "απελευθερώνονται από τον οικείο IdP προς τον SP"
 
-#: templates/front/management.html:18
+#: templates/front/management.html:24
 msgid "according to the"
 msgstr "σύμφωνα με την"
 
-#: templates/front/management.html:18
+#: templates/front/management.html:24
 msgid "policy and procedures documentation"
 msgstr "τεκμηρίωση πολιτικής και διαδικασιών"
 
-#: templates/front/management.html:18
+#: templates/front/management.html:24
 msgid "provided by the GRNET AAI federation"
 msgstr "που παρέχεται από την Ομοσπονδία AAI του ΕΔΕΤ"
 
-#: templates/front/management.html:20
+#: templates/front/management.html:26
 msgid "Attribute"
 msgstr "Χαρακτηριστικό"
 
-#: templates/front/management.html:20
+#: templates/front/management.html:26
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: templates/front/management.html:22
+#: templates/front/management.html:28
 msgid ""
 "Provides a string that uniquely identifies an administrator in the "
 "management application."
@@ -998,13 +1007,13 @@ msgstr ""
 "Παρέχει μια συμβολοσειρά κειμένου που χρησιμοποιείται ως μοναδικό "
 "αναγνωριστικό του διαχεριστή στην εφαρμογή διαχείρισης."
 
-#: templates/front/management.html:23
+#: templates/front/management.html:29
 msgid "A specific URN value must be provided to authorize an administrator:"
 msgstr ""
 "Μια συγκεκριμένη τιμή σε μορφή URN πρέπει να επιστρέφεται προκειμένου ένας "
 "χρήστης να εξουσιοδοτείται ως διαχειριστής:"
 
-#: templates/front/management.html:24
+#: templates/front/management.html:30
 msgid ""
 "The e-mail address (one or more) of the administrator. It is used for "
 "notifications from the management application. It may also be used for "
@@ -1014,15 +1023,15 @@ msgstr ""
 "ειδοποιήσεις από την εφαρμογή διαχείρισης. Μπορεί επίσης να χρησιμοποιηθεί "
 "για περαιτέρω επικοινωνία με το διαχειριστή, με προηγούμενη συγκατάθεσή του."
 
-#: templates/front/management.html:25
+#: templates/front/management.html:31
 msgid "The person's first name."
 msgstr "Το όνομα του διαχειριστή."
 
-#: templates/front/management.html:26
+#: templates/front/management.html:32
 msgid "The person's last name."
 msgstr "Το επώνυμο του διαχειριστή."
 
-#: templates/front/management.html:30
+#: templates/front/management.html:36
 msgid ""
 "Once attribute release is setup properly an administrator can login to the "
 "management application."
@@ -1030,7 +1039,7 @@ msgstr ""
 "Εφόσον απελευθερώνονται τα απαραίτητα χαρακτηριστικά, ο διαχειριστής μπορεί "
 "να συνδεθεί στην εφαρμογή διαχείρισης."
 
-#: templates/front/management.html:31
+#: templates/front/management.html:39
 msgid ""
 "After the first login, administrators are asked to associate their account "
 "with the institution they want to manage. Their choice must then be ratified "
@@ -1044,7 +1053,7 @@ msgstr ""
 "θα ενημερωθεί μέσω e-mail ότι μπορεί να ξεκινήσει να χρησιμοποιεί την "
 "εφαρμογή διαχειρίσης."
 
-#: templates/front/management.html:32
+#: templates/front/management.html:42
 msgid ""
 "Among other things, the metadata provided by administrators through the "
 "management application are used to compile database data for the federation"
@@ -1052,6 +1061,10 @@ msgstr ""
 "Μεταξύ άλλων, τα μεταδεδομένα που παρέχονται από τους διαχειριστές μέσω της "
 "εφαρμογής διαχείρισης χρησιμοποιούνται για την ενημέρωση της βάσης δεδομένων "
 "της ομοσπονδίας"
+
+#: templates/front/management_dropdown.html:3
+msgid "Manage"
+msgstr "Διαχείριση"
 
 #: templates/front/participants.html:18
 msgid "Participating Institutions"
