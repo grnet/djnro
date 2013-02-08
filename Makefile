@@ -15,15 +15,25 @@ PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS)
 SPHINXFILES     = $(DOCSDIR)/$(SRCDIR)/*
+eduroampytag = $(shell git describe --abbrev=0)
+eduroampyver = $(shell git describe --abbrev=0 | egrep -o '([0-9]+\.){1,10}[0-9]+' | sed -e 's/\./_/g')
+name   	   = $(shell basename $(shell pwd))
 
-.PHONY: help doc docclean
+.PHONY: help doc docclean dist distclean
 
 help:
 	@echo "Please use \`make <target>' where <target> is one of"
-	@echo "  doc		to make html and api doc"
-	@echo "  docclean	to clean up API and HTML docuentation"
+	@echo "  doc		to make html doc"
+	@echo "  docclean	to clean up HTML docuentation"
 	@echo "  html      	to make standalone sphinx HTML files"
+	@echo "  dist      	to make tar dist file"
+	@echo "  distclean  to delete tar dist file"
 	
+dist: 
+	git archive --format tar --prefix $(name)-$(eduroampyver)/ -o $(name)-$(eduroampyver).tar $(eduroampytag)
+	gzip -f $(name)-$(eduroampyver).tar
+distclean:
+	@rm -f *tar.gz
 	
 docclean:
 	@rm -rf $(BUILDDIR)
