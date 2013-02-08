@@ -16,6 +16,7 @@ from django import forms
 from django.db import models
 from django.utils.text import capfirst
 from django.core import exceptions
+from django.conf import settings
 
 
 class MultiSelectFormField(forms.MultipleChoiceField):
@@ -490,11 +491,7 @@ class Realm(models.Model):
     Realm
     '''
 
-    COUNTRIES = (
-                ('gr', 'Greece' ),
-               )
-
-    country = models.CharField(max_length=2, choices=COUNTRIES)
+    country = models.CharField(max_length=2, choices=settings.REALM_COUNTRIES)
     stype = models.PositiveIntegerField(max_length=1, default=0, editable=False)
     # TODO: multiple names can be specified [...] name in English is required
     org_name = generic.GenericRelation(Name_i18n)
