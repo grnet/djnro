@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-07 16:01+0200\n"
+"POT-Creation-Date: 2013-02-11 16:08+0200\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -62,7 +62,7 @@ msgstr "Αυτό το πεδίο είναι απαραίτητο"
 msgid "Invalid network address/hostname format"
 msgstr "Λανθασμένη IP διεύθυνση ή όνομα host"
 
-#: edumanage/forms.py:135 edumanage/models.py:212
+#: edumanage/forms.py:135 edumanage/models.py:213
 #: templates/edumanage/realms_edit.html:53
 msgid "Only IdP and IdP/SP server types are allowed"
 msgstr "Επιτρέπονται servers τύπου IdP ή IdP/SP"
@@ -75,51 +75,51 @@ msgstr "Συμπληρώστε τουλάχιστον ένα όνομα στα �
 msgid "Fill in at least the info url"
 msgstr "Συμπληρώστε τουλάχιστον το info url"
 
-#: edumanage/models.py:238 edumanage/models.py:307
+#: edumanage/models.py:239 edumanage/models.py:308
 msgid "Descriptive label"
 msgstr "Περιγραφική ετικέτα"
 
-#: edumanage/models.py:241 edumanage/models.py:309
+#: edumanage/models.py:242 edumanage/models.py:310
 msgid "IP address | FQDN hostname"
 msgstr ""
 
-#: edumanage/models.py:245
+#: edumanage/models.py:246
 msgid "Default for RADIUS: 1812"
 msgstr "Προεπιλεγμένο για RADIUS: 1812"
 
-#: edumanage/models.py:246
+#: edumanage/models.py:247
 msgid "Default for RADIUS: 1813"
 msgstr "Προεπιλεγμένο για RADIUS: 1813"
 
-#: edumanage/models.py:247
+#: edumanage/models.py:248
 msgid "Do you accept Status-Server requests?"
 msgstr "Δέχεστε αιτήματα Status-Server;"
 
-#: edumanage/models.py:258
+#: edumanage/models.py:259
 #, python-format
 msgid "Server: %(servername)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:320
+#: edumanage/models.py:321
 #, python-format
 msgid ""
 "Institution: %(inst)s, Monitored Realm: %(monrealm)s, Proxyback Client: "
 "%(servername)s"
 msgstr ""
 
-#: edumanage/models.py:363
+#: edumanage/models.py:364
 #, python-format
 msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
 "%(phase2)s, Username: %(username)s"
 msgstr ""
 
-#: edumanage/models.py:409
+#: edumanage/models.py:410
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr ""
 
-#: edumanage/models.py:466
+#: edumanage/models.py:467
 msgid ""
 "The primary, registered domain name for your institution, eg. example.com."
 "<br>This is used to derive the Operator-Name attribute according to RFC5580, "
@@ -129,7 +129,7 @@ msgstr ""
 "παράγεται το attribute Operator-Name σύμφωνα με το RFC5580, παρ. 4.1, "
 "χρησιμοποιώντας το REALM namespace, π.χ. 1example.com"
 
-#: edumanage/models.py:468
+#: edumanage/models.py:469
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -137,7 +137,7 @@ msgstr ""
 "Συνολικός αριθμός χρηστών (προσώπων) που δύνανται να συμμετέχουν στην "
 "υπηρεσία eduroam"
 
-#: edumanage/models.py:469
+#: edumanage/models.py:470
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
@@ -145,17 +145,17 @@ msgstr ""
 "Συνολικός αριθμός λογαριασμών που μπορούν να χρησιμοποιηθούν για ταυτοποίηση "
 "χρηστών στην υπηρεσία eduroam"
 
-#: edumanage/models.py:477
+#: edumanage/models.py:478
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:512
+#: edumanage/models.py:509
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr ""
 
-#: edumanage/models.py:542
+#: edumanage/models.py:539
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
@@ -943,38 +943,29 @@ msgstr ""
 
 #: templates/front/management.html:14
 msgid ""
-"Administrators can login to management either via a social media account or "
-"via Shibboleth: "
-msgstr "Οι διαχειριστές μπορούν να αποκτήσουν πρόσβαση στην εφαρμογή είτε με λογαριασμούς "
-"social media είτε με Shibboleth:"
+"Administrators can log in using either Social Networks or the AAI Federation:"
+msgstr ""
+"Οι διαχειριστές μπορούν να συνδεθούν χρησιμοποιώντας είτε Social Networks ή την Ομοσπονδία AAI:"
 
 #: templates/front/management.html:17
 msgid ""
-"Management can be carried out by users with a valid social media account. "
-"The supported social media are depicted under the <b>manage</b> drop down "
-"menu on top. Users can authenticate via their social media account. Once "
-"they are activated they can manage their data"
-msgstr "Η διαχείριση μπορεί να πραγματοποιηθεί από χρήστες με λογαριασμούς social media."
-"Τα social media που επιτρέπουν τη διαχείριση παρουσιάζονται κάτω από το μενού <b>Διαχείριση</b> στο "
-"επάνω μέρος της σελίδας. Οι διαχειριστές ταυτοποιούνται με το social media λογαρισμό τους. Αφού "
-"ενεργοποιηθούν, αποκτούν πρόσβαση στα δεδομένα του ιδρύματός τους" 
+"Social networks that have been enabled for authenticating users to the "
+"management application are listed under the <b>Manage</b> drop-down menu. "
+"Once authenticated, a user may need to assert any missing information that "
+"is required by the application (such as an e-mail address). After that, the "
+"user can proceed with activation."
+msgstr ""
+"Τα Social Networks που έχουν ενεργοποιηθεί για ταυτοποίηση χρηστών από την "
+"εφαρμογή διαχείρισης αναφέρονται κάτω από το μενού <b>Διαχείριση</b>. "
+"Μετά την ταυτοποίηση ο χρήστης ίσως χρειαστεί να παράσχει στοιχεία που τυχόν λείπουν και"
+"απαιτούνται από την εφαρμογή (όπως η διεύθυνση e-mail). Στη συνέχεια ο "
+"χρήστης μπορεί να προχωρήσει στη διαδικασία ενεργοποίησης του λογαριασμού του."
 
 #: templates/front/management.html:20
-msgid ""
-"The following are the requirements for admitting administrators to the "
-"management application. Having fulfilled these, an administrator can log in "
-"by selecting Shibboleth from the <b>manage</b> drop down menu on top."
-msgstr ""
-"Τα ακόλουθα απαιτούνται για να αποκτήσει πρόσβαση ένας διαχειριστής στην "
-"εφαρμογή. Έχοντας εκπληρώσει αυτές τις προϋποθέσεις ο διαχειριστής μπορεί να "
-"συνδεθεί στην εφαρμογή χρησιμοποιώντας την επιλογή Shibboleth από από το μενού <b>Διαχείριση</b> στο "
-"επάνω μέρος της σελίδας."
-
-#: templates/front/management.html:23
 msgid "Authentication and authorization are carried out through a"
 msgstr "Η ταυτοποίηση και εξουσιοδότηση των χρηστών πραγματοποιείται μέσω ενός"
 
-#: templates/front/management.html:24
+#: templates/front/management.html:21
 msgid ""
 "The following attributes are required for administrators and must be "
 "released by their home IdPs to the SP"
@@ -982,27 +973,27 @@ msgstr ""
 "Τα εξής χαρακτηριστικά απαιτούνται για τους διαχειριστές και πρέπει να "
 "απελευθερώνονται από τον οικείο IdP προς τον SP"
 
-#: templates/front/management.html:24
+#: templates/front/management.html:21
 msgid "according to the"
 msgstr "σύμφωνα με την"
 
-#: templates/front/management.html:24
+#: templates/front/management.html:21
 msgid "policy and procedures documentation"
 msgstr "τεκμηρίωση πολιτικής και διαδικασιών"
 
-#: templates/front/management.html:24
+#: templates/front/management.html:21
 msgid "provided by the GRNET AAI federation"
 msgstr "που παρέχεται από την Ομοσπονδία AAI του ΕΔΕΤ"
 
-#: templates/front/management.html:26
+#: templates/front/management.html:23
 msgid "Attribute"
 msgstr "Χαρακτηριστικό"
 
-#: templates/front/management.html:26
+#: templates/front/management.html:23
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: templates/front/management.html:28
+#: templates/front/management.html:25
 msgid ""
 "Provides a string that uniquely identifies an administrator in the "
 "management application."
@@ -1010,13 +1001,13 @@ msgstr ""
 "Παρέχει μια συμβολοσειρά κειμένου που χρησιμοποιείται ως μοναδικό "
 "αναγνωριστικό του διαχεριστή στην εφαρμογή διαχείρισης."
 
-#: templates/front/management.html:29
+#: templates/front/management.html:26
 msgid "A specific URN value must be provided to authorize an administrator:"
 msgstr ""
 "Μια συγκεκριμένη τιμή σε μορφή URN πρέπει να επιστρέφεται προκειμένου ένας "
 "χρήστης να εξουσιοδοτείται ως διαχειριστής:"
 
-#: templates/front/management.html:30
+#: templates/front/management.html:27
 msgid ""
 "The e-mail address (one or more) of the administrator. It is used for "
 "notifications from the management application. It may also be used for "
@@ -1026,15 +1017,15 @@ msgstr ""
 "ειδοποιήσεις από την εφαρμογή διαχείρισης. Μπορεί επίσης να χρησιμοποιηθεί "
 "για περαιτέρω επικοινωνία με το διαχειριστή, με προηγούμενη συγκατάθεσή του."
 
-#: templates/front/management.html:31
+#: templates/front/management.html:28
 msgid "The person's first name."
 msgstr "Το όνομα του διαχειριστή."
 
-#: templates/front/management.html:32
+#: templates/front/management.html:29
 msgid "The person's last name."
 msgstr "Το επώνυμο του διαχειριστή."
 
-#: templates/front/management.html:36
+#: templates/front/management.html:33
 msgid ""
 "Once attribute release is setup properly an administrator can login to the "
 "management application."
@@ -1042,7 +1033,7 @@ msgstr ""
 "Εφόσον απελευθερώνονται τα απαραίτητα χαρακτηριστικά, ο διαχειριστής μπορεί "
 "να συνδεθεί στην εφαρμογή διαχείρισης."
 
-#: templates/front/management.html:39
+#: templates/front/management.html:36
 msgid ""
 "After the first login, administrators are asked to associate their account "
 "with the institution they want to manage. Their choice must then be ratified "
@@ -1056,7 +1047,7 @@ msgstr ""
 "θα ενημερωθεί μέσω e-mail ότι μπορεί να ξεκινήσει να χρησιμοποιεί την "
 "εφαρμογή διαχειρίσης."
 
-#: templates/front/management.html:42
+#: templates/front/management.html:39
 msgid ""
 "Among other things, the metadata provided by administrators through the "
 "management application are used to compile database data for the federation"
@@ -1158,6 +1149,29 @@ msgstr "Ενεργοποίηση"
 #: templates/registration/activation_complete.html:29
 msgid "The user will be notified about his/her account activation"
 msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
+
+#, fuzzy
+#~ msgid ""
+#~ "The following are the requirements for admitting administrators to the "
+#~ "management application. Having fulfilled these, an administrator can log "
+#~ "in by clicking Manage below or by selecting Manage from the top menu."
+#~ msgstr ""
+#~ "Τα ακόλουθα απαιτούνται για να αποκτήσει πρόσβαση ένας διαχειριστής στην "
+#~ "εφαρμογή. Έχοντας εκπληρώσει αυτές τις προϋποθέσεις ο διαχειριστής μπορεί "
+#~ "να συνδεθεί στην εφαρμογή χρησιμοποιώντας την επιλογή Shibboleth από από "
+#~ "το μενού <b>Διαχείριση</b> στο επάνω μέρος της σελίδας."
+
+#~ msgid ""
+#~ "Management can be carried out by users with a valid social media account. "
+#~ "The supported social media are depicted under the <b>manage</b> drop down "
+#~ "menu on top. Users can authenticate via their social media account. Once "
+#~ "they are activated they can manage their data"
+#~ msgstr ""
+#~ "Η διαχείριση μπορεί να πραγματοποιηθεί από χρήστες με λογαριασμούς social "
+#~ "media.Τα social media που επιτρέπουν τη διαχείριση παρουσιάζονται κάτω "
+#~ "από το μενού <b>Διαχείριση</b> στο επάνω μέρος της σελίδας. Οι "
+#~ "διαχειριστές ταυτοποιούνται με το social media λογαρισμό τους. Αφού "
+#~ "ενεργοποιηθούν, αποκτούν πρόσβαση στα δεδομένα του ιδρύματός τους"
 
 #~ msgid "GRNET NOC"
 #~ msgstr "το NOC του ΕΔΕΤ"

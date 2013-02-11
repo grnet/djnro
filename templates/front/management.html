@@ -11,15 +11,12 @@
 			<hr>
 			<div class="span6">
 				<p>{% blocktrans %}The management application provides an interface for administrators of federation member institutions to maintain the data that is necessary for participating in the federation.{% endblocktrans %}</p>
-				<p>{% blocktrans %}Administrators can login to management either via a social media account or via Shibboleth: {% endblocktrans %}</p>
-				<h5>Social Media</h5>
+				<p>{% blocktrans %}Administrators can log in using either Social Networks or the AAI Federation:{% endblocktrans %}</p>
+				<h5>Social Networks</h5>
 				<hr>
-				<p>{% blocktrans %}Management can be carried out by users with a valid social media account. The supported social media are depicted under the <b>manage</b> drop down menu on top. Users can authenticate via their social media account. Once they are activated they can manage their data{% endblocktrans %}</p>
-				<h5>Shibboleth</h5>
+				<p>{% blocktrans %}Social networks that have been enabled for authenticating users to the management application are listed under the <b>Manage</b> drop-down menu. Once authenticated, a user may need to assert any missing information that is required by the application (such as an e-mail address). After that, the user can proceed with activation.{% endblocktrans %}</p>
+				<h5>AAI Federation</h5>
 				<hr>
-				<p>{% blocktrans %}The following are the requirements for admitting administrators to the management application. Having fulfilled these, an administrator can log in by selecting Shibboleth from the <b>manage</b> drop down menu on top.{% endblocktrans %}</p>
-				
-
 				<p>{% blocktrans %}Authentication and authorization are carried out through a{% endblocktrans %} <a href="http://shibboleth.net/products/service-provider.html">Shibboleth SP</a>.</p>
 				<p>{% blocktrans %}The following attributes are required for administrators and must be released by their home IdPs to the SP{% endblocktrans %} {% trans "according to the" %} <a href="http://aai.grnet.gr/documentation">{% trans "policy and procedures documentation" %}</a> {% trans "provided by the GRNET AAI federation" %}:
 					<table class="table table-bordered">
