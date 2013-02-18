@@ -27,7 +27,7 @@ Django Social Auth
 
 User authentication via social media is carried out by the `python-django-social-auth <http://http://django-social-auth.readthedocs.org/en/latest/index.html>`_ python-django-social-auth package. If your distro includes it, then go via your distro installation.
 
-In any case we have included python-django-social-auth as an application inside the eduroam Django project.
+In any case we have included python-django-social-auth as an application inside the djnro Django project.
 
 Django Social Auth: Requirements - Dependencies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

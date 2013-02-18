@@ -2,9 +2,9 @@ import os
 import sys
 
 sys.path.append('/path/to/')
-sys.path.append('/path/to/eduroam')
+sys.path.append('/path/to/djnro')
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'eduroam.settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'djnro.settings'
 
 
 

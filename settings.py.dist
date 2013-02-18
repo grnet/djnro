@@ -1,4 +1,4 @@
-# Django settings for eduroam project.
+# Django settings for djnro project.
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 #Copyright © 2011-2013 Greek Research and Technology Network (GRNET S.A.)
@@ -95,8 +95,8 @@ SECRET_KEY = 'x)gmuyo2h=l@tmpyh4b(-!gki%@u$-=3^@z+vf&&!ci7$*!+k9'
 
 
 AUTHENTICATION_BACKENDS = (
-    'eduroam.djangobackends.shibauthBackend.shibauthBackend',    
-    'eduroam.djangobackends.ldapBackend.ldapBackend',    
+    'djnro.djangobackends.shibauthBackend.shibauthBackend',    
+    'djnro.djangobackends.ldapBackend.ldapBackend',    
     'social_auth.backends.twitter.TwitterBackend',
     #'social_auth.backends.facebook.FacebookBackend',
     'social_auth.backends.google.GoogleBackend',
@@ -141,7 +141,7 @@ MIDDLEWARE_CLASSES = (
     'edumanage.middleware.WrongBackendExceptionMiddleware',
 )
 
-ROOT_URLCONF = 'eduroam.urls'
+ROOT_URLCONF = 'djnro.urls'
 
 TEMPLATE_DIRS = (
     "/example/templates"

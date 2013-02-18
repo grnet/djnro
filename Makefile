@@ -1,4 +1,4 @@
-# Makefile for DjNRO (eduroam)
+# Makefile for DjNRO
 #
 
 # You can set these variables from the command line.
@@ -15,8 +15,8 @@ PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
 ALLSPHINXOPTS   = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS)
 SPHINXFILES     = $(DOCSDIR)/$(SRCDIR)/*
-eduroampytag = $(shell git describe --abbrev=0)
-eduroampyver = $(shell git describe --abbrev=0 | egrep -o '([0-9]+\.){1,10}[0-9]+' | sed -e 's/\./_/g')
+djnropytag = $(shell git describe --abbrev=0)
+djnropyver = $(shell git describe --abbrev=0 | egrep -o '([0-9]+\.){1,10}[0-9]+' | sed -e 's/\./_/g')
 name   	   = $(shell basename $(shell pwd))
 
 .PHONY: help doc docclean dist distclean
@@ -30,8 +30,8 @@ help:
 	@echo "  distclean  to delete tar dist file"
 	
 dist: 
-	git archive --format tar --prefix $(name)-$(eduroampyver)/ -o $(name)-$(eduroampyver).tar $(eduroampytag)
-	gzip -f $(name)-$(eduroampyver).tar
+	git archive --format tar --prefix $(name)-$(djnropyver)/ -o $(name)-$(djnropyver).tar $(djnropytag)
+	gzip -f $(name)-$(djnropyver).tar
 distclean:
 	@rm -f *tar.gz
 	

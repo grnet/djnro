@@ -4,11 +4,11 @@ Installation/Configuration
 =========================================================================
 .. contents::
 
-Assuming that you have installed all the required packages as described in :ref:`require-label` you can install the eduroam platform application.
+Assuming that you have installed all the required packages as described in :ref:`require-label` you can install the djnro platform application.
 
 Currently the source code is availiable at code.grnet.gr and can be cloned via git::
 
-	git clone https://code.grnet.gr/git/eduroam
+	git clone https://code.grnet.gr/git/djnro
 
 As with the majority of Django projects, settings.py has to be properly configured and then comes the population of the database.
 
@@ -49,7 +49,7 @@ Set your static url::
 Django social auth needs changes in the Authentication Backends depending on which social auth you want to enable::
 	
 	AUTHENTICATION_BACKENDS = (
-	    'eduroam.djangobackends.shibauthBackend.shibauthBackend',    
+	    'djnro.djangobackends.shibauthBackend.shibauthBackend',    
 		...
 		'django.contrib.auth.backends.ModelBackend',
 	)
@@ -190,8 +190,8 @@ Running the server
 
 We suggest going via Apache with mod_wsgi. Below is an example configuration::
 
-	WSGIDaemonProcess	eduroam		processes=3 threads=20 display-name=%{GROUP}
-	WSGIProcessGroup	eduroam
+	WSGIDaemonProcess	djnro		processes=3 threads=20 display-name=%{GROUP}
+	WSGIProcessGroup	djnro
 	
 	...
 	
@@ -224,8 +224,8 @@ We suggest going via Apache with mod_wsgi. Below is an example configuration::
 		</Location>
 	
 		
-		Alias /static 		/path/to/eduroam/static
-		WSGIScriptAlias /      /path/to/eduroam/apache/django.wsgi
+		Alias /static 		/path/to/djnro/static
+		WSGIScriptAlias /      /path/to/djnro/apache/django.wsgi
 	</VirtualHost>
 
 *Info*: It is strongly suggested to allow access to /admin|overview|alt-login *ONLY* from trusted subnets.

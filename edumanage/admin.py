@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-.
 from django.contrib import admin
-from eduroam.edumanage.models import *
+from edumanage.models import *
 
 from django.contrib.contenttypes import generic
 

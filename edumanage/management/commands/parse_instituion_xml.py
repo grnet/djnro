@@ -8,7 +8,7 @@ from django.conf import settings
 
 class Command(BaseCommand):
     args = ''
-    help = 'Fetches the kml from eduroam.org and updates cache'
+    help = 'Parses the institution XML file and creates institution, institution realm, contact and service point entries'
 
     def handle(self, *args, **options):
         file = settings.INST_XML_FILE
