@@ -85,6 +85,14 @@ Set your cache backend (if you want to use one)::
 	
 	CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
 
+Models Name_i18n and URL_i18n include a language choice field
+If languages are the same with LANGUAGES variable, simply do URL_NAME_LANGS = LANGUAGES else set your own::
+
+	URL_NAME_LANGS = (
+	        ('en', 'English' ),
+	        ('el', 'Ελληνικά'),
+	    )
+
 NRO specific parameters. Affect html templates::
 
 	# Frontend country specific vars, eg. Greece
@@ -239,4 +247,4 @@ The approach in the application is that the NRO sets the environment for the loc
 
 Next Steps (Set your Logo)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder
+The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
