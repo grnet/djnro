@@ -3,13 +3,14 @@
 
 # You can set these variables from the command line.
 
-VERSION	        = "0.8.5"
+VERSION	        = $(shell git describe --abbrev=0 | egrep -o '([0-9]+\.){1,10}[0-9]+')
 SPHINXOPTS      = -D version=$(VERSION) -D release=$(VERSION)
 SPHINXBUILD     = sphinx-build
 PAPER           =
 DOCSDIR			= docs
 SRCDIR          = source
 BUILDDIR        = docbuild
+GHDOCDIR		= documentation
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
@@ -47,3 +48,11 @@ $(BUILDDIR)/html: $(SPHINXFILES)
 		{ echo 'sphinx-build' not found during configure; exit 1; }
 	sphinx-build -b html \
 		$(ALLSPHINXOPTS) -d $(BUILDDIR)/doctrees $(DOCSDIR)/$(SRCDIR) $(BUILDDIR)/html
+
+gh-pages:
+	@rm -rf $(BUILDDIR)
+	@rm -rf $(GHDOCDIR)
+	@make doc
+	@mv $(BUILDDIR)/html/ $(GHDOCDIR)
+	@mv $(GHDOCDIR)/_static $(GHDOCDIR)/static	
+	find ./$(GHDOCDIR) -type f  -name "*.html" -exec sed -i 's/_static\//static\//g' {} \;
