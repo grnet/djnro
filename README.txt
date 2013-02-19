@@ -25,20 +25,25 @@ Keeping in pace with eduroam's federated nature, the implementation uses federat
 The local institution eduroam administrators can become DjNRO admins. Local eduroam administrators register to the application via Shibboleth. 
 Once the accounts are acitvated, local eduroam admins can manage their eduroam locations, contact points and institution information. 
  
+For detailed installation/configuration steps and options, you can read DjNRO's documentation
 
 1. Tool requirements
 
-* python-django
+DjNRO heavily depends on the following:
+
+* Python (<3 & >=2.6)
+* Django (>=1.2) - python-django
+* memcached
 * python-django-extensions
-* python-mysqldb
+* python-mysqldb (If you wish to use MySQL as the DB backend)
 * mysql-client-5.1
 * python-ipaddr
-* python-django-south
-* python-django-tinymce
-* python-memcache
-* python-django-registration
-* apache2
-* apache2-mod-rewrite
+* python-django-south (For database migrations)
+* python-django-tinymce (Flatpages editing made easier)
+* python-memcache (Yeap! You need that for Google maps locations caching)
+* python-django-registration (User activation made easy)
+* apache2 (We suggest apache with mod_rewrite enabled - use your preferred server)
+* libapache2-mod-wsgi
 * apache2-shibboleth : The server should be setup as a Shibboleth SP
 * A mail server - Tested with exim
 * python-django-social-auth
