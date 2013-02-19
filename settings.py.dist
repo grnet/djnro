@@ -199,6 +199,13 @@ TINYMCE_DEFAULT_CONFIG = {
 
 CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
 
+#Name_i18n, URL_i18n, language choice field
+# If it's the same with LANGUAGES, simply do URL_NAME_LANGS = LANGUAGES
+URL_NAME_LANGS = (
+        ('en', 'English' ),
+        ('el', 'Ελληνικά'),
+    )
+
 # Frontend country specific vars, eg. Greece
 NRO_COUNTRY_NAME = _('My Country')
 # Variable used by context_processor to display the "eduroam | <country_code>" in base.html 
