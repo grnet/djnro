@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Required Packages &mdash; DjNRO v0.8 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DjNRO v0.8 documentation" href="index.html" />
+    <link rel="next" title="Installation/Configuration" href="install.html" />
+    <link rel="prev" title="DjNRO: Django National Roaming Operator or how to manage your eduroam database" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="install.html" title="Installation/Configuration"
+             accesskey="N">next</a></li>
+        <li class="right" >
+          <a href="index.html" title="DjNRO: Django National Roaming Operator or how to manage your eduroam database"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">DjNRO v0.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Required Packages</a><ul>
+<li><a class="reference external" href="#django-social-auth">Django Social Auth</a><ul>
+<li><a class="reference external" href="#django-social-auth-requirements-dependencies">Django Social Auth: Requirements - Dependencies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="index.html"
+                                  title="previous chapter">DjNRO: Django National Roaming Operator or how to manage your eduroam database</a></p>
+            <h4>Next topic</h4>
+            <p class="topless"><a href="install.html"
+                                  title="next chapter">Installation/Configuration</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/require.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="required-packages">
+<span id="require-label"></span><h1>Required Packages<a class="headerlink" href="#required-packages" title="Permalink to this headline">¶</a></h1>
+<p>DjNRO heavily depends on the following:</p>
+<ul class="simple">
+<li>Python (&lt;3 &amp; &gt;=2.6)</li>
+<li>Django (&gt;=1.2) - python-django</li>
+<li>python-django-extensions</li>
+<li>python-mysqldb (If you wish to use MySQL as the DB backend)</li>
+<li>mysql-client-5.1</li>
+<li>python-ipaddr</li>
+<li>python-django-south (For database migrations)</li>
+<li>python-django-tinymce (Flatpages editing made easier)</li>
+<li>python-memcache (Yeap! You need that for Google maps locations caching)</li>
+<li>python-django-registration (User activation made easy)</li>
+<li>apache2 (We suggest apache - use your preferred one)</li>
+<li>apache2-mod-rewrite</li>
+<li>apache2-mod-wsgi</li>
+<li>apache2-shibboleth : The server should be setup as a Shibboleth SP</li>
+<li>A mail server - Tested with exim</li>
+</ul>
+<div class="section" id="django-social-auth">
+<h2>Django Social Auth<a class="headerlink" href="#django-social-auth" title="Permalink to this headline">¶</a></h2>
+<p>User authentication via social media is carried out by the <a class="reference external" href="http://http://django-social-auth.readthedocs.org/en/latest/index.html">python-django-social-auth</a> python-django-social-auth package. If your distro includes it, then go via your distro installation.</p>
+<p>In any case we have included python-django-social-auth as an application inside the djnro Django project.</p>
+<div class="section" id="django-social-auth-requirements-dependencies">
+<h3>Django Social Auth: Requirements - Dependencies<a class="headerlink" href="#django-social-auth-requirements-dependencies" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>python-django-social-auth</li>
+</ul>
+<blockquote>
+<ul class="simple">
+<li>OpenId support depends on python-openid</li>
+<li>OAuth support depends on python-oauth2</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="install.html" title="Installation/Configuration"
+             >next</a></li>
+        <li class="right" >
+          <a href="index.html" title="DjNRO: Django National Roaming Operator or how to manage your eduroam database"
+             >previous</a> |</li>
+        <li><a href="index.html">DjNRO v0.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2013, GRNET S.A. - Designed and developed by Leonidas Poulopoulos and Zenon Mousmoulas - GRNET NOC.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+    </div>
+  </body>
+</html>

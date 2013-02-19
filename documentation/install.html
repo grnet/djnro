@@ -1,0 +1,341 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation/Configuration &mdash; DjNRO v0.8 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DjNRO v0.8 documentation" href="index.html" />
+    <link rel="prev" title="Required Packages" href="require.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="require.html" title="Required Packages"
+             accesskey="P">previous</a></li>
+        <li><a href="index.html">DjNRO v0.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="index.html">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="index.html">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">Installation/Configuration</a><ul>
+<li><a class="reference external" href="#project-settings-settings-py">Project Settings (settings.py)</a></li>
+<li><a class="reference external" href="#database-sync">Database Sync</a></li>
+<li><a class="reference external" href="#running-the-server">Running the server</a></li>
+<li><a class="reference external" href="#initial-data">Initial Data</a></li>
+<li><a class="reference external" href="#next-steps-set-your-logo">Next Steps (Set your Logo)</a></li>
+</ul>
+</li>
+</ul>
+
+            <h4>Previous topic</h4>
+            <p class="topless"><a href="require.html"
+                                  title="previous chapter">Required Packages</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/install.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="installation-configuration">
+<span id="install-label"></span><h1><a class="toc-backref" href="#id1">Installation/Configuration</a><a class="headerlink" href="#installation-configuration" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#installation-configuration" id="id1">Installation/Configuration</a><ul>
+<li><a class="reference internal" href="#project-settings-settings-py" id="id2">Project Settings (settings.py)</a></li>
+<li><a class="reference internal" href="#database-sync" id="id3">Database Sync</a></li>
+<li><a class="reference internal" href="#running-the-server" id="id4">Running the server</a></li>
+<li><a class="reference internal" href="#initial-data" id="id5">Initial Data</a></li>
+<li><a class="reference internal" href="#next-steps-set-your-logo" id="id6">Next Steps (Set your Logo)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Assuming that you have installed all the required packages as described in <a class="reference external" href="require.html#require-label"><em>Required Packages</em></a> you can install the djnro platform application.</p>
+<p>Currently the source code is availiable at code.grnet.gr and can be cloned via git:</p>
+<div class="highlight-python"><pre>git clone https://code.grnet.gr/git/djnro</pre>
+</div>
+<p>As with the majority of Django projects, settings.py has to be properly configured and then comes the population of the database.</p>
+<ul class="simple">
+<li>Copy the urls.py.dist to urls.py</li>
+<li>Copy the settings.py.dist to settings.py</li>
+<li>Copy the apache/django.wsgi.dist to apache/django.wsgi and <em>edit</em> according to your needs.</li>
+</ul>
+<div class="section" id="project-settings-settings-py">
+<h2><a class="toc-backref" href="#id2">Project Settings (settings.py)</a><a class="headerlink" href="#project-settings-settings-py" title="Permalink to this headline">¶</a></h2>
+<p>The following variables/settings need to be altered or set:</p>
+<p>Set Admin contacts:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ADMINS</span> <span class="o">=</span> <span class="p">(</span>
+     <span class="p">(</span><span class="s">&#39;Admin&#39;</span><span class="p">,</span> <span class="s">&#39;admin@example.com&#39;</span><span class="p">),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Set the database connection params:</p>
+<div class="highlight-python"><pre>DATABASES = {
+    ...
+}</pre>
+</div>
+<p>Set your timezone and Languages:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">TIME_ZONE</span> <span class="o">=</span> <span class="s">&#39;Europe/Athens&#39;</span>
+
+<span class="n">LANGUAGES</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="p">(</span><span class="s">&#39;el&#39;</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;Greek&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s">&#39;en&#39;</span><span class="p">,</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;English&#39;</span><span class="p">)),</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Set your static url:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">STATIC_URL</span> <span class="o">=</span> <span class="s">&#39;/example/static&#39;</span>
+</pre></div>
+</div>
+<p>Django social auth needs changes in the Authentication Backends depending on which social auth you want to enable:</p>
+<div class="highlight-python"><pre>AUTHENTICATION_BACKENDS = (
+    'djnro.djangobackends.shibauthBackend.shibauthBackend',
+        ...
+        'django.contrib.auth.backends.ModelBackend',
+)</pre>
+</div>
+<p>Set your template dirs:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">TEMPLATE_DIRS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&quot;/example/templates&quot;</span>
+    <span class="c"># Put strings here, like &quot;/home/html/django_templates&quot; or &quot;C:/www/django/templates&quot;.</span>
+    <span class="c"># Always use forward slashes, even on Windows.</span>
+    <span class="c"># Don&#39;t forget to use absolute paths, not relative paths.</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>As the application includes a &#8220;Nearest Eduroam&#8221; functionality, world eduroam points are harvested via the eduroam.org kml file:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">EDUROAM_KML_URL</span> <span class="o">=</span> <span class="s">&#39;http://monitor.eduroam.org/kml/all.kml&#39;</span>
+</pre></div>
+</div>
+<p>Depending on your AAI policy set an appropriate authEntitlement</p>
+<blockquote>
+SHIB_AUTH_ENTITLEMENT = &#8216;<a class="reference external" href="urn:mace:example.com:pki:user">urn:mace:example.com:pki:user</a>&#8216;</blockquote>
+<p>Mail server parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">SERVER_EMAIL</span> <span class="o">=</span> <span class="s">&quot;Example domain eduroam Service &lt;noreply@example.com&gt;&quot;</span>
+<span class="n">EMAIL_SUBJECT_PREFIX</span> <span class="o">=</span> <span class="s">&quot;[eduroam] &quot;</span>
+</pre></div>
+</div>
+<p>NRO contact mails:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">NOTIFY_ADMIN_MAILS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;mail1@example.com&quot;</span><span class="p">,</span> <span class="s">&quot;mail2@example.com&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Set your cache backend (if you want to use one):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">CACHE_BACKEND</span> <span class="o">=</span> <span class="s">&#39;memcached://127.0.0.1:11211/?timeout=5184000&#39;</span>
+</pre></div>
+</div>
+<p>NRO specific parameters. Affect html templates:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Frontend country specific vars, eg. Greece</span>
+<span class="n">NRO_COUNTRY_NAME</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;My Country&#39;</span><span class="p">)</span>
+<span class="c"># Variable used by context_processor to display the &quot;eduroam | &lt;country_code&gt;&quot; in base.html</span>
+<span class="n">NRO_COUNTRY_CODE</span> <span class="o">=</span> <span class="s">&#39;gr&#39;</span>
+<span class="c"># main domain url used in right top icon, eg. http://www.grnet.gr</span>
+<span class="n">NRO_DOMAIN_MAIN_URL</span> <span class="o">=</span> <span class="s">&quot;http://www.example.com&quot;</span>
+<span class="c"># developer info for footer</span>
+<span class="n">NRO_DEV_BY_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;EXAMPLE DEV TEAM&quot;</span><span class="p">,</span> <span class="s">&quot;url&quot;</span><span class="p">:</span> <span class="s">&quot;http://devteam.example.com&quot;</span><span class="p">}</span>
+<span class="c">#NRO social media contact (Use: // to preserve https)</span>
+<span class="n">NRO_DEV_SOCIAL_MEDIA_CONTACT</span> <span class="o">=</span> <span class="p">[</span>
+                                <span class="p">{</span><span class="s">&quot;url&quot;</span><span class="p">:</span><span class="s">&quot;//soc.media.url&quot;</span><span class="p">,</span> <span class="s">&quot;icon&quot;</span><span class="p">:</span><span class="s">&quot;icon.png&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;NAME1(eg. Facebook)&quot;</span><span class="p">},</span>
+                                <span class="p">{</span><span class="s">&quot;url&quot;</span><span class="p">:</span><span class="s">&quot;//soc.media.url&quot;</span><span class="p">,</span> <span class="s">&quot;icon&quot;</span><span class="p">:</span><span class="s">&quot;icon.png&quot;</span><span class="p">,</span>  <span class="s">&quot;name&quot;</span><span class="p">:</span><span class="s">&quot;NAME2(eg. Twitter)&quot;</span><span class="p">},</span>
+                                <span class="p">]</span>
+<span class="c"># map center (lat, lng)</span>
+<span class="n">MAP_CENTER</span> <span class="o">=</span> <span class="p">(</span><span class="mf">36.97</span><span class="p">,</span> <span class="mf">23.71</span><span class="p">)</span>
+<span class="c">#Helpdesk, used in base.html:</span>
+<span class="n">NRO_DOMAIN_HELPDESK_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="n">_</span><span class="p">(</span><span class="s">&quot;Domain Helpdesk&quot;</span><span class="p">),</span> <span class="s">&#39;email&#39;</span><span class="p">:</span><span class="s">&#39;helpdesk@example.com&#39;</span><span class="p">,</span> <span class="s">&#39;phone&#39;</span><span class="p">:</span> <span class="s">&#39;12324567890&#39;</span><span class="p">,</span> <span class="s">&#39;uri&#39;</span><span class="p">:</span> <span class="s">&#39;helpdesk.example.com&#39;</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>Set the Realm country for REALM model:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#Countries for Realm model:</span>
+<span class="n">REALM_COUNTRIES</span> <span class="o">=</span> <span class="p">(</span>
+             <span class="p">(</span><span class="s">&#39;country_2letters&#39;</span><span class="p">,</span> <span class="s">&#39;Country&#39;</span> <span class="p">),</span>
+            <span class="p">)</span>
+</pre></div>
+</div>
+<p>Shibboleth attribute MAP according to your AAI policy:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c">#Shibboleth attribute map</span>
+<span class="n">SHIB_USERNAME</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;HTTP_EPPN&#39;</span><span class="p">]</span>
+<span class="n">SHIB_MAIL</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;mail&#39;</span><span class="p">,</span> <span class="s">&#39;HTTP_MAIL&#39;</span><span class="p">,</span> <span class="s">&#39;HTTP_SHIB_INETORGPERSON_MAIL&#39;</span><span class="p">]</span>
+<span class="n">SHIB_FIRSTNAME</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;HTTP_SHIB_INETORGPERSON_GIVENNAME&#39;</span><span class="p">]</span>
+<span class="n">SHIB_LASTNAME</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;HTTP_SHIB_PERSON_SURNAME&#39;</span><span class="p">]</span>
+<span class="n">SHIB_ENTITLEMENT</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;HTTP_SHIB_EP_ENTITLEMENT&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Django Social Auth parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">TWITTER_CONSUMER_KEY</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+<span class="n">TWITTER_CONSUMER_SECRET</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+<span class="n">FACEBOOK_APP_ID</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+<span class="n">FACEBOOK_API_SECRET</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+<span class="n">LINKEDIN_CONSUMER_KEY</span>        <span class="o">=</span> <span class="s">&#39;&#39;</span>
+<span class="n">LINKEDIN_CONSUMER_SECRET</span>     <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+<span class="n">LINKEDIN_SCOPE</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;r_basicprofile&#39;</span><span class="p">,</span> <span class="s">&#39;r_emailaddress&#39;</span><span class="p">]</span>
+<span class="n">LINKEDIN_EXTRA_FIELD_SELECTORS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;email-address&#39;</span><span class="p">,</span> <span class="s">&#39;headline&#39;</span><span class="p">,</span> <span class="s">&#39;industry&#39;</span><span class="p">]</span>
+<span class="n">LINKEDIN_EXTRA_DATA</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;id&#39;</span><span class="p">,</span> <span class="s">&#39;id&#39;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s">&#39;first-name&#39;</span><span class="p">,</span> <span class="s">&#39;first_name&#39;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s">&#39;last-name&#39;</span><span class="p">,</span> <span class="s">&#39;last_name&#39;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s">&#39;email-address&#39;</span><span class="p">,</span> <span class="s">&#39;email_address&#39;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s">&#39;headline&#39;</span><span class="p">,</span> <span class="s">&#39;headline&#39;</span><span class="p">),</span>
+                       <span class="p">(</span><span class="s">&#39;industry&#39;</span><span class="p">,</span> <span class="s">&#39;industry&#39;</span><span class="p">)]</span>
+
+<span class="n">YAHOO_CONSUMER_KEY</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+<span class="n">YAHOO_CONSUMER_SECRET</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+
+<span class="n">GOOGLE_SREG_EXTRA_DATA</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">SOCIAL_AUTH_FORCE_POST_DISCONNECT</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="n">FACEBOOK_EXTENDED_PERMISSIONS</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;email&#39;</span><span class="p">]</span>
+
+<span class="n">SOCIAL_AUTH_LOGIN_REDIRECT_URL</span> <span class="o">=</span> <span class="s">&#39;/manage/&#39;</span>
+<span class="n">LOGIN_REDIRECT_URL</span> <span class="o">=</span> <span class="s">&#39;/manage/&#39;</span>
+<span class="n">SOCIAL_AUTH_INACTIVE_USER_URL</span> <span class="o">=</span> <span class="s">&#39;/manage/&#39;</span>
+
+<span class="n">SOCIAL_AUTH_FORCE_POST_DISCONNECT</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">SOCIAL_AUTH_REDIRECT_IS_HTTPS</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">SOCIAL_AUTH_CREATE_USERS</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="n">SOCIAL_AUTH_FORCE_RANDOM_USERNAME</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">SOCIAL_AUTH_SANITIZE_REDIRECTS</span> <span class="o">=</span> <span class="bp">False</span>
+
+
+
+<span class="n">SOCIAL_AUTH_PIPELINE</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s">&#39;social_auth.backends.pipeline.social.social_auth_user&#39;</span><span class="p">,</span>
+    <span class="s">&#39;social_auth.backends.pipeline.user.get_username&#39;</span><span class="p">,</span>
+    <span class="s">&#39;social_auth.backends.pipeline.user.create_user&#39;</span><span class="p">,</span>
+    <span class="s">&#39;social_auth.backends.pipeline.social.associate_user&#39;</span><span class="p">,</span>
+    <span class="s">&#39;social_auth.backends.pipeline.social.load_extra_data&#39;</span><span class="p">,</span>
+    <span class="s">&#39;social_auth.backends.pipeline.user.update_user_details&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="database-sync">
+<h2><a class="toc-backref" href="#id3">Database Sync</a><a class="headerlink" href="#database-sync" title="Permalink to this headline">¶</a></h2>
+<p>Once you are done with settings.py run:</p>
+<div class="highlight-python"><pre>./manage.py syncdb</pre>
+</div>
+<p>Create a superuser, it comes in handy. And then run south migration to complete:</p>
+<div class="highlight-python"><pre>./manage.py migrate</pre>
+</div>
+<p>Now you should have a clean database with all the tables created.</p>
+</div>
+<div class="section" id="running-the-server">
+<h2><a class="toc-backref" href="#id4">Running the server</a><a class="headerlink" href="#running-the-server" title="Permalink to this headline">¶</a></h2>
+<p>We suggest going via Apache with mod_wsgi. Below is an example configuration:</p>
+<div class="highlight-python"><pre>WSGIDaemonProcess       djnro           processes=3 threads=20 display-name=%{GROUP}
+WSGIProcessGroup        djnro
+
+...
+
+&lt;VirtualHost *:443&gt;
+        ServerName              example.com
+        ServerAdmin             admin@example.com
+        ServerSignature         On
+
+        SSLEngine on
+        SSLCertificateFile      ...
+        SSLCertificateChainFile ...
+        SSLCertificateKeyFile   ...
+
+        # Shibboleth SP configuration
+        ShibConfig              /etc/shibboleth/shibboleth2.xml
+        Alias                   /shibboleth-sp  /usr/share/shibboleth
+
+    # Integration of Shibboleth into Django app:
+
+        &lt;Location /login&gt;
+                AuthType shibboleth
+                ShibRequireSession On
+                ShibUseHeaders On
+                require valid-user
+        &lt;/Location&gt;
+
+
+        &lt;Location /Shibboleth.sso&gt;
+                SetHandler shib
+        &lt;/Location&gt;
+
+
+        Alias /static           /path/to/djnro/static
+        WSGIScriptAlias /      /path/to/djnro/apache/django.wsgi
+&lt;/VirtualHost&gt;</pre>
+</div>
+<p><em>Info</em>: It is strongly suggested to allow access to /admin|overview|alt-login <em>ONLY</em> from trusted subnets.</p>
+<p>Once you are done, restart apache.</p>
+</div>
+<div class="section" id="initial-data">
+<h2><a class="toc-backref" href="#id5">Initial Data</a><a class="headerlink" href="#initial-data" title="Permalink to this headline">¶</a></h2>
+<p>What you really need in the first place is a Realm record along with one or more contacts related to that Realm. Go via the Admin interface, and add a Realm (remember to have set the REALM_COUNTRIES in settings.py).
+The approach in the application is that the NRO sets the environment for the local eduroam admins. Towards that direction, the NRO has to insert the initial data for his/her clients/institutions in the <em>Institutions</em> Model</p>
+</div>
+<div class="section" id="next-steps-set-your-logo">
+<h2><a class="toc-backref" href="#id6">Next Steps (Set your Logo)</a><a class="headerlink" href="#next-steps-set-your-logo" title="Permalink to this headline">¶</a></h2>
+<p>The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="require.html" title="Required Packages"
+             >previous</a></li>
+        <li><a href="index.html">DjNRO v0.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2013, GRNET S.A. - Designed and developed by Leonidas Poulopoulos and Zenon Mousmoulas - GRNET NOC.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+    </div>
+  </body>
+</html>

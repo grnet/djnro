@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>DjNRO: Django National Roaming Operator or how to manage your eduroam database &mdash; DjNRO v0.8 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.8',
+        COLLAPSE_MODINDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="DjNRO v0.8 documentation" href="#" />
+    <link rel="next" title="Required Packages" href="require.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="require.html" title="Required Packages"
+             accesskey="N">next</a></li>
+        <li><a href="#">DjNRO v0.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="#">
+              <img class="logo" src="_static/logo.png" alt="Logo"/>
+            </a></p>
+            <h3><a href="#">Table Of Contents</a></h3>
+            <ul>
+<li><a class="reference external" href="#">DjNRO: Django National Roaming Operator or how to manage your eduroam database</a><ul>
+<li><a class="reference external" href="#about">About</a></li>
+<li><a class="reference external" href="#features">Features</a></li>
+<li><a class="reference external" href="#requirements">Requirements</a><ul>
+</ul>
+</li>
+<li><a class="reference external" href="#installation">Installation</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            <h4>Next topic</h4>
+            <p class="topless"><a href="require.html"
+                                  title="next chapter">Required Packages</a></p>
+            <h3>This Page</h3>
+            <ul class="this-page-menu">
+              <li><a href="_sources/index.txt"
+                     rel="nofollow">Show Source</a></li>
+            </ul>
+          <div id="searchbox" style="display: none">
+            <h3>Quick search</h3>
+              <form class="search" action="search.html" method="get">
+                <input type="text" name="q" size="18" />
+                <input type="submit" value="Go" />
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+              <p class="searchtip" style="font-size: 90%">
+              Enter search terms or a module, class or function name.
+              </p>
+          </div>
+          <script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="djnro-django-national-roaming-operator-or-how-to-manage-your-eduroam-database">
+<h1>DjNRO: Django National Roaming Operator or how to manage your eduroam database<a class="headerlink" href="#djnro-django-national-roaming-operator-or-how-to-manage-your-eduroam-database" title="Permalink to this headline">¶</a></h1>
+<p>DjNRO = Django + NRO</p>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>In the <a class="reference external" href="http://www.eduroam.org">eduroam</a> world, NRO stands for National Roaming Operator.
+Maintaining and managing a local eduroam database is quite an important responsibility of an eduroam NRO.
+eduroam.org periodically polls and gathers information from all participating domains.
+Information is provided upstream, in a structured way (XML format) and consists of participating institutions&#8217; data, location data along with monitoring data - though provisioning of monitoring data has been superseeded by the f-Ticks mechanism.</p>
+<p>The source of information should be the local eduroam database. So, changes to the database should be reflected to the XML files.
+New eduroam locations, changes in contacts and information about each location should be up-to-date so as to ease the eduroam usage and assist eduroam users whenever they need support.</p>
+<p>DjNRO is a Django platform that eases the management process of a National Roaming Operator. DjNRO complies with the <a class="reference external" href="http://monitor.eduroam.org/database.php">eduroam database</a> and the eduroam XSDs.
+Thus, apart from domain management, it can generate the necessary xml files for eduroam.org monitoring.</p>
+<p>DjNRO is more than keeping eduroam.org updated with data.</p>
+<p>In essence it is a distributed management application. It is distributed in the sense that information about each institution locations and services is kept up-to-date by each local eduroam administrator. Keeping in pace with eduroam&#8217;s federated nature, our implementation uses federated authentication/authorisation mechanisms, namely Shibboleth.
+In case Shibboleth is not an option for an institution, a social media auth mechanism comes in handy. The local institution eduroam administrators can become DjNRO admins. Local eduroam administrators register to the platform via Shibboleth or social media auth. The NRO&#8217;s responsibility is to activate their accounts.</p>
+<p>From then on they can manage their eduroam locations, contact points and institution information. The administrative interface especially the locations management part, is heavily implemented with Google Maps. This makes editing easier, faster and accurate.</p>
+<p>Installation and customization is fairly easy and is described in the following sections.</p>
+<p>Currently the source code is availiable at code.grnet.gr and can be cloned via git:</p>
+<div class="highlight-python"><pre>git clone https://code.grnet.gr/git/djnro</pre>
+</div>
+<p>The Greek eduroam webpage is a living example of DjNRO: <a class="reference external" href="http://www.eduroam.gr">eduroam|gr</a></p>
+</div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Allow your local eduroam admins to edit their local eduroam data (AP locations, server params, etc)</li>
+<li>Visualize the information via Google Maps</li>
+<li>Eduroam world maps overview via daily update on eduroam.org KML file</li>
+<li><strong>PLUS</strong>: Find your closest eduroam in the world</li>
+</ul>
+<p>Bootstrap CSS framework with responsive design makes it work on every device</p>
+</div>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="require.html">Required Packages</a><ul>
+<li class="toctree-l2"><a class="reference external" href="require.html#django-social-auth">Django Social Auth</a><ul>
+<li class="toctree-l3"><a class="reference external" href="require.html#django-social-auth-requirements-dependencies">Django Social Auth: Requirements - Dependencies</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="install.html">Installation/Configuration</a><ul>
+<li class="toctree-l2"><a class="reference external" href="install.html#project-settings-settings-py">Project Settings (settings.py)</a></li>
+<li class="toctree-l2"><a class="reference external" href="install.html#database-sync">Database Sync</a></li>
+<li class="toctree-l2"><a class="reference external" href="install.html#running-the-server">Running the server</a></li>
+<li class="toctree-l2"><a class="reference external" href="install.html#initial-data">Initial Data</a></li>
+<li class="toctree-l2"><a class="reference external" href="install.html#next-steps-set-your-logo">Next Steps (Set your Logo)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="require.html" title="Required Packages"
+             >next</a></li>
+        <li><a href="#">DjNRO v0.8 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2013, GRNET S.A. - Designed and developed by Leonidas Poulopoulos and Zenon Mousmoulas - GRNET NOC.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 0.6.6.
+    </div>
+  </body>
+</html>
