@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 
-VERSION	        = "0.8"
+VERSION	        = $(shell git describe --abbrev=0 | egrep -o '([0-9]+\.){1,10}[0-9]+')
 SPHINXOPTS      = -D version=$(VERSION) -D release=$(VERSION)
 SPHINXBUILD     = sphinx-build
 PAPER           =
