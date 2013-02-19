@@ -8,6 +8,7 @@ DjNRO heavily depends on the following:
 
 * Python (<3 & >=2.6)
 * Django (>=1.2) - python-django
+* memcached
 * python-django-extensions
 * python-mysqldb (If you wish to use MySQL as the DB backend)
 * mysql-client-5.1
@@ -16,9 +17,8 @@ DjNRO heavily depends on the following:
 * python-django-tinymce (Flatpages editing made easier)
 * python-memcache (Yeap! You need that for Google maps locations caching)
 * python-django-registration (User activation made easy)
-* apache2 (We suggest apache - use your preferred one)
-* apache2-mod-rewrite
-* apache2-mod-wsgi
+* apache2 (We suggest apache with mod_rewrite enabled - use your preferred server)
+* libapache2-mod-wsgi
 * apache2-shibboleth : The server should be setup as a Shibboleth SP
 * A mail server - Tested with exim
 

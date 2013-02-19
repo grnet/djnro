@@ -166,6 +166,14 @@ SHIB_AUTH_ENTITLEMENT = &#8216;<a class="reference external" href="urn:mace:exam
 <div class="highlight-python"><div class="highlight"><pre><span class="n">CACHE_BACKEND</span> <span class="o">=</span> <span class="s">&#39;memcached://127.0.0.1:11211/?timeout=5184000&#39;</span>
 </pre></div>
 </div>
+<p>Models Name_i18n and URL_i18n include a language choice field
+If languages are the same with LANGUAGES variable, simply do URL_NAME_LANGS = LANGUAGES else set your own:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">URL_NAME_LANGS</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="p">(</span><span class="s">&#39;en&#39;</span><span class="p">,</span> <span class="s">&#39;English&#39;</span> <span class="p">),</span>
+        <span class="p">(</span><span class="s">&#39;el&#39;</span><span class="p">,</span> <span class="s">&#39;Ελληνικά&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
 <p>NRO specific parameters. Affect html templates:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Frontend country specific vars, eg. Greece</span>
 <span class="n">NRO_COUNTRY_NAME</span> <span class="o">=</span> <span class="n">_</span><span class="p">(</span><span class="s">&#39;My Country&#39;</span><span class="p">)</span>
@@ -314,7 +322,7 @@ The approach in the application is that the NRO sets the environment for the loc
 </div>
 <div class="section" id="next-steps-set-your-logo">
 <h2><a class="toc-backref" href="#id6">Next Steps (Set your Logo)</a><a class="headerlink" href="#next-steps-set-your-logo" title="Permalink to this headline">¶</a></h2>
-<p>The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder</p>
+<p>The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).</p>
 </div>
 </div>
 
