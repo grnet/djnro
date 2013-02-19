@@ -101,10 +101,7 @@ class MultiSelectField(models.Field):
 from south.modelsinspector import add_introspection_rules  
 add_introspection_rules([], ["^edumanage\.models\.MultiSelectField"])
 
-LANGS = (
-        ('en', 'English' ),
-        ('el', 'Ελληνικά'),
-    )
+
 
 
 ERTYPES = (
@@ -139,7 +136,7 @@ class Name_i18n(models.Model):
     '''
 
     name = models.CharField(max_length=80)
-    lang = models.CharField(max_length=5, choices=LANGS)
+    lang = models.CharField(max_length=5, choices=settings.URL_NAME_LANGS)
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = generic.GenericForeignKey('content_type', 'object_id')
@@ -190,7 +187,7 @@ class URL_i18n(models.Model):
                 ('policy', 'Policy'),
                )
     url = models.CharField(max_length=180, db_column='URL')
-    lang = models.CharField(max_length=5, choices=LANGS)
+    lang = models.CharField(max_length=5, choices=settings.URL_NAME_LANGS)
     urltype = models.CharField(max_length=10, choices=URLTYPES, db_column='type')
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
@@ -491,7 +488,7 @@ class Realm(models.Model):
     Realm
     '''
 
-    country = models.CharField(max_length=2, choices=settings.REALM_COUNTRIES)
+    country = models.CharField(max_length=5, choices=settings.REALM_COUNTRIES)
     stype = models.PositiveIntegerField(max_length=1, default=0, editable=False)
     # TODO: multiple names can be specified [...] name in English is required
     org_name = generic.GenericRelation(Name_i18n)
