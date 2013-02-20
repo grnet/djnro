@@ -380,8 +380,8 @@ class ServiceLoc(models.Model):
 
     # accept if institutionid.ertype: 2 (sp) or 3 (idpsp) 
     institutionid = models.ForeignKey("Institution", verbose_name="Institution")
-    longitude = models.DecimalField(max_digits=8, decimal_places=6)
-    latitude = models.DecimalField(max_digits=8, decimal_places=6)
+    longitude = models.DecimalField(max_digits=12, decimal_places=8)
+    latitude = models.DecimalField(max_digits=12, decimal_places=8)
     # TODO: multiple names can be specified [...] name in English is required
     loc_name = generic.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=96)

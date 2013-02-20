@@ -39,9 +39,10 @@
 			$("#id_latitude").val('');
 			$("#id_address_street").val('');
 			$("#id_address_city").val('');
-
-			$("#id_longitude").val(position.lng().toPrecision(8));
-			$("#id_latitude").val(position.lat().toPrecision(8));
+			pos_lng = new Number(position.lng().toPrecision(11)).toFixed(8);
+			pos_lat = new Number(position.lat().toPrecision(11)).toFixed(8);
+			$("#id_longitude").val(pos_lng);
+			$("#id_latitude").val(pos_lat);
 			codeLatLng(position);
 		}
 
