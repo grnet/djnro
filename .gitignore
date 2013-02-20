@@ -4,3 +4,6 @@ apache/django.wsgi
 *.pyc
 local.db
 all.kml
+static/img/logo_holder.png
+static/img/logo_small.png
+static/img/right_logo_small.png
