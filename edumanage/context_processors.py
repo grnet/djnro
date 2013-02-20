@@ -8,6 +8,6 @@ def country_code(context):
             'DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL, 
             'DOMAIN_HELPDESK_DICT': settings.NRO_DOMAIN_HELPDESK_DICT,
             'MAP_CENTER': settings.MAP_CENTER,
-            'DEV_TEAM': settings.NRO_DEV_BY_DICT,
-            'SOCIAL_MEDIA_LIST': settings.NRO_DEV_SOCIAL_MEDIA_CONTACT,
+            'PROV_TEAM': settings.NRO_PROV_BY_DICT,
+            'SOCIAL_MEDIA_LIST': settings.NRO_PROV_SOCIAL_MEDIA_CONTACT,
             }
