@@ -1,7 +1,7 @@
 # Django settings for djnro project.
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
-#Copyright © 2011-2013 Greek Research and Technology Network (GRNET S.A.)
+#Copyright Â© 2011-2013 Greek Research and Technology Network (GRNET S.A.)
 #
 #Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr) and
 #Zenon Mousmoulas (zmousm-at-noc-dot-grnet-dot-gr), GRNET NOC
@@ -203,7 +203,7 @@ CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
 # If it's the same with LANGUAGES, simply do URL_NAME_LANGS = LANGUAGES
 URL_NAME_LANGS = (
         ('en', 'English' ),
-        ('el', 'Ελληνικά'),
+        ('el', 'ÎÎ»Î»Î·Î½Î¹ÎºÎ¬'),
     )
 
 # Frontend country specific vars, eg. Greece
@@ -283,7 +283,7 @@ SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 SOCIAL_AUTH_CREATE_USERS = True
 SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
 SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-
+OCIAL_AUTH_SLUGIFY_USERNAMES = True
 
 
 SOCIAL_AUTH_PIPELINE = (
