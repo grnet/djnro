@@ -101,10 +101,10 @@ NRO specific parameters. Affect html templates::
 	NRO_COUNTRY_CODE = 'gr'
 	# main domain url used in right top icon, eg. http://www.grnet.gr
 	NRO_DOMAIN_MAIN_URL = "http://www.example.com"
-	# developer info for footer
-	NRO_DEV_BY_DICT = {"name": "EXAMPLE DEV TEAM", "url": "http://devteam.example.com"}
+	# provider info for footer
+	NRO_PROV_BY_DICT = {"name": "EXAMPLE DEV TEAM", "url": "http://devteam.example.com"}
 	#NRO social media contact (Use: // to preserve https)
-	NRO_DEV_SOCIAL_MEDIA_CONTACT = [
+	NRO_PROV_SOCIAL_MEDIA_CONTACT = [
 	                                {"url":"//soc.media.url", "icon":"icon.png", "name":"NAME1(eg. Facebook)"}, 
 	                                {"url":"//soc.media.url", "icon":"icon.png",  "name":"NAME2(eg. Twitter)"},
 	                                ]
