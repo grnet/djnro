@@ -54,5 +54,5 @@ gh-pages:
 	@rm -rf $(GHDOCDIR)
 	@make doc
 	@mv $(BUILDDIR)/html/ $(GHDOCDIR)
-	@mv $(GHDOCDIR)/_static $(GHDOCDIR)/static	
-	find ./$(GHDOCDIR) -type f  -name "*.html" -exec sed -i 's/_static\//static\//g' {} \;
+	#@mv $(GHDOCDIR)/_static $(GHDOCDIR)/static	
+	#find ./$(GHDOCDIR) -type f  -name "*.html" -exec sed -i 's/_static\//static\//g' {} \;
