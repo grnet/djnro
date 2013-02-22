@@ -13,7 +13,7 @@ DjNRO heavily depends on the following:
 * python-mysqldb (If you wish to use MySQL as the DB backend)
 * mysql-client-5.1
 * python-ipaddr
-* python-django-south (For database migrations)
+* python-django-south (For database migrations). If you deploy MySQL >=5.5 and earlier versions of south (< 0.7.5), you are advised to upgrade to South >=0.7.5, as you may suffer from this `bug <http://south.aeracode.org/ticket/523>`_
 * python-django-tinymce (Flatpages editing made easier)
 * python-memcache (Yeap! You need that for Google maps locations caching)
 * python-django-registration (User activation made easy)
