@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 
-VERSION	        = "0.8.7"
+VERSION	        = "0.8.8"
 SPHINXOPTS      = -D version=$(VERSION) -D release=$(VERSION)
 SPHINXBUILD     = sphinx-build
 PAPER           =
