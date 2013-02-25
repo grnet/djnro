@@ -1,0 +1,9 @@
+Version 0.8.9
+==============
+
+	- Change in context processor in settings.py
+
+Actions if upgrading
+--------------------
+v0.8.8 => v0.8.9
+	* Replace 'django.core.context_processors.auth' with 'django.contrib.auth.context_processors.auth'
