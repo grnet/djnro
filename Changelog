@@ -1,3 +1,10 @@
+Version 0.8.10
+==============
+
+	- Add multiple email field. This closes #3447
+	- Moved encoding to top of settings.py.dist file
+
+
 Version 0.8.9
 ==============
 
