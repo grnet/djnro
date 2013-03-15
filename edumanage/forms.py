@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy
 from edumanage.models import *
 from accounts.models import *
 from django.conf import settings
-
+from edumanage.fields import MultipleEmailsField
 from django.contrib.contenttypes.generic import BaseGenericInlineFormSet
 
 import ipaddr
@@ -28,7 +28,7 @@ class InstRealmMonForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     
-    email = forms.EmailField(required=True)
+    email = MultipleEmailsField(required=True)
     
     class Meta:
         model = UserProfile

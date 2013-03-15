@@ -78,7 +78,7 @@ def activate(request, activation_key):
                                      {"site": Site.objects.get_current(),
                                       "user": account})
             send_mail(_("%sUser account activated") % settings.EMAIL_SUBJECT_PREFIX,
-                      email, settings.SERVER_EMAIL, [account.email])
+                      email, settings.SERVER_EMAIL, account.email.split(';'))
         context = RequestContext(request)
         return render_to_response("registration/activate.html",
                                   { 'account': account,
