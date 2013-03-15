@@ -67,7 +67,7 @@ jQuery.fn.highlightText = function(text, className) {
     if (node.nodeType == 3) {
       var val = node.nodeValue;
       var pos = val.toLowerCase().indexOf(text);
-      if (pos >= 0 && !jQuery.className.has(node.parentNode, className)) {
+      if (pos >= 0 && !jQuery(node.parentNode).hasClass(className)) {
         var span = document.createElement("span");
         span.className = className;
         span.appendChild(document.createTextNode(val.substr(pos, text.length)));
