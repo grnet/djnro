@@ -1,6 +1,7 @@
-# Django settings for djnro project.
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+# Django settings for djnro project.
+
 #Copyright Â© 2011-2013 Greek Research and Technology Network (GRNET S.A.)
 #
 #Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr) and
