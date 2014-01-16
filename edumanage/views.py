@@ -971,7 +971,7 @@ def overview(request):
                                   context_instance=RequestContext(request))
     else:
         return HttpResponseRedirect(reverse("altlogin"))
-    
+
 
 
 @never_cache
@@ -1019,48 +1019,42 @@ def manage_login(request,backend):
 @never_cache
 def user_login(request):
     try:
-        error_username = False
-        error_orgname = False
-        error_entitlement = False
-        error_mail = False
-        has_entitlement = False
+        errors = []
         error = ''
-        username = request.META['HTTP_EPPN']
-        if not username:
-            error_username = True
+
+        username = lookupShibAttr(settings.SHIB_USERNAME, request.META)
         firstname = lookupShibAttr(settings.SHIB_FIRSTNAME, request.META)
         lastname = lookupShibAttr(settings.SHIB_LASTNAME, request.META)
         mail = lookupShibAttr(settings.SHIB_MAIL, request.META)
         entitlement = lookupShibAttr(settings.SHIB_ENTITLEMENT, request.META)
 
-        #organization = request.META['HTTP_SHIB_HOMEORGANIZATION']
-        entitlement = request.META['HTTP_SHIB_EP_ENTITLEMENT']
-        if settings.SHIB_AUTH_ENTITLEMENT in entitlement.split(";"):
-            has_entitlement = True
-        if not has_entitlement:
-            error_entitlement = True
-#        if not organization:
-#            error_orgname = True
+        if not username:
+            errors.append(_("Your idP should release the eduPersonPrincipalName attribute towards this service<br>"))
+
+        if settings.SHIB_AUTH_ENTITLEMENT:
+            if settings.SHIB_AUTH_ENTITLEMENT not in entitlement.split(";"):
+                errors.append(_("Your idP should release an appropriate eduPersonEntitlement attribute towards this service<br>"))
+
         if not mail:
-            error_mail = True
-        if error_username:
-            error = _("Your idP should release the eduPersonPrincipalName attribute towards this service<br>")
-        if error_entitlement:
-            error = error + _("Your idP should release an appropriate eduPersonEntitlement attribute towards this service<br>")
-        if error_mail:
-            error = error + _("Your idP should release the mail attribute towards this service")
-        if error_username or error_orgname or error_entitlement or error_mail:
-            return render_to_response('status.html', {'error': error, "missing_attributes": True},
-                                  context_instance=RequestContext(request))
+            errors.append(_("Your idP should release the mail attribute towards this service"))
+
+        if errors:
+            error = ''.join(errors)
+            return render_to_response(
+                'status.html',
+                {'error': error, "missing_attributes": True},
+                context_instance=RequestContext(request)
+            )
+
         try:
             user = User.objects.get(username__exact=username)
             user.email = mail
             user.first_name = firstname
             user.last_name = lastname
             user.save()
-            user_exists = True
         except User.DoesNotExist:
-            user_exists = False
+            pass
+
         user = authenticate(username=username, firstname=firstname, lastname=lastname, mail=mail, authsource='shibboleth')
         if user is not None:
             try:
@@ -1071,18 +1065,29 @@ def user_login(request):
                 form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
                 form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
                 form.fields['email'] = forms.CharField(initial = user.email)
-                return render_to_response('registration/select_institution.html', {'form': form}, context_instance=RequestContext(request))
+                return render_to_response(
+                    'registration/select_institution.html',
+                    {'form': form},
+                    context_instance=RequestContext(request)
+                )
+
             if user.is_active:
                login(request, user)
                return HttpResponseRedirect(reverse("manage"))
             else:
                 status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
-                return render_to_response('status.html', {'status': status, 'inactive': True},
-                                  context_instance=RequestContext(request))
+                return render_to_response(
+                    'status.html',
+                    {'status': status, 'inactive': True},
+                    context_instance=RequestContext(request)
+                )
         else:
             error = _("Something went wrong during user authentication. Contact your administrator %s" %user)
-            return render_to_response('status.html', {'error': error,},
-                                  context_instance=RequestContext(request))
+            return render_to_response(
+                'status.html',
+                {'error': error,},
+                context_instance=RequestContext(request)
+            )
     except Exception as e:
         error = _("Invalid login procedure. Error: %s"%e)
         return render_to_response('status.html', {'error': error,},
