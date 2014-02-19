@@ -1075,7 +1075,7 @@ msgid "eduroam is provided by the following instituitons/organizations"
 msgstr "το eduroam παρέχεται από τους ακόλουθους φορείς/οργανισμούς"
 
 #: templates/front/world.html:284
-msgid "Eduroam Wolrdwide"
+msgid "Eduroam Worldwide"
 msgstr "Eduroam Παγκοσμίως"
 
 #: templates/overview/index.html:42
