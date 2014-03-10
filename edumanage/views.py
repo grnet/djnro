@@ -1316,14 +1316,17 @@ def instxml(request):
             instContactPhone = ET.SubElement(instContact, "phone")
             instContactPhone.text = contact.phone
 
-        urltypes = []
+        url_map = {}
         for url in inst.url.all():
-            instUrl = ET.SubElement(instElement, "%s_URL"%(url.urltype))
-            instUrl.attrib["lang"] = url.lang
-            instUrl.text = url.url
-            urltypes.append(url.urltype)
+            url_map.setdefault(url.urltype, []).append(url)
 
-        if 'policy' not in urltypes:
+        for urltype in ('info', 'policy'):
+            for url in url_map.get(urltype, []):
+                instUrl = ET.SubElement(instElement, "%s_URL"%(url.urltype))
+                instUrl.attrib["lang"] = url.lang
+                instUrl.text = url.url
+
+        if 'policy' not in url_map:
             instUrl = ET.SubElement(instElement, "policy_URL")
             instUrl.attrib["lang"] = 'en'
             instUrl.text = '-'
@@ -1437,10 +1440,15 @@ def realmxml(request):
         realmContactPhone = ET.SubElement(realmContact, "phone")
         realmContactPhone.text = contact.phone
 
+    url_map = {}
     for url in realm.url.all():
-        realmUrl = ET.SubElement(realmElement, "%s_URL"%(url.urltype))
-        realmUrl.attrib["lang"] = url.lang
-        realmUrl.text = url.url
+        url_map.setdefault(url.urltype, []).append(url)
+
+    for urltype in ('info', 'policy'):
+        for url in url_map.get(urltype, []):
+            realmUrl = ET.SubElement(realmElement, "%s_URL"%(url.urltype))
+            realmUrl.attrib["lang"] = url.lang
+            realmUrl.text = url.url
 
     instTs = ET.SubElement(realmElement, "ts")
     instTs.text = "%s" %realm.ts.isoformat()
