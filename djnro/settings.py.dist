@@ -1,0 +1,336 @@
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
+# vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+# Django settings for djnro project.
+
+Copyright © 2011-2014 Greek Research and Technology Network (GRNET S.A.)
+Copyright © 2011-2014 Leonidas Poulopoulos (@leopoul)
+Copyright © 2011-2014 Zenon Mousmoulas 
+
+#Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr, @leopoul) and
+#Zenon Mousmoulas (zmousm-at-noc-dot-grnet-dot-gr), GRNET NOC
+#
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+ 
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
+TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
+CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE,
+DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
+ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
+SOFTWARE.
+
+import os
+
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
+
+
+ADMINS = (
+    # ('Your Name', 'your_email@example.com'),
+)
+
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': '',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'STORAGE_ENGINE': 'INNODB',    
+    }
+}
+
+# Hosts/domain names that are valid for this site; required if DEBUG is False
+# See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = []
+
+# Local time zone for this installation. Choices can be found here:
+# http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
+# although not all choices may be available on all operating systems.
+# In a Windows environment this must be set to your system time zone.
+TIME_ZONE = 'Europe/Athens'
+
+_ = lambda s: s
+
+LANGUAGES = (
+    ('el', _('Greek')),
+    ('en', _('English')),
+)
+
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
+LANGUAGE_CODE = 'en'
+
+SITE_ID = 1
+
+# If you set this to False, Django will make some optimizations so as not
+# to load the internationalization machinery.
+USE_I18N = True
+
+# If you set this to False, Django will not format dates, numbers and
+# calendars according to the current locale.
+USE_L10N = True
+
+# If you set this to False, Django will not use timezone-aware datetimes.
+USE_TZ = True
+
+# Absolute filesystem path to the directory that will hold user-uploaded files.
+# Example: "/home/media/media.lawrence.com/media/"
+MEDIA_ROOT = ''
+
+# URL that handles the media served from MEDIA_ROOT. Make sure to use a
+# trailing slash.
+# Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
+MEDIA_URL = ''
+
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/home/media/media.lawrence.com/static/"
+STATIC_ROOT = ''
+
+# URL prefix for static files.
+# Example: "http://media.lawrence.com/static/"
+STATIC_URL = '/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+)
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = '6*g%rc)&amp;1v5-x-3@yn_ti!8iywa$=#5@19mi99+@6q!=$up!pl'
+
+# List of callables that know how to import templates from various sources.
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+#     'django.template.loaders.eggs.Loader',
+)
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    # Required so that RequestContext is passed into
+    # template
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.request',
+    'edumanage.context_processors.country_code',
+    'social_auth.context_processors.social_auth_by_type_backends',
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    'edumanage.middleware.WrongBackendExceptionMiddleware',
+    # Uncomment the next line for simple clickjacking protection:
+    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+ROOT_URLCONF = 'djnro.urls'
+
+# Python dotted path to the WSGI application used by Django's runserver.
+WSGI_APPLICATION = 'djnro.wsgi.application'
+
+TEMPLATE_DIRS = (
+    "/example/templates"
+    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+)
+
+INSTALLED_APPS = (
+    'longerusername',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'django.contrib.flatpages',
+    'django.contrib.markup',
+    'django.contrib.admin',
+    'django.contrib.admindocs',
+    'edumanage',
+    'accounts',
+    'south',
+    'registration',
+    'django_extensions',
+    'tinymce',
+    'social_auth',
+)
+
+# A sample logging configuration. The only tangible logging
+# performed by this configuration is to send an email to
+# the site admins on every HTTP 500 error when DEBUG=False.
+# See http://docs.djangoproject.com/en/dev/topics/logging for
+# more details on how to customize your logging configuration.
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        }
+    },
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}
+
+
+AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+
+LOGIN_URL = '/manage/login/'
+
+KML_FILE = here('all.kml')
+INST_XML_FILE = here('institution.xml')
+
+EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
+
+SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
+SHIB_LOGOUT_URL = 'https://example.com/Shibboleth.sso/Logout'
+
+SERVER_EMAIL = "Example domain eduroam Service <noreply@example.com>"
+EMAIL_SUBJECT_PREFIX = "[eduroam] "
+ACCOUNT_ACTIVATION_DAYS = 7
+NOTIFY_ADMIN_MAILS = ["mail1@example.com", "mail2@example.com"]
+
+
+TINYMCE_JS_URL = '/static/js/tinymce/tiny_mce.js'
+
+TINYMCE_DEFAULT_CONFIG = {
+    'extended_valid_elements' :  'iframe[src|width|height|name|align]',
+    'plugins': "table,spellchecker,paste,searchreplace",
+    'theme': "advanced",
+    
+    
+#### CACHE BACKEND ####
+
+#Name_i18n, URL_i18n, language choice field
+# If it's the same with LANGUAGES, simply do URL_NAME_LANGS = LANGUAGES
+URL_NAME_LANGS = (
+        ('en', 'English' ),
+        ('el', 'ÎÎ»Î»Î·Î½Î¹ÎºÎ¬'),
+    )
+
+# Frontend country specific vars, eg. Greece
+NRO_COUNTRY_NAME = _('My Country')
+# Variable used by context_processor to display the "eduroam | <country_code>" in base.html 
+NRO_COUNTRY_CODE = 'gr'
+# main domain url used in right top icon, eg. http://www.grnet.gr
+NRO_DOMAIN_MAIN_URL = "http://www.example.com"
+# developer info for footer
+NRO_PROV_BY_DICT = {"name": "GRNET NOC", "url": "//noc.grnet.gr"}
+#provider social media contact (Use: // to preserve https)
+NRO_PROV_SOCIAL_MEDIA_CONTACT = [
+                                {"url":"//facebook.com/noc.grnet.gr", "icon":"/static/img/facebook_img.png", "name":"Facebook"}, 
+                                {"url":"//twitter.com/grnetnoc", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
+                                ]
+# map center (lat, lng)
+MAP_CENTER = (36.97, 23.71)
+#Helpdesk, used in base.html: 
+NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
+
+#Countries for Realm model:
+REALM_COUNTRIES = (
+             ('country_2letters', 'Country' ),
+            )
+            
+##### LDAP BACKEND ######
+
+#Shibboleth attribute map
+SHIB_USERNAME = ['HTTP_EPPN']
+SHIB_MAIL = ['mail', 'HTTP_MAIL', 'HTTP_SHIB_INETORGPERSON_MAIL']
+SHIB_FIRSTNAME = ['HTTP_SHIB_INETORGPERSON_GIVENNAME']
+SHIB_LASTNAME = ['HTTP_SHIB_PERSON_SURNAME']
+SHIB_ENTITLEMENT = ['HTTP_SHIB_EP_ENTITLEMENT']
+
+# DJANGO SOCIAL AUTH PLUGIN SETTINGS
+
+TWITTER_CONSUMER_KEY = ''
+TWITTER_CONSUMER_SECRET = ''
+
+FACEBOOK_APP_ID = ''
+FACEBOOK_API_SECRET = ''
+
+LINKEDIN_CONSUMER_KEY        = ''
+LINKEDIN_CONSUMER_SECRET     = ''
+
+LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
+LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
+LINKEDIN_EXTRA_DATA = [('id', 'id'),
+                       ('first-name', 'first_name'),
+                       ('last-name', 'last_name'),
+                       ('email-address', 'email_address'),
+                       ('headline', 'headline'),
+                       ('industry', 'industry')]
+
+YAHOO_CONSUMER_KEY = ''
+YAHOO_CONSUMER_SECRET = ''
+
+GOOGLE_SREG_EXTRA_DATA = []
+
+SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+
+FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
+LOGIN_REDIRECT_URL = '/manage/'
+SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
+
+SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+SOCIAL_AUTH_CREATE_USERS = True
+SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
+SOCIAL_AUTH_SANITIZE_REDIRECTS = False
+SOCIAL_AUTH_SLUGIFY_USERNAMES = True
+
+
+SOCIAL_AUTH_PIPELINE = (
+    'social_auth.backends.pipeline.social.social_auth_user',
+    'social_auth.backends.pipeline.user.get_username',
+    'social_auth.backends.pipeline.user.create_user',
+    'social_auth.backends.pipeline.social.associate_user',
+    'social_auth.backends.pipeline.social.load_extra_data',
+    'social_auth.backends.pipeline.user.update_user_details',
+)
+
