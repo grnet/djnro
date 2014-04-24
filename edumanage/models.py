@@ -545,4 +545,14 @@ class RealmData(models.Model):
             'numid': self.number_id,
             }
 
-
+class CatEnrollment(models.Model):
+    ''' Eduroam CAT enrollment '''
+    cat_inst_id = models.PositiveIntegerField(max_length=10, editable=False)
+    institution = models.OneToOneField(Institution)
+    url = models.CharField(max_length=255, blank=True, null=True)
+    ts = models.DateTimeField(auto_now=True)
+    
+    def __unicode__(self):
+        return "%s: %s" % (self.cat_inst_id, ', '.join([i.name for i in self.institution.org_name.all()]))
+    
+    
