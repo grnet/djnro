@@ -33,6 +33,7 @@ from registration.models import RegistrationProfile
 from django.core.cache import cache
 
 from edumanage.decorators import social_active_required
+from utils.cat_helper import *
 
 @never_cache
 def index(request):
@@ -400,6 +401,84 @@ def add_server(request, server_pk):
             edit = True
         return render_to_response('edumanage/servers_edit.html', { 'institution': inst, 'form': form, 'edit': edit },
                                   context_instance=RequestContext(request, base_response(request)))
+
+
+@login_required
+@social_active_required
+@never_cache
+def cat_enroll(request):
+    user = request.user
+    edit = False
+    cat_url = None
+    inst_uid = None
+    try:
+        profile = user.get_profile()
+        inst = profile.institution
+        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+    except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        instdetails = inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    if inst.ertype not in [1,3]:
+        messages.add_message(request, messages.ERROR, 'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP')
+        return render_to_response('edumanage/catenroll.html', { 'status':False },
+                                  context_instance=RequestContext(request, base_response(request)))
+    if request.method == "GET":
+        current_enrollments = inst.catenrollment_set.all()
+        current_enrollments_list = current_enrollments.values_list('cat_instance', flat=True)
+        available_enrollments = [(x[0], x[1]) for x in settings.CAT_INSTANCES if x[0] not in current_enrollments_list]
+        if len(available_enrollments) == 0:
+            messages.add_message(request, messages.ERROR, 'There are no available CAT instances for your institution enrollment')
+            return render_to_response('edumanage/catenroll.html', { 'status': False, 'cat_instances': available_enrollments},
+                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response('edumanage/catenroll.html', { 'status': True, 'current_enrollments': current_enrollments, 'cat_instances': available_enrollments},
+                                  context_instance=RequestContext(request, base_response(request)))
+    elif request.method == 'POST':
+        request_data = request.POST.copy()
+        instance = request_data['catinstance']
+        #Check if cat enrollment exists. It should not! 
+        if inst.catenrollment_set.filter(cat_instance=instance):
+            messages.add_message(request, messages.ERROR, 'There is already and enrollment for this CAT instance')
+            return HttpResponseRedirect(reverse("catenroll"))
+        try:
+            cat_instance = settings.CAT_AUTH[instance]
+        except:
+            messages.add_message(request, messages.ERROR, 'Invalid CAT instance')
+            return HttpResponseRedirect(reverse("catenroll"))
+        cat_api_key = cat_instance['CAT_API_KEY']
+        cat_api_url = cat_instance['CAT_API_URL']
+       
+        enroll = CatQuery(cat_api_key, cat_api_url)
+        params = {'NEWINST_PRIMARYADMIN': u"%s"%user.email,
+                    'option[S1]': 'general:instname',
+                    'value[S1-0]': u"%s"%inst.get_name('en'),
+                    'value[S1-lang]': 'en'}
+        newinst = enroll.newinst(params)
+        cat_url = None
+        inst_uid = None
+        if newinst:
+            # this should be True only for successful postings
+            status = enroll.status
+            response = enroll.response
+            inst_uid = response['inst_unique_id']
+            cat_url = response['enrollment_URL']
+            catentry = CatEnrollment()
+            catentry.cat_inst_id = inst_uid
+            catentry.inst = inst
+            catentry.url = cat_url
+            catentry.applier = user
+            catentry.cat_instance = instance
+            catentry.save()
+            # We should notify the user
+        else:
+            status = enroll.status
+            response = enroll.response
+        return render_to_response('edumanage/catenroll.html', { 'status': True, 'response_status': status, 'response': response, 'cat_url':cat_url, 'inst_uid': inst_uid},
+                                  context_instance=RequestContext(request, base_response(request)))
+
+
 
 
 @login_required
@@ -1120,7 +1199,7 @@ def geolocate(request):
     return render_to_response('front/geolocate.html', context_instance=RequestContext(request))
 @never_cache
 def participants(request):
-    institutions = Institution.objects.all()
+    institutions = Institution.objects.all().select_related('institutiondetails')
     dets = []
     for i in institutions:
         try:
@@ -1206,6 +1285,7 @@ def closest(request):
             pointlng = i['lng'] 
             pointlat = i['lat']
             pointtext = i['text']
+            plainname = i['name']
             dLat = rad(float(pointlat)-float(lat))
             dLong = rad(float(pointlng)-float(lng))
             a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(rad(lat)) * math.cos(rad(float(pointlat))) * math.sin(dLong/2) * math.sin(dLong/2) 
@@ -1214,7 +1294,7 @@ def closest(request):
             distances[counter] = d
             if (closest == -1 or d < distances[closest]):
                 closest = counter
-                closestMarker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": pointtext}
+                closestMarker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": pointtext, 'plainname':plainname}
         return HttpResponse(json.dumps(closestMarker), mimetype='application/json')
     else:
         response = {"status":"Use a GET method for your request"}
