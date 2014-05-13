@@ -1652,26 +1652,35 @@ def servdata(request):
 
 
     if 'HTTP_ACCEPT' in request.META:
-        ret_mimetype = request.META.get('HTTP_ACCEPT')
-    else:
-        ret_mimetype = "text/yaml"
+        if request.META.get('HTTP_ACCEPT') == "application/json":
+            resp_mimetype = "application/json"
+            resp_body = json.dumps(root)
+        elif request.META.get('HTTP_ACCEPT') in [
+            "text/yaml",
+            "text/x-yaml",
+            "application/yaml",
+            "application/x-yaml" ]:
+            resp_mimetype = request.META.get('HTTP_ACCEPT')
+    try:
+        resp_mimetype
+    except NameError:
+        resp_mimetype = "text/yaml"
 
-    if ret_mimetype.find("json") != -1:
-        return HttpResponse(json.dumps(root),
-                            mimetype=ret_mimetype)
-    else:
-        if ret_mimetype.find("yaml") == -1:
-            ret_mimetype = "text/yaml"
+    if resp_mimetype.find("yaml") != -1:
         from yaml import dump
         try:
             from yaml import CDumper as Dumper, \
                 CSafeDumper as SafeDumper
         except ImportError:
             from yaml import Dumper, SafeDumper
-        return HttpResponse(dump(root,
-                                 Dumper=SafeDumper,
-                                 default_flow_style=False),
-                            mimetype=ret_mimetype)
+        resp_body = dump(root,
+                         Dumper=SafeDumper,
+                         allow_unicode=True,
+                         default_flow_style=False)
+        resp_mimetype += "; charset=utf-8"
+
+    return HttpResponse(resp_body,
+                        mimetype=resp_mimetype)
 
 @never_cache
 def adminlist(request):
