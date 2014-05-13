@@ -196,7 +196,6 @@ INSTALLED_APPS = (
     'accounts',
     'south',
     'registration',
-    #'django_extensions',
     'tinymce',
     'social_auth',
     'utils',
