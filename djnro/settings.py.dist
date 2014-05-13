@@ -174,7 +174,7 @@ ROOT_URLCONF = 'djnro.urls'
 WSGI_APPLICATION = 'djnro.wsgi.application'
 
 TEMPLATE_DIRS = (
-    "/example/templates"
+    "/example/templates",
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -259,6 +259,21 @@ TINYMCE_DEFAULT_CONFIG = {
     
     
 #### CACHE BACKEND ####
+
+# For production instances enable memcache
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'LOCATION': '127.0.0.1:11211',
+#     }
+# }
+
+# For development instances you can deploy the provided dummy cache backend
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+#     }
+# }
 
 #Name_i18n, URL_i18n, language choice field
 # If it's the same with LANGUAGES, simply do URL_NAME_LANGS = LANGUAGES
@@ -371,3 +386,6 @@ CAT_AUTH = {
                         "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
                         "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
             }
+
+import _version
+SW_VERSION = _version.VERSION
