@@ -13,12 +13,12 @@ Currently the source code is availiable at code.grnet.gr and can be cloned via g
 
 	git clone https://code.grnet.gr/git/djnro
 
-As with the majority of Django projects, settings.py has to be properly configured and then comes the population of the database.
+As with the majority of Django projects, settings.py has to be properly configured and then comes the population of the database. After git clone, copy settings.py.dist to settings.py::
 
-* Copy the urls.py.dist to urls.py
-* Copy the settings.py.dist to settings.py
-* Copy the apache/django.wsgi.dist to apache/django.wsgi and *edit* according to your needs.
+    cd djnro
+    cp djnro/settings.py.dist djnro/settings.py
 
+    
 Project Settings (settings.py)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -76,7 +76,7 @@ As the application includes a "Nearest Eduroam" functionality, world eduroam poi
 	
 	EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-Depending on your AAI policy set an appropriate authEntitlement 
+Depending on your AAI policy set an appropriate authEntitlement::
 	
 	SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
 
@@ -144,33 +144,33 @@ Shibboleth attribute MAP according to your AAI policy::
 
 Django Social Auth parameters::
 
-	TWITTER_CONSUMER_KEY = ''
-	TWITTER_CONSUMER_SECRET = ''
-	
-	FACEBOOK_APP_ID = ''
-	FACEBOOK_API_SECRET = ''
-	
-	LINKEDIN_CONSUMER_KEY        = ''
-	LINKEDIN_CONSUMER_SECRET     = ''
-	
-	LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
-	LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
-	LINKEDIN_EXTRA_DATA = [('id', 'id'),
-	                       ('first-name', 'first_name'),
-	                       ('last-name', 'last_name'),
-	                       ('email-address', 'email_address'),
-	                       ('headline', 'headline'),
-	                       ('industry', 'industry')]
-	
-	YAHOO_CONSUMER_KEY = ''
-	YAHOO_CONSUMER_SECRET = ''
-	
-	GOOGLE_SREG_EXTRA_DATA = []
-	
-	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-	
-	FACEBOOK_EXTENDED_PERMISSIONS = ['email']
-	
+    TWITTER_CONSUMER_KEY = ''
+    TWITTER_CONSUMER_SECRET = ''
+    
+    FACEBOOK_APP_ID = ''
+    FACEBOOK_API_SECRET = ''
+    
+    LINKEDIN_CONSUMER_KEY        = ''
+    LINKEDIN_CONSUMER_SECRET     = ''
+    
+    LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
+    LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
+    LINKEDIN_EXTRA_DATA = [('id', 'id'),
+                           ('first-name', 'first_name'),
+                           ('last-name', 'last_name'),
+                           ('email-address', 'email_address'),
+                           ('headline', 'headline'),
+                           ('industry', 'industry')]
+    
+    YAHOO_CONSUMER_KEY = ''
+    YAHOO_CONSUMER_SECRET = ''
+    
+    GOOGLE_SREG_EXTRA_DATA = []
+    
+    SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+    
+    FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+    
     SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
     LOGIN_REDIRECT_URL = '/manage/'
     SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
@@ -181,15 +181,15 @@ Django Social Auth parameters::
     SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
     SOCIAL_AUTH_SANITIZE_REDIRECTS = False
     SOCIAL_AUTH_SLUGIFY_USERNAMES = True
-		
-	SOCIAL_AUTH_PIPELINE = (
-	    'social_auth.backends.pipeline.social.social_auth_user',
-	    'social_auth.backends.pipeline.user.get_username',
-	    'social_auth.backends.pipeline.user.create_user',
-	    'social_auth.backends.pipeline.social.associate_user',
-	    'social_auth.backends.pipeline.social.load_extra_data',
-	    'social_auth.backends.pipeline.user.update_user_details',
-	)
+        
+    SOCIAL_AUTH_PIPELINE = (
+        'social_auth.backends.pipeline.social.social_auth_user',
+        'social_auth.backends.pipeline.user.get_username',
+        'social_auth.backends.pipeline.user.create_user',
+        'social_auth.backends.pipeline.social.associate_user',
+        'social_auth.backends.pipeline.social.load_extra_data',
+        'social_auth.backends.pipeline.user.update_user_details',
+    )
 
 .. versionadded:: 0.9
 
