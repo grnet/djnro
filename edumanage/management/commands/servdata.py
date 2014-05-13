@@ -2,11 +2,6 @@
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 import warnings
 warnings.simplefilter("ignore", DeprecationWarning)
-import sys, locale, codecs
-# sort greek utf-8 properly
-locale.setlocale(locale.LC_COLLATE, ('el_GR', 'UTF8'))
-# https://wiki.python.org/moin/PrintFails
-sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
 
 from optparse import make_option
 from django.core.management.base import BaseCommand, CommandError
@@ -24,20 +19,20 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         if options['output'] == "yaml":
-            from yaml import load, dump
+            from yaml import dump
             try:
                 from yaml import \
-                    CLoader as Loader, \
                     CDumper as Dumper, \
                     CSafeDumper as SafeDumper
             except ImportError:
-                from yaml import Loader, \
+                from yaml import \
                     Dumper, \
                     SafeDumper
 
             self.stdout.write(
                 dump(servdata(),
                      Dumper=SafeDumper,
+                     allow_unicode=True,
                      default_flow_style=False)
                 )
 
