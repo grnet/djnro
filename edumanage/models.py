@@ -17,7 +17,7 @@ from django.db import models
 from django.utils.text import capfirst
 from django.core import exceptions
 from django.conf import settings
-
+from django.contrib.auth.models import User
 
 class MultiSelectFormField(forms.MultipleChoiceField):
     widget = forms.CheckboxSelectMultiple
@@ -448,6 +448,14 @@ class Institution(models.Model):
                 return name
             except Exception as e:
                 return name
+    
+    def get_active_cat_enrl(self):
+        urls = []
+        active_cat_enrl = self.catenrollment_set.filter(url='ACTIVE')
+        for catenrl in active_cat_enrl:
+            if catenrl.cat_configuration_url:
+                urls.append(catenrl.cat_configuration_url)
+        return urls
             
 
 class InstitutionDetails(models.Model):
@@ -545,14 +553,39 @@ class RealmData(models.Model):
             'numid': self.number_id,
             }
 
+
+
 class CatEnrollment(models.Model):
     ''' Eduroam CAT enrollment '''
-    cat_inst_id = models.PositiveIntegerField(max_length=10, editable=False)
-    institution = models.OneToOneField(Institution)
-    url = models.CharField(max_length=255, blank=True, null=True)
+    
+    ACTIVE = u"ACTIVE"
+    
+    cat_inst_id = models.PositiveIntegerField(max_length=10)
+    inst = models.ForeignKey(Institution)
+    url = models.CharField(max_length=255, blank=True, null=True, help_text="Set to ACTIVE if institution has CAT profiles")
+    cat_instance = models.CharField(max_length=50, choices=settings.CAT_INSTANCES)
+    applier = models.ForeignKey(User)
     ts = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        unique_together = ['inst', 'cat_instance']
+    
     def __unicode__(self):
-        return "%s: %s" % (self.cat_inst_id, ', '.join([i.name for i in self.institution.org_name.all()]))
+        return "%s: %s" % (self.cat_inst_id, ', '.join([i.name for i in self.inst.org_name.all()]))
+    
+    def cat_active(self):
+        return self.url == self.ACTIVE
+
+    def cat_configuration_url(self):
+        if self.cat_active():
+            try:
+                return "%s?idp=%s"%(settings.CAT_AUTH[self.cat_instance]['CAT_PROFILES_URL'],self.cat_inst_id)
+            except:
+                return False
+        return False
+
+    cat_active.boolean = True
+    cat_active.short_description = "CAT profiles"
+
     
     
