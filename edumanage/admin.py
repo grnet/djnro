@@ -35,7 +35,10 @@ class RealmInLine(admin.ModelAdmin):
 
 class InstRealmAdmin(admin.ModelAdmin):
     list_display = ('realm', 'instid')
-   
+
+class CatEnrollmentAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'cat_active')
+
 admin.site.register(Name_i18n)
 admin.site.register(Contact)
 admin.site.register(InstitutionContactPool)
@@ -50,6 +53,7 @@ admin.site.register(Institution, InstitutionAdmin)
 admin.site.register(InstitutionDetails, InstitutionDetailsAdmin)
 admin.site.register(Realm, RealmInLine)
 admin.site.register(RealmData)
+admin.site.register(CatEnrollment, CatEnrollmentAdmin)
 
 from django import forms
 from django.core.urlresolvers import reverse
