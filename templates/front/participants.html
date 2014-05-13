@@ -21,6 +21,10 @@
 					<div>{% for i in institutions %}
 					<address>
 						<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br>
+						{% with i.institution.get_active_cat_enrl as cats %}
+    						{% for cat in cats %}
+    						<a href="{{cat}}" target="_blank">eduroam CAT configuration profiles</a><span style="font-weight: bold; font-size:15px; color:red;">*</span><br>{% endfor %}
+    					{% endwith %}
 						{{i.address_street}}<br>
 						{{i.address_city}}
 						{% if i.url.all|length > 0 %}
@@ -31,11 +35,14 @@
 						</dd>
     						</dl>
     						{% endif %}
+    					
+    					
 					</address>
 						
 						
 						
 					{% endfor %}</div>
+					<span style="font-size:16px; color:red;">*</span>: Institution admiminstrators may have not created profiles for all/any devices
 					{% endblock %}
 				
 				
