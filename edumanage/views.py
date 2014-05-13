@@ -1587,11 +1587,133 @@ def realmdataxml(request):
     
     return render_to_response("general/realm_data.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
 
+@never_cache
+def servdata(request):
+    root = {}
+    hosts = InstServer.objects.all()
+    insts = Institution.objects.all()
+
+    clients = hosts.filter(ertype__in=[2,3])
+    if clients:
+        root['clients'] = {}
+    for srv in clients:
+        srv_id = getSrvIdentifier(srv, "client_")
+        srv_dict = {}
+        srv_dict['host'] = srv.host
+        if srv.name:
+            srv_dict['label'] = srv.name
+        srv_dict['secret'] = srv.secret
+        root['clients'].update({srv_id: srv_dict})
+
+    servers = hosts.filter(ertype__in=[1,3])
+    if servers:
+        root['servers'] = {}
+    for srv in servers:
+        srv_id = getSrvIdentifier(srv, "server_")
+        srv_dict = {}
+        srv_dict['rad_pkt_type'] = srv.rad_pkt_type
+        if srv.rad_pkt_type.find("auth") != -1:
+            srv_dict['auth_port'] = srv.auth_port
+        if srv.rad_pkt_type.find("acct") != -1:
+            srv_dict['acct_port'] = srv.acct_port
+        srv_dict['host'] = srv.host
+        if srv.name:
+            srv_dict['label'] = srv.name
+        srv_dict['secret'] = srv.secret
+        srv_dict['status_server'] = bool(srv.status_server)
+        root['servers'].update({srv_id: srv_dict})
+
+    if insts:
+        root['institutions'] = []
+    for inst in insts:
+        inst_dict = {}
+        if not hasattr(inst, "institutiondetails"):
+            continue
+        if hasattr(inst.institutiondetails, "oper_name") and \
+                inst.institutiondetails.oper_name:
+            inst_dict['id'] = inst.institutiondetails.oper_name
+        inst_dict['type'] = inst.ertype
+        if inst.ertype in (2, 3):
+            inst_clients = inst.instserver_set.filter(ertype__in=[2, 3])
+            if inst_clients:
+                inst_dict['clients'] = [getSrvIdentifier(srv, "client_") for
+                                        srv in inst_clients]
+        if inst.ertype in (1, 3):
+            inst_realms = inst.instrealm_set.all()
+            if inst_realms:
+                inst_dict['realms'] = {}
+            for realm in inst_realms:
+                rdict = {}
+                rdict[realm.realm] = {}
+                rdict[realm.realm]['proxy_to'] = [getSrvIdentifier(proxy, "server_") for
+                                                  proxy in realm.proxyto.all()]
+                inst_dict['realms'].update(rdict)
+        root['institutions'].append(inst_dict)
+
+
+    if 'HTTP_ACCEPT' in request.META:
+        ret_mimetype = request.META.get('HTTP_ACCEPT')
+    else:
+        ret_mimetype = "text/yaml"
+
+    if ret_mimetype.find("json") != -1:
+        return HttpResponse(json.dumps(root),
+                            mimetype=ret_mimetype)
+    else:
+        if ret_mimetype.find("yaml") == -1:
+            ret_mimetype = "text/yaml"
+        from yaml import dump
+        try:
+            from yaml import CDumper as Dumper, \
+                CSafeDumper as SafeDumper
+        except ImportError:
+            from yaml import Dumper, SafeDumper
+        return HttpResponse(dump(root,
+                                 Dumper=SafeDumper,
+                                 default_flow_style=False),
+                            mimetype=ret_mimetype)
+
+@never_cache
+def adminlist(request):
+    users = User.objects.all()
+    data = [
+        (u.get_profile().institution.get_name('el'),
+         u.first_name + " " + u.last_name,
+         m)
+        for u in users if
+        len(u.registrationprofile_set.all()) > 0 and
+        u.registrationprofile_set.all()[0].activation_key == "ALREADY_ACTIVATED"
+        for m in u.email.split(';')
+        ]
+    data.sort(key=lambda d: unicode(d[0]))
+    resp_body = ""
+    for (foreas, onoma, email) in data:
+        resp_body += u'{email}\t{onoma}'.format(
+            email=email,
+            onoma=onoma
+            ) \
+            + "\n"
+    return HttpResponse(resp_body,
+                        mimetype="text/plain")
+
+
 def to_xml(ele, encoding="UTF-8"):
     "Convert and return the XML for an *ele* (:class:`~xml.etree.ElementTree.Element`) with specified *encoding*."
     xml = ET.tostring(ele, encoding)
     return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
     
+def getSrvIdentifier(srv, prefix):
+    if not hasattr(srv, "id"):
+        return None
+    retid = "{0}{1:d}".format(prefix,
+                              srv.id)
+    if hasattr(srv, "name") and srv.name:
+        from django.template.defaultfilters import slugify
+        retid = "{0}_{1}".format(retid,
+                                 slugify(srv.name))
+    return retid
+
+
 def getInstContacts(inst):
     contacts = InstitutionContactPool.objects.filter(institution=inst)
     contact_pks = []
