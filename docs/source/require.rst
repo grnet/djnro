@@ -1,15 +1,16 @@
 .. _require-label:
 
 Required Packages
-====================================================================
+=================
 
+.. attention::
+   Installation instructions assume a clean Debian Wheezy with Django 1.4
 
 DjNRO heavily depends on the following:
 
 * Python (<3 & >=2.6)
-* Django (>=1.2) - python-django
+* Django (1.4) - python-django
 * memcached
-* python-django-extensions
 * python-mysqldb (If you wish to use MySQL as the DB backend)
 * mysql-client-5.1
 * python-ipaddr
@@ -23,20 +24,16 @@ DjNRO heavily depends on the following:
 * A mail server - Tested with exim
 
 Django Social Auth
------------------------------
+------------------
 
-User authentication via social media is carried out by the `python-django-social-auth <http://http://django-social-auth.readthedocs.org/en/latest/index.html>`_ python-django-social-auth package. If your distro includes it, then go via your distro installation.
+User authentication via social media is carried out by the `django-social-auth <http://django-social-auth.readthedocs.org/en/latest/index.html>`_ django-social-auth package. If your distro includes it, then go via your distro installation.
 
-In any case we have included python-django-social-auth as an application inside the djnro Django project.
+In any case we have included django-social-auth as an application inside the djnro Django project. We plan to upgrade to python-social-auth in the next releases of DjNRO.
 
 Django Social Auth: Requirements - Dependencies
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-* python-django-social-auth
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+* django-social-auth
 
  *  OpenId support depends on python-openid
-
+ 
  *  OAuth support depends on python-oauth2 
-
-
-
-    

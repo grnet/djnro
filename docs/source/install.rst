@@ -1,8 +1,11 @@
 .. _install-label:
 
 Installation/Configuration
-=========================================================================
+==========================
 .. contents::
+
+.. attention::
+   Installation instructions assume a clean Debian Wheezy with Django 1.4
 
 Assuming that you have installed all the required packages as described in :ref:`require-label` you can install the djnro platform application.
 
@@ -17,7 +20,7 @@ As with the majority of Django projects, settings.py has to be properly configur
 * Copy the apache/django.wsgi.dist to apache/django.wsgi and *edit* according to your needs.
 
 Project Settings (settings.py)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following variables/settings need to be altered or set:
 	
@@ -33,6 +36,10 @@ Set the database connection params::
 	    ...
 	}
 
+For a production instance and once DEBUG is set to False set the ALLOWED_HOSTS::
+
+    ALLOWED_HOSTS = ['.example.com']
+
 Set your timezone and Languages::
 
 	TIME_ZONE = 'Europe/Athens'
@@ -42,9 +49,14 @@ Set your timezone and Languages::
 	    ('en', _('English')),
 	)
 
-Set your static url::
+Set your static root and url::
 
-	STATIC_URL = '/example/static'
+    STATIC_ROOT = '/path/to/static'
+    STATIC_URL = 'http://www.example.com/static'
+
+Set the secret key::
+
+    SECRET_KEY = '<put something really random here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
 
 Django social auth needs changes in the Authentication Backends depending on which social auth you want to enable::
 	
@@ -57,10 +69,7 @@ Django social auth needs changes in the Authentication Backends depending on whi
 Set your template dirs::
 
 	TEMPLATE_DIRS = (
-	    "/example/templates"
-	    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-	    # Always use forward slashes, even on Windows.
-	    # Don't forget to use absolute paths, not relative paths.
+	    "/example/templates",
 	)
 
 As the application includes a "Nearest Eduroam" functionality, world eduroam points are harvested via the eduroam.org kml file::
@@ -80,10 +89,14 @@ NRO contact mails::
 
 	NOTIFY_ADMIN_MAILS = ["mail1@example.com", "mail2@example.com"]
 
-Set your cache backend (if you want to use one)::
+Set your cache backend (if you want to use one). For production instances you can go with memcached. For development you can switch to the provided dummy instance::
 
-	
-	CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': '127.0.0.1:11211',
+        }
+    }
 
 Models Name_i18n and URL_i18n include a language choice field
 If languages are the same with LANGUAGES variable, simply do URL_NAME_LANGS = LANGUAGES else set your own::
@@ -158,18 +171,17 @@ Django Social Auth parameters::
 	
 	FACEBOOK_EXTENDED_PERMISSIONS = ['email']
 	
-	SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
-	LOGIN_REDIRECT_URL = '/manage/'
-	SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
-	
-	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-	SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-	SOCIAL_AUTH_CREATE_USERS = True
-	SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
-	SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-	
-	
-	
+    SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
+    LOGIN_REDIRECT_URL = '/manage/'
+    SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
+    
+    SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+    SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+    SOCIAL_AUTH_CREATE_USERS = True
+    SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
+    SOCIAL_AUTH_SANITIZE_REDIRECTS = False
+    SOCIAL_AUTH_SLUGIFY_USERNAMES = True
+		
 	SOCIAL_AUTH_PIPELINE = (
 	    'social_auth.backends.pipeline.social.social_auth_user',
 	    'social_auth.backends.pipeline.user.get_username',
@@ -179,9 +191,36 @@ Django Social Auth parameters::
 	    'social_auth.backends.pipeline.user.update_user_details',
 	)
 
+.. versionadded:: 0.9
+
+Support for eduroam CAT can be set via the corresponding variables/dicts. Make sure to **always** include a 'production' instance record for CAT_INSTANCES and CAT_AUTH. 
+What you really need to make CAT work is a CAT_API_KEY and the CAT_API_URL. The CAT_PROFILES_URL is the base url of the landing page where your institution users can download device profile configurations::
+
+    CAT_INSTANCES = (
+                     ('production', 'Production Instance'),
+                     ('testing', 'Testing Instance'),
+                     ('dev1', 'Dev1 Instance'),
+                     )
+    
+    CAT_AUTH = {
+                'production':{"CAT_API_KEY":"<provided API key>",
+                              "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
+                              "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
+                              "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
+                'testing':{"CAT_API_KEY":"<provided API key>",
+                            "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
+                            "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
+                            "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
+                'dev1':{"CAT_API_KEY":"<provided API key>",
+                            "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
+                            "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
+                            "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
+                }
+
+For more administrative info on eduroam CAT, you can visit: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
 
 Database Sync
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^
 
 Once you are done with settings.py run::
 
@@ -194,7 +233,7 @@ Create a superuser, it comes in handy. And then run south migration to complete:
 Now you should have a clean database with all the tables created.
 
 Running the server
-^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
 
 We suggest going via Apache with mod_wsgi. Below is an example configuration::
 
@@ -241,10 +280,10 @@ We suggest going via Apache with mod_wsgi. Below is an example configuration::
 Once you are done, restart apache.
 
 Initial Data
-^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^
 What you really need in the first place is a Realm record along with one or more contacts related to that Realm. Go via the Admin interface, and add a Realm (remember to have set the REALM_COUNTRIES in settings.py).
 The approach in the application is that the NRO sets the environment for the local eduroam admins. Towards that direction, the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model
 
 Next Steps (Set your Logo)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
