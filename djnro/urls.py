@@ -42,6 +42,8 @@ urlpatterns += patterns('edumanage.views',
     url(r'^general/institution.xml', "instxml", name="instxml"),
     url(r'^general/realm.xml', "realmxml", name="realmxml"),
     url(r'^usage/realm_data.xml', "realmdataxml", name="realmdataxml"),
+    url(r'^radius_serv_data', "servdata", name="servdata"),
+    url(r'^admin_mail_list', "adminlist", name="adminlist"),
     
     url(r'^manage/?$', 'manage', name="manage"),
     url(r'^manage/login/?$', 'manage_login_front', name="manage_login_front"),
@@ -53,6 +55,7 @@ urlpatterns += patterns('edumanage.views',
     url(r'^manage/services/del/?$', 'del_service', name="del-service"),
     url(r'^manage/services/edit/(?P<service_pk>\d+)?$', 'add_services', name="edit-services"),
     url(r'^manage/services/points/?$', 'get_service_points', name="get-service-points"),
+    
     
 
     url(r'^manage/servers/(?P<server_pk>\d+)?$', 'servers', name="servers"),
@@ -77,6 +80,8 @@ urlpatterns += patterns('edumanage.views',
     
     url(r'^manage/monlocauthpar/edit/(?P<instrealmmon_pk>\d+)/(?P<monlocauthpar_pk>\d+)?$', 'add_monlocauthpar', name="edit-monlocauthpar"),
     url(r'^manage/monlocauthpar/del/?$', 'del_monlocauthpar', name="del-monlocauthpar"),
+    
+    url(r'^manage/catenroll/?$', 'cat_enroll', name="catenroll"),
     
     
     url(r'^overview/?$', 'overview', name="overview"),
