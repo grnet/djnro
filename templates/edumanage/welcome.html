@@ -218,6 +218,9 @@ $.get("{% url get-service-points %}", function(data){
 					<li {% block contactsactive %}{% endblock %}>
 						<a href="{% url contacts %}">{% trans "Contacts" %} ({{contacts_num}})</a>
 					</li>
+					<li {% block catactive %}{% endblock %}>
+						<a href="{% url catenroll %}">{% trans "eduroam CAT" %}</a>
+					</li>
 					
 					{% endif %}
 				</ul>
