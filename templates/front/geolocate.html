@@ -111,7 +111,6 @@ margin-bottom: 0px;
 	}];
 
 	function initialize() {
-		
 		image = new google.maps.MarkerImage('/static/img/edupin.png',
 			new google.maps.Size(29, 40),
 			new google.maps.Point(0, 0),
@@ -191,6 +190,9 @@ margin-bottom: 0px;
 		});
 		google.maps.event.addListener(map, 'click', function(event) {
 			moveMarker(event.latLng);
+		});
+		google.maps.event.addListener(marker, 'dragend', function(event) {
+			moveMarker(event.latLng); 
 		});
 		
 		google.maps.event.addListener(autocomplete, 'place_changed', function() {
