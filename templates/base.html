@@ -131,6 +131,8 @@ body {
               <li {% block closest %}{% endblock %}><a href="{% url geolocate %}" target="about:blank()">{% trans "Closest eduroam" %}</a></li>
               <li {% block world %}{% endblock %}><a href="{% url world %}">{% trans "World eduroam" %}</a></li>
               <li {% block participants %}{% endblock %}><a href="{% url participants %}">{% trans "Participants" %}</a></li>
+              <li class="nav-header">{% trans "API" %}</li>
+              <li {% block api %}{% endblock %}><a href="{% url api %}">{% trans "Closest point" %}</a></li>
              
             </ul>
           </div><!--/.well -->
