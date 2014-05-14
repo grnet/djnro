@@ -60,6 +60,11 @@ TIME_ZONE = 'Europe/Athens'
 
 _ = lambda s: s
 
+LOCALE_PATHS = (  
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'locale'),
+)
+
+
 LANGUAGES = (
     ('el', _('Greek')),
     ('en', _('English')),
