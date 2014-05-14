@@ -1197,6 +1197,13 @@ def check_user_inst(request):
 @never_cache
 def geolocate(request):
     return render_to_response('front/geolocate.html', context_instance=RequestContext(request))
+
+@never_cache
+def api(request):
+    current_site = Site.objects.get_current()
+    return render_to_response('front/api.html', { 'site': current_site },  context_instance=RequestContext(request))
+
+
 @never_cache
 def participants(request):
     institutions = Institution.objects.all().select_related('institutiondetails')
