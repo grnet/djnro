@@ -42,7 +42,9 @@
 						
 						
 					{% endfor %}</div>
-					<span style="font-size:16px; color:red;">*</span>: Institution admiminstrators may have not created profiles for all/any devices
+					{% if catexists %}
+					<span style="font-size:11px;"><span style="color:red;">*</span>: Institution admiminstrators may have not created CAT profiles for all/any devices</span>
+					{% endif %}
 					{% endblock %}
 				
 				

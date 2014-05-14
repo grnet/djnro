@@ -1201,12 +1201,15 @@ def geolocate(request):
 def participants(request):
     institutions = Institution.objects.all().select_related('institutiondetails')
     dets = []
+    cat_exists = False
     for i in institutions:
         try:
             dets.append(i.institutiondetails)
+            if i.get_active_cat_enrl():
+                cat_exists = True
         except InstitutionDetails.DoesNotExist:
             pass
-    return render_to_response('front/participants.html', { 'institutions': dets } ,
+    return render_to_response('front/participants.html', { 'institutions': dets, 'catexists':cat_exists } ,
                                   context_instance=RequestContext(request))
 @never_cache
 def selectinst(request):
@@ -1721,7 +1724,6 @@ def getSrvIdentifier(srv, prefix):
         retid = "{0}_{1}".format(retid,
                                  slugify(srv.name))
     return retid
-
 
 def getInstContacts(inst):
     contacts = InstitutionContactPool.objects.filter(institution=inst)

@@ -451,7 +451,7 @@ class Institution(models.Model):
     
     def get_active_cat_enrl(self):
         urls = []
-        active_cat_enrl = self.catenrollment_set.filter(url='ACTIVE')
+        active_cat_enrl = self.catenrollment_set.filter(url='ACTIVE', cat_instance='production')
         for catenrl in active_cat_enrl:
             if catenrl.cat_configuration_url:
                 urls.append(catenrl.cat_configuration_url)
