@@ -4,7 +4,7 @@
 
 import sys, os
 import re
-from optparse import OptionParser, OptionValueError, OptionGroup
+import argparse
 from yaml import load
 try:
     from yaml import \
@@ -14,6 +14,18 @@ except ImportError:
 import requests
 from mako.template import Template
 from mako.lookup import TemplateLookup
+
+SETTINGS = {
+    "template_directory" : "/srv/www/djnro/extras",
+    "template_cc_dir"    : "/tmp",
+    "templates"          : [ "freeradius-clients",
+                             "freeradius-proxy",
+                             "radsecproxy" ],
+    "description"        :
+"""This program reads "servdata" and produces
+configuration for various software using the respective
+templates."""
+    }
 
 def exit_with_error(msg = ""):
     sys.stderr.write(msg + "\n")
@@ -88,37 +100,62 @@ class ServerDataWriter:
         return t.render(**self.tpls.parmap[tpl])
 
 def main():
-    sr = ServerDataReader('https://www.eduroam.gr/static/admins/serv_data')
+    parser = argparse.ArgumentParser(
+        description=SETTINGS["description"],
+        )
+    parser.add_argument('--input',
+                        required=True,
+                        help="""read servdata from this
+file or http(s) URL"""
+                        )
+    parser.add_argument('--tpl-dir',
+                        action='append',
+                        help="""look for templates in this
+directory (may be used more than once) [default: %s]"""
+                        % SETTINGS["template_directory"]
+                        )
+    parser.add_argument('--tpl-cc',
+                        help="""compile templates
+(written by default to %(const)s)""",
+                        nargs='?',
+                        const=SETTINGS["template_cc_dir"])
+    for t in SETTINGS["templates"]:
+        parser.add_argument('--%s' % t,
+                            metavar=t.replace("-", "_").upper(),
+                            help="""generate %(dest)s output
+(write to %(metavar)s or stdout)""",
+                            nargs='?',
+                            type=argparse.FileType('w'),
+                            const=sys.stdout,
+                            default=None)
+    opts = parser.parse_args()
+
+    sr = ServerDataReader(opts.input)
+
     tpls = { 'files':  {},
              'parmap': {} }
+    for t in SETTINGS["templates"]:
+        tpls['files'][t] = "%s.tpl" % t
+        tpls['parmap'][t] = {
+            "insts": sr.get_data('institutions'),
+            "clients": sr.get_data('clients'),
+            "servers": sr.get_data('servers')
+            }
 
-    t = 'freeradius-clients'
-    tpls['files'][t] = "%s.tpl" % t
-    tpls['parmap'][t] = {
-        "insts": sr.get_data('institutions'),
-        "hosts": sr.get_data('clients')
-        }
+    if opts.tpl_dir is None:
+        opts.tpl_dir = [SETTINGS["template_directory"]]
 
-    t = 'freeradius-proxy'
-    tpls['files'][t] = "%s.tpl" % t
-    tpls['parmap'][t] = {
-        "insts": sr.get_data('institutions'),
-        "hosts": sr.get_data('servers')
-        }
+    sw_kwargs = { "tpls": tpls,
+                 "tpldirs": opts.tpl_dir }
+    if opts.tpl_cc:
+        sw_kwargs.update({ "tplccdir": opts.tpl_cc })
 
-    t = 'radsecproxy'
-    tpls['files'][t] = "%s.tpl" % t
-    tpls['parmap'][t] = {
-        "insts": sr.get_data('institutions'),
-        "clients": sr.get_data('clients'),
-        "servers": sr.get_data('servers')
-        }
+    sw = ServerDataWriter(**sw_kwargs)
 
-    sw = ServerDataWriter(tplccdir="/tmp",
-                          tpldirs=["/home/zmousm"],
-                          tpls=tpls)
-
-    print sw.render_tpl('radsecproxy')
+    for t in SETTINGS["templates"]:
+        to = t.replace('-', '_')
+        if getattr(opts, to, None) is not None:
+            getattr(opts, to).write(sw.render_tpl(t))
 
 if __name__ == "__main__":
     main()

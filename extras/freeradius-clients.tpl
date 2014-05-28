@@ -7,9 +7,9 @@ import re
 #{{{${' ' + inst['id'] if 'id' in inst else ''}
 % for client in inst['clients']:
 client ${client} {
-        secret          = ${hosts[client]['secret']}
+        secret          = ${clients[client]['secret']}
 <%
-ipaddr = re.split(r'/(?=[0-9]{1,2}$)', hosts[client]['host'])
+ipaddr = re.split(r'/(?=[0-9]{1,2}$)', clients[client]['host'])
 %>\
         ipaddr          = ${ipaddr[0]}
 % if len(ipaddr) > 1:

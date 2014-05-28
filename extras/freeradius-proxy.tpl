@@ -32,15 +32,15 @@ for srv in inst_servers:
 </%doc>\
 % for srv in set([s for r in inst['realms'] for s in inst['realms'][r]['proxy_to'] if 'proxy_to' in inst['realms'][r]]):
 home_server ${srv} {
-        type                 = ${hosts[srv]['rad_pkt_type']}
-        ipaddr               = ${hosts[srv]['host']}
-        port                 = ${hosts[srv]['auth_port'] if hosts[srv]['rad_pkt_type'] in ('auth', 'auth+acct') else hosts[srv]['acct_port']}
-        secret               = ${hosts[srv]['secret']}
+        type                 = ${servers[srv]['rad_pkt_type']}
+        ipaddr               = ${servers[srv]['host']}
+        port                 = ${servers[srv]['auth_port'] if servers[srv]['rad_pkt_type'] in ('auth', 'auth+acct') else servers[srv]['acct_port']}
+        secret               = ${servers[srv]['secret']}
         response_window      = 20
         zombie_period        = 40
         revive_interval      = 120
-        status_check         = ${'status-server' if hosts[srv]['status_server'] else 'request'}
-% if not hosts[srv]['status_server']:
+        status_check         = ${'status-server' if servers[srv]['status_server'] else 'request'}
+% if not servers[srv]['status_server']:
         username             = "eduroam-status_check"
         password             = "eduroam-status_check"
 % endif
