@@ -16,7 +16,7 @@ from mako.template import Template
 from mako.lookup import TemplateLookup
 
 SETTINGS = {
-    "template_directory" : "/srv/www/djnro/extras",
+    "template_directory" : "/etc/djnro_servdata",
     "template_cc_dir"    : "/tmp",
     "templates"          : [ "freeradius-clients",
                              "freeradius-proxy",
