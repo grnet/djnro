@@ -90,7 +90,7 @@ realm ${realm | realm_regex} {
         % if len(realm_servers['acct']) > 0:
         acct_pool = ${realm | realm_disarm}_acct
         % else:
-        acct_pool = discard_accounting
+        acct_pool = reject_accounting
         % endif
     % endif
         nostrip
