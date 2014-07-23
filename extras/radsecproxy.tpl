@@ -1,6 +1,8 @@
 ## -*- coding: utf-8 -*-
 <%!
 import re
+def percent_escape(text):
+    return re.sub(r'%(?=[0-9A-Fa-f]{2})', r'%25', text)
 def realm_regex(text):
     if text.find('*.') == 0:
         text = re.sub(r'\.', r'\\.', text)
@@ -31,7 +33,7 @@ client ${client} {
         host ${clients[client]['host']}
         IPv4Only on
         type udp
-        secret ${clients[client]['secret']}
+        secret ${clients[client]['secret'] | percent_escape}
         fticksVISCOUNTRY GR
 % if 'id' in inst:
         fticksVISINST 1${inst['id']}
@@ -59,7 +61,7 @@ server ${srv}${'-acct' if servers[srv]['rad_pkt_type'] == 'acct' else ''} {
         IPv4Only on
         type udp
         port ${servers[srv]['auth_port'] if servers[srv]['rad_pkt_type'] in ('auth', 'auth+acct') else servers[srv]['acct_port']}
-        secret ${servers[srv]['secret']}
+        secret ${servers[srv]['secret'] | percent_escape}
 % if servers[srv]['status_server'] and servers[srv]['rad_pkt_type'] in ('auth', 'auth+acct'):
         StatusServer on
 % endif
@@ -71,7 +73,7 @@ server ${srv}-acct {
         IPv4Only on
         type udp
         port ${servers[srv]['acct_port']}
-        secret ${servers[srv]['secret']}
+        secret ${servers[srv]['secret'] | percent_escape}
 % if servers[srv]['status_server']:
         #StatusServer on
 % endif
