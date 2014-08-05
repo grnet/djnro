@@ -4,7 +4,7 @@
 
 # Copyright © 2011-2014 Greek Research and Technology Network (GRNET S.A.)
 # Copyright © 2011-2014 Leonidas Poulopoulos (@leopoul)
-# Copyright © 2011-2014 Zenon Mousmoulas 
+# Copyright © 2011-2014 Zenon Mousmoulas
 
 #Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr, @leopoul) and
 #Zenon Mousmoulas (zmousm-at-noc-dot-grnet-dot-gr), GRNET NOC
@@ -13,7 +13,7 @@
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
-#  
+#
 # THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHORS DISCLAIM ALL WARRANTIES WITH REGARD
 # TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
 # FITNESS. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
@@ -31,7 +31,9 @@ here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
 
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+    # ('Leonidas Poulopoulos', 'leopoul@noc.grnet.gr'),
+    # ('Zenon Mousmoulas', 'zmousm@noc.grnet.gr'),
+    ('Stavros Kroustouris', 'staurosk@noc.grnet.gr'),
 )
 
 MANAGERS = ADMINS
@@ -44,11 +46,7 @@ DATABASES = {
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
-        'STORAGE_ENGINE': 'INNODB',    
-=======
         'STORAGE_ENGINE': 'INNODB',
->>>>>>> local:settings.py.dist
     }
 }
 
@@ -64,7 +62,7 @@ TIME_ZONE = 'Europe/Athens'
 
 _ = lambda s: s
 
-LOCALE_PATHS = (  
+LOCALE_PATHS = (
     os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'locale'),
 )
 
@@ -100,17 +98,7 @@ MEDIA_ROOT = ''
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = ''
 
-<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
-# Absolute path to the directory static files should be collected to.
-# Don't put anything in this directory yourself; store your static files
-# in apps' "static/" subdirectories and in STATICFILES_DIRS.
-# Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/path/to/static'
 
-# URL prefix for static files.
-# Example: "http://media.lawrence.com/static/"
-STATIC_URL = 'http://example.com/static'
-=======
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
@@ -122,25 +110,14 @@ STATICFILES_DIRS = [
      '/path/to/staticfiles/dirs',
 ]
 
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = 'x)gmuyo2h=l@tmpyh4b(-!gki%@u$-=3^@z+vf&&!ci7$*!+k9'
->>>>>>> local:settings.py.dist
 
-# Additional locations of static files
-STATICFILES_DIRS = (
-    # Put strings here, like "/home/html/static" or "C:/www/django/static".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
-
-<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-=======
+
 AUTHENTICATION_BACKENDS = (
     'djangobackends.shibauthBackend.shibauthBackend',
     'djangobackends.ldapBackend.ldapBackend',
@@ -152,7 +129,6 @@ AUTHENTICATION_BACKENDS = (
     #'social_auth.backends.yahoo.YahooBackend',
     'social_auth.backends.OpenIDBackend',
 	'django.contrib.auth.backends.ModelBackend',
->>>>>>> local:settings.py.dist
 )
 
 # Make this unique, and don't share it with anybody.
@@ -238,11 +214,7 @@ INSTALLED_APPS = (
     'registration',
     'tinymce',
     'social_auth',
-<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
     'utils',
-=======
-
->>>>>>> local:settings.py.dist
 )
 
 # A sample logging configuration. The only tangible logging
@@ -300,8 +272,8 @@ TINYMCE_DEFAULT_CONFIG = {
     'plugins': "table,spellchecker,paste,searchreplace",
     'theme': "advanced",
 }
-    
-    
+
+
 #### CACHE BACKEND ####
 
 # For production instances enable memcache
@@ -323,11 +295,7 @@ TINYMCE_DEFAULT_CONFIG = {
 # If it's the same with LANGUAGES, simply do URL_NAME_LANGS = LANGUAGES
 URL_NAME_LANGS = (
         ('en', 'English' ),
-<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
         ('el', 'Ελληνικά'),
-=======
-        ('el', u'Ελληνικά'),
->>>>>>> local:settings.py.dist
     )
 
 # Frontend country specific vars, eg. Greece
@@ -352,7 +320,7 @@ NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@exam
 REALM_COUNTRIES = (
              ('country_2letters', 'Country' ),
             )
-            
+
 ##### LDAP BACKEND ######
 
 #Shibboleth attribute map
