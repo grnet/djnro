@@ -21,11 +21,11 @@ from django.contrib.auth.models import User
 
 class MultiSelectFormField(forms.MultipleChoiceField):
     widget = forms.CheckboxSelectMultiple
- 
+
     def __init__(self, *args, **kwargs):
         self.max_choices = 4
         super(MultiSelectFormField, self).__init__(*args, **kwargs)
- 
+
     def clean(self, value):
         if not value and self.required:
             raise forms.ValidationError(self.error_messages['required'])
@@ -34,20 +34,20 @@ class MultiSelectFormField(forms.MultipleChoiceField):
         #             % (apnumber(self.max_choices), pluralize(self.max_choices)))
         return value
 
- 
+
 class MultiSelectField(models.Field):
     __metaclass__ = models.SubfieldBase
- 
+
     def get_internal_type(self):
         return "CharField"
- 
+
     def get_choices_default(self):
         return self.get_choices(include_blank=False)
- 
+
     def _get_FIELD_display(self, field):
         value = getattr(self, field.attname)
         choicedict = dict(field.choices)
- 
+
     def formfield(self, **kwargs):
         # don't call super, as that overrides default widget if it has choices
         defaults = {'required': not self.blank, 'label': capfirst(self.verbose_name),
@@ -65,7 +65,7 @@ class MultiSelectField(models.Field):
             return value
         elif isinstance(value, list):
             return ",".join(value)
- 
+
     def to_python(self, value):
         if value is not None:
             return value if isinstance(value, list) else value.split(',')
@@ -76,14 +76,14 @@ class MultiSelectField(models.Field):
         if self.choices:
             func = lambda self, fieldname = name, choicedict = dict(self.choices): ",".join([choicedict.get(value, value) for value in getattr(self, fieldname)])
             setattr(cls, 'get_%s_display' % self.name, func)
- 
+
     def validate(self, value, model_instance):
         arr_choices = self.get_choices_selected(self.get_choices_default())
         for opt_select in value:
             if (opt_select not in arr_choices):  # the int() here is for comparing with integer choices
-                raise exceptions.ValidationError(self.error_messages['invalid_choice'] % value)  
+                raise exceptions.ValidationError(self.error_messages['invalid_choice'] % value)
         return
- 
+
     def get_choices_selected(self, arr_choices=''):
         if not arr_choices:
             return False
@@ -91,14 +91,14 @@ class MultiSelectField(models.Field):
         for choice_selected in arr_choices:
             list.append(choice_selected[0])
         return list
- 
+
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return self.get_db_prep_value(value)
 
 # needed for South compatibility
 
-from south.modelsinspector import add_introspection_rules  
+from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^edumanage\.models\.MultiSelectField"])
 
 
@@ -143,11 +143,11 @@ class Name_i18n(models.Model):
 
     def __unicode__(self):
         return self.name
-    
+
     class Meta:
         verbose_name = "Name (i18n)"
         verbose_name_plural = "Names (i18n)"
-        
+
 
 class Contact(models.Model):
     '''
@@ -160,7 +160,7 @@ class Contact(models.Model):
 
     def __unicode__(self):
         return '%s <%s> (%s)' % (self.name, self.email, self.phone)
-    
+
     class Meta:
         verbose_name = "Contact"
         verbose_name_plural = "Contacts"
@@ -169,10 +169,10 @@ class Contact(models.Model):
 class InstitutionContactPool(models.Model):
     contact = models.OneToOneField(Contact)
     institution = models.ForeignKey("Institution")
-    
+
     def __unicode__(self):
         return u"%s:%s" %(self.contact, self.institution)
-    
+
     class Meta:
         verbose_name = "Instutution Contact (Pool)"
         verbose_name_plural = "Instutution Contacts (Pool)"
@@ -192,7 +192,7 @@ class URL_i18n(models.Model):
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = generic.GenericForeignKey('content_type', 'object_id')
-    
+
     class Meta:
         verbose_name = "Url (i18n)"
         verbose_name_plural = "Urls (i18n)"
@@ -208,18 +208,18 @@ class InstRealm(models.Model):
     realm = models.CharField(max_length=160)
     instid = models.ForeignKey("Institution",verbose_name="Institution")
     proxyto = models.ManyToManyField("InstServer", help_text=_("Only IdP and IdP/SP server types are allowed"))
-    
+
     class Meta:
         verbose_name = "Institution Realm"
         verbose_name_plural = "Institutions' Realms"
 
     def __unicode__(self):
         return '%s' % self.realm
-    
-    
+
+
     def get_servers(self):
         return ",".join(["%s"%x for x in self.proxyto.all()])
-            
+
 
 class InstServer(models.Model):
     '''
@@ -232,7 +232,7 @@ class InstServer(models.Model):
     # 2: accept if instid.ertype: 2 (sp) or 3 (idpsp)
     # 3: accept if instid.ertype: 3 (idpsp)
 
-    # hostname/ipaddr or descriptive label of server 
+    # hostname/ipaddr or descriptive label of server
     name = models.CharField(max_length=80, help_text=_("Descriptive label"),  null=True, blank=True) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
     addr_type = models.CharField(max_length=16, choices=ADDRTYPES, default='ipv4')
@@ -243,11 +243,11 @@ class InstServer(models.Model):
     auth_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
     acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
-    
+
     secret = models.CharField(max_length=80)
     proto = models.CharField(max_length=12, choices=RADPROTOS, default='radius')
     ts = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         verbose_name = "Institution Server"
         verbose_name_plural = "Institutions' Servers"
@@ -260,13 +260,13 @@ class InstServer(models.Model):
         # the human-readable name would be nice here
             'ertype': self.get_ertype_display(),
             }
-    
+
     def get_name(self):
         if self.name:
             return self.name
         return self.host
-    
-    
+
+
 class InstRealmMon(models.Model):
     '''
     Realm of an IdP Institution to be monitored
@@ -279,7 +279,7 @@ class InstRealmMon(models.Model):
 
     realm = models.ForeignKey(InstRealm)
     mon_type = models.CharField(max_length=16, choices=MONTYPES)
-    
+
     class Meta:
         unique_together = ('realm','mon_type')
         verbose_name = "Institution Monitored Realm"
@@ -301,7 +301,7 @@ class MonProxybackClient(models.Model):
     '''
 
     instrealmmonid = models.ForeignKey("InstRealmMon")
-    # hostname/ipaddr or descriptive label of server 
+    # hostname/ipaddr or descriptive label of server
     name = models.CharField(max_length=80, help_text=_("Descriptive label"),  null=True, blank=True) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
     host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
@@ -378,7 +378,7 @@ class ServiceLoc(models.Model):
                 ('WPA2/AES', 'WPA2-AES'),
                )
 
-    # accept if institutionid.ertype: 2 (sp) or 3 (idpsp) 
+    # accept if institutionid.ertype: 2 (sp) or 3 (idpsp)
     institutionid = models.ForeignKey("Institution", verbose_name="Institution")
     longitude = models.DecimalField(max_digits=12, decimal_places=8)
     latitude = models.DecimalField(max_digits=12, decimal_places=8)
@@ -398,7 +398,7 @@ class ServiceLoc(models.Model):
     # only urltype = 'info' should be accepted here
     url = generic.GenericRelation(URL_i18n, blank=True, null=True)
     ts = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         verbose_name = "Service Location"
         verbose_name_plural = "Service Locations"
@@ -410,8 +410,8 @@ class ServiceLoc(models.Model):
         # but locname is many-to-many
             'locname': self.get_name(),
             }
-    
-    
+
+
     def get_name(self, lang=None):
         name = ', '.join([i.name for i in self.loc_name.all()])
         if not lang:
@@ -423,21 +423,21 @@ class ServiceLoc(models.Model):
             except Exception as e:
                 return name
     get_name.short_description = 'Location Name'
-    
+
 
 class Institution(models.Model):
     '''
     Institution
     '''
-    
+
     realmid = models.ForeignKey("Realm")
     org_name = generic.GenericRelation(Name_i18n)
     ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
-    
+
     def __unicode__(self):
         return "%s" % ', '.join([i.name for i in self.org_name.all()])
-    
-    
+
+
     def get_name(self, lang=None):
         name = ', '.join([i.name for i in self.org_name.all()])
         if not lang:
@@ -448,7 +448,7 @@ class Institution(models.Model):
                 return name
             except Exception as e:
                 return name
-    
+
     def get_active_cat_enrl(self):
         urls = []
         active_cat_enrl = self.catenrollment_set.filter(url='ACTIVE', cat_instance='production')
@@ -456,7 +456,7 @@ class Institution(models.Model):
             if catenrl.cat_configuration_url:
                 urls.append(catenrl.cat_configuration_url)
         return urls
-            
+
 
 class InstitutionDetails(models.Model):
     '''
@@ -474,11 +474,11 @@ class InstitutionDetails(models.Model):
     number_user = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
     number_id = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of issued e-identities (credentials) that may be used for authentication in eduroam service"))
     ts = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         verbose_name = "Institutions' Details"
         verbose_name_plural = "Institution Details"
-        
+
     def __unicode__(self):
         return _('Institution: %(inst)s, Type: %(ertype)s') % {
         # but name is many-to-many from institution
@@ -505,11 +505,11 @@ class Realm(models.Model):
     contact = models.ManyToManyField(Contact)
     url = generic.GenericRelation(URL_i18n)
     ts = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         verbose_name = "Realm"
         verbose_name_plural = "Realms"
-        
+
     def __unicode__(self):
         return _('Country: %(country)s, NRO: %(orgname)s') % {
         # but name is many-to-many from institution
@@ -554,25 +554,24 @@ class RealmData(models.Model):
             }
 
 
-
 class CatEnrollment(models.Model):
     ''' Eduroam CAT enrollment '''
-    
+
     ACTIVE = u"ACTIVE"
-    
+
     cat_inst_id = models.PositiveIntegerField(max_length=10)
     inst = models.ForeignKey(Institution)
     url = models.CharField(max_length=255, blank=True, null=True, help_text="Set to ACTIVE if institution has CAT profiles")
     cat_instance = models.CharField(max_length=50, choices=settings.CAT_INSTANCES)
     applier = models.ForeignKey(User)
     ts = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         unique_together = ['inst', 'cat_instance']
-    
+
     def __unicode__(self):
         return "%s: %s" % (self.cat_inst_id, ', '.join([i.name for i in self.inst.org_name.all()]))
-    
+
     def cat_active(self):
         return self.url == self.ACTIVE
 
@@ -587,5 +586,5 @@ class CatEnrollment(models.Model):
     cat_active.boolean = True
     cat_active.short_description = "CAT profiles"
 
-    
-    
+
+
