@@ -44,7 +44,11 @@ DATABASES = {
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
         'STORAGE_ENGINE': 'INNODB',    
+=======
+        'STORAGE_ENGINE': 'INNODB',
+>>>>>>> local:settings.py.dist
     }
 }
 
@@ -96,6 +100,7 @@ MEDIA_ROOT = ''
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = ''
 
+<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
@@ -105,6 +110,21 @@ STATIC_ROOT = '/path/to/static'
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = 'http://example.com/static'
+=======
+# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
+# trailing slash.
+# Examples: "http://foo.com/media/", "/media/".
+ADMIN_MEDIA_PREFIX = '/media/'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = '/path/to/static/root'
+STATICFILES_DIRS = [
+     '/path/to/staticfiles/dirs',
+]
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'x)gmuyo2h=l@tmpyh4b(-!gki%@u$-=3^@z+vf&&!ci7$*!+k9'
+>>>>>>> local:settings.py.dist
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -113,12 +133,26 @@ STATICFILES_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
+<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+=======
+AUTHENTICATION_BACKENDS = (
+    'djangobackends.shibauthBackend.shibauthBackend',
+    'djangobackends.ldapBackend.ldapBackend',
+    'social_auth.backends.twitter.TwitterBackend',
+    #'social_auth.backends.facebook.FacebookBackend',
+    'social_auth.backends.google.GoogleBackend',
+    #'social_auth.backends.contrib.linkedin.LinkedinBackend',
+    #'social_auth.backends.contrib.yahoo.YahooOAuthBackend',
+    #'social_auth.backends.yahoo.YahooBackend',
+    'social_auth.backends.OpenIDBackend',
+	'django.contrib.auth.backends.ModelBackend',
+>>>>>>> local:settings.py.dist
 )
 
 # Make this unique, and don't share it with anybody.
@@ -197,13 +231,18 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'django.contrib.staticfiles',
     'edumanage',
     'accounts',
     'south',
     'registration',
     'tinymce',
     'social_auth',
+<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
     'utils',
+=======
+
+>>>>>>> local:settings.py.dist
 )
 
 # A sample logging configuration. The only tangible logging
@@ -284,12 +323,16 @@ TINYMCE_DEFAULT_CONFIG = {
 # If it's the same with LANGUAGES, simply do URL_NAME_LANGS = LANGUAGES
 URL_NAME_LANGS = (
         ('en', 'English' ),
+<<<<<<< refs/remotes/origin/wheezy:djnro/settings.py.dist
         ('el', 'Ελληνικά'),
+=======
+        ('el', u'Ελληνικά'),
+>>>>>>> local:settings.py.dist
     )
 
 # Frontend country specific vars, eg. Greece
 NRO_COUNTRY_NAME = _('My Country')
-# Variable used by context_processor to display the "eduroam | <country_code>" in base.html 
+# Variable used by context_processor to display the "eduroam | <country_code>" in base.html
 NRO_COUNTRY_CODE = 'gr'
 # main domain url used in right top icon, eg. http://www.grnet.gr
 NRO_DOMAIN_MAIN_URL = "http://www.example.com"
@@ -297,12 +340,12 @@ NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 NRO_PROV_BY_DICT = {"name": "GRNET NOC", "url": "//noc.grnet.gr"}
 #provider social media contact (Use: // to preserve https)
 NRO_PROV_SOCIAL_MEDIA_CONTACT = [
-                                {"url":"//facebook.com/noc.grnet.gr", "icon":"/static/img/facebook_img.png", "name":"Facebook"}, 
+                                {"url":"//facebook.com/noc.grnet.gr", "icon":"/static/img/facebook_img.png", "name":"Facebook"},
                                 {"url":"//twitter.com/grnetnoc", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
                                 ]
 # map center (lat, lng)
 MAP_CENTER = (36.97, 23.71)
-#Helpdesk, used in base.html: 
+#Helpdesk, used in base.html:
 NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
 #Countries for Realm model:

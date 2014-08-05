@@ -9,7 +9,11 @@ Required Packages
 DjNRO heavily depends on the following:
 
 * Python (<3 & >=2.6)
+<<<<<<< refs/remotes/origin/wheezy
 * Django (1.4) - python-django
+=======
+* Django (>=1.4) - python-django
+>>>>>>> local
 * memcached
 * python-mysqldb (If you wish to use MySQL as the DB backend)
 * mysql-client-5.1
@@ -22,6 +26,10 @@ DjNRO heavily depends on the following:
 * libapache2-mod-wsgi
 * apache2-shibboleth : The server should be setup as a Shibboleth SP
 * A mail server - Tested with exim
+* python-oauth2
+* python-requests
+* python-lxml
+* python-yaml
 
 Django Social Auth
 ------------------
@@ -35,5 +43,14 @@ Django Social Auth: Requirements - Dependencies
 * django-social-auth
 
  *  OpenId support depends on python-openid
+<<<<<<< refs/remotes/origin/wheezy
  
  *  OAuth support depends on python-oauth2 
+=======
+
+ *  OAuth support depends on python-oauth2
+
+
+
+
+>>>>>>> local
