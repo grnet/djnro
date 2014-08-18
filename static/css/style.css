@@ -3,8 +3,8 @@ body{
 }
 
 #footcontainer{
-	text-align: center; 
-	/*background-color: white;*/ 
+	text-align: center;
+	/*background-color: white;*/
 	margin-top: 5px;
 	/*padding: 5px 10px 0 10px;*/
 	/*border: 1px solid grey;*/
@@ -148,7 +148,11 @@ tr.even {
     width: 55px !important;
 }
 
-.roundButtonHolder {    
+.roundButtonHolder {
     left: 74px !important;
     top: 12px !important;
+}
+
+.hidden-phone img {
+	width: 100%;
 }
