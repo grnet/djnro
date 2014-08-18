@@ -9,11 +9,7 @@ Required Packages
 DjNRO heavily depends on the following:
 
 * Python (<3 & >=2.6)
-<<<<<<< refs/remotes/origin/wheezy
-* Django (1.4) - python-django
-=======
 * Django (>=1.4) - python-django
->>>>>>> local
 * memcached
 * python-mysqldb (If you wish to use MySQL as the DB backend)
 * mysql-client-5.1
@@ -30,6 +26,8 @@ DjNRO heavily depends on the following:
 * python-requests
 * python-lxml
 * python-yaml
+* gettext
+
 
 Django Social Auth
 ------------------
@@ -43,14 +41,5 @@ Django Social Auth: Requirements - Dependencies
 * django-social-auth
 
  *  OpenId support depends on python-openid
-<<<<<<< refs/remotes/origin/wheezy
- 
- *  OAuth support depends on python-oauth2 
-=======
 
  *  OAuth support depends on python-oauth2
-
-
-
-
->>>>>>> local
