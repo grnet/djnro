@@ -1,0 +1,110 @@
+{% extends "edumanage/welcome.html"%}
+{% load i18n %}
+{% block extrahead %}
+	<style type="text/css">
+		.control-label{
+			padding-top: 0px !important;
+			width: auto !important;
+		}
+	</style>
+{% endblock %}
+			{% block crumbs %}
+	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Institution" %}</li>
+	    			{% endblock %}
+			{% block homeactive %}{% endblock %}
+    		{% block instactive %}class="active"{% endblock %}
+            {% block subcontent %}
+              <h4>{% trans "Institution" %}</h4>
+              		<hr>
+              		{% if messages %}
+                    <table class="table table-condensed">
+                        {% for message in messages %}
+                        <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+              {% load tolocale %}
+              {% if institution %}
+              		{% if institution.institutiondetails %}
+              		
+<div class="form-horizontal">
+
+
+		<div class="control-group">
+		<label class="control-label" for="id_ertype">{% trans "Name" %}</label>
+		<div class="controls">
+			{% tolocale institution LANGUAGE_CODE %}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_ertype">{% trans "Type" %}</label>
+		<div class="controls">
+			{{ institution.get_ertype_display }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_address_street">{% trans "Address Street" %}</label>
+		<div class="controls">
+			{{ institution.institutiondetails.address_street }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_address_city">{% trans "Address City" %}</label>
+		<div class="controls">
+			{{ institution.institutiondetails.address_city }}
+		</div>
+	</div>
+	<div class="control-group">
+		<label class="control-label" for="id_contact">{% trans "Contacts" %}</label>
+		<div class="controls">
+				{% for contact in institution.institutiondetails.contact.all %}
+        		{{contact.name}} (<a href="mailto:{{contact.email}}">{{contact.email}}</a> - tel:{{contact.phone}}){% if not forloop.last %}<br>{% endif %}
+        	{% endfor %}
+		</div>
+	</div>
+    <div class="control-group ">
+        <label class="control-label" for="id_urls">{% trans "Urls" %}</label>
+        
+        <div class="controls">
+        {% for url in institution.institutiondetails.url.all %}
+        		<a href="{{url.url}}" target="_blank">{{url.url}}</a> - {{url.get_urltype_display}} ({{url.get_lang_display}}){% if not forloop.last %}<br>{% endif %}
+        {% endfor %}
+        </div>
+    </div>
+    {% if institution.ertype == 2 or institution.ertype == 3 %}
+	<div class="control-group">
+		<label class="control-label" for="id_oper_name">{% trans "Domain Name" %}</label>
+		<div class="controls">
+			{{ institution.institutiondetails.oper_name }}
+		</div>
+	</div>
+	{% endif %}
+	{% if institution.ertype == 1 or institution.ertype == 3 %}
+	<div class="control-group">
+		<label class="control-label" for="id_number_user">{% trans "Number User" %}</label>
+		<div class="controls">
+			{{ institution.institutiondetails.number_user }}
+		</div>
+	</div>
+	{% endif %}
+	<div class="control-group">
+		<label class="control-label" for="id_number_id">{% trans "Number of IDs" %}</label>
+		<div class="controls">
+			{{ institution.institutiondetails.number_id }}
+		</div>
+	</div>
+	<div class="control-group">
+        <div class="controls">
+            <a class="btn btn-primary" href="{% url edit-institution institution.pk %}">{% trans "Edit" %}</a>
+        </div>
+    </div>
+            </div>   
+              		{% else %}
+              			<div>{% trans "No institution details defined yet for" %} {% tolocale institution LANGUAGE_CODE%} <a href="{% url edit-institution institution.pk %}" class="btn btn-small btn-primary">{% trans "edit" %}</a></div>
+              		{% endif %}
+              {% else %}
+              <p>{% trans "No institution defined" %}</p>
+              {% endif %}
+             {% endblock %}
+            

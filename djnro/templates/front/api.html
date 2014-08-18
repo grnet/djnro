@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+    {% block currentpagetitle %}{% trans "Closest Point API" %}{% endblock %}
+    {% block homepage %}{% endblock %}
+    {% block hometop %}{% endblock %}
+    {% block api %}class="active"{% endblock %}
+
+
+		{% block subcontent %}
+			<h4>{% trans "Closest point API" %}</h4>
+			<hr>
+			<div class="span6">
+				<p>{% blocktrans %}Since we collect information from eduroam.org about the available eduroam points, we developed the closest point service API, which handles locating the closest eduroam service location.{% endblocktrans %}</p>
+				<p>{% blocktrans %}The API receives the current location coordinates in a GET request, calculates the closest point through server-side triangulation and returns a JSON reply with its’ coordinates and a detailed description.{% endblocktrans %}</p>
+				<h5>Applications</h5>
+				<p>{% blocktrans %}Based on this API, we developed the closest point web page that allows users to find the closest eduroam location or a location they search for.{% endblocktrans %}</p>
+				<p>{% blocktrans %}Potentials are limitless! You can build your own application either it is web or mobile or a widget for a wearable device.{% endblocktrans %}</p>
+				<h5>API</h5>
+				<div class="well">
+					<strong>url: https://{{site}}{% url closest %}?lat=latitude&lng=longitude</strong><br>
+					<strong>method: GET</strong><br><br>
+					<strong>lat:</strong>Latitude coordinate, eg. 37.98101<br>
+					<strong>lng:</strong>Longitude coordinate, eg. 23.728695
+				</div>
+					<strong>Example request: </strong>
+					<div class="well">
+						Find the closest eduroam point to my position, eg. coords(37.98, 23.72): <br><strong>https://{{site}}{% url closest %}?lat=37.98&lng=23.72</strong>
+					</div>
+					<strong>Example response:</strong>				
+<pre>{
+"lat": "37.972883",
+"lng": "23.717463",
+"text": "\n &lt;b&gt;Name:&lt;/b&gt; National Observatory, Athens, Greece&lt;br&gt;&lt;b&gt;Address:&lt;/b&gt; Athens, 118 51&lt;br&gt;&lt;b&gt;SSID:&lt;/b&gt; EDUROAM&lt;br&gt;&lt;b&gt;Enc:&lt;/b&gt; WPA2/AES&lt;br&gt;&lt;b&gt;AP:&lt;/b&gt; 1&lt;br&gt; \n ",
+"name": "\n &lt;b&gt;Name:&lt;/b&gt; National Observatory, Athens, Greece&lt;br&gt;&lt;b&gt;Address:&lt;/b&gt; Athens, 118 51&lt;br&gt;&lt;b&gt;SSID:&lt;/b&gt; EDUROAM&lt;br&gt;&lt;b&gt;Enc:&lt;/b&gt; WPA2/AES&lt;br&gt;&lt;b&gt;AP:&lt;/b&gt; 1&lt;br&gt; \n "
+"plainname": "National Observatory of Athens ",
+}
+</pre>
+
+				
+			</div>
+		{% endblock %}

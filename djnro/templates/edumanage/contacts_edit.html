@@ -1,0 +1,63 @@
+{% extends "edumanage/welcome.html"%}
+{% load i18n %}
+{% block crumbs %}
+	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url contacts %}">{% trans "Contacts" %}</a><span class="divider">/</span></li>
+	<li class="active">{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</li>
+{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+ <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
+      
+
+
+
+{% endblock %}
+			
+{% block homeactive %}{% endblock %}
+{% block contactsactive %}class="active"{% endblock %}
+{% block subcontent %} <h4>{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</h4>
+<hr>
+<form method="POST" class="form-horizontal">
+	{% csrf_token %}
+	{% if form.non_field_errors %}
+	<p class="error">
+		{{ form.non_field_errors}}
+	</p>
+	{% endif %}
+	<div style="display: none">
+		{{form.instid}}
+	</div>
+	<div class="control-group {% if form.name.errors %} error {% endif %}">
+		<label class="control-label" for="id_name"><b>{% trans "Name" %}</b></label>
+		<div class="controls">
+			{{ form.name }}
+			{% if form.name.errors %} <span class="help-inline"> {{ form.name.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.name.help_text }}</span>
+		</div>
+		</div>
+		<div class="control-group {% if form.email.errors %} error {% endif %}">
+		<label class="control-label" for="id_email"><b>{% trans "Email" %}</b></label>
+		<div class="controls">
+			{{ form.email }}
+			{% if form.email.errors %} <span class="help-inline"> {{ form.email.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.email.help_text }}</span>
+		</div>
+		</div>
+		<div class="control-group {% if form.phone.errors %} error {% endif %}">
+		<label class="control-label" for="id_phone"><b>{% trans "Phone" %}</b></label>
+		<div class="controls">
+			{{ form.phone }}
+			{% if form.phone.errors %} <span class="help-inline"> {{ form.phone.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.phone.help_text }}</span>
+		</div>
+		</div>
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" id="applybutton" value="Apply" class="btn btn-primary">
+			{% trans "Apply" %}</button>
+		</div>
+	</div>
+</form>
+{% endblock %}
+         

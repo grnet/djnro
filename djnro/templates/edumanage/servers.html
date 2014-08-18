@@ -1,0 +1,153 @@
+{% extends "edumanage/welcome.html"%}
+{% load i18n %}
+			{% block crumbs %}
+	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	    			<li class="active">{% trans "Servers" %}</li>
+	    			{% endblock %}
+{% load i18n %}
+{% block extrahead %}
+<script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/static/js/datatables_bootstrap.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	 {% if servers %}
+var oTable = $('#table').dataTable({
+	"sPaginationType": "bootstrap",
+	"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+	"aoColumns": [{
+        "bSearchable": true,
+        "bSortable": true
+    }, {
+        "bSearchable": true,
+        "bSortable": true
+    }, {
+        "bSearchable": true,
+        "bSortable": true
+    },  {
+        "bSearchable": true,
+        "bSortable": true
+    }, {
+        "bVisible": true,
+        "bSearchable": false,
+        "bSortable": false
+    }],
+    "aaSorting": [[0, 'desc']],
+    "iDisplayLength": 25,
+    "oSearch": {"bSmart": false, "bRegex":true},
+    "oLanguage": {
+    	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "servers" %}',
+        "sProcessing":   "Processing...",
+        "sZeroRecords": '{% trans "No records to display" %}',
+        "sInfo":         "Showing _START_ to _END_ of _TOTAL_ entries",
+        "sInfoEmpty":    "{% trans "Showing 0 to 0 of 0 entries" %}",
+        "sInfoFiltered": "(filtered from _MAX_ total entries)",
+        "sInfoPostFix":  "",
+        "sSearch":       '{% trans "Search:" %}',
+        "sUrl":          "",
+        "oPaginate": {
+            "sFirst":    '{% trans "First" %}',
+            "sPrevious": '{% trans "Previous" %}',
+            "sNext":     '{% trans "Next" %}',
+            "sLast":     '{% trans "Last" %}'
+        }
+    }
+});
+
+oTable.fnDraw();
+
+$('[id^=del_server_]').click(function(){
+	server_id = (this.id).replace("del_server_", '');
+	name = this.getAttribute("data-servername");
+	$("#mymodalbody").html("You are about to delete server: <b>"+name+"</b><br>Press Delete to proceed or Cancel to cancel deletion");
+	$("#myModalLabel").html("Delete Server "+name);
+	$('#myModal').modal('show');
+	$(".modal-footer").show();
+	$("#server_name_del").html(name)	
+	return false;
+});
+
+$("#delserverSubmit").click(function(){
+	$.ajax({
+		url:"{% url del-server %}/?server_pk="+server_id,
+		type: "GET",
+		success: function(data){
+			if (data.error){
+				$(".modal-footer").hide();
+				$("#mymodalbody").html("<font style='color:#B94A48'>"+data.error+"</font>");
+			}
+			if (data.success){
+				$(".modal-footer").hide();
+				$("#mymodalbody").html("Server "+name+" successfully deleted");
+				window.setTimeout('location.reload()', 1000);
+				
+			}
+			}
+		});
+});
+
+
+{% endif %}
+});
+</script>
+{% endblock %}
+
+	{% block navbar %}
+			
+    		{% endblock %}
+    		
+    		{% block homeactive %}{% endblock %}
+    		{% block serversactive %}class="active"{% endblock %}
+            {% block subcontent %}
+
+	            	
+	              <h4>{% trans "Servers" %}</h4>
+	              <hr>
+	              {% if messages %}
+                    <table class="table table-condensed">
+                        {% for message in messages %}
+                        <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+                        {% endfor %}
+                    </table>
+                {% endif %}
+	              <div><a href="{% url edit-servers %}" class="btn btn-primary">{% trans "Add new server" %}</a></div>
+	              <div class="span10"></div>
+	              {% if servers %}
+	              <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
+					<thead>
+					<tr>
+						<th>{% trans "Name" %}</th>
+						<th>{% trans "Type" %}</th>
+						<th>{% trans "Authentication Port" %}</th>
+						<th>{% trans "Protocol" %}</th>
+						<th style="text-align: center;">{% trans "Action" %}</th>
+					</tr>
+					</thead>
+
+					<tbody>
+	                {% for server in servers %}
+	              	<tr class="GradeC">
+	                	<td><a href = "{% url servers server.pk %}">{{server.get_name}}</a></td>
+	                	<td>{{server.get_ertype_display}}</td>
+	                	<td>{{server.auth_port}}</td>
+	                	<td>{{server.proto}}</td>
+	                	<td style="text-align: center;"><a href="{% url edit-servers server.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_server_{{server.pk}}" data-servername="{{server.get_name}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
+	                </tr>
+	              	{% endfor %}
+	              	</tbody>
+	              </table>
+	              {% endif %}
+<div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+<h3 id="myModalLabel">{% trans "Delete Server" %}</h3>
+</div>
+<div class="modal-body" id="mymodalbody">
+
+</div>
+<div class="modal-footer">
+<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+<a class="btn btn-warning" id="delserverSubmit" href="#">{% trans "Delete" %}</a>
+</div>
+</div>
+            {% endblock %}
+

@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+{% load i18n %}
+	{% block currentpagetitle %}{% trans "Home" %}{% endblock %}
+    {% block homepage %}class="active"{% endblock %}
+    {% block hometop %}class="active"{% endblock %}
+    {% block extrahead %}
+    <style type="text/css">
+        .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
+    </style>
+    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/markerclusterer.js"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+	var lat = "{{MAP_CENTER.0}}";
+	var lat = parseFloat(lat.replace(",","."));
+	var lng = "{{MAP_CENTER.1}}";
+	var lng = parseFloat(lng.replace(",","."));
+	var zoomLevel = 6;
+	var latlng = new google.maps.LatLng(lat,lng);
+	var map = '';
+	var bounds = '';
+	var image = '';
+	var infoWindow;
+	addr = {};
+
+	var styles = [ {
+		url : '/static/img/edugroup.png',
+		height : 54,
+		width : 63,
+		textColor : '#ffffff',
+		textSize : 11
+	}, {
+		url : '/static/img/edugroup.png',
+		height : 54,
+		width : 63,
+		textColor : '#ffffff',
+		textSize : 11
+	}, {
+		url : '/static/img/edugroup.png',
+		height : 54,
+		width : 63,
+		textColor : '#ffffff',
+		textSize : 11
+	} ];
+
+	function initialize() {
+		image = new google.maps.MarkerImage('/static/img/edupin.png',
+		// This marker is 29 pixels wide by 40 pixels tall.
+		new google.maps.Size(29, 40),
+		// The origin for this image is 0,0.
+		new google.maps.Point(0, 0),
+		// The anchor for this image is the base of the flagpole at 18,42.
+		new google.maps.Point(14, 40));
+
+		var styleArray = [ {
+			featureType : "all",
+			stylers : [ {
+				saturation : -60
+			}, {
+				gamma : 1.00
+			} ]
+		}, {
+			featureType : "poi.business",
+			elementType : "labels",
+			stylers : [ {
+				visibility : "off"
+			} ]
+		}, {
+			"featureType" : "transit.line",
+			"elementType" : "geometry",
+			"stylers" : [ {
+				"visibility" : "off"
+			} ]
+		}, {
+			"featureType" : "poi",
+			"elementType" : "all",
+			"stylers" : [ {
+				"visibility" : "off"
+			} ]
+		}, {
+			'featureType' : "administrative.country",
+			'elementType' : "labels",
+			'stylers' : [ {
+				'visibility' : "off"
+			} ]
+		}
+
+		];
+
+	geocoder = new google.maps.Geocoder();
+	// disable scrolling/draging in maps
+	if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		isDraggable = false;
+		isScrollable = true;
+	} else {
+		isDraggable = true;
+		isScrollable = false;
+	}
+
+	var mapOptions = {
+			center : latlng,
+			zoom : zoomLevel,
+			mapTypeId : google.maps.MapTypeId.ROADMAP,
+			styles : styleArray,
+			mapTypeId : google.maps.MapTypeId.ROADMAP,
+			mapTypeControlOptions : {
+				style : google.maps.MapTypeControlStyle.DEFAULT
+			},
+			navigationControl : true,
+			mapTypeControl : false,
+			scrollwheel: isScrollable,
+			draggable: isDraggable
+		};
+		map = new google.maps.Map(document.getElementById("map_canvas"),
+				mapOptions);
+
+
+		var homeControlDiv = document.createElement('div');
+		homeControlDiv.className='roundButtonHolder';
+		homeControlDiv.id="locationButton";
+		var homeControl = new HomeControl(homeControlDiv, map);
+
+		homeControlDiv.index = 1;
+		map.controls[google.maps.ControlPosition.TOP_LEFT].push(homeControlDiv);
+
+		bounds = new google.maps.LatLngBounds();
+		infoWindow = new google.maps.InfoWindow();
+		google.maps.event.addListener(map, 'idle', function() {
+			center = map.getCenter();
+			geocode(center);
+			zoom = map.getZoom();
+			if (zoom > 12){
+				$("#showCityBtn").show();
+				$("#showCountryBtn").hide();
+			}
+			else if ((zoom <= 12) && (zoom > 7)){
+				$("#showCityBtn").hide();
+				$("#showCountryBtn").show();
+			}
+			else {
+				$("#showCityBtn").hide();
+				$("#showCountryBtn").hide();
+			}
+		});
+
+
+	}
+
+	var markers = new Array();
+	function placeMarkers() {
+
+		$
+				.get(
+						"{% url get-all-services %}",
+						function(data) {
+							$
+									.each(
+											data,
+											function(index, jsonMarker) {
+												var marker = createMarker(jsonMarker);
+												if (marker) {
+													bounds
+															.extend(marker.position);
+													markers.push(marker);
+													google.maps.event
+															.addListener(
+																	marker,
+																	'click',
+																	function() {
+																		infoWindow.setContent ( "<div><h4>"
+																				+ jsonMarker.inst
+																				+ "</h4>"
+																				+
+
+																				"<div class='tabbable'>"
+																				+ "<ul class='nav nav-tabs'>"
+																				+ "<li class='active'><a href='#tab1' data-toggle='tab'>{% trans 'Info' %}</a></li>"
+																				+ "<li><a href='#tab2' data-toggle='tab'>{% trans 'More...' %}</a></li>"
+																				+ "</ul>"
+																				+ "<div class='tab-content'>"
+																				+ "<div class='tab-pane active' id='tab1'>"
+																				+ "<dl class='dl-horizontal'>"
+																				+ "<dt>{% trans 'Name' %}</dt><dd>"
+																				+ jsonMarker.name
+																				+ "&nbsp;</dd>"
+																				+ "<dt>{% trans 'Address' %}</dt><dd>"
+																				+ jsonMarker.address
+																				+ "&nbsp;</dd>"
+																				+ "<dt>{% trans 'Encryption' %}</dt><dd>"
+																				+ jsonMarker.enc
+																				+ "&nbsp;</dd>"
+																				+ "<dt>{% trans 'SSID' %}</dt><dd>"
+																				+ jsonMarker.SSID
+																				+ "&nbsp;</dd>"
+																				+ "<dt>{% trans 'Number of APs' %}</dt><dd>"
+																				+ jsonMarker.AP_no
+																				+ "&nbsp;</dd></dl>"
+																				+ "</div>"
+																				+ "<div class='tab-pane' id='tab2'>"
+																				+ "<dl class='dl-horizontal'>"
+																				+ "<dt>{% trans 'Port Restrict' %}</dt><dd>"
+																				+ jsonMarker.port_restrict
+																				+ "&nbsp;</dd>"
+																				+ "<dt>{% trans 'transp_proxy' %}</dt><dd>"
+																				+ jsonMarker.transp_proxy
+																				+ "&nbsp;</dd>"
+																				+ "<dt>IPv6</dt><dd>"
+																				+ jsonMarker.IPv6
+																				+ "&nbsp;</dd>"
+																				+ "<dt>NAT</dt><dd>"
+																				+ jsonMarker.NAT
+																				+ "&nbsp;</dd>"
+																				+ "<dt>{% trans 'Wired' %}</dt><dd>"
+																				+ jsonMarker.wired
+																				+ "&nbsp;</dd></dl>"
+																				+ "</div>"
+																				+ "</div>"
+																				+ "</div>"
+																				+ "</div>");
+																		infoWindow
+																				.open(
+																						map,
+																						marker);
+																	});
+												}
+											});
+							var mcOptions = {
+								gridSize : 50,
+								maxZoom : 15,
+								styles : styles
+							};
+
+							var markerCluster = new MarkerClusterer(map,
+									markers, mcOptions);
+							map.fitBounds(bounds)
+						});
+	}
+
+	function createMarker(markerObj) {
+		var title = markerObj.name;
+		var address = markerObj.address;
+		var latLng = new google.maps.LatLng(markerObj.lat, markerObj.lng);
+		var marker = new google.maps.Marker({
+			'position' : latLng,
+			'map' : map,
+			'title' : title,
+			'address' : address,
+			'icon' : image,
+		});
+		return marker
+	}
+
+	function clusterMarkers(markers) {
+		var markerCluster = new MarkerClusterer(map, markers);
+	}
+
+	function rad(x) {
+		return x * Math.PI / 180;
+	}
+
+	function find_closest_marker(event) {
+		var lat = event.latLng.lat();
+		var lng = event.latLng.lng();
+		var R = 6371; // radius of earth in km
+		var distances = [];
+		var closest = -1;
+		for (i = 0; i < markers.length; i++) {
+			var mlat = markers[i].position.lat();
+			var mlng = markers[i].position.lng();
+			var dLat = rad(mlat - lat);
+			var dLong = rad(mlng - lng);
+			var a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+					+ Math.cos(rad(lat)) * Math.cos(rad(lat))
+					* Math.sin(dLong / 2) * Math.sin(dLong / 2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			var d = R * c;
+			distances[i] = d;
+			if (closest == -1 || d < distances[closest]) {
+				closest = i;
+			}
+		}
+
+	}
+
+	function geocode(position){
+		addr = {};
+		geocoder
+		.geocode(
+				{
+					'latLng' : position
+				},
+				function(results, status) {
+					if (status == google.maps.GeocoderStatus.OK) {
+						if (results.length >= 1) {
+							for ( var ii = 0; ii < results[0].address_components.length; ii++) {
+								var street_number = route = street = city = state = zipcode = country = formatted_address = '';
+								var types = results[0].address_components[ii].types
+										.join(",");
+								if (types == "sublocality,political"
+										|| types == "locality,political"
+										|| types == "neighborhood,political"
+										|| types == "political") {
+									addr.city = (city == '' || types == "locality,political") ? results[0].address_components[ii].long_name
+											: city;
+								}
+								if (types == "country,political") {
+									addr.country = results[0].address_components[ii].long_name;
+								}
+							}
+						}
+					}
+				});
+	}
+
+	function codeAddress(address) {
+	    geocoder.geocode( { 'address': address}, function(results, status) {
+	      if (status == google.maps.GeocoderStatus.OK) {
+	        map.setCenter(results[0].geometry.location);
+	    	map.fitBounds(results[0].geometry.bounds)
+	      } else {
+	      }
+	    });
+	  }
+
+	function HomeControl(controlDiv, map) {
+
+		  // Set CSS styles for the DIV containing the control
+		  // Setting padding to 5 px will offset the control
+		  // from the edge of the map.
+		  controlDiv.style.padding = '5px';
+
+		  // Set CSS for the control border.
+		  var controlUI = document.createElement('button');
+		  controlUI.className='btn btn-warning roundButton';
+		  controlUI.id = "showCityBtn";
+		  extraCSS = 'background-image: url(/static/img/city.png);background-position: center center; background-repeat: no-repeat;';
+		  controlUI.style.cssText='display:none; cursor:pointer; white-space:nowrap; position:absolute; '+extraCSS;
+		  controlUI.title = "City View";
+
+		  // Set CSS for the control border.
+		  var controlUI2 = document.createElement('button');
+		  controlUI2.className='btn btn-warning roundButton';
+		  controlUI2.id = "showCountryBtn";
+		  extraCSS2 = 'background-image: url(/static/img/country.png);background-position: center center; background-repeat: no-repeat;';
+		  controlUI2.style.cssText='display:none; cursor:pointer; white-space:nowrap; position:absolute; '+extraCSS2;
+		  controlUI2.title = "Country View";
+
+		  controlDiv.appendChild(controlUI);
+		  controlDiv.appendChild(controlUI2);
+
+		  // Setup the click event listeners: simply set the map to Chicago.
+		  google.maps.event.addDomListener(controlUI, 'click', function() {
+		    codeAddress(addr.city+','+addr.country);
+		  });
+		  google.maps.event.addDomListener(controlUI2, 'click', function() {
+			    codeAddress(addr.country);
+			  });
+
+		}
+
+	$(document).ready(function() {
+		initialize();
+		marks = placeMarkers();
+		clusterMarkers(marks);
+	});
+</script>
+{% endblock %}
+
+
+					{% block subcontent %}
+					<h4>{% trans "Eduroam in" %} {% trans COUNTRY_NAME %}</h4>
+					<hr>
+
+					<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;"></div>
+					{% endblock %}
+
+

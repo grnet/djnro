@@ -1,0 +1,32 @@
+{% load i18n %}
+
+    <form id="add_user_form" method="POST"  class="form-horizontal">
+    {% csrf_token %}
+		<div class="control-group {% if form.name.errors %} error {% endif %}">
+		<label class="control-label" for="id_name"><b>{% trans "Name" %}</b></label>
+		<div class="controls">
+			{{ form.name }}
+			{% if form.name.errors %} <span class="help-inline"> {{ form.name.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.name.help_text }}</span>
+		</div>
+		</div>
+		<div class="control-group {% if form.email.errors %} error {% endif %}">
+		<label class="control-label" for="id_email"><b>{% trans "Email" %}</b></label>
+		<div class="controls">
+			{{ form.email }}
+			{% if form.email.errors %} <span class="help-inline"> {{ form.email.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.email.help_text }}</span>
+		</div>
+		</div>
+		<div class="control-group {% if form.phone.errors %} error {% endif %}">
+		<label class="control-label" for="id_phone"><b>{% trans "Phone" %}</b></label>
+		<div class="controls">
+			{{ form.phone }}
+			{% if form.phone.errors %} <span class="help-inline"> {{ form.phone.errors|join:", " }} </span>
+			{% endif %} <span class="help-block"> {{ form.phone.help_text }}</span>
+		</div>
+		</div>
+    </form>
+
+
+
