@@ -35,7 +35,6 @@ msgid "My Country"
 msgstr ""
 
 #: djnro/settings.py:291
-#, fuzzy
 msgid "Domain Helpdesk"
 msgstr "Helpdesk ΕΔΕΤ"
 
@@ -623,32 +622,32 @@ msgstr "Αποθήκευση"
 #: templates/edumanage/monlocauthpar_edit.html:5
 #: templates/edumanage/welcome.html:216
 msgid "Monitored Realms"
-msgstr ""
+msgstr "Παρακολουθούμενες Περιοχές"
 
 #: templates/edumanage/instrealmmon_edit.html:6
 #: templates/edumanage/instrealmmon_edit.html:19
 msgid "Add Monitored Realm"
-msgstr "Προσθήκη Monitored Realm"
+msgstr "Προσθήκη περιοχής προς παρακολούθηση"
 
 #: templates/edumanage/instrealmmon_edit.html:30
 #: templates/edumanage/instrealmmons.html:147
 #: templates/edumanage/monlocauthpar_edit.html:36
 #: templates/edumanage/realms_edit.html:40
 msgid "Realm"
-msgstr ""
+msgstr "Περιοχή"
 
 #: templates/edumanage/instrealmmon_edit.html:38
 msgid "Monitoring Method"
-msgstr ""
+msgstr "Μέθοδος παρακολούθησης"
 
 #: templates/edumanage/instrealmmons.html:39
 #: templates/edumanage/realms.html:32
 msgid "realms"
-msgstr ""
+msgstr "περιοχές"
 
 #: templates/edumanage/instrealmmons.html:62
 msgid "You are about to delete monitored realm (and its parameters if any)"
-msgstr ""
+msgstr "Θα διαγραφεί η περιοχή (και οι ρυθμίσεις της)"
 
 #: templates/edumanage/instrealmmons.html:63
 msgid "Delete Monitored Realm"
@@ -686,11 +685,11 @@ msgstr "Προσθήκη παραμέτρων Monitored Realm"
 
 #: templates/edumanage/monlocauthpar_edit.html:42
 msgid "EAP Method"
-msgstr ""
+msgstr "Μέθοδος EAP"
 
 #: templates/edumanage/monlocauthpar_edit.html:50
 msgid "EAP2 Method"
-msgstr ""
+msgstr "Μέθοδος EAP2"
 
 #: templates/edumanage/monlocauthpar_edit.html:58
 #: templates/overview/index.html:168
@@ -704,20 +703,20 @@ msgstr "Κωδικός"
 #: templates/edumanage/realms.html:5 templates/edumanage/realms_edit.html:5
 #: templates/edumanage/welcome.html:213
 msgid "Realms"
-msgstr ""
+msgstr "Περιοχές"
 
 #: templates/edumanage/realms.html:106
 msgid "Add new realm"
-msgstr "Προσθήκη Realm"
+msgstr "Προσθήκη Περιοχής"
 
 #: templates/edumanage/realms.html:134
 msgid "Delete Realm"
-msgstr "Διαγραφή Realm"
+msgstr "Διαγραφή Περιοχής"
 
 #: templates/edumanage/realms_edit.html:6
 #: templates/edumanage/realms_edit.html:19
 msgid "Add Realm"
-msgstr "Προσθήκη Realm"
+msgstr "Προσθήκη περιοχής"
 
 #: templates/edumanage/realms_edit.html:48
 msgid "Proxy to Servers"
@@ -738,7 +737,7 @@ msgstr "Ετικέτα"
 #: templates/edumanage/server_details.html:43
 #: templates/edumanage/servers_edit.html:42
 msgid "Address Family"
-msgstr ""
+msgstr "Οικογένεια διευθύνσεων"
 
 #: templates/edumanage/server_details.html:49
 msgid "Host"
@@ -762,13 +761,13 @@ msgstr ""
 
 #: templates/edumanage/server_details.html:75
 msgid "Status Server"
-msgstr ""
+msgstr "Εξυπηρετητής Καταστάσεων"
 
 #: templates/edumanage/server_details.html:81
 #: templates/edumanage/servers.html:121
 #: templates/edumanage/servers_edit.html:108
 msgid "Protocol"
-msgstr ""
+msgstr "Πρωτόκολο"
 
 #: templates/edumanage/servers.html:38
 msgid "servers"
@@ -793,7 +792,7 @@ msgstr ""
 
 #: templates/edumanage/servers_edit.html:92
 msgid "Status-Server"
-msgstr ""
+msgstr "Εξυπηρετητής Καταστάσεων"
 
 #: templates/edumanage/servers_edit.html:100
 msgid "Secret"
@@ -831,7 +830,7 @@ msgstr "Επίπεδο Κρυπτογράφησης"
 #: templates/edumanage/service_details.html:151
 #: templates/edumanage/services_edit.html:433 templates/front/index.html:191
 msgid "Port Restrict"
-msgstr ""
+msgstr "Περιορισμός θύρας"
 
 #: templates/edumanage/service_details.html:158
 #: templates/edumanage/services_edit.html:441
@@ -927,7 +926,7 @@ msgstr "Στοιχεία"
 
 #: templates/edumanage/welcome.html:108 templates/front/index.html:168
 msgid "More..."
-msgstr "Περισσότερα"
+msgstr "Περισσότερα..."
 
 #: templates/edumanage/welcome.html:189 templates/overview/index.html:122
 #: templates/overview/index.html.py:134
@@ -935,9 +934,8 @@ msgid "Logout"
 msgstr "Έξοδος"
 
 #: templates/edumanage/welcome.html:222
-#, fuzzy
 msgid "eduroam CAT"
-msgstr "Eduroam στην"
+msgstr "Eduroam CAT"
 
 #: templates/edumanage/welcome.html:242
 msgid "Service Locations"
@@ -953,11 +951,11 @@ msgstr "Προσθήκη υπηρεσίας"
 
 #: templates/front/api.html:3
 msgid "Closest Point API"
-msgstr ""
+msgstr "API για το κοντινότερο σημείο"
 
 #: templates/front/api.html:10
 msgid "Closest point API"
-msgstr ""
+msgstr "API για το κοντινότερο σημείο"
 
 #: templates/front/api.html:13
 msgid ""
@@ -965,6 +963,8 @@ msgid ""
 "points, we developed the closest point service API, which handles locating "
 "the closest eduroam service location."
 msgstr ""
+"Μιας και συλλέγουμε πληροφορίες για τα διαθέσιμα σημεία eduroam από το eduroam.org, "
+"δημιουργήσαμε το API για το κοντινότερο σημείο, το οποίο χειρίζεται την έυρεση του κοντινότερου σημείου eduroam."
 
 #: templates/front/api.html:14
 msgid ""
@@ -972,18 +972,23 @@ msgid ""
 "calculates the closest point through server-side triangulation and returns a "
 "JSON reply with its’ coordinates and a detailed description."
 msgstr ""
+"Το API λαμβάνει τις συντεταγμένες μια τοποθεσίας σε ένα GET request, "
+"υπολογίζει το κοντινότερο σημείο πρόσβασης βάσει server-side triangulation και επιστρέφει μια απάντηση σε JSON μορφή με τις συντεταγμένες του σημείου πρόσβασης και μια αναλυτική περιγραφή. "
 
 #: templates/front/api.html:16
 msgid ""
 "Based on this API, we developed the closest point web page that allows users "
 "to find the closest eduroam location or a location they search for."
 msgstr ""
+"Βασιζόμενοι σε αυτό το API, δημιουργήσαμε τη σελίδα εύρεσης του κοντινότερου σημείου που επιτρέπει τους χρήστες "
+"να βρίσκουν την τοποθεσία του κοντινότερου σημείου eduroam στην θέση που βρίσκονται ή σε οποιαδήποτε άλλη θέση θελήσουν να ψάξουν."
 
 #: templates/front/api.html:17
 msgid ""
 "Potentials are limitless! You can build your own application either it is "
 "web or mobile or a widget for a wearable device."
 msgstr ""
+"Οι δυνατότητες είναι απεριόριστες! Μπορείτε να δημιουργήσετε την δική σας εφαρμογή είτε είναι στο διαδίκτυο είτε σε κινητό είτε σε κάποια άλλη συσκευή."
 
 #: templates/front/geolocate.html:6
 msgid "Closest"
