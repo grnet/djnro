@@ -6,7 +6,6 @@ from django.template.context import RequestContext
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from registration.models import RegistrationProfile
-from registration.views import activate as registration_activate
 from accounts.models import *
 from edumanage.forms import *
 import logging
@@ -35,17 +34,17 @@ def activate(request, activation_key):
                                   { 'account': account,
                                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS },
                                   context_instance=context)
-        
+
         form = UserProfileForm(instance=userProfile)
         form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=rp.user.pk), empty_label=None)
         form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
-        
+
         return render_to_response("registration/activate_edit.html",
                                   { 'account': account,
                                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
                                     'form': form },
                                   context_instance=context)
-            
+
     if request.method == "POST":
         context = RequestContext(request)
         request_data = request.POST.copy()
@@ -54,7 +53,7 @@ def activate(request, activation_key):
             up = user.get_profile()
             up.institution = Institution.objects.get(pk=request_data['institution'])
             up.save()
-            
+
         except:
             return render_to_response("registration/activate_edit.html",
                                   { 'account': account,
@@ -71,7 +70,7 @@ def activate(request, activation_key):
         except Exception as e:
             logger.info("An error occured: %s" %e)
             pass
-    
+
         if account:
             # A user has been activated
             email = render_to_string("registration/activation_complete.txt",

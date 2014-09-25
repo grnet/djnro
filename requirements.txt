@@ -7,5 +7,6 @@ httplib2==0.9
 ipaddr==2.1.11
 lxml==3.4.0
 oauth2==1.5.211
+python-openid==2.2.5
 requests==2.4.1
 wsgiref==0.1.2
