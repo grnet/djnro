@@ -295,3 +295,9 @@ Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
 Copy settings.py.dist to settings.py and fill the configuration according to
 the settings.py from your v0.8 instance.
+
+
+Pip Support
+^^^^^^^^^^^^
+We have added a requirements.txt file, tested for django 1.4.5. You can use it
+with `pip install -r requirements.txt`.
