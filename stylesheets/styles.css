@@ -19,7 +19,7 @@ body {
 }
 
 .wrapper {
-  width: 640px;
+  width: 840px;
   margin: 0 auto;
   background: #DEDEDE;
   -webkit-border-radius: 8px;
@@ -27,6 +27,7 @@ body {
   -ms-border-radius: 8px;
   -o-border-radius: 8px;
   border-radius: 8px;
+  position: relative;
   -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
   -moz-box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
   box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.45) 0 3px 10px;
@@ -103,8 +104,8 @@ header ul {
   list-style: none;
   position: absolute;
   z-index: 1;
-  right: 20px;
-  top: 20px;
+  right: 210px;
+  top: 30px;
   height: 38px;
   padding: 1px 0;
   background: #5198DF;
