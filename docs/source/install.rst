@@ -18,7 +18,7 @@ As with the majority of Django projects, settings.py has to be properly configur
     cd djnro
     cp djnro/settings.py.dist djnro/settings.py
 
-    
+
 Project Settings (settings.py)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -76,13 +76,8 @@ As the application includes a "Nearest Eduroam" functionality, world eduroam poi
 
 	EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-<<<<<<< refs/remotes/origin/wheezy
-Depending on your AAI policy set an appropriate authEntitlement::
-	
-=======
-Depending on your AAI policy set an appropriate authEntitlement
 
->>>>>>> local
+Depending on your AAI policy set an appropriate authEntitlement::
 	SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
 
 Mail server parameters::
@@ -96,17 +91,13 @@ NRO contact mails::
 
 Set your cache backend (if you want to use one). For production instances you can go with memcached. For development you can switch to the provided dummy instance::
 
-<<<<<<< refs/remotes/origin/wheezy
+
     CACHES = {
         'default': {
             'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
             'LOCATION': '127.0.0.1:11211',
         }
     }
-=======
-
-	CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
->>>>>>> local
 
 Models Name_i18n and URL_i18n include a language choice field
 If languages are the same with LANGUAGES variable, simply do URL_NAME_LANGS = LANGUAGES else set your own::
@@ -154,16 +145,16 @@ Shibboleth attribute MAP according to your AAI policy::
 
 Django Social Auth parameters::
 
-<<<<<<< refs/remotes/origin/wheezy
+
     TWITTER_CONSUMER_KEY = ''
     TWITTER_CONSUMER_SECRET = ''
-    
+
     FACEBOOK_APP_ID = ''
     FACEBOOK_API_SECRET = ''
-    
+
     LINKEDIN_CONSUMER_KEY        = ''
     LINKEDIN_CONSUMER_SECRET     = ''
-    
+
     LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
     LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
     LINKEDIN_EXTRA_DATA = [('id', 'id'),
@@ -172,27 +163,27 @@ Django Social Auth parameters::
                            ('email-address', 'email_address'),
                            ('headline', 'headline'),
                            ('industry', 'industry')]
-    
+
     YAHOO_CONSUMER_KEY = ''
     YAHOO_CONSUMER_SECRET = ''
-    
+
     GOOGLE_SREG_EXTRA_DATA = []
-    
+
     SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-    
+
     FACEBOOK_EXTENDED_PERMISSIONS = ['email']
-    
+
     SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
     LOGIN_REDIRECT_URL = '/manage/'
     SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
-    
+
     SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
     SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
     SOCIAL_AUTH_CREATE_USERS = True
     SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
     SOCIAL_AUTH_SANITIZE_REDIRECTS = False
     SOCIAL_AUTH_SLUGIFY_USERNAMES = True
-        
+
     SOCIAL_AUTH_PIPELINE = (
         'social_auth.backends.pipeline.social.social_auth_user',
         'social_auth.backends.pipeline.user.get_username',
@@ -204,7 +195,7 @@ Django Social Auth parameters::
 
 .. versionadded:: 0.9
 
-Support for eduroam CAT can be set via the corresponding variables/dicts. Make sure to **always** include a 'production' instance record for CAT_INSTANCES and CAT_AUTH. 
+Support for eduroam CAT can be set via the corresponding variables/dicts. Make sure to **always** include a 'production' instance record for CAT_INSTANCES and CAT_AUTH.
 What you really need to make CAT work is a CAT_API_KEY and the CAT_API_URL. The CAT_PROFILES_URL is the base url of the landing page where your institution users can download device profile configurations::
 
     CAT_INSTANCES = (
@@ -212,7 +203,7 @@ What you really need to make CAT work is a CAT_API_KEY and the CAT_API_URL. The 
                      ('testing', 'Testing Instance'),
                      ('dev1', 'Dev1 Instance'),
                      )
-    
+
     CAT_AUTH = {
                 'production':{"CAT_API_KEY":"<provided API key>",
                               "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
@@ -229,56 +220,6 @@ What you really need to make CAT work is a CAT_API_KEY and the CAT_API_URL. The 
                 }
 
 For more administrative info on eduroam CAT, you can visit: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
-=======
-	TWITTER_CONSUMER_KEY = ''
-	TWITTER_CONSUMER_SECRET = ''
-
-	FACEBOOK_APP_ID = ''
-	FACEBOOK_API_SECRET = ''
-
-	LINKEDIN_CONSUMER_KEY        = ''
-	LINKEDIN_CONSUMER_SECRET     = ''
-
-	LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
-	LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
-	LINKEDIN_EXTRA_DATA = [('id', 'id'),
-	                       ('first-name', 'first_name'),
-	                       ('last-name', 'last_name'),
-	                       ('email-address', 'email_address'),
-	                       ('headline', 'headline'),
-	                       ('industry', 'industry')]
-
-	YAHOO_CONSUMER_KEY = ''
-	YAHOO_CONSUMER_SECRET = ''
-
-	GOOGLE_SREG_EXTRA_DATA = []
-
-	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-
-	FACEBOOK_EXTENDED_PERMISSIONS = ['email']
-
-	SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
-	LOGIN_REDIRECT_URL = '/manage/'
-	SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
-
-	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-	SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-	SOCIAL_AUTH_CREATE_USERS = True
-	SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
-	SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-
-
-
-	SOCIAL_AUTH_PIPELINE = (
-	    'social_auth.backends.pipeline.social.social_auth_user',
-	    'social_auth.backends.pipeline.user.get_username',
-	    'social_auth.backends.pipeline.user.create_user',
-	    'social_auth.backends.pipeline.social.associate_user',
-	    'social_auth.backends.pipeline.social.load_extra_data',
-	    'social_auth.backends.pipeline.user.update_user_details',
-	)
-
->>>>>>> local
 
 Database Sync
 ^^^^^^^^^^^^^
@@ -346,10 +287,10 @@ What you really need in the first place is a Realm record along with one or more
 The approach in the application is that the NRO sets the environment for the local eduroam admins. Towards that direction, the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model
 
 Next Steps (Set your Logo)
-<<<<<<< refs/remotes/origin/wheezy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
-=======
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
->>>>>>> local
+
+Upgrade Instructions
+^^^^^^^^^^^^^^^^^^^^
+Copy settings.py.dist to settings.py and fill the configuration according to
+the settings.py from your v0.8 instance.

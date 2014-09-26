@@ -1,3 +1,10 @@
+Version 0.9
+==============
+
+	- Upgrade to django 1.4 in order to support debian Wheezy
+	- force ordering of info and policy urls
+	- Prevent the usage of failed institution
+
 Version 0.8.10
 ==============
 
