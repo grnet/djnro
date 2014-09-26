@@ -20,7 +20,7 @@ Project Settings (settings.py)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following variables/settings need to be altered or set:
-	
+
 Set Admin contacts::
 
 	ADMINS = (
@@ -47,9 +47,9 @@ Set your static url::
 	STATIC_URL = '/example/static'
 
 Django social auth needs changes in the Authentication Backends depending on which social auth you want to enable::
-	
+
 	AUTHENTICATION_BACKENDS = (
-	    'djnro.djangobackends.shibauthBackend.shibauthBackend',    
+	    'djnro.djangobackends.shibauthBackend.shibauthBackend',
 		...
 		'django.contrib.auth.backends.ModelBackend',
 	)
@@ -64,11 +64,11 @@ Set your template dirs::
 	)
 
 As the application includes a "Nearest Eduroam" functionality, world eduroam points are harvested via the eduroam.org kml file::
-	
+
 	EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-Depending on your AAI policy set an appropriate authEntitlement 
-	
+Depending on your AAI policy set an appropriate authEntitlement
+
 	SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
 
 Mail server parameters::
@@ -82,7 +82,7 @@ NRO contact mails::
 
 Set your cache backend (if you want to use one)::
 
-	
+
 	CACHE_BACKEND = 'memcached://127.0.0.1:11211/?timeout=5184000'
 
 Models Name_i18n and URL_i18n include a language choice field
@@ -97,7 +97,7 @@ NRO specific parameters. Affect html templates::
 
 	# Frontend country specific vars, eg. Greece
 	NRO_COUNTRY_NAME = _('My Country')
-	# Variable used by context_processor to display the "eduroam | <country_code>" in base.html 
+	# Variable used by context_processor to display the "eduroam | <country_code>" in base.html
 	NRO_COUNTRY_CODE = 'gr'
 	# main domain url used in right top icon, eg. http://www.grnet.gr
 	NRO_DOMAIN_MAIN_URL = "http://www.example.com"
@@ -105,15 +105,15 @@ NRO specific parameters. Affect html templates::
 	NRO_PROV_BY_DICT = {"name": "EXAMPLE DEV TEAM", "url": "http://devteam.example.com"}
 	#NRO social media contact (Use: // to preserve https)
 	NRO_PROV_SOCIAL_MEDIA_CONTACT = [
-	                                {"url":"//soc.media.url", "icon":"icon.png", "name":"NAME1(eg. Facebook)"}, 
+	                                {"url":"//soc.media.url", "icon":"icon.png", "name":"NAME1(eg. Facebook)"},
 	                                {"url":"//soc.media.url", "icon":"icon.png",  "name":"NAME2(eg. Twitter)"},
 	                                ]
 	# map center (lat, lng)
 	MAP_CENTER = (36.97, 23.71)
-	#Helpdesk, used in base.html: 
+	#Helpdesk, used in base.html:
 	NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
-Set the Realm country for REALM model:: 
+Set the Realm country for REALM model::
 
 	#Countries for Realm model:
 	REALM_COUNTRIES = (
@@ -133,13 +133,13 @@ Django Social Auth parameters::
 
 	TWITTER_CONSUMER_KEY = ''
 	TWITTER_CONSUMER_SECRET = ''
-	
+
 	FACEBOOK_APP_ID = ''
 	FACEBOOK_API_SECRET = ''
-	
+
 	LINKEDIN_CONSUMER_KEY        = ''
 	LINKEDIN_CONSUMER_SECRET     = ''
-	
+
 	LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
 	LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
 	LINKEDIN_EXTRA_DATA = [('id', 'id'),
@@ -148,28 +148,28 @@ Django Social Auth parameters::
 	                       ('email-address', 'email_address'),
 	                       ('headline', 'headline'),
 	                       ('industry', 'industry')]
-	
+
 	YAHOO_CONSUMER_KEY = ''
 	YAHOO_CONSUMER_SECRET = ''
-	
+
 	GOOGLE_SREG_EXTRA_DATA = []
-	
+
 	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-	
+
 	FACEBOOK_EXTENDED_PERMISSIONS = ['email']
-	
+
 	SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
 	LOGIN_REDIRECT_URL = '/manage/'
 	SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
-	
+
 	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
 	SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 	SOCIAL_AUTH_CREATE_USERS = True
 	SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
 	SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-	
-	
-	
+
+
+
 	SOCIAL_AUTH_PIPELINE = (
 	    'social_auth.backends.pipeline.social.social_auth_user',
 	    'social_auth.backends.pipeline.user.get_username',
@@ -200,44 +200,44 @@ We suggest going via Apache with mod_wsgi. Below is an example configuration::
 
 	WSGIDaemonProcess	djnro		processes=3 threads=20 display-name=%{GROUP}
 	WSGIProcessGroup	djnro
-	
+
 	...
-	
+
 	<VirtualHost *:443>
 		ServerName		example.com
 		ServerAdmin		admin@example.com
 		ServerSignature		On
-		
+
 		SSLEngine on
 		SSLCertificateFile	...
 		SSLCertificateChainFile ...
 		SSLCertificateKeyFile	...
-	
+
 		# Shibboleth SP configuration
 		ShibConfig		/etc/shibboleth/shibboleth2.xml
 		Alias			/shibboleth-sp	/usr/share/shibboleth
-	    
+
 	    # Integration of Shibboleth into Django app:
-	     
+
 		<Location /login>
 			AuthType shibboleth
 			ShibRequireSession On
 			ShibUseHeaders On
 			require valid-user
 		</Location>
-		
-	    		
+
+
 		<Location /Shibboleth.sso>
 			SetHandler shib
 		</Location>
-	
-		
+
+
 		Alias /static 		/path/to/djnro/static
 		WSGIScriptAlias /      /path/to/djnro/apache/django.wsgi
 	</VirtualHost>
 
 *Info*: It is strongly suggested to allow access to /admin|overview|alt-login *ONLY* from trusted subnets.
- 
+
 Once you are done, restart apache.
 
 Initial Data

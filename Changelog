@@ -1,3 +1,9 @@
+Version 0.8.11
+==============
+
+	- force ordering of info and policy urls
+	- Prevent the usage of failed institution
+
 Version 0.8.10
 ==============
 
