@@ -2,7 +2,7 @@ settings.py
 /urls.py
 apache/django.wsgi
 *.pyc
-local.db
+*.db
 all.kml
 static/img/logo_holder.png
 static/img/logo_small.png
