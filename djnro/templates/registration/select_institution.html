@@ -27,6 +27,9 @@
 <div class="span7">
 Excellent! You are a click away from getting into your institution eduroam management.
 Select your institution to proceed. Our administrators will activate your account and notify you via e-mail.
+
+Please do not continue if you are not the eduroam administrator for this institution.
+Any inappropriate requests will be reported directly to the institution, along with your name and email.
 </div>
 <div class="span12"></div>
 <div class="span12">
@@ -62,7 +65,7 @@ Select your institution to proceed. Our administrators will activate your accoun
             {% endif %} <span class="help-block"> {{ form.institution.help_text }}</span>
         </div>
     </div>
-        
+
     <div class="control-group">
         <div class="controls">
             <button type="submit" id="applybutton" value="Apply" class="btn btn-primary">
@@ -79,5 +82,5 @@ Select your institution to proceed. Our administrators will activate your accoun
 {% endblock %}
 
 
-{% block subcontent %} 
+{% block subcontent %}
 {% endblock %}

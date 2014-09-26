@@ -17,7 +17,7 @@
     <object pk="1" model="flatpages.flatpage">
         <field type="CharField" name="url">/faq/en/</field>
         <field type="CharField" name="title">Frequently Asked Questions</field>
-        <field type="TextField" name="content">&lt;p&gt;&lt;strong&gt;FAQ in English will soon apear here...&lt;/strong&gt;&lt;/p&gt;</field>
+        <field type="TextField" name="content">&lt;p&gt;&lt;strong&gt;Coming soon...&lt;/strong&gt;&lt;/p&gt;</field>
         <field type="BooleanField" name="enable_comments">False</field>
         <field type="CharField" name="template_name"></field>
         <field type="BooleanField" name="registration_required">False</field>
@@ -39,7 +39,7 @@
     <object pk="4" model="flatpages.flatpage">
         <field type="CharField" name="url">/what/en/</field>
         <field type="CharField" name="title">The service - What is eduroam?</field>
-        <field type="TextField" name="content">&lt;p&gt;&lt;iframe src="http://www.youtube.com/embed/qk9aljqu20A?hl=el" width="560" height="315"&gt;&lt;/iframe&gt;&lt;/p&gt;
+        <field type="TextField" name="content">&lt;p&gt;&lt;iframe src="//www.youtube.com/embed/qk9aljqu20A?hl=el" width="560" height="315"&gt;&lt;/iframe&gt;&lt;/p&gt;
 &lt;p&gt;eduroam (&lt;strong&gt;edu&lt;/strong&gt;cation&amp;nbsp;&lt;strong&gt;roam&lt;/strong&gt;ing) is the secure, world-wide roaming access service developed for the international research and education community.&lt;/p&gt;
 &lt;p&gt;eduroam allows students, researchers and staff from participating  institutions to obtain Internet connectivity across campus and when  visiting other participating institutions by simply opening their  laptop.&lt;/p&gt;</field>
         <field type="BooleanField" name="enable_comments">False</field>

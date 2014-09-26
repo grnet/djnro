@@ -13,20 +13,22 @@ class shibauthBackend:
         authsource = kwargs.get('authsource')
         if authsource != 'shibboleth':
             return None
+
         try:
             user = self._auth_user(username, firstname, lastname, mail)
-        except:
+        except Exception as e:
             return None
+
         if not user:
             return None
+
         return user
 
     def _auth_user(self, username, firstname, lastname, mail):
-
         try:
             user = User.objects.get(username__exact=username)
         # The user did not exist. Create one with no privileges
-        except: 
+        except:
             user = User.objects.create_user(username, mail, None)
             user.first_name = firstname
             user.last_name = lastname
