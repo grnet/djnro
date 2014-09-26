@@ -78,6 +78,7 @@ As the application includes a "Nearest Eduroam" functionality, world eduroam poi
 
 
 Depending on your AAI policy set an appropriate authEntitlement::
+
 	SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
 
 Mail server parameters::
@@ -145,53 +146,53 @@ Shibboleth attribute MAP according to your AAI policy::
 
 Django Social Auth parameters::
 
+	TWITTER_CONSUMER_KEY = ''
+	TWITTER_CONSUMER_SECRET = ''
 
-    TWITTER_CONSUMER_KEY = ''
-    TWITTER_CONSUMER_SECRET = ''
+	FACEBOOK_APP_ID = ''
+	FACEBOOK_API_SECRET = ''
 
-    FACEBOOK_APP_ID = ''
-    FACEBOOK_API_SECRET = ''
+	LINKEDIN_CONSUMER_KEY        = ''
+	LINKEDIN_CONSUMER_SECRET     = ''
 
-    LINKEDIN_CONSUMER_KEY        = ''
-    LINKEDIN_CONSUMER_SECRET     = ''
+	LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
+	LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
+	LINKEDIN_EXTRA_DATA = [('id', 'id'),
+	                       ('first-name', 'first_name'),
+	                       ('last-name', 'last_name'),
+	                       ('email-address', 'email_address'),
+	                       ('headline', 'headline'),
+	                       ('industry', 'industry')]
 
-    LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
-    LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
-    LINKEDIN_EXTRA_DATA = [('id', 'id'),
-                           ('first-name', 'first_name'),
-                           ('last-name', 'last_name'),
-                           ('email-address', 'email_address'),
-                           ('headline', 'headline'),
-                           ('industry', 'industry')]
+	YAHOO_CONSUMER_KEY = ''
+	YAHOO_CONSUMER_SECRET = ''
 
-    YAHOO_CONSUMER_KEY = ''
-    YAHOO_CONSUMER_SECRET = ''
+	GOOGLE_SREG_EXTRA_DATA = []
 
-    GOOGLE_SREG_EXTRA_DATA = []
+	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
 
-    SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+	FACEBOOK_EXTENDED_PERMISSIONS = ['email']
 
-    FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+	SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
+	LOGIN_REDIRECT_URL = '/manage/'
+	SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
 
-    SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
-    LOGIN_REDIRECT_URL = '/manage/'
-    SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
+	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+	SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+	SOCIAL_AUTH_CREATE_USERS = True
+	SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
+	SOCIAL_AUTH_SANITIZE_REDIRECTS = False
 
-    SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-    SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-    SOCIAL_AUTH_CREATE_USERS = True
-    SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
-    SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-    SOCIAL_AUTH_SLUGIFY_USERNAMES = True
 
-    SOCIAL_AUTH_PIPELINE = (
-        'social_auth.backends.pipeline.social.social_auth_user',
-        'social_auth.backends.pipeline.user.get_username',
-        'social_auth.backends.pipeline.user.create_user',
-        'social_auth.backends.pipeline.social.associate_user',
-        'social_auth.backends.pipeline.social.load_extra_data',
-        'social_auth.backends.pipeline.user.update_user_details',
-    )
+
+	SOCIAL_AUTH_PIPELINE = (
+	    'social_auth.backends.pipeline.social.social_auth_user',
+	    'social_auth.backends.pipeline.user.get_username',
+	    'social_auth.backends.pipeline.user.create_user',
+	    'social_auth.backends.pipeline.social.associate_user',
+	    'social_auth.backends.pipeline.social.load_extra_data',
+	    'social_auth.backends.pipeline.user.update_user_details',
+	)
 
 .. versionadded:: 0.9
 
