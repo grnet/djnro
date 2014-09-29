@@ -40,7 +40,6 @@ LOCALE_PATHS = (
     os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'locale'),
 )
 
-
 LANGUAGES = (
     ('el', _('Greek')),
     ('en', _('English')),
@@ -71,7 +70,6 @@ MEDIA_ROOT = ''
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
 MEDIA_URL = ''
-
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -231,6 +229,29 @@ URL_NAME_LANGS = (
     ('en', 'English' ),
     ('el', 'Ελληνικά'),
 )
+
+SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+SOCIAL_AUTH_CREATE_USERS = True
+SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
+SOCIAL_AUTH_SANITIZE_REDIRECTS = False
+SOCIAL_AUTH_SLUGIFY_USERNAMES = True
+
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
+LOGIN_REDIRECT_URL = '/manage/'
+SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
+SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
+
+FACEBOOK_EXTENDED_PERMISSIONS = ['email']
+
+
+LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
+LINKEDIN_EXTRA_DATA = [('id', 'id'),
+                       ('first-name', 'first_name'),
+                       ('last-name', 'last_name'),
+                       ('email-address', 'email_address'),
+                       ('headline', 'headline'),
+                       ('industry', 'industry')]
 
 
 SOCIAL_AUTH_PIPELINE = (

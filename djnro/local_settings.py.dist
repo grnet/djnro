@@ -96,7 +96,6 @@ CACHES = {
 # map center (lat, lng)
 MAP_CENTER = (36.97, 23.71)
 
-
 # Frontend country specific vars, eg. Greece
 NRO_COUNTRY_NAME = _('My Country')
 # Variable used by context_processor to display the "eduroam | <country_code>" in base.html
@@ -138,34 +137,11 @@ LINKEDIN_CONSUMER_KEY = ''
 LINKEDIN_CONSUMER_SECRET = ''
 
 LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
-LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
-LINKEDIN_EXTRA_DATA = [('id', 'id'),
-                       ('first-name', 'first_name'),
-                       ('last-name', 'last_name'),
-                       ('email-address', 'email_address'),
-                       ('headline', 'headline'),
-                       ('industry', 'industry')]
 
 YAHOO_CONSUMER_KEY = ''
 YAHOO_CONSUMER_SECRET = ''
 
 GOOGLE_SREG_EXTRA_DATA = []
-
-SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-
-FACEBOOK_EXTENDED_PERMISSIONS = ['email']
-
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
-LOGIN_REDIRECT_URL = '/manage/'
-SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
-
-SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-SOCIAL_AUTH_CREATE_USERS = True
-SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
-SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-SOCIAL_AUTH_SLUGIFY_USERNAMES = True
-
 
 ###### Eduroam CAT ###########
 # Important!!! Make sure you include a 'production' instance record
