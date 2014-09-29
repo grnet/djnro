@@ -243,103 +243,6 @@ URL_NAME_LANGS = (
     ('el', 'Ελληνικά'),
 )
 
-# Frontend country specific vars, eg. Greece
-NRO_COUNTRY_NAME = _('My Country')
-# Variable used by context_processor to display the "eduroam | <country_code>" in base.html
-NRO_COUNTRY_CODE = 'gr'
-# main domain url used in right top icon, eg. http://www.grnet.gr
-NRO_DOMAIN_MAIN_URL = "http://www.example.com"
-# developer info for footer
-NRO_PROV_BY_DICT = {"name": "GRNET NOC", "url": "//noc.grnet.gr"}
-#provider social media contact (Use: // to preserve https)
-
-#Helpdesk, used in base.html:
-NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
-
-#Countries for Realm model:
-REALM_COUNTRIES = (
-    ('country_2letters', 'Country' ),
-)
-
-##### LDAP BACKEND ######
-# LDAP CONFIG
-
-# import ldap
-# from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
-
-# AUTH_LDAP_BIND_DN = ""
-# AUTH_LDAP_BIND_PASSWORD = ""
-# AUTH_LDAP_SERVER_URI = "ldap://foo.bar.org"
-# AUTH_LDAP_START_TLS = True
-# AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=People, dc=bar, dc=foo", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
-
-# AUTH_LDAP_USER_ATTR_MAP = {
-#       "first_name":"givenName",
-#       "last_name": "sn",
-#       "email": "mail
-#       }
-
-# Set up the basic group parameters.
-
-# AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
-#     "ou=Groups,dc=foo,dc=bar,dc=org",ldap.SCOPE_SUBTREE, objectClass=groupOfNames"
-# )
-
-# AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
-
-# AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-#     "is_active": "cn=NOC, ou=Groups, dc=foo, dc=bar, dc=org",
-#     "is_staff": "cn=staff, ou=Groups, dc=foo, dc=bar, dc=org",
-#     "is_superuser": "cn=NOC, ou=Groups,dc=foo, dc=bar, dc=org"
-# }
-
-#Shibboleth attribute map
-SHIB_USERNAME = ['HTTP_EPPN']
-SHIB_MAIL = ['mail', 'HTTP_MAIL', 'HTTP_SHIB_INETORGPERSON_MAIL']
-SHIB_FIRSTNAME = ['HTTP_SHIB_INETORGPERSON_GIVENNAME']
-SHIB_LASTNAME = ['HTTP_SHIB_PERSON_SURNAME']
-SHIB_ENTITLEMENT = ['HTTP_SHIB_EP_ENTITLEMENT']
-
-# DJANGO SOCIAL AUTH PLUGIN SETTINGS
-
-TWITTER_CONSUMER_KEY = ''
-TWITTER_CONSUMER_SECRET = ''
-
-FACEBOOK_APP_ID = ''
-FACEBOOK_API_SECRET = ''
-
-LINKEDIN_CONSUMER_KEY        = ''
-LINKEDIN_CONSUMER_SECRET     = ''
-
-LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
-LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
-LINKEDIN_EXTRA_DATA = [('id', 'id'),
-                       ('first-name', 'first_name'),
-                       ('last-name', 'last_name'),
-                       ('email-address', 'email_address'),
-                       ('headline', 'headline'),
-                       ('industry', 'industry')]
-
-YAHOO_CONSUMER_KEY = ''
-YAHOO_CONSUMER_SECRET = ''
-
-GOOGLE_SREG_EXTRA_DATA = []
-
-SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-
-FACEBOOK_EXTENDED_PERMISSIONS = ['email']
-
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
-LOGIN_REDIRECT_URL = '/manage/'
-SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
-
-SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-SOCIAL_AUTH_CREATE_USERS = True
-SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
-SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-SOCIAL_AUTH_SLUGIFY_USERNAMES = True
-
 
 SOCIAL_AUTH_PIPELINE = (
     'social_auth.backends.pipeline.social.social_auth_user',
@@ -349,29 +252,6 @@ SOCIAL_AUTH_PIPELINE = (
     'social_auth.backends.pipeline.social.load_extra_data',
     'social_auth.backends.pipeline.user.update_user_details',
 )
-
-###### Eduroam CAT ###########
-# Important!!! Make sure you include a 'production' instance record
-CAT_INSTANCES = (
-                 ('production', 'Production Instance'),
-                 ('testing', 'Testing Instance'),
-                 ('dev1', 'Dev1 Instance'),
-                 )
-
-CAT_AUTH = {
-            'production':{"CAT_API_KEY":"<provided API key>",
-                          "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                          "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                          "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
-            'testing':{"CAT_API_KEY":"<provided API key>",
-                        "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                        "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                        "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
-            'dev1':{"CAT_API_KEY":"<provided API key>",
-                        "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                        "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                        "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
-            }
 
 import _version
 SW_VERSION = _version.VERSION
