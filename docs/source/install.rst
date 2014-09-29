@@ -302,16 +302,67 @@ The majority of branding is done via the NRO variables in settings.py. You might
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
 * Copy settings.py.dist to settings.py and fill the configuration according to the settings.py from your v0.8 instance.
+	* Replace 'django.core.context_processors.auth' with 'django.contrib.auth.context_processors.auth' in `CONTEXT_PROCESSORS`
 
-* run manage.py migrate
+	* add  'django.contrib.staticfiles' in settings
 
 * edit the apache configuration in order to work with the new location of wsgi and
 set the python-path attribute.
 
 * remove old wsgi file '/path/to/djnro/apache/django.wsgi'
 
+* remove django-extensions from `INSTALLED_APPS`
+
+* Add timeout in cache configuration
+
+* Required packages:
+
+	* python-oauth2
+
+	* python-requests
+
+	* python-lxml
+
+	* python-yaml
+
+* run manage.py migrate
+
 
 Pip Support
 ^^^^^^^^^^^^
 We have added a requirements.txt file, tested for django 1.4.5. You can use it
 with `pip install -r requirements.txt`.
+
+
+Ldap Authentication
+^^^^^^^^^^^^^^^^^^^
+In case you want to use Ldap authentication::
+	AUTHENTICATION_BACKENDS = (
+		...,
+		'django_auth_ldap.backend.LDAPBackend',
+		...,
+	)
+
+	# LDAP CONFIG
+	import ldap                                                                           from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+	AUTH_LDAP_BIND_DN = ""
+	AUTH_LDAP_BIND_PASSWORD = ""
+	AUTH_LDAP_SERVER_URI = "ldap://foo.bar.org"
+	AUTH_LDAP_START_TLS = True
+	AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=People, dc=bar, dc=foo",
+	ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+	AUTH_LDAP_USER_ATTR_MAP = {
+	      "first_name":"givenName",
+	      "last_name": "sn",
+	      "email": "mail
+	      }
+	# Set up the basic group parameters.
+	AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
+		"ou=Groups,dc=foo,dc=bar,dc=org",ldap.SCOPE_SUBTREE, objectClass=groupOfNames"
+	)
+	AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
+	AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+		"is_active": "cn=NOC, ou=Groups, dc=foo, dc=bar, dc=org",
+		"is_staff": "cn=staff, ou=Groups, dc=foo, dc=bar, dc=org",
+		"is_superuser": "cn=NOC, ou=Groups,dc=foo, dc=bar, dc=org"
+	}
