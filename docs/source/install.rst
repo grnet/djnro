@@ -302,9 +302,10 @@ The majority of branding is done via the NRO variables in settings.py. You might
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
 * Copy settings.py.dist to settings.py and fill the configuration according to the settings.py from your v0.8 instance.
-	* Replace 'django.core.context_processors.auth' with 'django.contrib.auth.context_processors.auth' in `CONTEXT_PROCESSORS`
 
-	* add  'django.contrib.staticfiles' in settings
+	* 'django.core.context_processors.auth' is replaced with 'django.contrib.auth.context_processors.auth' in `CONTEXT_PROCESSORS`
+
+	*'django.contrib.staticfiles' is added in settings `INSTALLED_APPS`
 
 * edit the apache configuration in order to work with the new location of wsgi and
 set the python-path attribute.
