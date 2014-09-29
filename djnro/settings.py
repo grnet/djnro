@@ -22,6 +22,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
+from django.utils.translation import ugettext as _
 import os
 
 here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
@@ -33,8 +34,6 @@ project_path = os.path.abspath(os.path.dirname(__name__))
 # although not all choices may be available on all operating systems.
 # In a Windows environment this must be set to your system time zone.
 TIME_ZONE = 'Europe/Athens'
-
-_ = lambda s: s
 
 LOCALE_PATHS = (
     os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'locale'),
