@@ -13,6 +13,9 @@ Currently the source code is availiable at code.grnet.gr and can be cloned via g
 
 	git clone https://code.grnet.gr/git/djnro
 
+
+Project Settings (local_settings.py)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Settings.py file should not be edited, the variables that need to be altered are in local_settings.py.dist.
 To set up Djnro one must copy local_settings.py.dist, to local_settings.py and alter the settings according to
 the configuration of the host.::
@@ -21,8 +24,6 @@ the configuration of the host.::
     cp djnro/local_settings.py.dist djnro/local_settings.py
 
 
-Project Settings (local_settings.py)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following variables/settings need to be altered or set:
 
