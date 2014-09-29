@@ -227,7 +227,7 @@ For more administrative info on eduroam CAT, you can visit: `A guide to eduroam 
 Database Sync
 ^^^^^^^^^^^^^
 
-Once you are done with settings.py run::
+Once you are done with local_settings.py run::
 
 	./manage.py syncdb
 
@@ -294,12 +294,12 @@ Once you are done, restart apache.
 
 Initial Data
 ^^^^^^^^^^^^
-What you really need in the first place is a Realm record along with one or more contacts related to that Realm. Go via the Admin interface, and add a Realm (remember to have set the REALM_COUNTRIES in settings.py).
+What you really need in the first place is a Realm record along with one or more contacts related to that Realm. Go via the Admin interface, and add a Realm (remember to have set the REALM_COUNTRIES in local_settings.py).
 The approach in the application is that the NRO sets the environment for the local eduroam admins. Towards that direction, the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model
 
 Next Steps (Set your Logo)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-The majority of branding is done via the NRO variables in settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
+The majority of branding is done via the NRO variables in local_settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
 
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
