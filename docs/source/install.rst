@@ -345,7 +345,7 @@ In case you want to use Ldap authentication::
 	)
 
 	# LDAP CONFIG
-	import ldap                                                                           
+	import ldap
 	from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 	AUTH_LDAP_BIND_DN = ""
 	AUTH_LDAP_BIND_PASSWORD = ""

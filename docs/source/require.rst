@@ -38,13 +38,11 @@ In any case we have included python-django-social-auth as an application inside 
 
 Django Social Auth: Requirements - Dependencies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-* python-django-social-auth
+* python-django-social-auth is included in the project because edumanage/middleware.py requires WrongBackend from social_auth.exceptions -- this does not exist in 0.7.0 (shipped by weezy), so we need to keep 0.7.18 in djnro for now.
 
 *  OpenId support depends on python-openid
 
 *  OAuth support depends on python-oauth2
-
 
 
 
