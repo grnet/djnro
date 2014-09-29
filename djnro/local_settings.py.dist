@@ -5,6 +5,10 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# Hosts/domain names that are valid for this site; required if DEBUG is False
+# See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
+ALLOWED_HOSTS = []
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '<put something really random here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
 
@@ -19,6 +23,8 @@ DATABASES = {
         'STORAGE_ENGINE': 'INNODB',
     }
 }
+
+STATIC_URL = '/static/'
 
 ##### LDAP BACKEND ######
 EXTRA_AUTENTICATION_BACKENDS = (
