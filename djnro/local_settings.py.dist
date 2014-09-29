@@ -93,10 +93,6 @@ CACHES = {
 #     }
 # }
 
-NRO_PROV_SOCIAL_MEDIA_CONTACT = [
-    {"url": "//facebook.com/noc.grnet.gr", "icon":"/static/img/facebook_img.png", "name":"Facebook"},
-    {"url": "//twitter.com/grnetnoc", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
-]
 # map center (lat, lng)
 MAP_CENTER = (36.97, 23.71)
 
@@ -110,6 +106,10 @@ NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 # developer info for footer
 NRO_PROV_BY_DICT = {"name": "GRNET NOC", "url": "//noc.grnet.gr"}
 #provider social media contact (Use: // to preserve https)
+NRO_PROV_SOCIAL_MEDIA_CONTACT = [
+    {"url": "//facebook.com/noc.grnet.gr", "icon":"/static/img/facebook_img.png", "name":"Facebook"},
+    {"url": "//twitter.com/grnetnoc", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
+]
 
 #Helpdesk, used in base.html:
 NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
