@@ -301,8 +301,8 @@ The majority of branding is done via the NRO variables in settings.py. You might
 
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
-* Copy settings.py.dist to settings.py and fill the configuration according to
-the settings.py from your v0.8 instance.
+* Copy settings.py.dist to settings.py and fill the configuration according to the settings.py from your v0.8 instance.
+
 * run manage.py migrate
 
 
