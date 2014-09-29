@@ -24,9 +24,6 @@
 
 import os
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
 here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
 djnro_path = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 project_path = os.path.abspath(os.path.dirname(__name__))
@@ -36,18 +33,6 @@ ADMINS = (
 )
 
 MANAGERS = ADMINS
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-        'STORAGE_ENGINE': 'INNODB',
-    }
-}
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
@@ -119,22 +104,6 @@ STATICFILES_FINDERS = (
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-AUTHENTICATION_BACKENDS = (
-    'djangobackends.shibauthBackend.shibauthBackend',
-    'djangobackends.ldapBackend.ldapBackend',
-    'social_auth.backends.twitter.TwitterBackend',
-    #'social_auth.backends.facebook.FacebookBackend',
-    'social_auth.backends.google.GoogleBackend',
-    #'social_auth.backends.contrib.linkedin.LinkedinBackend',
-    #'social_auth.backends.contrib.yahoo.YahooOAuthBackend',
-    #'social_auth.backends.yahoo.YahooBackend',
-    'social_auth.backends.OpenIDBackend',
-	'django.contrib.auth.backends.ModelBackend',
-)
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = '<put something really random here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -172,7 +141,7 @@ MIDDLEWARE_CLASSES = (
 
 AUTHENTICATION_BACKENDS = (
     'djangobackends.shibauthBackend.shibauthBackend',
-    #'djangobackends.ldapBackend.ldapBackend',
+    # 'django_auth_ldap.backend.LDAPBackend',
     'social_auth.backends.twitter.TwitterBackend',
     'social_auth.backends.facebook.FacebookBackend',
     'social_auth.backends.google.GoogleBackend',
@@ -181,7 +150,6 @@ AUTHENTICATION_BACKENDS = (
     'social_auth.backends.yahoo.YahooBackend',
     'social_auth.backends.OpenIDBackend',
     'django.contrib.auth.backends.ModelBackend',
-
 )
 
 ROOT_URLCONF = 'djnro.urls'
@@ -223,29 +191,29 @@ INSTALLED_APPS = (
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'filters': {
-        'require_debug_false': {
-            '()': 'django.utils.log.RequireDebugFalse'
-        }
-    },
-    'handlers': {
-        'mail_admins': {
-            'level': 'ERROR',
-            'filters': ['require_debug_false'],
-            'class': 'django.utils.log.AdminEmailHandler'
-        }
-    },
-    'loggers': {
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': True,
-        },
-    }
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'filters': {
+#         'require_debug_false': {
+#             '()': 'django.utils.log.RequireDebugFalse'
+#         }
+#     },
+#     'handlers': {
+#         'mail_admins': {
+#             'level': 'ERROR',
+#             'filters': ['require_debug_false'],
+#             'class': 'django.utils.log.AdminEmailHandler'
+#         }
+#     },
+#     'loggers': {
+#         'django.request': {
+#             'handlers': ['mail_admins'],
+#             'level': 'ERROR',
+#             'propagate': True,
+#         },
+#     }
+# }
 
 
 AUTH_PROFILE_MODULE = 'accounts.UserProfile'
@@ -257,13 +225,6 @@ INST_XML_FILE = here('institution.xml')
 
 EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
-SHIB_LOGOUT_URL = 'https://example.com/Shibboleth.sso/Logout'
-
-SERVER_EMAIL = "Example domain eduroam Service <noreply@example.com>"
-EMAIL_SUBJECT_PREFIX = "[eduroam] "
-ACCOUNT_ACTIVATION_DAYS = 7
-NOTIFY_ADMIN_MAILS = ["mail1@example.com", "mail2@example.com"]
 
 
 TINYMCE_JS_URL = '/static/js/tinymce/tiny_mce.js'
@@ -275,29 +236,12 @@ TINYMCE_DEFAULT_CONFIG = {
 }
 
 
-#### CACHE BACKEND ####
-
-# For production instances enable memcache
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-#         'LOCATION': '127.0.0.1:11211',
-#     }
-# }
-
-# For development instances you can deploy the provided dummy cache backend
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-#     }
-# }
-
 #Name_i18n, URL_i18n, language choice field
 # If it's the same with LANGUAGES, simply do URL_NAME_LANGS = LANGUAGES
 URL_NAME_LANGS = (
-        ('en', 'English' ),
-        ('el', 'Ελληνικά'),
-    )
+    ('en', 'English' ),
+    ('el', 'Ελληνικά'),
+)
 
 # Frontend country specific vars, eg. Greece
 NRO_COUNTRY_NAME = _('My Country')
@@ -308,21 +252,46 @@ NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 # developer info for footer
 NRO_PROV_BY_DICT = {"name": "GRNET NOC", "url": "//noc.grnet.gr"}
 #provider social media contact (Use: // to preserve https)
-NRO_PROV_SOCIAL_MEDIA_CONTACT = [
-                                {"url":"//facebook.com/noc.grnet.gr", "icon":"/static/img/facebook_img.png", "name":"Facebook"},
-                                {"url":"//twitter.com/grnetnoc", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
-                                ]
-# map center (lat, lng)
-MAP_CENTER = (36.97, 23.71)
+
 #Helpdesk, used in base.html:
 NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
 #Countries for Realm model:
 REALM_COUNTRIES = (
-             ('country_2letters', 'Country' ),
-            )
+    ('country_2letters', 'Country' ),
+)
 
 ##### LDAP BACKEND ######
+# LDAP CONFIG
+
+# import ldap
+# from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+
+# AUTH_LDAP_BIND_DN = ""
+# AUTH_LDAP_BIND_PASSWORD = ""
+# AUTH_LDAP_SERVER_URI = "ldap://foo.bar.org"
+# AUTH_LDAP_START_TLS = True
+# AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=People, dc=bar, dc=foo", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+
+# AUTH_LDAP_USER_ATTR_MAP = {
+#       "first_name":"givenName",
+#       "last_name": "sn",
+#       "email": "mail
+#       }
+
+# Set up the basic group parameters.
+
+# AUTH_LDAP_GROUP_SEARCH = LDAPSearch(
+#     "ou=Groups,dc=foo,dc=bar,dc=org",ldap.SCOPE_SUBTREE, objectClass=groupOfNames"
+# )
+
+# AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
+
+# AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+#     "is_active": "cn=NOC, ou=Groups, dc=foo, dc=bar, dc=org",
+#     "is_staff": "cn=staff, ou=Groups, dc=foo, dc=bar, dc=org",
+#     "is_superuser": "cn=NOC, ou=Groups,dc=foo, dc=bar, dc=org"
+# }
 
 #Shibboleth attribute map
 SHIB_USERNAME = ['HTTP_EPPN']
@@ -406,3 +375,19 @@ CAT_AUTH = {
 
 import _version
 SW_VERSION = _version.VERSION
+
+def _dictmerge(a, b):
+    """ deep merge two dictionaries """
+    ret = dict(a.items() + b.items())
+    for key in set(a.keys()) & set(b.keys()):
+        if isinstance(a[key], dict) and isinstance(b[key], dict):
+            ret[key] = _dictmerge(a[key], b[key])
+    return ret
+
+from local_settings import *  # noqa
+for var, val in [i for i in locals().items() if i[0].startswith('EXTRA_')]:
+    name = var[len('EXTRA_'):]
+    try:
+        locals()[name] += val  # append list
+    except TypeError:
+        locals()[name] = _dictmerge(locals()[name], val)  # merge dict
