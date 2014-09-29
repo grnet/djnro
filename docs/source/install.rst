@@ -303,7 +303,13 @@ Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
 * Copy settings.py.dist to settings.py and fill the configuration according to
 the settings.py from your v0.8 instance.
+
 * run manage.py migrate
+
+* edit the apache configuration in order to work with the new location of wsgi and
+set the python-path attribute.
+
+* remove old wsgi file '/path/to/djnro/apache/django.wsgi'
 
 
 Pip Support
