@@ -13,17 +13,16 @@ Currently the source code is availiable at code.grnet.gr and can be cloned via g
 
 	git clone https://code.grnet.gr/git/djnro
 
-As with the majority of Django projects, settings.py has to be properly configured and then comes the population of the database. After git clone, copy settings.py.dist to settings.py::
-
-    cd djnro
-    cp djnro/settings.py.dist djnro/settings.py
-
-
-Project Settings (settings.py)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Settings.py file should not be edited, the variables that need to be altered are in local_settings.py.dist.
 To set up Djnro one must copy local_settings.py.dist, to local_settings.py and alter the settings according to
-the configuration of the host.
+the configuration of the host.::
+
+    cd djnro
+    cp djnro/local_settings.py.dist djnro/local_settings.py
+
+
+Project Settings (local_settings.py)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following variables/settings need to be altered or set:
 

@@ -33,7 +33,7 @@ DATABASES = {
 STATIC_URL = '/static/'
 
 ##### LDAP BACKEND ######
-EXTRA_AUTENTICATION_BACKENDS = (
+EXTRA_AUTHENTICATION_BACKENDS = (
     # 'django_auth_ldap.backend.LDAPBackend',
 )
 
