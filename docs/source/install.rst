@@ -276,6 +276,8 @@ We suggest going via Apache with mod_wsgi. Below is an example configuration::
 
 		Alias /static 		/path/to/djnro/static
 		WSGIScriptAlias /      /path/to/djnro/apache/django.wsgi
+		ErrorLog /var/log/apache2/error.log
+        CustomLog /var/log/apache2/access.log combined
 	</VirtualHost>
 
 *Info*: It is strongly suggested to allow access to /admin|overview|alt-login *ONLY* from trusted subnets.

@@ -1,6 +1,5 @@
 settings.py
 /urls.py
-apache/django.wsgi
 *.pyc
 *.db
 all.kml
