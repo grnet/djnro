@@ -20,7 +20,10 @@ As with the majority of Django projects, settings.py has to be properly configur
 
 
 Project Settings (settings.py)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Settings.py file should not be edited, the variables that need to be altered are in local_settings.py.dist.
+To set up Djnro one must copy local_settings.py.dist, to local_settings.py and alter the settings according to
+the configuration of the host.
 
 The following variables/settings need to be altered or set:
 
@@ -301,16 +304,16 @@ The majority of branding is done via the NRO variables in settings.py. You might
 
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
-* Copy settings.py.dist to settings.py and fill the configuration according to the settings.py from your v0.8 instance. Changes are:
+* Backup your settings.py file.
 
-	* 'django.core.context_processors.auth' is replaced with 'django.contrib.auth.context_processors.auth' in CONTEXT_PROCESSORS
-
-	* 'django.contrib.staticfiles' is added in settings INSTALLED_APPS
+* Copy loca_settings.py.dist to local_settings.py and fill the configuration according to the settings.py from your v0.8 instance.
 
 * edit the apache configuration in order to work with the new location of wsgi and
 set the python-path attribute.
 
 * remove old wsgi file '/path/to/djnro/apache/django.wsgi'
+
+* remove old settings.py.dist
 
 * remove django-extensions from `INSTALLED_APPS`
 
