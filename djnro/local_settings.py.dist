@@ -5,6 +5,12 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+ADMINS = (
+    ('admin', 'admin@example.org'),
+)
+
+MANAGERS = ADMINS
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.4/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []

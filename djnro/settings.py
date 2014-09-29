@@ -28,14 +28,6 @@ here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
 djnro_path = os.path.join(os.path.abspath(os.path.dirname(__file__)))
 project_path = os.path.abspath(os.path.dirname(__name__))
 
-ADMINS = (
-    ('admin', 'admin@example.org'),
-)
-
-MANAGERS = ADMINS
-
-
-
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
