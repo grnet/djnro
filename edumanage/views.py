@@ -1173,33 +1173,6 @@ def user_login(request):
                                   context_instance=RequestContext(request))
 
 @never_cache
-def check_user_inst(request):
-    u = request.user.__dict__
-    s = request.session.keys()
-    raise Exception
-    try:
-        profile = user.get_profile()
-        inst = profile.institution
-        if user.is_active:
-            return HttpResponseRedirect(reverse("manage"))
-        else:
-           status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
-           return render_to_response('status.html', {'status': status, 'inactive': True},
-                                  context_instance=RequestContext(request))
-    except UserProfile.DoesNotExist:
-        form = UserProfileForm()
-        form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
-        nomail = False
-        if not user.email:
-            nomail = True
-            form.fields['email'] = forms.CharField()
-        else:
-            form.fields['email'] = forms.CharField(initial = user.email)
-        form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
-        return render_to_response('registration/select_institution.html', {'form': form, 'nomail': nomail}, context_instance=RequestContext(request))
-
-
-@never_cache
 def geolocate(request):
     return render_to_response('front/geolocate.html', context_instance=RequestContext(request))
 
