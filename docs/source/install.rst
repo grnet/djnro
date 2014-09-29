@@ -337,6 +337,7 @@ with `pip install -r requirements.txt`.
 Ldap Authentication
 ^^^^^^^^^^^^^^^^^^^
 In case you want to use Ldap authentication::
+
 	AUTHENTICATION_BACKENDS = (
 		...,
 		'django_auth_ldap.backend.LDAPBackend',
@@ -344,7 +345,8 @@ In case you want to use Ldap authentication::
 	)
 
 	# LDAP CONFIG
-	import ldap                                                                           from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+	import ldap                                                                           
+	from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 	AUTH_LDAP_BIND_DN = ""
 	AUTH_LDAP_BIND_PASSWORD = ""
 	AUTH_LDAP_SERVER_URI = "ldap://foo.bar.org"
