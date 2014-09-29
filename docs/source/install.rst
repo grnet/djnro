@@ -240,7 +240,7 @@ Running the server
 
 We suggest going via Apache with mod_wsgi. Below is an example configuration::
 
-	WSGIDaemonProcess	djnro		processes=3 threads=20 display-name=%{GROUP}
+	WSGIDaemonProcess	djnro		processes=3 threads=20 display-name=%{GROUP} python-path=/path/to/djnro/
 	WSGIProcessGroup	djnro
 
 	...
@@ -249,6 +249,12 @@ We suggest going via Apache with mod_wsgi. Below is an example configuration::
 		ServerName		example.com
 		ServerAdmin		admin@example.com
 		ServerSignature		On
+
+		<Files wsgi.py>
+		    Order deny,allow
+		    Allow from all
+	    </Files>
+
 
 		SSLEngine on
 		SSLCertificateFile	...
@@ -275,7 +281,7 @@ We suggest going via Apache with mod_wsgi. Below is an example configuration::
 
 
 		Alias /static 		/path/to/djnro/static
-		WSGIScriptAlias /      /path/to/djnro/apache/django.wsgi
+		WSGIScriptAlias /      /path/to/djnro/djnro/wsgi.py
 		ErrorLog /var/log/apache2/error.log
         CustomLog /var/log/apache2/access.log combined
 	</VirtualHost>
@@ -295,8 +301,9 @@ The majority of branding is done via the NRO variables in settings.py. You might
 
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
-Copy settings.py.dist to settings.py and fill the configuration according to
+* Copy settings.py.dist to settings.py and fill the configuration according to
 the settings.py from your v0.8 instance.
+* run manage.py migrate
 
 
 Pip Support
