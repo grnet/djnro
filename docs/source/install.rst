@@ -305,7 +305,7 @@ Upgrade Instructions
 
 	* 'django.core.context_processors.auth' is replaced with 'django.contrib.auth.context_processors.auth' in CONTEXT_PROCESSORS
 
-	*'django.contrib.staticfiles' is added in settings INSTALLED_APPS
+	* 'django.contrib.staticfiles' is added in settings INSTALLED_APPS
 
 * edit the apache configuration in order to work with the new location of wsgi and
 set the python-path attribute.
