@@ -246,6 +246,8 @@ FACEBOOK_EXTENDED_PERMISSIONS = ['email']
 
 
 LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
+LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
+
 LINKEDIN_EXTRA_DATA = [('id', 'id'),
                        ('first-name', 'first_name'),
                        ('last-name', 'last_name'),
