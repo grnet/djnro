@@ -5,9 +5,11 @@
 # Copyright © 2011-2014 Greek Research and Technology Network (GRNET S.A.)
 # Copyright © 2011-2014 Leonidas Poulopoulos (@leopoul)
 # Copyright © 2011-2014 Zenon Mousmoulas
+# Copyright © 2014      Stavros Kroustouris
 
-#Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr, @leopoul) and
-#Zenon Mousmoulas (zmousm-at-noc-dot-grnet-dot-gr), GRNET NOC
+# Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr),
+# Zenon Mousmoulas (zmousm-at-noc-dot-grnet-dot-gr) and Stavros Kroustouris
+# (staurosk-at-noc-dot-grnet-dot-gr), GRNET NOC
 #
 
 # Permission to use, copy, modify, and/or distribute this software for any
