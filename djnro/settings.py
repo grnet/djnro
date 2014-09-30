@@ -76,7 +76,6 @@ MEDIA_URL = ''
 ADMIN_MEDIA_PREFIX = '/media/'
 
 # STATIC_ROOT = os.path.join(project_path, 'static')
-print os.path.join(project_path, 'static')
 STATICFILES_DIRS = [
     os.path.join(project_path, 'static'),
 ]
@@ -106,6 +105,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.media',
     'django.core.context_processors.request',
     'edumanage.context_processors.country_code',
+    'edumanage.context_processors.cat_instances',
     'social_auth.context_processors.social_auth_by_type_backends',
 )
 

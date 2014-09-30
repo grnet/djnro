@@ -288,7 +288,7 @@ msgstr "Πλησιέστερο eduroam"
 
 #: templates/base.html:132
 msgid "World eduroam"
-msgstr "Eduroam στον κόσμο"
+msgstr "eduroam στον κόσμο"
 
 #: templates/base.html:133 templates/front/participants.html:3
 msgid "Participants"
@@ -935,7 +935,7 @@ msgstr "Έξοδος"
 
 #: templates/edumanage/welcome.html:222
 msgid "eduroam CAT"
-msgstr "Eduroam CAT"
+msgstr "eduroam CAT"
 
 #: templates/edumanage/welcome.html:242
 msgid "Service Locations"
