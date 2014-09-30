@@ -32,17 +32,11 @@ Conditional Dependencies
 Django Social Auth
 -----------------------------
 
-User authentication via social media is carried out by the `python-django-social-auth <http://http://django-social-auth.readthedocs.org/en/latest/index.html>`_ python-django-social-auth package. If your distro includes it, then go via your distro installation.
-
-In any case we have included python-django-social-auth as an application inside the djnro Django project.
+User authentication via social media is carried out by the `python-django-social-auth <http://http://django-social-auth.readthedocs.org/en/latest/index.html>`_ python-django-social-auth package. We have included python-django-social-auth 0.7.18 in repository because DjNRO requires WrongBackend from social_auth.exceptions; this does not exist in 0.7.0 which ships with Debian Wheezy.
 
 Django Social Auth: Requirements - Dependencies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-* python-django-social-auth is included in the project because edumanage/middleware.py requires WrongBackend from social_auth.exceptions -- this does not exist in 0.7.0 (shipped by weezy), so we need to keep 0.7.18 in djnro for now.
-
 *  OpenId support depends on python-openid
 
 *  OAuth support depends on python-oauth2
-
-
 
