@@ -293,6 +293,16 @@ We suggest going via Apache with mod_wsgi. Below is an example configuration::
 
 Once you are done, restart apache.
 
+Fetch kml
+^^^^^^^^^
+A management command, named fetch_kml exists, whenever executed it fetches the kml from eduroam.org and updates cache
+with the locations of the access points. It is suggested to create a cronjob with the command::
+
+		./manage.py fetch_kml
+
+in order to keep the map updated.
+
+
 Initial Data
 ^^^^^^^^^^^^
 What you really need in the first place is a Realm record along with one or more contacts related to that Realm. Go via the Admin interface, and add a Realm (remember to have set the REALM_COUNTRIES in local_settings.py).
