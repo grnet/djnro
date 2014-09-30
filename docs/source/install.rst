@@ -7,18 +7,24 @@ Installation/Configuration
 .. attention::
    Installation instructions assume a clean Debian Wheezy with Django 1.4
 
-Assuming that you have installed all the required packages as described in :ref:`require-label` you can install the djnro platform application.
+Assuming that you have installed all the requirements described in :ref:`require-label` you can install the DjNRO project.
 
-Currently the source code is availiable at code.grnet.gr and can be cloned via git::
+The software is published at code.grnet.gr and can be downloaded using git::
 
 	git clone https://code.grnet.gr/git/djnro
+	
+It is also available on GitHub::
+
+	https://github.com/grnet/djnro/
 
 
-Project Settings (local_settings.py)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Settings.py file should not be edited, the variables that need to be altered are in local_settings.py.dist.
-To set up Djnro one must copy local_settings.py.dist, to local_settings.py and alter the settings according to
-the configuration of the host.::
+Project & Local Settings
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. attention::
+   In version 0.9 settings were split in two parts: settings.py and local_settings.py
+
+The file settings.py contains settings distributed by the project, which should normally not be necessary to modify. Options specific to the particular installation must be configured in local_settings.py. This file must be created by copying local_settings.py.dist::
 
     cd djnro
     cp djnro/local_settings.py.dist djnro/local_settings.py
@@ -75,7 +81,7 @@ Set your template dirs::
 	    "/example/templates",
 	)
 
-As the application includes a "Nearest Eduroam" functionality, world eduroam points are harvested via the eduroam.org kml file::
+As the application includes a "Nearest eduroam" functionality, global eduroam service locations are harvested from the KML file published at eduroam.org::
 
 	EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
@@ -93,7 +99,7 @@ NRO contact mails::
 
 	NOTIFY_ADMIN_MAILS = ["mail1@example.com", "mail2@example.com"]
 
-Set your cache backend (if you want to use one). For production instances you can go with memcached. For development you can switch to the provided dummy instance::
+Set your cache backend (if you want to use one). For production instances you can go with memcached. For development you can keep the provided dummy instance::
 
 
     CACHES = {
@@ -111,7 +117,7 @@ If languages are the same with LANGUAGES variable, simply do URL_NAME_LANGS = LA
 	        ('el', 'Ελληνικά'),
 	    )
 
-NRO specific parameters. Affect html templates::
+NRO specific parameters. These affect HTML templates::
 
 	# Frontend country specific vars, eg. Greece
 	NRO_COUNTRY_NAME = _('My Country')
@@ -138,7 +144,7 @@ Set the Realm country for REALM model::
 	             ('country_2letters', 'Country' ),
 	            )
 
-Shibboleth attribute MAP according to your AAI policy::
+Attribute map to match your AAI policy and SSO software (typically Shibboleth SP)::
 
 	#Shibboleth attribute map
 	SHIB_USERNAME = ['HTTP_EPPN']
@@ -158,44 +164,10 @@ Django Social Auth parameters::
 	LINKEDIN_CONSUMER_KEY        = ''
 	LINKEDIN_CONSUMER_SECRET     = ''
 
-	LINKEDIN_SCOPE = ['r_basicprofile', 'r_emailaddress']
-	LINKEDIN_EXTRA_FIELD_SELECTORS = ['email-address', 'headline', 'industry']
-	LINKEDIN_EXTRA_DATA = [('id', 'id'),
-	                       ('first-name', 'first_name'),
-	                       ('last-name', 'last_name'),
-	                       ('email-address', 'email_address'),
-	                       ('headline', 'headline'),
-	                       ('industry', 'industry')]
-
 	YAHOO_CONSUMER_KEY = ''
 	YAHOO_CONSUMER_SECRET = ''
 
 	GOOGLE_SREG_EXTRA_DATA = []
-
-	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-
-	FACEBOOK_EXTENDED_PERMISSIONS = ['email']
-
-	SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/manage/'
-	LOGIN_REDIRECT_URL = '/manage/'
-	SOCIAL_AUTH_INACTIVE_USER_URL = '/manage/'
-
-	SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
-	SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
-	SOCIAL_AUTH_CREATE_USERS = True
-	SOCIAL_AUTH_FORCE_RANDOM_USERNAME = False
-	SOCIAL_AUTH_SANITIZE_REDIRECTS = False
-
-
-
-	SOCIAL_AUTH_PIPELINE = (
-	    'social_auth.backends.pipeline.social.social_auth_user',
-	    'social_auth.backends.pipeline.user.get_username',
-	    'social_auth.backends.pipeline.user.create_user',
-	    'social_auth.backends.pipeline.social.associate_user',
-	    'social_auth.backends.pipeline.social.load_extra_data',
-	    'social_auth.backends.pipeline.user.update_user_details',
-	)
 
 .. versionadded:: 0.9
 
@@ -223,7 +195,7 @@ What you really need to make CAT work is a CAT_API_KEY and the CAT_API_URL. The 
                             "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
                 }
 
-For more administrative info on eduroam CAT, you can visit: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
+For more info on eduroam CAT, you can visit: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
 
 Database Sync
 ^^^^^^^^^^^^^
@@ -295,41 +267,37 @@ Once you are done, restart apache.
 
 Fetch kml
 ^^^^^^^^^
-A management command, named fetch_kml exists, whenever executed it fetches the kml from eduroam.org and updates cache
-with the locations of the access points. It is suggested to create a cronjob with the command::
+A Django management command, named fetch_kml, fetches the KML document and updates the cache with eduroam service locations. It is suggested to periodically run this command in a cron job in order to keep the map up to date::
 
 		./manage.py fetch_kml
 
-in order to keep the map updated.
-
-
 Initial Data
 ^^^^^^^^^^^^
-What you really need in the first place is a Realm record along with one or more contacts related to that Realm. Go via the Admin interface, and add a Realm (remember to have set the REALM_COUNTRIES in local_settings.py).
-The approach in the application is that the NRO sets the environment for the local eduroam admins. Towards that direction, the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model
+In order to start using DjNRO you need to create a Realm record for your NRO along with one or more contacts linked to it. You can visit the Django admin interface (https://<hostname>/admin) and add a Realm (remember to set REALM_COUNTRIES in local_settings.py).
+In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface.
 
 Next Steps (Set your Logo)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-The majority of branding is done via the NRO variables in local_settings.py. You might also want to change the logo of the application. Inside the static/img/eduroam_branding folder you will find the xcf (Gimp) logo files logo_holder, logo small. Edit with Gimp according to your needs and save as logo_holder.png and logo_small.png inside the static/img folder. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
+The majority of branding is done via the NRO variables in local_settings.py. You might also want to change the logo of the application. Within the static/img/eduroam_branding folder you will find the XCF files logo_holder, logo_small. Edit with Gimp according to your needs and export to logo_holder.png and logo_small.png at the same path. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
 
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
-* Backup your settings.py file.
+* Backup your settings.py file and any local modifications.
 
-* Copy loca_settings.py.dist to local_settings.py and fill the configuration according to the settings.py from your v0.8 instance.
+* Update the code.
+
+* Copy local_settings.py.dist to local_settings.py and modify it to match your previous configuration configuration.
 
 * edit the apache configuration in order to work with the new location of wsgi and
 set the python-path attribute.
 
 * remove old wsgi file '/path/to/djnro/apache/django.wsgi'
 
-* remove old settings.py.dist
-
 * remove django-extensions from `INSTALLED_APPS`
 
 * Add timeout in cache configuration
 
-* Required packages:
+* Make sure you have installed the following required packages (some of these introduced in 0.9):
 
 	* python-oauth2
 
@@ -348,11 +316,11 @@ We have added a requirements.txt file, tested for django 1.4.5. You can use it
 with `pip install -r requirements.txt`.
 
 
-Ldap Authentication
+LDAP Authentication
 ^^^^^^^^^^^^^^^^^^^
-In case you want to use Ldap authentication::
+If you want to use LDAP authentication, local_settings.py must be amended::
 
-	AUTHENTICATION_BACKENDS = (
+	EXTRA_AUTHENTICATION_BACKENDS = (
 		...,
 		'django_auth_ldap.backend.LDAPBackend',
 		...,
