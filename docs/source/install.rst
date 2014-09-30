@@ -197,6 +197,12 @@ What you really need to make CAT work is a CAT_API_KEY and the CAT_API_URL. The 
 
 For more info on eduroam CAT, you can visit: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
 
+In case one wants to extend some of the settings only for the local instance, they can prepend 'EXTRA_' on the attribute they want to extend. For example::
+ 
+	EXTRA_INSTALLED_APPS = (
+		'django_debug_toolbar',
+	)
+
 Database Sync
 ^^^^^^^^^^^^^
 
@@ -350,3 +356,4 @@ If you want to use LDAP authentication, local_settings.py must be amended::
 		"is_staff": "cn=staff, ou=Groups, dc=foo, dc=bar, dc=org",
 		"is_superuser": "cn=NOC, ou=Groups,dc=foo, dc=bar, dc=org"
 	}
+
