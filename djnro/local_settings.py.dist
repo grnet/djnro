@@ -143,32 +143,32 @@ YAHOO_CONSUMER_SECRET = ''
 
 GOOGLE_SREG_EXTRA_DATA = []
 
-###### Eduroam CAT ###########
-# Important!!! Make sure you include a 'production' instance record
-CAT_INSTANCES = (
-    ('production', 'Production Instance'),
-    ('testing', 'Testing Instance'),
-    ('dev1', 'Dev1 Instance'),
-)
+###### eduroam CAT integration ###########
+# In order to enable provisioning to CAT, you must list at least one instance and the
+# corresponding description in CAT_INSTANCES. Beware that pages accessible by end users
+# currently only show CAT information for the instance named 'production'.
+# You must also set the following parameters for each CAT instance in CAT_AUTH:
+# CAT_API_KEY: API key for authentication to CAT
+# CAT_API_URL: API endpoint URL
+# CAT_PROFILES_URL: Base URL for Intitution Download Area pages
+# CAT_FEDMGMT_URL: URL For Federation Overview page (currently not in use)
 
-CAT_AUTH = {
-    'production': {
-        "CAT_API_KEY": "<provided API key>",
-        "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
-        "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test/admin/API.php",
-        "CAT_FEDMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
-    },
-    'testing': {
-        "CAT_API_KEY": "<provided API key>",
-        "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
-        "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test/admin/API.php",
-        "CAT_FEDMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
-    },
-    'dev1': {
-        "CAT_API_KEY": "<provided API key>",
-        "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
-        "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test/admin/API.php",
-        "CAT_FEDMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
-    },
-}
+# CAT_INSTANCES = (
+#     ('production', 'cat.eduroam.org'),
+#     ('testing', 'cat-test.eduroam.org'),
+# )
 
+# CAT_AUTH = {
+#     'production': {
+#         "CAT_API_KEY": "<provided API key>",
+#         "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
+#         "CAT_PROFILES_URL": "https://cat.eduroam.org/",
+#         "CAT_FEDMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
+#     },
+#     'testing': {
+#         "CAT_API_KEY": "<provided API key>",
+#         "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
+#         "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
+#         "CAT_FEDMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_federation.php"
+#     },
+# }

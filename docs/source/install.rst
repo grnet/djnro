@@ -171,31 +171,44 @@ Django Social Auth parameters::
 
 .. versionadded:: 0.9
 
-Support for eduroam CAT can be set via the corresponding variables/dicts. Make sure to **always** include a 'production' instance record for CAT_INSTANCES and CAT_AUTH.
-What you really need to make CAT work is a CAT_API_KEY and the CAT_API_URL. The CAT_PROFILES_URL is the base url of the landing page where your institution users can download device profile configurations::
+DjNRO provides limited integration with eduroam CAT (Configuration Assistant Tool). Institution administrators can automatically provision their institution to CAT without the intervention of the federation (NRO) administrator.
+
+In order to enable this functionality, you must list at least one instance and the corresponding description in CAT_INSTANCES. Beware that pages accessible by end users currently only show CAT information
+for the instance named `production`.
+
+You must also set the following parameters for each CAT instance in CAT_AUTH:
+
+* CAT_API_KEY: API key for authentication to CAT
+
+* CAT_API_URL: API endpoint URL
+
+* CAT_PROFILES_URL: Base URL for Intitution Download Area pages
+
+* CAT_FEDMGMT_URL: URL For Federation Overview page (currently not in use)
+
+::
 
     CAT_INSTANCES = (
-                     ('production', 'Production Instance'),
-                     ('testing', 'Testing Instance'),
-                     ('dev1', 'Dev1 Instance'),
-                     )
+        ('production', 'cat.eduroam.org'),
+        ('testing', 'cat-test.eduroam.org'),
+    )
 
     CAT_AUTH = {
-                'production':{"CAT_API_KEY":"<provided API key>",
-                              "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                              "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                              "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
-                'testing':{"CAT_API_KEY":"<provided API key>",
-                            "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                            "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                            "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
-                'dev1':{"CAT_API_KEY":"<provided API key>",
-                            "CAT_API_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                            "CAT_PROFILES_URL":"https://cat-test.eduroam.org/test/admin/API.php",
-                            "CAT_FEDMGMT_URL":"https://cat.eduroam.org/admin/overview_federation.php"},
-                }
+        'production': {
+            "CAT_API_KEY": "<provided API key>",
+            "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
+            "CAT_PROFILES_URL": "https://cat.eduroam.org/",
+            "CAT_FEDMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
+        },
+        'testing': {
+            "CAT_API_KEY": "<provided API key>",
+            "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
+            "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
+            "CAT_FEDMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_federation.php"
+        },
+    }
 
-For more info on eduroam CAT, you can visit: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
+For more information about eduroam CAT, you may read: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
 
 In case one wants to extend some of the settings only for the local instance, they can prepend 'EXTRA_' on the attribute they want to extend. For example::
  

@@ -266,6 +266,8 @@ SOCIAL_AUTH_PIPELINE = (
     'social_auth.backends.pipeline.user.update_user_details',
 )
 
+CAT_INSTANCES = ()
+
 import _version
 SW_VERSION = _version.VERSION
 
