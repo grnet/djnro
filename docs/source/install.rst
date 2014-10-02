@@ -292,6 +292,50 @@ Initial Data
 In order to start using DjNRO you need to create a Realm record for your NRO along with one or more contacts linked to it. You can visit the Django admin interface (``https://<hostname>/admin``) and add a Realm (remember to set REALM_COUNTRIES in local_settings.py).
 In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface.
 
+Exporting Data
+^^^^^^^^^^^^^^^
+
+DjNRO can export data in formats suitable for use by other software.
+
+XML documents conforming to the `eduroam database <https://monitor.eduroam.org/database.php>`_ schemata are exported at the following URLs, as required for harvesting by eduroam.org::
+
+    /general/realm.xml
+    /general/institution.xml
+    /usage/realm_data.xml
+
+.. versionadded:: 0.9
+
+A list of institution administrators can be exported in CSV format or a plain format suitable for use by a mailing list (namely `Sympa <http://www.sympa.org/manual/parameters-data-sources#include_remote_file>`_). This data is available through:
+
+* a management comand (``./manage.py contacts``), which defaults to CSV output (currently with headers in Greek!) and can switch to plain output using ``--mail-list``.
+
+* a view (``adminlist``), which only supports output in the latter plain text format.
+
+Likewise, data that can be used as input for automatic configuration of `Federation Level RADIUS Servers (FLRS)` can be exported in YAML/JSON format, through:
+
+* a management command (``./manage.py servdata``)
+
+* a view (``sevdata``)
+
+Output format defaults to YAML and can be overriden respectively:
+
+* by using ``--output=json``
+
+* by sending an ``Accept: application/json`` HTTP header
+
+We also provide a sample script for reading this data (``extras/servdata_consumer.py``) along with templates (in the same directory) for producing configuration suitable for FreeRADIUS and radsecproxy. This script requires the following python packages:
+
+  * python-requests
+
+  * python-yaml
+
+  * python-mako (for the templates)
+
+Take the time to read the default settings at the top of the script and run it with ``--help``. The templates are based on assumptions that may not match your setup; they are mostly provided as a proof of concept.
+
+.. attention::
+   The ``adminlist`` and ``servdata`` views are commented out by default in ``djnro/urls.py``. Make sure you protect them (SSL, ACL and/or authentication) at the HTTP server before you enable them, as they may expose private/sensitive data.
+
 Next Steps (Set your Logo)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 The majority of branding is done via the NRO variables in local_settings.py. You might also want to change the logo of the application. Within the static/img/eduroam_branding folder you will find the XCF files logo_holder, logo_small. Edit with Gimp according to your needs and export to logo_holder.png and logo_small.png at the same path. To change the domain logo on top right, replace the static/img/right_logo_small.png file with your own logo (86x40).
