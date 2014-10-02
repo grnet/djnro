@@ -4,7 +4,7 @@ Installation/Configuration
 ==========================
 .. contents::
 
-.. attention::
+.. note::
    Installation instructions assume a clean Debian Wheezy with Django 1.4
 
 Assuming that you have installed all the requirements described in :ref:`require-label` you can install the DjNRO project.
@@ -232,7 +232,7 @@ Now you should have a clean database with all the tables created.
 Running the server
 ^^^^^^^^^^^^^^^^^^
 
-We suggest going via Apache with mod_wsgi. Below is an example configuration::
+We suggest using Apache and mod_wsgi. Below is an example configuration::
 
 	# Tune wsgi daemon as necessary: processes=x threads=y
 	WSGIDaemonProcess djnro display-name=%{GROUP} python-path=/path/to/djnro/
@@ -271,11 +271,11 @@ We suggest going via Apache with mod_wsgi. Below is an example configuration::
 		</Location>
 	</VirtualHost>
 
-*Info*: It is strongly suggested to allow access to /admin|overview|alt-login *ONLY* from trusted subnets.
+*Info*: It is strongly recommended to allow access to ``/(admin|overview|alt-login)`` *ONLY* from trusted subnets.
 
 Once you are done, restart apache.
 
-Fetch kml
+Fetch KML
 ^^^^^^^^^
 A Django management command, named fetch_kml, fetches the KML document and updates the cache with eduroam service locations. It is suggested to periodically run this command in a cron job in order to keep the map up to date::
 
@@ -283,7 +283,7 @@ A Django management command, named fetch_kml, fetches the KML document and updat
 
 Initial Data
 ^^^^^^^^^^^^
-In order to start using DjNRO you need to create a Realm record for your NRO along with one or more contacts linked to it. You can visit the Django admin interface (https://<hostname>/admin) and add a Realm (remember to set REALM_COUNTRIES in local_settings.py).
+In order to start using DjNRO you need to create a Realm record for your NRO along with one or more contacts linked to it. You can visit the Django admin interface (``https://<hostname>/admin``) and add a Realm (remember to set REALM_COUNTRIES in local_settings.py).
 In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface.
 
 Next Steps (Set your Logo)
@@ -309,13 +309,13 @@ set the python-path attribute.
 
 * Make sure you have installed the following required packages (some of these introduced in 0.9):
 
-	* python-oauth2
+  * python-oauth2
 
-	* python-requests
+  * python-requests
 
-	* python-lxml
+  * python-lxml
 
-	* python-yaml
+  * python-yaml
 
 * run manage.py migrate
 
@@ -323,7 +323,7 @@ set the python-path attribute.
 Pip Support
 ^^^^^^^^^^^^
 We have added a requirements.txt file, tested for django 1.4.5. You can use it
-with `pip install -r requirements.txt`.
+with ``pip install -r requirements.txt``.
 
 
 LDAP Authentication
