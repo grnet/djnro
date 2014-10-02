@@ -234,50 +234,41 @@ Running the server
 
 We suggest going via Apache with mod_wsgi. Below is an example configuration::
 
-	WSGIDaemonProcess	djnro		processes=3 threads=20 display-name=%{GROUP} python-path=/path/to/djnro/
-	WSGIProcessGroup	djnro
-
-	...
+	# Tune wsgi daemon as necessary: processes=x threads=y
+	WSGIDaemonProcess djnro display-name=%{GROUP} python-path=/path/to/djnro/
 
 	<VirtualHost *:443>
 		ServerName		example.com
-		ServerAdmin		admin@example.com
-		ServerSignature		On
 
-		<Files wsgi.py>
-		    Order deny,allow
-		    Allow from all
-	    </Files>
-
+		Alias		/static	/path/to/djnro/static
+		WSGIScriptAlias	/	/path/to/djnro/djnro/wsgi.py
+		<Directory /path/to/djnro/djnro>
+			<Files wsgi.py>
+			    WSGIProcessGroup djnro
+			    Order deny,allow
+			    Allow from all
+			</Files>
+		</Directory>
 
 		SSLEngine on
 		SSLCertificateFile	...
-		SSLCertificateChainFile ...
+		SSLCertificateChainFile	...
 		SSLCertificateKeyFile	...
 
 		# Shibboleth SP configuration
-		ShibConfig		/etc/shibboleth/shibboleth2.xml
-		Alias			/shibboleth-sp	/usr/share/shibboleth
+		ShibConfig	/etc/shibboleth/shibboleth2.xml
+		Alias		/shibboleth-sp	/usr/share/shibboleth
 
-	    # Integration of Shibboleth into Django app:
-
+		# SSO through Shibboleth SP:
 		<Location /login>
 			AuthType shibboleth
 			ShibRequireSession On
 			ShibUseHeaders On
 			require valid-user
 		</Location>
-
-
 		<Location /Shibboleth.sso>
 			SetHandler shib
 		</Location>
-
-
-		Alias /static 		/path/to/djnro/static
-		WSGIScriptAlias /      /path/to/djnro/djnro/wsgi.py
-		ErrorLog /var/log/apache2/error.log
-        CustomLog /var/log/apache2/access.log combined
 	</VirtualHost>
 
 *Info*: It is strongly suggested to allow access to /admin|overview|alt-login *ONLY* from trusted subnets.
