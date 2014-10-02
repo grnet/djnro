@@ -282,7 +282,7 @@ We suggest using Apache and mod_wsgi. Below is an example configuration::
 Once you are done, restart apache.
 
 Fetch KML
-^^^^^^^^^
+^^^^^^^^^^^
 A Django management command, named fetch_kml, fetches the KML document and updates the cache with eduroam service locations. It is suggested to periodically run this command in a cron job in order to keep the map up to date::
 
 		./manage.py fetch_kml
@@ -342,16 +342,16 @@ The majority of branding is done via the NRO variables in local_settings.py. You
 
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
-* Backup your settings.py file and any local modifications.
+* Backup your ``settings.py`` file and any local modifications.
 
 * Update the code.
 
-* Copy local_settings.py.dist to local_settings.py and modify it to match your previous configuration configuration.
+* Copy ``djnro/local_settings.py.dist`` to ``djnro/local_settings.py`` and modify it to match your previous configuration.
 
 * edit the apache configuration in order to work with the new location of wsgi and
 set the python-path attribute.
 
-* remove old wsgi file '/path/to/djnro/apache/django.wsgi'
+* remove old wsgi file ``/path/to/djnro/apache/django.wsgi`` and parent directory
 
 * remove django-extensions from `INSTALLED_APPS`
 
@@ -367,7 +367,7 @@ set the python-path attribute.
 
   * python-yaml
 
-* run manage.py migrate
+* run ``./manage.py migrate``
 
 .. attention::
    You had previously copied ``urls.py.dist`` to ``urls.py``. This is no longer supported; we now use ``djnro/urls.py``. URLs that provide sensitive data are disabled (commented out) by default. You may have to edit the file according to your needs.
