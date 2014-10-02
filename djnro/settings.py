@@ -27,9 +27,8 @@
 from django.utils.translation import ugettext as _
 import os
 
-here = lambda x: os.path.join(os.path.abspath(os.path.dirname(__file__)), x)
-djnro_path = os.path.join(os.path.abspath(os.path.dirname(__file__)))
-project_path = os.path.abspath(os.path.dirname(__name__))
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -38,8 +37,9 @@ project_path = os.path.abspath(os.path.dirname(__name__))
 TIME_ZONE = 'Europe/Athens'
 
 LOCALE_PATHS = (
-    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'locale'),
+    os.path.join(BASE_DIR, 'locale'),
 )
+
 
 LANGUAGES = (
     ('el', _('Greek')),
@@ -77,9 +77,9 @@ MEDIA_URL = ''
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
-# STATIC_ROOT = os.path.join(project_path, 'static')
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
-    os.path.join(project_path, 'static'),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 
@@ -88,14 +88,14 @@ STATICFILES_DIRS = [
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+#   'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+#   'django.template.loaders.eggs.Loader',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -146,7 +146,8 @@ ROOT_URLCONF = 'djnro.urls'
 WSGI_APPLICATION = 'djnro.wsgi.application'
 
 TEMPLATE_DIRS = (
-    os.path.join(djnro_path, 'templates/'),
+    os.path.join(PROJECT_DIR, 'templates/'),
+    os.path.join(BASE_DIR, 'templates/'),
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
@@ -208,8 +209,8 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 
 LOGIN_URL = '/manage/login/'
 
-KML_FILE = here('all.kml')
-INST_XML_FILE = here('institution.xml')
+KML_FILE = os.path.join(PROJECT_DIR, 'all.kml')
+INST_XML_FILE = os.path.join(PROJECT_DIR, 'institution.xml')
 
 EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
