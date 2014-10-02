@@ -1,43 +1,45 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+import json
+import bz2
+import math
+import datetime
+from xml.etree import ElementTree as ET
 
-from django.shortcuts import render_to_response,get_object_or_404,redirect
-from django.http import HttpResponse,HttpResponseRedirect,Http404
+from django.shortcuts import redirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
-from edumanage.models import *
-from accounts.models import *
-from edumanage.forms import *
 from django import forms
-from django.forms.models import modelformset_factory
-from django.forms.models import inlineformset_factory
 from django.contrib.contenttypes.generic import generic_inlineformset_factory
 from django.core.mail.message import EmailMessage
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
-import json, bz2
-import math, datetime
-from xml.etree import ElementTree as ET
-
 from django.conf import settings
 from django.contrib import messages
-
 from django.db.models import Max
-
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
 from django.contrib.auth import authenticate, login
-from registration.models import RegistrationProfile
 from django.core.cache import cache
 
+from edumanage.models import *
+from accounts.models import *
+from edumanage.forms import *
+from registration.models import RegistrationProfile
 from edumanage.decorators import social_active_required
 from utils.cat_helper import *
 
+
 @never_cache
 def index(request):
-    return render_to_response('front/index.html', context_instance=RequestContext(request))
+    return render_to_response(
+        'front/index.html',
+        context_instance=RequestContext(request)
+    )
+
 
 @never_cache
 def manage_login_front(request):
@@ -45,16 +47,23 @@ def manage_login_front(request):
     try:
         profile = user.get_profile()
     except UserProfile.DoesNotExist:
-        return render_to_response('edumanage/welcome_manage.html',
-                              context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/welcome_manage.html',
+            context_instance=RequestContext(request, base_response(request))
+        )
     except AttributeError:
-        return render_to_response('edumanage/welcome_manage.html',
-                              context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/welcome_manage.html',
+            context_instance=RequestContext(request, base_response(request))
+        )
     if user.is_authenticated() and user.is_active and profile.is_social_active:
         return redirect(reverse('manage'))
     else:
-        return render_to_response('edumanage/welcome_manage.html',
-                              context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/welcome_manage.html',
+            context_instance=RequestContext(request, base_response(request))
+        )
+
 
 @login_required
 @social_active_required
@@ -67,20 +76,24 @@ def manage(request):
         profile = user.get_profile()
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        return render_to_response('edumanage/welcome.html',
-                              context_instance=RequestContext(request, base_response(request)))
-
+        return render_to_response(
+            'edumanage/welcome.html',
+            context_instance=RequestContext(request, base_response(request))
+        )
     services = ServiceLoc.objects.filter(institutionid=inst)
     services_list.extend([s for s in services])
     servers = InstServer.objects.filter(instid=inst)
     servers_list.extend([s for s in servers])
-    return render_to_response('edumanage/welcome.html',
-                              {
-                               'institution': inst,
-                               'services': services_list,
-                               'servers': servers_list,
-                               },
-                              context_instance=RequestContext(request, base_response(request)))
+    return render_to_response(
+        'edumanage/welcome.html',
+        {
+            'institution': inst,
+            'services': services_list,
+            'servers': servers_list,
+        },
+        context_instance=RequestContext(request, base_response(request))
+    )
+
 
 @login_required
 @social_active_required
@@ -97,13 +110,14 @@ def institutions(request):
     dict['institution'] = inst.pk
     form = InstDetailsForm(initial=dict)
     form.fields['institution'].widget.attrs['readonly'] = True
-    return render_to_response('edumanage/institution.html',
-                              {
-                               'institution': inst,
-                               'form': form,
-                               },
-                              context_instance=RequestContext(request, base_response(request)))
-
+    return render_to_response(
+        'edumanage/institution.html',
+        {
+            'institution': inst,
+            'form': form,
+        },
+        context_instance=RequestContext(request, base_response(request))
+    )
 
 
 @login_required
@@ -119,25 +133,45 @@ def add_institution_details(request, institution_pk):
         return HttpResponseRedirect(reverse("manage"))
 
     if institution_pk and int(inst.pk) != int(institution_pk):
-        messages.add_message(request, messages.ERROR, 'You have no rights on this Institution')
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'You have no rights on this Institution'
+        )
         return HttpResponseRedirect(reverse("institutions"))
 
     if request.method == "GET":
         try:
             inst_details = InstitutionDetails.objects.get(institution=inst)
             form = InstDetailsForm(instance=inst_details)
-            UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
-            urls_form = UrlFormSet(prefix='urlsform', instance = inst_details)
+            UrlFormSet = generic_inlineformset_factory(
+                URL_i18n,
+                extra=2,
+                formset=UrlFormSetFactInst,
+                can_delete=True
+            )
+            urls_form = UrlFormSet(prefix='urlsform', instance=inst_details)
         except InstitutionDetails.DoesNotExist:
             form = InstDetailsForm()
-            form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
-            UrlFormSet =  generic_inlineformset_factory(URL_i18n, extra=2, can_delete=True)
+            form.fields['institution'] = forms.ModelChoiceField(
+                queryset=Institution.objects.filter(pk=institution_pk),
+                empty_label=None
+            )
+            UrlFormSet = generic_inlineformset_factory(
+                URL_i18n,
+                extra=2,
+                can_delete=True
+            )
             urls_form = UrlFormSet(prefix='urlsform')
 
-
-        form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
-        return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form, 'urls_form':urls_form},
-                                  context_instance=RequestContext(request, base_response(request)))
+        form.fields['contact'] = forms.ModelMultipleChoiceField(
+            queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
+        )
+        return render_to_response(
+            'edumanage/institution_edit.html',
+            {'institution': inst, 'form': form, 'urls_form': urls_form},
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
@@ -152,13 +186,22 @@ def add_institution_details(request, institution_pk):
         if form.is_valid() and urls_form.is_valid():
             instdets = form.save()
             urls_form.instance = instdets
-            urls_inst = urls_form.save()
             return HttpResponseRedirect(reverse("institutions"))
         else:
-            form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=institution_pk), empty_label=None)
-            form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
-            return render_to_response('edumanage/institution_edit.html', { 'institution': inst, 'form': form, 'urls_form': urls_form},
-                                  context_instance=RequestContext(request, base_response(request)))
+            form.fields['institution'] = forms.ModelChoiceField(
+                queryset=Institution.objects.filter(pk=institution_pk),
+                empty_label=None
+            )
+            form.fields['contact'] = forms.ModelMultipleChoiceField(
+                queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
+            )
+            return render_to_response(
+                'edumanage/institution_edit.html',
+                {'institution': inst, 'form': form, 'urls_form': urls_form},
+                context_instance=RequestContext(
+                    request, base_response(request)
+                )
+            )
 
 
 @login_required
@@ -166,7 +209,6 @@ def add_institution_details(request, institution_pk):
 @never_cache
 def services(request, service_pk):
     user = request.user
-    dict = {}
     try:
         profile = user.get_profile()
         inst = profile.institution
@@ -177,12 +219,19 @@ def services(request, service_pk):
         instdetails = inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [2,3]:
-        messages.add_message(request, messages.ERROR, 'Cannot add/edit Location. Your institution should be either SP or IdP/SP')
-        return render_to_response('edumanage/services.html', { 'institution': inst },
-                              context_instance=RequestContext(request, base_response(request)))
+    if inst.ertype not in [2, 3]:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'Cannot add/edit Location. Your institution should be either SP or IdP/SP'
+        )
+        return render_to_response(
+            'edumanage/services.html',
+            {'institution': inst},
+            context_instance=RequestContext(request, base_response(request))
+        )
     try:
-        services = ServiceLoc.objects.filter(institutionid = inst)
+        services = ServiceLoc.objects.filter(institutionid=inst)
     except ServiceLoc.DoesNotExist:
         services = False
 
@@ -190,22 +239,29 @@ def services(request, service_pk):
         try:
             services = services.get(pk=service_pk)
         except:
-            messages.add_message(request, messages.ERROR, 'You have no rights to view this location')
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'You have no rights to view this location'
+            )
             return HttpResponseRedirect(reverse("services"))
-        return render_to_response('edumanage/service_details.html',
-                              {
-                               'institution': inst,
-                               'service': services,
-                               },
-                              context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/service_details.html',
+            {
+                'institution': inst,
+                'service': services,
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
 
-    return render_to_response('edumanage/services.html',
-                              {
-                               'institution': inst,
-                               'services': services,
-                               },
-                              context_instance=RequestContext(request, base_response(request)))
-
+    return render_to_response(
+        'edumanage/services.html',
+        {
+            'institution': inst,
+            'services': services,
+        },
+        context_instance=RequestContext(request, base_response(request))
+    )
 
 
 @login_required
@@ -225,10 +281,17 @@ def add_services(request, service_pk):
         instdetails = inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [2,3]:
-        messages.add_message(request, messages.ERROR, 'Cannot add/edit Service. Your institution should be either SP or IdP/SP')
-        return render_to_response('edumanage/services_edit.html', { 'edit': edit },
-                                  context_instance=RequestContext(request, base_response(request)))
+    if inst.ertype not in [2, 3]:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'Cannot add/edit Service. Your institution should be either SP or IdP/SP'
+        )
+        return render_to_response(
+            'edumanage/services_edit.html',
+            {'edit': edit},
+            context_instance=RequestContext(request, base_response(request))
+        )
     if request.method == "GET":
 
         # Determine add or edit
@@ -238,42 +301,99 @@ def add_services(request, service_pk):
         except ServiceLoc.DoesNotExist:
             form = ServiceLocForm()
             if service_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this location')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this location'
+                )
                 return HttpResponseRedirect(reverse("services"))
-        form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-        UrlFormSet =  generic_inlineformset_factory(URL_i18n, extra=2, can_delete=True)
-        NameFormSet = generic_inlineformset_factory(Name_i18n, extra=2, can_delete=True)
+        form.fields['institutionid'] = forms.ModelChoiceField(
+            queryset=Institution.objects.filter(pk=inst.pk),
+            empty_label=None
+        )
+        UrlFormSet = generic_inlineformset_factory(
+            URL_i18n,
+            extra=2,
+            can_delete=True
+        )
+        NameFormSet = generic_inlineformset_factory(
+            Name_i18n,
+            extra=2,
+            can_delete=True
+        )
         urls_form = UrlFormSet(prefix='urlsform')
         names_form = NameFormSet(prefix='namesform')
         if (service):
-            NameFormSet = generic_inlineformset_factory(Name_i18n, extra=1, formset=NameFormSetFact, can_delete=True)
+            NameFormSet = generic_inlineformset_factory(
+                Name_i18n,
+                extra=1,
+                formset=NameFormSetFact, can_delete=True
+            )
             names_form = NameFormSet(instance=service, prefix='namesform')
-            UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFact, can_delete=True)
+            UrlFormSet = generic_inlineformset_factory(
+                URL_i18n,
+                extra=2,
+                formset=UrlFormSetFact,
+                can_delete=True
+            )
             urls_form = UrlFormSet(instance=service, prefix='urlsform')
-        form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
+        form.fields['contact'] = forms.ModelMultipleChoiceField(
+            queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
+        )
         if service:
             edit = True
         for url_form in urls_form.forms:
-            url_form.fields['urltype'] = forms.ChoiceField(choices=(('', '----------'),('info', 'Info'),))
-        return render_to_response('edumanage/services_edit.html', { 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
-                                  context_instance=RequestContext(request, base_response(request)))
+            url_form.fields['urltype'] = forms.ChoiceField(
+                choices=(('', '----------'), ('info', 'Info'),)
+            )
+        return render_to_response(
+            'edumanage/services_edit.html',
+            {
+                'form': form,
+                'services_form': names_form,
+                'urls_form': urls_form,
+                "edit": edit
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
-        NameFormSet = generic_inlineformset_factory(Name_i18n, extra=1, formset=NameFormSetFact, can_delete=True)
-        UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFact, can_delete=True)
+        NameFormSet = generic_inlineformset_factory(
+            Name_i18n,
+            extra=1,
+            formset=NameFormSetFact,
+            can_delete=True
+        )
+        UrlFormSet = generic_inlineformset_factory(
+            URL_i18n,
+            extra=2,
+            formset=UrlFormSetFact,
+            can_delete=True
+        )
         try:
             service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
             form = ServiceLocForm(request_data, instance=service)
-            names_form = NameFormSet(request_data, instance=service, prefix='namesform')
-            urls_form = UrlFormSet(request_data, instance=service, prefix='urlsform')
+            names_form = NameFormSet(
+                request_data,
+                instance=service,
+                prefix='namesform'
+            )
+            urls_form = UrlFormSet(
+                request_data,
+                instance=service,
+                prefix='urlsform'
+            )
         except ServiceLoc.DoesNotExist:
             form = ServiceLocForm(request_data)
             names_form = NameFormSet(request_data, prefix='namesform')
             urls_form = UrlFormSet(request_data, prefix='urlsform')
             if service_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this location')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this location'
+                )
                 return HttpResponseRedirect(reverse("services"))
-
         if form.is_valid() and names_form.is_valid() and urls_form.is_valid():
             serviceloc = form.save()
             service = serviceloc
@@ -283,14 +403,30 @@ def add_services(request, service_pk):
             urls_inst = urls_form.save()
             return HttpResponseRedirect(reverse("services"))
         else:
-            form.fields['institutionid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-            form.fields['contact'] = forms.ModelMultipleChoiceField(queryset=Contact.objects.filter(pk__in=getInstContacts(inst)))
+            form.fields['institutionid'] = forms.ModelChoiceField(
+                queryset=Institution.objects.filter(pk=inst.pk),
+                empty_label=None
+            )
+            form.fields['contact'] = forms.ModelMultipleChoiceField(
+                queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
+            )
         if service:
             edit = True
         for url_form in urls_form.forms:
-            url_form.fields['urltype'] = forms.ChoiceField(choices=(('', '----------'),('info', 'Info'),))
-        return render_to_response('edumanage/services_edit.html', { 'institution': inst, 'form': form, 'services_form':names_form, 'urls_form': urls_form, "edit": edit},
-                                  context_instance=RequestContext(request, base_response(request)))
+            url_form.fields['urltype'] = forms.ChoiceField(
+                choices=(('', '----------'), ('info', 'Info'),)
+            )
+        return render_to_response(
+            'edumanage/services_edit.html',
+            {
+                'institution': inst,
+                'form': form,
+                'services_form': names_form,
+                'urls_form': urls_form,
+                'edit': edit
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
 
 
 @login_required
@@ -309,7 +445,10 @@ def del_service(request):
             return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp = {}
         try:
-            service = ServiceLoc.objects.get(institutionid=institution, pk=service_pk)
+            service = ServiceLoc.objects.get(
+                institutionid=institution,
+                pk=service_pk
+            )
         except ServiceLoc.DoesNotExist:
             resp['error'] = "Could not get service or you have no rights to delete"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
@@ -338,14 +477,21 @@ def servers(request, server_pk):
         servers = InstServer.objects.filter(instid=inst)
     if server_pk:
         servers = servers.get(pk=server_pk)
-        return render_to_response('edumanage/server_details.html',
-                              {
-                               'institution': inst,
-                               'server': servers,
-                               },
-                              context_instance=RequestContext(request, base_response(request)))
-    return render_to_response('edumanage/servers.html', { 'servers': servers},
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/server_details.html',
+            {
+                'institution': inst,
+                'server': servers,
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
+    return render_to_response(
+        'edumanage/servers.html',
+        {
+            'servers': servers
+        },
+        context_instance=RequestContext(request, base_response(request))
+    )
 
 
 @login_required
@@ -373,14 +519,27 @@ def add_server(request, server_pk):
         except InstServer.DoesNotExist:
             form = InstServerForm()
             if server_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this server')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this server'
+                )
                 return HttpResponseRedirect(reverse("servers"))
-        form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+        form.fields['instid'] = forms.ModelChoiceField(
+            queryset=Institution.objects.filter(pk=inst.pk),
+            empty_label=None
+        )
         if server:
             edit = True
 
-        return render_to_response('edumanage/servers_edit.html', { 'form': form, 'edit': edit },
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/servers_edit.html',
+            {
+                'form': form,
+                'edit': edit
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
@@ -389,18 +548,32 @@ def add_server(request, server_pk):
         except InstServer.DoesNotExist:
             form = InstServerForm(request_data)
             if server_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this server')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this server'
+                )
                 return HttpResponseRedirect(reverse("servers"))
 
         if form.is_valid():
             instserverf = form.save()
             return HttpResponseRedirect(reverse("servers"))
         else:
-            form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
+            form.fields['instid'] = forms.ModelChoiceField(
+                queryset=Institution.objects.filter(pk=inst.pk),
+                empty_label=None
+            )
         if server:
             edit = True
-        return render_to_response('edumanage/servers_edit.html', { 'institution': inst, 'form': form, 'edit': edit },
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/servers_edit.html',
+            {
+                'institution': inst,
+                'form': form,
+                'edit': edit
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
 
 
 @login_required
@@ -408,7 +581,6 @@ def add_server(request, server_pk):
 @never_cache
 def cat_enroll(request):
     user = request.user
-    edit = False
     cat_url = None
     inst_uid = None
     try:
@@ -421,40 +593,76 @@ def cat_enroll(request):
         instdetails = inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [1,3]:
-        messages.add_message(request, messages.ERROR, 'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP')
-        return render_to_response('edumanage/catenroll.html', { 'status':False },
-                                  context_instance=RequestContext(request, base_response(request)))
+    if inst.ertype not in [1, 3]:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP'
+        )
+        return render_to_response(
+            'edumanage/catenroll.html',
+            {'status': False},
+            context_instance=RequestContext(request, base_response(request))
+        )
     if request.method == "GET":
         current_enrollments = inst.catenrollment_set.all()
-        current_enrollments_list = current_enrollments.values_list('cat_instance', flat=True)
-        available_enrollments = [(x[0], x[1]) for x in settings.CAT_INSTANCES if x[0] not in current_enrollments_list]
+        current_enrollments_list = current_enrollments.values_list(
+            'cat_instance',
+            flat=True
+        )
+        available_enrollments = [
+            (x[0], x[1]) for x in settings.CAT_INSTANCES if x[0] not in current_enrollments_list
+        ]
         if len(available_enrollments) == 0:
-            messages.add_message(request, messages.ERROR, 'There are no available CAT instances for your institution enrollment')
-            return render_to_response('edumanage/catenroll.html', { 'status': False, 'cat_instances': available_enrollments},
-                                  context_instance=RequestContext(request, base_response(request)))
-        return render_to_response('edumanage/catenroll.html', { 'status': True, 'current_enrollments': current_enrollments, 'cat_instances': available_enrollments},
-                                  context_instance=RequestContext(request, base_response(request)))
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'There are no available CAT instances for your institution enrollment'
+            )
+            return render_to_response(
+                'edumanage/catenroll.html',
+                {'status': False, 'cat_instances': available_enrollments},
+                context_instance=RequestContext(request, base_response(request))
+            )
+        return render_to_response(
+            'edumanage/catenroll.html',
+            {
+                'status': True,
+                'current_enrollments': current_enrollments,
+                'cat_instances': available_enrollments
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         instance = request_data['catinstance']
         #Check if cat enrollment exists. It should not!
         if inst.catenrollment_set.filter(cat_instance=instance):
-            messages.add_message(request, messages.ERROR, 'There is already and enrollment for this CAT instance')
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'There is already and enrollment for this CAT instance'
+            )
             return HttpResponseRedirect(reverse("catenroll"))
         try:
             cat_instance = settings.CAT_AUTH[instance]
         except:
-            messages.add_message(request, messages.ERROR, 'Invalid CAT instance')
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'Invalid CAT instance'
+            )
             return HttpResponseRedirect(reverse("catenroll"))
         cat_api_key = cat_instance['CAT_API_KEY']
         cat_api_url = cat_instance['CAT_API_URL']
 
         enroll = CatQuery(cat_api_key, cat_api_url)
-        params = {'NEWINST_PRIMARYADMIN': u"%s"%user.email,
-                    'option[S1]': 'general:instname',
-                    'value[S1-0]': u"%s"%inst.get_name('en'),
-                    'value[S1-lang]': 'en'}
+        params = {
+            'NEWINST_PRIMARYADMIN': u"%s" % user.email,
+            'option[S1]': 'general:instname',
+            'value[S1-0]': u"%s" % inst.get_name('en'),
+            'value[S1-lang]': 'en'
+        }
         newinst = enroll.newinst(params)
         cat_url = None
         inst_uid = None
@@ -475,10 +683,17 @@ def cat_enroll(request):
         else:
             status = enroll.status
             response = enroll.response
-        return render_to_response('edumanage/catenroll.html', { 'status': True, 'response_status': status, 'response': response, 'cat_url':cat_url, 'inst_uid': inst_uid},
-                                  context_instance=RequestContext(request, base_response(request)))
-
-
+        return render_to_response(
+            'edumanage/catenroll.html',
+            {
+                'status': True,
+                'response_status': status,
+                'response': response,
+                'cat_url': cat_url,
+                'inst_uid': inst_uid
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
 
 
 @login_required
@@ -515,7 +730,6 @@ def del_server(request):
 @never_cache
 def realms(request):
     user = request.user
-    servers = False
     try:
         profile = user.get_profile()
         inst = profile.institution
@@ -523,10 +737,17 @@ def realms(request):
         return HttpResponseRedirect(reverse("manage"))
     if inst:
         realms = InstRealm.objects.filter(instid=inst)
-    if inst.ertype not in [1,3]:
-        messages.add_message(request, messages.ERROR, 'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP')
-    return render_to_response('edumanage/realms.html', { 'realms': realms },
-                                  context_instance=RequestContext(request, base_response(request)))
+    if inst.ertype not in [1, 3]:
+        messages.add_message(
+            request,
+            messages.ERROR,
+            'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP'
+        )
+    return render_to_response(
+        'edumanage/realms.html',
+        {'realms': realms},
+        context_instance=RequestContext(request, base_response(request))
+    )
 
 
 @login_required
@@ -534,7 +755,6 @@ def realms(request):
 @never_cache
 def add_realm(request, realm_pk):
     user = request.user
-    server = False
     realm = False
     edit = False
     try:
@@ -547,10 +767,13 @@ def add_realm(request, realm_pk):
         instdetails = inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [1,3]:
+    if inst.ertype not in [1, 3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
-        return render_to_response('edumanage/realms_edit.html', { 'edit': edit },
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/realms_edit.html',
+            {'edit': edit},
+            context_instance=RequestContext(request, base_response(request))
+        )
     if request.method == "GET":
 
         # Determine add or edit
@@ -560,14 +783,28 @@ def add_realm(request, realm_pk):
         except InstRealm.DoesNotExist:
             form = InstRealmForm()
             if realm_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this realm')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this realm'
+                )
                 return HttpResponseRedirect(reverse("realms"))
-        form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-        form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst, True)))
+        form.fields['instid'] = forms.ModelChoiceField(
+            queryset=Institution.objects.filter(pk=inst.pk),
+            empty_label=None
+        )
+        form.fields['proxyto'] = forms.ModelMultipleChoiceField(
+            queryset=InstServer.objects.filter(
+                pk__in=getInstServers(inst, True)
+            )
+        )
         if realm:
             edit = True
-        return render_to_response('edumanage/realms_edit.html', { 'form': form, 'edit': edit },
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/realms_edit.html',
+            {'form': form, 'edit': edit},
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
@@ -576,18 +813,32 @@ def add_realm(request, realm_pk):
         except InstRealm.DoesNotExist:
             form = InstRealmForm(request_data)
             if realm_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this realm')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this realm'
+                )
                 return HttpResponseRedirect(reverse("realms"))
         if form.is_valid():
             instserverf = form.save()
             return HttpResponseRedirect(reverse("realms"))
         else:
-            form.fields['instid'] = forms.ModelChoiceField(queryset=Institution.objects.filter(pk=inst.pk), empty_label=None)
-            form.fields['proxyto'] = forms.ModelMultipleChoiceField(queryset=InstServer.objects.filter(pk__in=getInstServers(inst, True)))
+            form.fields['instid'] = forms.ModelChoiceField(
+                queryset=Institution.objects.filter(pk=inst.pk),
+                empty_label=None
+            )
+            form.fields['proxyto'] = forms.ModelMultipleChoiceField(
+                queryset=InstServer.objects.filter(
+                    pk__in=getInstServers(inst, True)
+                )
+            )
         if realm:
             edit = True
-        return render_to_response('edumanage/realms_edit.html', { 'institution': inst, 'form': form, 'edit': edit },
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/realms_edit.html',
+            {'institution': inst, 'form': form, 'edit': edit},
+            context_instance=RequestContext(request, base_response(request))
+        )
 
 
 @login_required
@@ -624,7 +875,6 @@ def del_realm(request):
 @never_cache
 def contacts(request):
     user = request.user
-    servers = False
     instcontacts = []
     try:
         profile = user.get_profile()
@@ -637,10 +887,17 @@ def contacts(request):
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst:
-        instcontacts.extend([x.contact.pk for x in InstitutionContactPool.objects.filter(institution=inst)])
+        instcontacts.extend([
+            x.contact.pk for x in InstitutionContactPool.objects.filter(
+                institution=inst
+            )
+        ])
         contacts = Contact.objects.filter(pk__in=instcontacts)
-    return render_to_response('edumanage/contacts.html', { 'contacts': contacts},
-                                  context_instance=RequestContext(request, base_response(request)))
+    return render_to_response(
+        'edumanage/contacts.html',
+        {'contacts': contacts},
+        context_instance=RequestContext(request, base_response(request))
+    )
 
 
 @login_required
@@ -648,7 +905,6 @@ def contacts(request):
 @never_cache
 def add_contact(request, contact_pk):
     user = request.user
-    server = False
     edit = False
     contact = False
     try:
@@ -665,39 +921,65 @@ def add_contact(request, contact_pk):
 
         # Determine add or edit
         try:
-            contactinst = InstitutionContactPool.objects.get(institution=inst, contact__pk=contact_pk)
+            contactinst = InstitutionContactPool.objects.get(
+                institution=inst,
+                contact__pk=contact_pk
+            )
             contact = contactinst.contact
             form = ContactForm(instance=contact)
         except InstitutionContactPool.DoesNotExist:
             form = ContactForm()
             if contact_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this contact')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this contact'
+                )
                 return HttpResponseRedirect(reverse("contacts"))
         if contact:
             edit = True
-        return render_to_response('edumanage/contacts_edit.html', { 'form': form, "edit" : edit},
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/contacts_edit.html',
+            {
+                'form': form,
+                'edit': edit
+            },
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
-            contactinst = InstitutionContactPool.objects.get(institution=inst, contact__pk=contact_pk)
+            contactinst = InstitutionContactPool.objects.get(
+                institution=inst,
+                contact__pk=contact_pk
+            )
             contact = contactinst.contact
             form = ContactForm(request_data, instance=contact)
         except InstitutionContactPool.DoesNotExist:
             form = ContactForm(request_data)
             if contact_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this contact')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this contact'
+                )
                 return HttpResponseRedirect(reverse("contacts"))
 
         if form.is_valid():
             contact = form.save()
-            instContPool, created = InstitutionContactPool.objects.get_or_create(contact=contact, institution=inst)
+            instContPool, created = InstitutionContactPool.objects.get_or_create(
+                contact=contact,
+                institution=inst
+            )
             instContPool.save()
             return HttpResponseRedirect(reverse("contacts"))
         if contact:
             edit = True
-        return render_to_response('edumanage/contacts_edit.html', { 'form': form, "edit": edit},
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/contacts_edit.html',
+            {'form': form, "edit": edit},
+            context_instance=RequestContext(request, base_response(request))
+        )
 
 
 @login_required
@@ -716,19 +998,38 @@ def del_contact(request):
             return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp = {}
         try:
-            contactinst = InstitutionContactPool.objects.get(institution=institution, contact__pk=contact_pk)
+            contactinst = InstitutionContactPool.objects.get(
+                institution=institution,
+                contact__pk=contact_pk
+            )
             contact = contactinst.contact
         except InstitutionContactPool.DoesNotExist:
             resp['error'] = "Could not get contact or you have no rights to delete"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
         try:
             for service in ServiceLoc.objects.filter(institutionid=institution):
-                if (contact in service.contact.all() and len(service.contact.all()) == 1):
-                    resp['error'] = "Could not delete contact. It is the only contact in service <b>%s</b>.<br>Fix it and try again" %service.get_name(lang="en")
-                    return HttpResponse(json.dumps(resp), mimetype='application/json')
-            if (contact in institution.institutiondetails.contact.all() and len(institution.institutiondetails.contact.all()) == 1):
-                    resp['error'] = "Could not delete contact. It is the only contact your institution.<br>Fix it and try again"
-                    return HttpResponse(json.dumps(resp), mimetype='application/json')
+                if (
+                    contact in service.contact.all() and
+                    len(service.contact.all()) == 1
+                ):
+                    resp['error'] = "Could not delete contact. " \
+                        "It is the only contact in service <b>%s</b>." \
+                        "<br>Fix it and try again" % \
+                        service.get_name(lang="en")
+                    return HttpResponse(
+                        json.dumps(resp),
+                        mimetype='application/json'
+                    )
+            if (
+                contact in institution.institutiondetails.contact.all() and
+                len(institution.institutiondetails.contact.all()) == 1
+            ):
+                resp['error'] = "Could not delete contact. It is the" \
+                    " only contact your institution.<br>Fix it and try again"
+                return HttpResponse(
+                    json.dumps(resp),
+                    mimetype='application/json'
+                )
             contact.delete()
         except Exception:
             resp['error'] = "Could not delete contact"
@@ -742,8 +1043,6 @@ def del_contact(request):
 @never_cache
 def instrealmmon(request):
     user = request.user
-    servers = False
-    instcontacts = []
     try:
         profile = user.get_profile()
         inst = profile.institution
@@ -756,8 +1055,12 @@ def instrealmmon(request):
         return HttpResponseRedirect(reverse("manage"))
     if inst:
         instrealmmons = InstRealmMon.objects.filter(realm__instid=inst)
-    return render_to_response('edumanage/instrealmmons.html', { 'realms': instrealmmons},
-                                  context_instance=RequestContext(request, base_response(request)))
+    return render_to_response(
+        'edumanage/instrealmmons.html',
+        {'realms': instrealmmons},
+        context_instance=RequestContext(request, base_response(request))
+    )
+
 
 @login_required
 @social_active_required
@@ -779,36 +1082,67 @@ def add_instrealmmon(request, instrealmmon_pk):
     if request.method == "GET":
         # Determine add or edit
         try:
-            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=inst)
+            instrealmmon = InstRealmMon.objects.get(
+                pk=instrealmmon_pk,
+                realm__instid=inst
+            )
             form = InstRealmMonForm(instance=instrealmmon)
         except InstRealmMon.DoesNotExist:
             form = InstRealmMonForm()
             if instrealmmon_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this Monitoring Realm'
+                )
                 return HttpResponseRedirect(reverse("instrealmmon"))
         if instrealmmon:
             edit = True
-        form.fields['realm'] = forms.ModelChoiceField(queryset=InstRealm.objects.filter(instid=inst.pk).exclude(realm__startswith="*"), empty_label=None)
-        return render_to_response('edumanage/instrealmmon_edit.html', { 'form': form, "edit" : edit},
-                                  context_instance=RequestContext(request, base_response(request)))
+        form.fields['realm'] = forms.ModelChoiceField(
+            queryset=InstRealm.objects.filter(instid=inst.pk).exclude(
+                realm__startswith="*"
+            ),
+            empty_label=None
+        )
+        return render_to_response(
+            'edumanage/instrealmmon_edit.html',
+            {'form': form, 'edit': edit},
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
-            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=inst)
+            instrealmmon = InstRealmMon.objects.get(
+                pk=instrealmmon_pk,
+                realm__instid=inst
+            )
             form = InstRealmMonForm(request_data, instance=instrealmmon)
         except InstRealmMon.DoesNotExist:
             form = InstRealmMonForm(request_data)
             if instrealmmon_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this Monitoring Realm'
+                )
                 return HttpResponseRedirect(reverse("instrealmmon"))
         if form.is_valid():
             instrealmmonobj = form.save()
             return HttpResponseRedirect(reverse("instrealmmon"))
         if instrealmmon:
             edit = True
-        form.fields['realm'] = forms.ModelChoiceField(queryset=InstRealm.objects.filter(instid=inst.pk).exclude(realm__startswith="*"), empty_label=None)
-        return render_to_response('edumanage/instrealmmon_edit.html', { 'form': form, "edit": edit},
-                                  context_instance=RequestContext(request, base_response(request)))
+        form.fields['realm'] = forms.ModelChoiceField(
+            queryset=InstRealm.objects.filter(instid=inst.pk).exclude(
+                realm__startswith="*"
+            ),
+            empty_label=None
+        )
+        return render_to_response(
+            'edumanage/instrealmmon_edit.html',
+            {'form': form, "edit": edit},
+            context_instance=RequestContext(request, base_response(request))
+        )
+
 
 @login_required
 @social_active_required
@@ -826,13 +1160,17 @@ def del_instrealmmon(request):
             return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp = {}
         try:
-            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=institution)
+            instrealmmon = InstRealmMon.objects.get(
+                pk=instrealmmon_pk,
+                realm__instid=institution
+            )
             instrealmmon.delete()
         except InstRealmMon.DoesNotExist:
             resp['error'] = "Could not get monitored realm or you have no rights to delete"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp['success'] = "Contact successfully deleted"
         return HttpResponse(json.dumps(resp), mimetype='application/json')
+
 
 @login_required
 @social_active_required
@@ -854,46 +1192,87 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
     if request.method == "GET":
         # Determine add or edit
         try:
-            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=inst)
-            monlocauthpar = MonLocalAuthnParam.objects.get(pk=monlocauthpar_pk, instrealmmonid__realm__instid=inst)
+            instrealmmon = InstRealmMon.objects.get(
+                pk=instrealmmon_pk,
+                realm__instid=inst
+            )
+            monlocauthpar = MonLocalAuthnParam.objects.get(
+                pk=monlocauthpar_pk,
+                instrealmmonid__realm__instid=inst
+            )
             form = MonLocalAuthnParamForm(instance=monlocauthpar)
         except MonLocalAuthnParam.DoesNotExist:
             form = MonLocalAuthnParamForm()
             if monlocauthpar_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm Parameters')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this Monitoring Realm Parameters'
+                )
                 return HttpResponseRedirect(reverse("instrealmmon"))
         except InstRealmMon.DoesNotExist:
             if instrealmmon_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm Parameters')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this Monitoring Realm Parameters'
+                )
             return HttpResponseRedirect(reverse("instrealmmon"))
         if monlocauthpar:
             edit = True
-        form.fields['instrealmmonid'] = forms.ModelChoiceField(queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk), empty_label=None)
-        return render_to_response('edumanage/monlocauthpar_edit.html', { 'form': form, "edit" : edit, "realm":instrealmmon },
-                                  context_instance=RequestContext(request, base_response(request)))
+        form.fields['instrealmmonid'] = forms.ModelChoiceField(
+            queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk),
+            empty_label=None
+        )
+        return render_to_response(
+            'edumanage/monlocauthpar_edit.html',
+            {'form': form,"edit" : edit, "realm":instrealmmon},
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
-            instrealmmon = InstRealmMon.objects.get(pk=instrealmmon_pk, realm__instid=inst)
-            monlocauthpar = MonLocalAuthnParam.objects.get(pk=monlocauthpar_pk, instrealmmonid__realm__instid=inst)
+            instrealmmon = InstRealmMon.objects.get(
+                pk=instrealmmon_pk,
+                realm__instid=inst
+            )
+            monlocauthpar = MonLocalAuthnParam.objects.get(
+                pk=monlocauthpar_pk,
+                instrealmmonid__realm__instid=inst
+            )
             form = MonLocalAuthnParamForm(request_data, instance=monlocauthpar)
         except MonLocalAuthnParam.DoesNotExist:
             form = MonLocalAuthnParamForm(request_data)
             if monlocauthpar_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm Parameters')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this Monitoring Realm Parameters'
+                )
                 return HttpResponseRedirect(reverse("instrealmmon"))
         except InstRealmMon.DoesNotExist:
             if instrealmmon_pk:
-                messages.add_message(request, messages.ERROR, 'You have no rights to edit this Monitoring Realm Parameters')
+                messages.add_message(
+                    request,
+                    messages.ERROR,
+                    'You have no rights to edit this Monitoring Realm Parameters'
+                )
             return HttpResponseRedirect(reverse("instrealmmon"))
         if form.is_valid():
             monlocauthparobj = form.save()
             return HttpResponseRedirect(reverse("instrealmmon"))
         if monlocauthpar:
             edit = True
-        form.fields['instrealmmonid'] = forms.ModelChoiceField(queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk), empty_label=None)
-        return render_to_response('edumanage/monlocauthpar_edit.html', { 'form': form, "edit": edit, "realm":instrealmmon},
-                                  context_instance=RequestContext(request, base_response(request)))
+        form.fields['instrealmmonid'] = forms.ModelChoiceField(
+            queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk),
+            empty_label=None
+        )
+        return render_to_response(
+            'edumanage/monlocauthpar_edit.html',
+            {'form': form, "edit": edit, "realm":instrealmmon},
+            context_instance=RequestContext(request, base_response(request))
+        )
+
 
 @login_required
 @social_active_required
@@ -911,13 +1290,17 @@ def del_monlocauthpar(request):
             return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp = {}
         try:
-            monlocauthpar = MonLocalAuthnParam.objects.get(pk=monlocauthpar_pk, instrealmmonid__realm__instid=institution)
+            monlocauthpar = MonLocalAuthnParam.objects.get(
+                pk=monlocauthpar_pk,
+                instrealmmonid__realm__instid=institution
+            )
             monlocauthpar.delete()
         except MonLocalAuthnParam.DoesNotExist:
             resp['error'] = "Could not get realm monitoring parameters or you have no rights to delete"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
         resp['success'] = "Contact successfully deleted"
         return HttpResponse(json.dumps(resp), mimetype='application/json')
+
 
 @login_required
 @social_active_required
@@ -933,22 +1316,37 @@ def adduser(request):
 
     if request.method == "GET":
         form = ContactForm()
-        return render_to_response('edumanage/add_user.html', { 'form' : form },
-                                  context_instance=RequestContext(request, base_response(request)))
+        return render_to_response(
+            'edumanage/add_user.html',
+            {'form': form},
+            context_instance=RequestContext(request, base_response(request))
+        )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         form = ContactForm(request_data)
         if form.is_valid():
             contact = form.save()
-            instContPool = InstitutionContactPool(contact=contact, institution=inst)
+            instContPool = InstitutionContactPool(
+                contact=contact,
+                institution=inst
+            )
             instContPool.save()
             response_data = {}
-            response_data['value'] = "%s" %contact.pk
-            response_data['text'] = "%s" %contact
-            return HttpResponse(json.dumps(response_data), mimetype='application/json')
+            response_data['value'] = "%s" % contact.pk
+            response_data['text'] = "%s" % contact
+            return HttpResponse(
+                json.dumps(response_data),
+                mimetype='application/json'
+            )
         else:
-            return render_to_response('edumanage/add_user.html', {'form': form,},
-                                      context_instance=RequestContext(request, base_response(request)))
+            return render_to_response(
+                'edumanage/add_user.html',
+                {'form': form},
+                context_instance=RequestContext(
+                    request,
+                    base_response(request)
+                )
+            )
 
 
 @login_required
@@ -974,7 +1372,11 @@ def base_response(request):
         server = InstServer.objects.filter(instid=institution)
         services = ServiceLoc.objects.filter(institutionid=institution)
         instrealms = InstRealm.objects.filter(instid=institution)
-        instcontacts.extend([x.contact.pk for x in InstitutionContactPool.objects.filter(institution=institution)])
+        instcontacts.extend([
+            x.contact.pk for x in InstitutionContactPool.objects.filter(
+                institution=institution
+            )
+        ])
         contacts = Contact.objects.filter(pk__in=instcontacts)
         instrealmmons = InstRealmMon.objects.filter(realm__instid=institution)
     except:
@@ -984,17 +1386,16 @@ def base_response(request):
     except:
         instututiondetails = False
     return {
-            'inst_num': len(inst),
-            'servers_num': len(server),
-            'services_num': len(services),
-            'realms_num': len(instrealms),
-            'contacts_num': len(contacts),
-            'monrealms_num': len(instrealmmons),
-            'institution': institution,
-            'institutiondetails': instututiondetails,
-            'institution_exists': institution_exists,
-
-        }
+        'inst_num': len(inst),
+        'servers_num': len(server),
+        'services_num': len(services),
+        'realms_num': len(instrealms),
+        'contacts_num': len(contacts),
+        'monrealms_num': len(instrealmmons),
+        'institution': institution,
+        'institutiondetails': instututiondetails,
+        'institution_exists': institution_exists,
+    }
 
 
 @login_required
@@ -1014,26 +1415,30 @@ def get_service_points(request):
         locs = []
         for sl in servicelocs:
             response_location = {}
-            response_location['lat'] = u"%s"%sl.latitude
-            response_location['lng'] = u"%s"%sl.longitude
-            response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
+            response_location['lat'] = u"%s" % sl.latitude
+            response_location['lng'] = u"%s" % sl.longitude
+            response_location['address'] = u"%s<br>%s" % (
+                sl.address_street,
+                sl.address_city
+            )
             if len(sl.enc_level[0]) != 0:
-                response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+                response_location['enc'] = u"%s" % (','.join(sl.enc_level))
             else:
                 response_location['enc'] = u"-"
-            response_location['AP_no'] = u"%s"%(sl.AP_no)
+            response_location['AP_no'] = u"%s" % (sl.AP_no)
             response_location['name'] = sl.loc_name.get(lang='en').name
-            response_location['port_restrict'] = u"%s"%(sl.port_restrict)
-            response_location['transp_proxy'] = u"%s"%(sl.transp_proxy)
-            response_location['IPv6'] = u"%s"%(sl.IPv6)
-            response_location['NAT'] = u"%s"%(sl.NAT)
-            response_location['wired'] = u"%s"%(sl.wired)
-            response_location['SSID'] = u"%s"%(sl.SSID)
-            response_location['key'] = u"%s"%sl.pk
+            response_location['port_restrict'] = u"%s" % (sl.port_restrict)
+            response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
+            response_location['IPv6'] = u"%s" % (sl.IPv6)
+            response_location['NAT'] = u"%s" % (sl.NAT)
+            response_location['wired'] = u"%s" % (sl.wired)
+            response_location['SSID'] = u"%s" % (sl.SSID)
+            response_location['key'] = u"%s" % sl.pk
             locs.append(response_location)
         return HttpResponse(json.dumps(locs), mimetype='application/json')
     else:
-       return HttpResponseNotFound('<h1>Something went really wrong</h1>')
+        return HttpResponseNotFound('<h1>Something went really wrong</h1>')
+
 
 @never_cache
 def overview(request):
@@ -1042,15 +1447,19 @@ def overview(request):
         if user.has_perm('accounts.overview'):
             users = User.objects.all()
             institutions = Institution.objects.all()
-            return render_to_response('overview/index.html', {'users': users, 'institutions': institutions},
-                                  context_instance=RequestContext(request))
+            return render_to_response(
+                'overview/index.html',
+                {'users': users, 'institutions': institutions},
+                context_instance=RequestContext(request)
+            )
         else:
-            violation=True
-            return render_to_response('overview/index.html', {'violation': violation},
-                                  context_instance=RequestContext(request))
+            return render_to_response(
+                'overview/index.html',
+                {'violation': True},
+                context_instance=RequestContext(request)
+            )
     else:
         return HttpResponseRedirect(reverse("altlogin"))
-
 
 
 @never_cache
@@ -1060,47 +1469,56 @@ def get_all_services(request):
     locs = []
     for sl in servicelocs:
         response_location = {}
-        response_location['lat'] = u"%s"%sl.latitude
-        response_location['lng'] = u"%s"%sl.longitude
-        response_location['address'] = u"%s<br>%s"%(sl.address_street, sl.address_city)
+        response_location['lat'] = u"%s" % sl.latitude
+        response_location['lng'] = u"%s" % sl.longitude
+        response_location['address'] = u"%s<br>%s" % (
+            sl.address_street, sl.address_city
+        )
         if len(sl.enc_level[0]) != 0:
-            response_location['enc'] = u"%s"%(','.join(sl.enc_level))
+            response_location['enc'] = u"%s" % (
+                ','.join(sl.enc_level)
+            )
         else:
             response_location['enc'] = u"-"
-        response_location['AP_no'] = u"%s"%(sl.AP_no)
+        response_location['AP_no'] = u"%s" % (sl.AP_no)
         try:
-            response_location['inst'] = sl.institutionid.org_name.get(lang=lang).name
+            response_location['inst'] = sl.institutionid.org_name.get(
+                lang=lang
+            ).name
         except Name_i18n.DoesNotExist:
-            response_location['inst'] = sl.institutionid.org_name.get(lang='en').name
+            response_location['inst'] = sl.institutionid.org_name.get(
+                lang='en'
+            ).name
         try:
             response_location['name'] = sl.loc_name.get(lang=lang).name
         except Name_i18n.DoesNotExist:
             response_location['name'] = sl.loc_name.get(lang='en').name
-        response_location['port_restrict'] = u"%s"%(sl.port_restrict)
-        response_location['transp_proxy'] = u"%s"%(sl.transp_proxy)
-        response_location['IPv6'] = u"%s"%(sl.IPv6)
-        response_location['NAT'] = u"%s"%(sl.NAT)
-        response_location['wired'] = u"%s"%(sl.wired)
-        response_location['SSID'] = u"%s"%(sl.SSID)
-        response_location['key'] = u"%s"%sl.pk
+        response_location['port_restrict'] = u"%s" % (sl.port_restrict)
+        response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
+        response_location['IPv6'] = u"%s" % (sl.IPv6)
+        response_location['NAT'] = u"%s" % (sl.NAT)
+        response_location['wired'] = u"%s" % (sl.wired)
+        response_location['SSID'] = u"%s" % (sl.SSID)
+        response_location['key'] = u"%s" % sl.pk
         locs.append(response_location)
     return HttpResponse(json.dumps(locs), mimetype='application/json')
 
+
 @never_cache
-def manage_login(request,backend):
+def manage_login(request, backend):
     logout(request)
     qs = request.GET.urlencode()
     qs = '?%s' % qs if qs else ''
     if backend == 'shibboleth':
         return redirect(reverse('login'))
-    return redirect(reverse('socialauth_begin', args=[backend])+qs)
+    return redirect(reverse('socialauth_begin', args=[backend]) + qs)
+
 
 @never_cache
 def user_login(request):
     try:
         errors = []
         error = ''
-
         username = lookupShibAttr(settings.SHIB_USERNAME, request.META)
         firstname = lookupShibAttr(settings.SHIB_FIRSTNAME, request.META)
         lastname = lookupShibAttr(settings.SHIB_LASTNAME, request.META)
@@ -1108,14 +1526,20 @@ def user_login(request):
         entitlement = lookupShibAttr(settings.SHIB_ENTITLEMENT, request.META)
 
         if not username:
-            errors.append(_("Your idP should release the eduPersonPrincipalName attribute towards this service<br>"))
+            errors.append(
+                _("Your idP should release the eduPersonPrincipalName attribute towards this service<br>")
+            )
 
         if settings.SHIB_AUTH_ENTITLEMENT:
             if settings.SHIB_AUTH_ENTITLEMENT not in entitlement.split(";"):
-                errors.append(_("Your idP should release an appropriate eduPersonEntitlement attribute towards this service<br>"))
+                errors.append(
+                    _("Your idP should release an appropriate eduPersonEntitlement attribute towards this service<br>")
+                )
 
         if not mail:
-            errors.append(_("Your idP should release the mail attribute towards this service"))
+            errors.append(
+                _("Your idP should release the mail attribute towards this service")
+            )
 
         if errors:
             error = ''.join(errors)
@@ -1143,7 +1567,7 @@ def user_login(request):
                 form = UserProfileForm()
                 form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
                 form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
-                form.fields['email'] = forms.CharField(initial = user.email)
+                form.fields['email'] = forms.CharField(initial=user.email)
                 return render_to_response(
                     'registration/select_institution.html',
                     {'form': form},
@@ -1151,35 +1575,55 @@ def user_login(request):
                 )
 
             if user.is_active:
-               login(request, user)
-               return HttpResponseRedirect(reverse("manage"))
+                login(request, user)
+                return HttpResponseRedirect(reverse("manage"))
             else:
-                status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
+                status = _(
+                    "User account <strong>%s</strong> is pending activation."
+                    " Administrators have been notified and will activate"
+                    " this account within the next days. <br>If this account"
+                    " has remained inactive for a long time contact your "
+                    "technical coordinator or GRNET Helpdesk") % user.username
                 return render_to_response(
                     'status.html',
                     {'status': status, 'inactive': True},
                     context_instance=RequestContext(request)
                 )
         else:
-            error = _("Something went wrong during user authentication. Contact your administrator %s" %user)
+            error = _(
+                "Something went wrong during user authentication."
+                " Contact your administrator %s" % user
+            )
             return render_to_response(
                 'status.html',
-                {'error': error,},
+                {'error': error},
                 context_instance=RequestContext(request)
             )
     except Exception as e:
-        error = _("Invalid login procedure. Error: %s"%e)
-        return render_to_response('status.html', {'error': error,},
-                                  context_instance=RequestContext(request))
+        error = _("Invalid login procedure. Error: %s" % e)
+        return render_to_response(
+            'status.html',
+            {'error': error},
+            context_instance=RequestContext(request)
+        )
+
 
 @never_cache
 def geolocate(request):
-    return render_to_response('front/geolocate.html', context_instance=RequestContext(request))
+    return render_to_response(
+        'front/geolocate.html',
+        context_instance=RequestContext(request)
+    )
+
 
 @never_cache
 def api(request):
     current_site = Site.objects.get_current()
-    return render_to_response('front/api.html', { 'site': current_site },  context_instance=RequestContext(request))
+    return render_to_response(
+        'front/api.html',
+        {'site': current_site},
+        context_instance=RequestContext(request)
+    )
 
 
 @never_cache
@@ -1194,18 +1638,25 @@ def participants(request):
                 cat_exists = True
         except InstitutionDetails.DoesNotExist:
             pass
-    return render_to_response('front/participants.html', { 'institutions': dets, 'catexists':cat_exists } ,
-                                  context_instance=RequestContext(request))
+    return render_to_response(
+        'front/participants.html',
+        {'institutions': dets, 'catexists':cat_exists},
+        context_instance=RequestContext(request)
+    )
+
+
 @never_cache
 def selectinst(request):
     if request.method == 'POST':
         request_data = request.POST.copy()
         user = request_data['user']
         try:
-            existingProfile = UserProfile.objects.get(user=user)
             error = _("Violation warning: User account is already associated with an institution.The event has been logged and our administrators will be notified about it")
-            return render_to_response('status.html', {'error': error, 'inactive': True},
-                                  context_instance=RequestContext(request))
+            return render_to_response(
+                'status.html',
+                {'error': error, 'inactive': True},
+                context_instance=RequestContext(request)
+            )
         except UserProfile.DoesNotExist:
             pass
 
@@ -1217,50 +1668,81 @@ def selectinst(request):
             useradded.email = mailField
             useradded.save()
             user_activation_notify(userprofile)
-            error = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %userprofile.user.username
-            return render_to_response('status.html', {'status': error, 'inactive': True},
-                                  context_instance=RequestContext(request))
+            error = _(
+                "User account <strong>%s</strong> is pending activation."
+                " Administrators have been notified and will activate "
+                "this account within the next days. <br>If this account"
+                " has remained inactive for a long time contact your technical"
+                " coordinator or GRNET Helpdesk") % userprofile.user.username
+            return render_to_response(
+                'status.html',
+                {'status': error, 'inactive': True},
+                context_instance=RequestContext(request)
+            )
         else:
-            form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user), empty_label=None)
-            form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
+            form.fields['user'] = forms.ModelChoiceField(
+                queryset=User.objects.filter(pk=user),
+                empty_label=None
+            )
+            form.fields['institution'] = forms.ModelChoiceField(
+                queryset=Institution.objects.all(),
+                empty_label=None
+            )
             nomail = False
             userObj = User.objects.get(pk=user)
             if not userObj.email:
                 nomail = True
                 form.fields['email'] = forms.CharField()
             else:
-                form.fields['email'] = forms.CharField(initial = userObj.email)
-            return render_to_response('registration/select_institution.html', {'form': form, 'nomail': nomail}, context_instance=RequestContext(request))
+                form.fields['email'] = forms.CharField(initial=userObj.email)
+            return render_to_response(
+                'registration/select_institution.html',
+                {'form': form, 'nomail': nomail},
+                context_instance=RequestContext(request)
+            )
 
 
 def user_activation_notify(userprofile):
     current_site = Site.objects.get_current()
-    subject = render_to_string('registration/activation_email_subject.txt',
-                                   { 'site': current_site })
+    subject = render_to_string(
+        'registration/activation_email_subject.txt',
+        {'site': current_site}
+    )
     # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
     registration_profile = RegistrationProfile.objects.create_profile(userprofile.user)
-    message = render_to_string('registration/activation_email.txt',
-                                   { 'activation_key': registration_profile.activation_key,
-                                     'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-                                     'site': current_site,
-                                     'user': userprofile.user,
-                                     'institution': userprofile.institution })
-    send_new_mail(settings.EMAIL_SUBJECT_PREFIX + subject,
-                              message, settings.SERVER_EMAIL,
-                             settings.NOTIFY_ADMIN_MAILS, [])
+    message = render_to_string(
+        'registration/activation_email.txt',
+        {
+            'activation_key': registration_profile.activation_key,
+            'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
+            'site': current_site,
+            'user': userprofile.user,
+            'institution': userprofile.institution
+        })
+    send_new_mail(
+        settings.EMAIL_SUBJECT_PREFIX + subject,
+        message, settings.SERVER_EMAIL,
+        settings.NOTIFY_ADMIN_MAILS, []
+    )
+
+
 @never_cache
 def closest(request):
     if request.method == 'GET':
-        locs = []
         request_data = request.GET.copy()
         response_location = {}
         if 'lat' in request.GET and 'lng' in request.GET:
             response_location["lat"] = request_data['lat']
             response_location["lng"] = request_data['lng']
         else:
-            response = {"status":"Cannot parse a request without longitude or latitude. Use ?lng=<langitude>&lat=<latitude>&_=<random_num> in your query"}
-            return HttpResponse(json.dumps(response), mimetype='application/json')
+            response = {
+                "status": "Cannot parse a request without longitude or latitude. Use ?lng=<langitude>&lat=<latitude>&_=<random_num> in your query"
+            }
+            return HttpResponse(
+                json.dumps(response),
+                mimetype='application/json'
+            )
         lat = float(request_data['lat'])
         lng = float(request_data['lng'])
         R = 6371
@@ -1274,19 +1756,33 @@ def closest(request):
             pointlat = i['lat']
             pointtext = i['text']
             plainname = i['name']
-            dLat = rad(float(pointlat)-float(lat))
-            dLong = rad(float(pointlng)-float(lng))
-            a = math.sin(dLat/2) * math.sin(dLat/2) + math.cos(rad(lat)) * math.cos(rad(float(pointlat))) * math.sin(dLong/2) * math.sin(dLong/2)
-            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+            dLat = rad(float(pointlat) - float(lat))
+            dLong = rad(float(pointlng) - float(lng))
+            a = math.sin(dLat / 2) * math.sin(dLat / 2) + math.cos(rad(lat)) *\
+                math.cos(rad(float(pointlat))) * math.sin(dLong / 2) *\
+                math.sin(dLong / 2)
+            c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
             d = R * c
             distances[counter] = d
             if (closest == -1 or d < distances[closest]):
                 closest = counter
-                closestMarker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": pointtext, 'plainname':plainname}
-        return HttpResponse(json.dumps(closestMarker), mimetype='application/json')
+                closestMarker = {
+                    'name': pointname,
+                    'lat': pointlat,
+                    'lng': pointlng,
+                    'text': pointtext,
+                    'plainname': plainname
+                }
+        return HttpResponse(
+            json.dumps(closestMarker),
+            mimetype='application/json'
+        )
     else:
-        response = {"status":"Use a GET method for your request"}
+        response = {
+            "status": "Use a GET method for your request"
+        }
         return HttpResponse(json.dumps(response), mimetype='application/json')
+
 
 @never_cache
 def worldPoints(request):
@@ -1294,15 +1790,22 @@ def worldPoints(request):
         points = getPoints()
         return HttpResponse(json.dumps(points), mimetype='application/json')
 
+
 @never_cache
 def world(request):
-        return render_to_response('front/world.html', context_instance=RequestContext(request))
+        return render_to_response(
+            'front/world.html',
+            context_instance=RequestContext(request)
+        )
 
 
 @never_cache
 def managementPage(request):
-    return render_to_response('front/management.html',
-                                  context_instance=RequestContext(request))
+    return render_to_response(
+        'front/management.html',
+        context_instance=RequestContext(request)
+    )
+
 
 def getPoints():
     points = cache.get('points')
@@ -1320,8 +1823,13 @@ def getPoints():
                 pointname = j[0].text
                 point = j[2].getchildren()[0].text
                 pointlng, pointlat, pointele = point.split(',')
-                Marker = {"name": pointname, "lat": pointlat, "lng": pointlng, "text": j[1].text}
-                point_list.append(Marker);
+                Marker = {
+                    "name": pointname,
+                    "lat": pointlat,
+                    "lng": pointlng,
+                    "text": j[1].text
+                }
+                point_list.append(Marker)
         points = json.dumps(point_list)
         cache.set('points', bz2.compress(points), 60 * 3600 * 24)
         return json.loads(points)
@@ -1345,10 +1853,10 @@ def instxml(request):
         instElement = ET.SubElement(root, "institution")
 
         instCountry = ET.SubElement(instElement, "country")
-        instCountry.text = ("%s" %inst.institution.realmid.country).upper()
+        instCountry.text = ("%s" % inst.institution.realmid.country).upper()
 
         instType = ET.SubElement(instElement, "type")
-        instType.text = "%s" %inst.institution.ertype
+        instType.text = "%s" % inst.institution.ertype
 
         for realm in institution.instrealm_set.all():
             instRealm = ET.SubElement(instElement, "inst_realm")
@@ -1357,7 +1865,7 @@ def instxml(request):
         for name in inst.institution.org_name.all():
             instOrgName = ET.SubElement(instElement, "org_name")
             instOrgName.attrib["lang"] = name.lang
-            instOrgName.text = u"%s" %name.name
+            instOrgName.text = u"%s" % name.name
 
         instAddress = ET.SubElement(instElement, "address")
 
@@ -1371,7 +1879,7 @@ def instxml(request):
             instContact = ET.SubElement(instElement, "contact")
 
             instContactName = ET.SubElement(instContact, "name")
-            instContactName.text = "%s" %(contact.name)
+            instContactName.text = "%s" % (contact.name)
 
             instContactEmail = ET.SubElement(instContact, "email")
             instContactEmail.text = contact.email
@@ -1385,7 +1893,7 @@ def instxml(request):
 
         for urltype in ('info', 'policy'):
             for url in url_map.get(urltype, []):
-                instUrl = ET.SubElement(instElement, "%s_URL"%(url.urltype))
+                instUrl = ET.SubElement(instElement, "%s_URL" % (url.urltype))
                 instUrl.attrib["lang"] = url.lang
                 instUrl.text = url.url
 
@@ -1395,17 +1903,17 @@ def instxml(request):
             instUrl.text = '-'
 
         instTs = ET.SubElement(instElement, "ts")
-        instTs.text = "%s" %inst.ts.isoformat()
+        instTs.text = "%s" % inst.ts.isoformat()
         #Let's go to Institution Service Locations
 
         for serviceloc in inst.institution.serviceloc_set.all():
             instLocation = ET.SubElement(instElement, "location")
 
             instLong = ET.SubElement(instLocation, "longitude")
-            instLong.text = "%s" %serviceloc.longitude
+            instLong.text = "%s" % serviceloc.longitude
 
             instLat = ET.SubElement(instLocation, "latitude")
-            instLat.text = "%s" %serviceloc.latitude
+            instLat.text = "%s" % serviceloc.latitude
 
             for instlocname in serviceloc.loc_name.all():
                 instLocName = ET.SubElement(instLocation, "loc_name")
@@ -1424,7 +1932,7 @@ def instxml(request):
                 instLocContact = ET.SubElement(instLocation, "contact")
 
                 instLocContactName = ET.SubElement(instLocContact, "name")
-                instLocContactName.text = "%s" %(contact.name)
+                instLocContactName.text = "%s" % (contact.name)
 
                 instLocContactEmail = ET.SubElement(instLocContact, "email")
                 instLocContactEmail.text = contact.email
@@ -1439,29 +1947,40 @@ def instxml(request):
             instLocEncLevel.text = ', '.join(serviceloc.enc_level)
 
             instLocPortRestrict = ET.SubElement(instLocation, "port_restrict")
-            instLocPortRestrict.text = ("%s" %serviceloc.port_restrict).lower()
+            instLocPortRestrict.text = ("%s" % serviceloc.port_restrict).lower()
 
             instLocTransProxy = ET.SubElement(instLocation, "transp_proxy")
-            instLocTransProxy.text = ("%s" %serviceloc.transp_proxy).lower()
+            instLocTransProxy.text = ("%s" % serviceloc.transp_proxy).lower()
 
             instLocIpv6 = ET.SubElement(instLocation, "IPv6")
-            instLocIpv6.text = ("%s" %serviceloc.IPv6).lower()
+            instLocIpv6.text = ("%s" % serviceloc.IPv6).lower()
 
             instLocNAT = ET.SubElement(instLocation, "NAT")
-            instLocNAT.text = ("%s" %serviceloc.NAT).lower()
+            instLocNAT.text = ("%s" % serviceloc.NAT).lower()
 
             instLocAP_no = ET.SubElement(instLocation, "AP_no")
-            instLocAP_no.text = "%s" %int(serviceloc.AP_no)
+            instLocAP_no.text = "%s" % int(serviceloc.AP_no)
 
             instLocWired = ET.SubElement(instLocation, "wired")
-            instLocWired.text = ("%s" %serviceloc.wired).lower()
+            instLocWired.text = ("%s" % serviceloc.wired).lower()
 
             for url in serviceloc.url.all():
-                instLocUrl = ET.SubElement(instLocation, "%s_URL"%(url.urltype))
+                instLocUrl = ET.SubElement(
+                    instLocation,
+                    "%s_URL" % (url.urltype)
+                )
                 instLocUrl.attrib["lang"] = url.lang
                 instLocUrl.text = url.url
 
-    return render_to_response("general/institution.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
+    return render_to_response(
+        "general/institution.xml",
+        {
+            "xml": to_xml(root)
+        },
+        context_instance=RequestContext(request,),
+        mimetype="application/xml"
+    )
+
 
 @never_cache
 def realmxml(request):
@@ -1476,12 +1995,12 @@ def realmxml(request):
     realmCountry.text = realm.country.upper()
 
     realmStype = ET.SubElement(realmElement, "stype")
-    realmStype.text = "%s" %realm.stype
+    realmStype.text = "%s" % realm.stype
 
     for name in realm.org_name.all():
         realmOrgName = ET.SubElement(realmElement, "org_name")
         realmOrgName.attrib["lang"] = name.lang
-        realmOrgName.text = u"%s" %name.name
+        realmOrgName.text = u"%s" % name.name
 
     realmAddress = ET.SubElement(realmElement, "address")
 
@@ -1495,7 +2014,7 @@ def realmxml(request):
         realmContact = ET.SubElement(realmElement, "contact")
 
         realmContactName = ET.SubElement(realmContact, "name")
-        realmContactName.text = "%s" %(contact.name)
+        realmContactName.text = "%s" % (contact.name)
 
         realmContactEmail = ET.SubElement(realmContact, "email")
         realmContactEmail.text = contact.email
@@ -1509,14 +2028,20 @@ def realmxml(request):
 
     for urltype in ('info', 'policy'):
         for url in url_map.get(urltype, []):
-            realmUrl = ET.SubElement(realmElement, "%s_URL"%(url.urltype))
+            realmUrl = ET.SubElement(realmElement, "%s_URL" % (url.urltype))
             realmUrl.attrib["lang"] = url.lang
             realmUrl.text = url.url
 
     instTs = ET.SubElement(realmElement, "ts")
-    instTs.text = "%s" %realm.ts.isoformat()
+    instTs.text = "%s" % realm.ts.isoformat()
 
-    return render_to_response("general/realm.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
+    return render_to_response(
+        "general/realm.xml",
+        {"xml": to_xml(root)},
+        context_instance=RequestContext(request,),
+        mimetype="application/xml"
+    )
+
 
 @never_cache
 def realmdataxml(request):
@@ -1532,16 +2057,16 @@ def realmdataxml(request):
     realmCountry.text = realm.country.upper()
 
     nIdpCountry = ET.SubElement(realmdataElement, "number_IdP")
-    nIdpCountry.text = "%s" %len(realm.institution_set.filter(ertype=1))
+    nIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=1))
 
     nSPCountry = ET.SubElement(realmdataElement, "number_SP")
-    nSPCountry.text = "%s" %len(realm.institution_set.filter(ertype=2))
+    nSPCountry.text = "%s" % len(realm.institution_set.filter(ertype=2))
 
     nSPIdpCountry = ET.SubElement(realmdataElement, "number_SPIdP")
-    nSPIdpCountry.text = "%s" %len(realm.institution_set.filter(ertype=3))
+    nSPIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=3))
 
     ninstCountry = ET.SubElement(realmdataElement, "number_inst")
-    ninstCountry.text = "%s" %len(realm.institution_set.all())
+    ninstCountry.text = "%s" % len(realm.institution_set.all())
 
     nuserCountry = ET.SubElement(realmdataElement, "number_user")
     insts = realm.institution_set.all()
@@ -1552,7 +2077,7 @@ def realmdataxml(request):
                 users = users + inst.institutiondetails.number_user
         except InstitutionDetails.DoesNotExist:
             pass
-    nuserCountry.text = "%s" %users
+    nuserCountry.text = "%s" % users
 
     nIdCountry = ET.SubElement(realmdataElement, "number_id")
     insts = realm.institution_set.all()
@@ -1563,7 +2088,7 @@ def realmdataxml(request):
                 ids = ids + inst.institutiondetails.number_id
         except InstitutionDetails.DoesNotExist:
             pass
-    nIdCountry.text = "%s" %ids
+    nIdCountry.text = "%s" % ids
 
     # Get the latest ts from all tables...
     datetimes = []
@@ -1578,10 +2103,14 @@ def realmdataxml(request):
     if len(datetimes) == 0:
         datetimes.append(datetime.datetime.now())
     instTs = ET.SubElement(realmdataElement, "ts")
-    instTs.text = "%s" %max(datetimes).isoformat()
+    instTs.text = "%s" % max(datetimes).isoformat()
+    return render_to_response(
+        "general/realm_data.xml",
+        {"xml": to_xml(root)},
+        context_instance=RequestContext(request,),
+        mimetype="application/xml"
+    )
 
-
-    return render_to_response("general/realm_data.xml", {"xml":to_xml(root)},context_instance=RequestContext(request,), mimetype="application/xml")
 
 @never_cache
 def servdata(request):
@@ -1589,7 +2118,7 @@ def servdata(request):
     hosts = InstServer.objects.all()
     insts = Institution.objects.all()
 
-    clients = hosts.filter(ertype__in=[2,3])
+    clients = hosts.filter(ertype__in=[2, 3])
     if clients:
         root['clients'] = {}
     for srv in clients:
@@ -1601,7 +2130,7 @@ def servdata(request):
         srv_dict['secret'] = srv.secret
         root['clients'].update({srv_id: srv_dict})
 
-    servers = hosts.filter(ertype__in=[1,3])
+    servers = hosts.filter(ertype__in=[1, 3])
     if servers:
         root['servers'] = {}
     for srv in servers:
@@ -1646,7 +2175,6 @@ def servdata(request):
                 inst_dict['realms'].update(rdict)
         root['institutions'].append(inst_dict)
 
-
     if 'HTTP_ACCEPT' in request.META:
         if request.META.get('HTTP_ACCEPT') == "application/json":
             resp_mimetype = "application/json"
@@ -1655,7 +2183,8 @@ def servdata(request):
             "text/yaml",
             "text/x-yaml",
             "application/yaml",
-            "application/x-yaml" ]:
+            "application/x-yaml"
+        ]:
             resp_mimetype = request.META.get('HTTP_ACCEPT')
     try:
         resp_mimetype
@@ -1665,10 +2194,9 @@ def servdata(request):
     if resp_mimetype.find("yaml") != -1:
         from yaml import dump
         try:
-            from yaml import CDumper as Dumper, \
-                CSafeDumper as SafeDumper
+            from yaml import CSafeDumper as SafeDumper
         except ImportError:
-            from yaml import Dumper, SafeDumper
+            from yaml import SafeDumper
         resp_body = dump(root,
                          Dumper=SafeDumper,
                          allow_unicode=True,
@@ -1677,6 +2205,7 @@ def servdata(request):
 
     return HttpResponse(resp_body,
                         mimetype=resp_mimetype)
+
 
 @never_cache
 def adminlist(request):
@@ -1689,21 +2218,23 @@ def adminlist(request):
         len(u.registrationprofile_set.all()) > 0 and
         u.registrationprofile_set.all()[0].activation_key == "ALREADY_ACTIVATED"
         for m in u.email.split(';')
-        ]
+    ]
     data.sort(key=lambda d: unicode(d[0]))
     resp_body = ""
     for (foreas, onoma, email) in data:
         resp_body += u'{email}\t{onoma}'.format(
             email=email,
             onoma=onoma
-            ) \
-            + "\n"
+        ) + "\n"
     return HttpResponse(resp_body,
                         mimetype="text/plain")
 
 
 def to_xml(ele, encoding="UTF-8"):
-    "Convert and return the XML for an *ele* (:class:`~xml.etree.ElementTree.Element`) with specified *encoding*."
+    '''
+    Convert and return the XML for an *ele*
+    (:class:`~xml.etree.ElementTree.Element`)
+    with specified *encoding*.'''
     xml = ET.tostring(ele, encoding)
     return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
 
@@ -1727,10 +2258,11 @@ def getInstContacts(inst):
         contact_pks.append(contact.contact.pk)
     return list(set(contact_pks))
 
+
 def getInstServers(inst, idpsp=False):
     servers = InstServer.objects.filter(instid=inst)
     if idpsp:
-        servers = servers.filter(ertype__in=[1,3])
+        servers = servers.filter(ertype__in=[1, 3])
     server_pks = []
     for server in servers:
         server_pks.append(server.pk)
@@ -1738,10 +2270,18 @@ def getInstServers(inst, idpsp=False):
 
 
 def rad(x):
-    return x*math.pi/180
+    return x * math.pi / 180
+
 
 def send_new_mail(subject, message, from_email, recipient_list, bcc_list):
-    return EmailMessage(subject, message, from_email, recipient_list, bcc_list).send()
+    return EmailMessage(
+        subject,
+        message,
+        from_email,
+        recipient_list,
+        bcc_list
+    ).send()
+
 
 def lookupShibAttr(attrmap, requestMeta):
     for attr in attrmap:
