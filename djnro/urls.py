@@ -39,8 +39,9 @@ urlpatterns += patterns('edumanage.views',
     url(r'^general/realm.xml', "realmxml", name="realmxml"),
     url(r'^usage/realm_data.xml', "realmdataxml", name="realmdataxml"),
 
-    url(r'^radius_serv_data', "servdata", name="servdata"),
-    url(r'^admin_mail_list', "adminlist", name="adminlist"),
+    # The next two lines enable views that expose private/sensitive data:
+    #url(r'^radius_serv_data', "servdata", name="servdata"),
+    #url(r'^admin_mail_list', "adminlist", name="adminlist"),
 
     url(r'^manage/?$', 'manage', name="manage"),
     url(r'^manage/login/?$', 'manage_login_front', name="manage_login_front"),
