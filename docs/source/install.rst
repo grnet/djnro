@@ -290,7 +290,9 @@ A Django management command, named fetch_kml, fetches the KML document and updat
 Initial Data
 ^^^^^^^^^^^^
 In order to start using DjNRO you need to create a Realm record for your NRO along with one or more contacts linked to it. You can visit the Django admin interface (``https://<hostname>/admin``) and add a Realm (remember to set REALM_COUNTRIES in local_settings.py).
-In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface.
+In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface. As an alternative, you can copy your existing ``institution.xml`` to ``/path/to/djnro`` and run the following to import institution data::
+
+		./manage.py parse_instituion_xml
 
 Exporting Data
 ^^^^^^^^^^^^^^^
