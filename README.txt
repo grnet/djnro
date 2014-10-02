@@ -4,10 +4,12 @@ Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr),
 Zenon Mousmoulas (zmousm-at-noc-dot-grnet-dot-gr) and Stavros Kroustouris
 (staurosk-at-noc-dot-grnet-dot-gr), GRNET NOC
 
+Contributions by Jamie Curtis, REANNZ
+
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
 copyright notice and this permission notice appear in all copies.
- 
+
 THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
 TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
 FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
@@ -20,12 +22,12 @@ SOFTWARE.
 DjNRO
 =================
 
-DjNRO is more than keeping eduroam.org updated with data. In essence it is a distributed management application. 
+DjNRO is more than keeping eduroam.org updated with data. In essence it is a distributed management application.
 It is distributed in the sense that information about each institution locations and services is kept up-to-date by each local eduroam administrator.
-Keeping in pace with eduroam's federated nature, the implementation uses federated authentication/authorisation mechanisms, namely Shibboleth plus social media itegration. 
-The local institution eduroam administrators can become DjNRO admins. Local eduroam administrators register to the application via Shibboleth. 
-Once the accounts are acitvated, local eduroam admins can manage their eduroam locations, contact points and institution information. 
- 
+Keeping in pace with eduroam's federated nature, the implementation uses federated authentication/authorisation mechanisms, namely Shibboleth plus social media itegration.
+The local institution eduroam administrators can become DjNRO admins. Local eduroam administrators register to the application via Shibboleth.
+Once the accounts are acitvated, local eduroam admins can manage their eduroam locations, contact points and institution information.
+
 For detailed installation/configuration steps and options, you can read DjNRO's documentation at https://djnro.readthedocs.org
 
 
