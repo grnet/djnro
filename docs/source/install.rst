@@ -370,8 +370,7 @@ set the python-path attribute.
 * run manage.py migrate
 
 .. attention::
-   urls.py.dist is now deprecated. We just use urls.py. Urls that provide sensitive data are commented out by default. Feel free to edit the file according to your needs.
-
+   You had previously copied ``urls.py.dist`` to ``urls.py``. This is no longer supported; we now use ``djnro/urls.py``. URLs that provide sensitive data are disabled (commented out) by default. You may have to edit the file according to your needs.
 
 Pip Support
 ^^^^^^^^^^^^
