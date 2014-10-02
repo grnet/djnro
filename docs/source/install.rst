@@ -12,7 +12,7 @@ Assuming that you have installed all the requirements described in :ref:`require
 The software is published at code.grnet.gr and can be downloaded using git::
 
 	git clone https://code.grnet.gr/git/djnro
-	
+
 It is also available on GitHub::
 
 	https://github.com/grnet/djnro/
@@ -62,6 +62,12 @@ Set your static root and url::
 
     STATIC_ROOT = '/path/to/static'
     STATIC_URL = 'http://www.example.com/static'
+
+.. _Django: https://docs.djangoproject.com/en/1.4/howto/static-files/#serving-static-files-in-development
+.. attention::
+	The STATIC_URL setting works only if DEBUG=False. For more see the Django_ docs.
+
+
 
 Set the secret key::
 
@@ -211,7 +217,7 @@ You must also set the following parameters for each CAT instance in CAT_AUTH:
 For more information about eduroam CAT, you may read: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
 
 In case one wants to extend some of the settings only for the local instance, they can prepend 'EXTRA_' on the attribute they want to extend. For example::
- 
+
 	EXTRA_INSTALLED_APPS = (
 		'django_debug_toolbar',
 	)
