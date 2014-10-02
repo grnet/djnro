@@ -47,7 +47,7 @@ master_doc = "index"
 
 # General information about the project.
 project = u"DjNRO"
-copyright = u"2014, GRNET S.A. - Designed and developed by Leonidas Poulopoulos and Zenon Mousmoulas - GRNET NOC"
+copyright = u"2014, GRNET S.A. - Designed and developed by Leonidas Poulopoulos, Zenon Mousmoulas and Stavros Kroustouris - GRNET NOC"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

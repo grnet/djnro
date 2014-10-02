@@ -282,7 +282,7 @@ We suggest using Apache and mod_wsgi. Below is an example configuration::
 Once you are done, restart apache.
 
 Fetch KML
-^^^^^^^^^
+^^^^^^^^^^^
 A Django management command, named fetch_kml, fetches the KML document and updates the cache with eduroam service locations. It is suggested to periodically run this command in a cron job in order to keep the map up to date::
 
 		./manage.py fetch_kml
@@ -290,7 +290,53 @@ A Django management command, named fetch_kml, fetches the KML document and updat
 Initial Data
 ^^^^^^^^^^^^
 In order to start using DjNRO you need to create a Realm record for your NRO along with one or more contacts linked to it. You can visit the Django admin interface (``https://<hostname>/admin``) and add a Realm (remember to set REALM_COUNTRIES in local_settings.py).
-In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface.
+In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface. As an alternative, you can copy your existing ``institution.xml`` to ``/path/to/djnro`` and run the following to import institution data::
+
+		./manage.py parse_instituion_xml
+
+Exporting Data
+^^^^^^^^^^^^^^^
+
+DjNRO can export data in formats suitable for use by other software.
+
+XML documents conforming to the `eduroam database <https://monitor.eduroam.org/database.php>`_ schemata are exported at the following URLs, as required for harvesting by eduroam.org::
+
+    /general/realm.xml
+    /general/institution.xml
+    /usage/realm_data.xml
+
+.. versionadded:: 0.9
+
+A list of institution administrators can be exported in CSV format or a plain format suitable for use by a mailing list (namely `Sympa <http://www.sympa.org/manual/parameters-data-sources#include_remote_file>`_). This data is available through:
+
+* a management comand (``./manage.py contacts``), which defaults to CSV output (currently with headers in Greek!) and can switch to plain output using ``--mail-list``.
+
+* a view (``adminlist``), which only supports output in the latter plain text format.
+
+Likewise, data that can be used as input for automatic configuration of `Federation Level RADIUS Servers (FLRS)` can be exported in YAML/JSON format, through:
+
+* a management command (``./manage.py servdata``)
+
+* a view (``sevdata``)
+
+Output format defaults to YAML and can be overriden respectively:
+
+* by using ``--output=json``
+
+* by sending an ``Accept: application/json`` HTTP header
+
+We also provide a sample script for reading this data (``extras/servdata_consumer.py``) along with templates (in the same directory) for producing configuration suitable for FreeRADIUS and radsecproxy. This script requires the following python packages:
+
+  * python-requests
+
+  * python-yaml
+
+  * python-mako (for the templates)
+
+Take the time to read the default settings at the top of the script and run it with ``--help``. The templates are based on assumptions that may not match your setup; they are mostly provided as a proof of concept.
+
+.. attention::
+   The ``adminlist`` and ``servdata`` views are commented out by default in ``djnro/urls.py``. Make sure you protect them (SSL, ACL and/or authentication) at the HTTP server before you enable them, as they may expose private/sensitive data.
 
 Next Steps (Set your Logo)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -298,16 +344,16 @@ The majority of branding is done via the NRO variables in local_settings.py. You
 
 Upgrade Instructions
 ^^^^^^^^^^^^^^^^^^^^
-* Backup your settings.py file and any local modifications.
+* Backup your ``settings.py`` file and any local modifications.
 
 * Update the code.
 
-* Copy local_settings.py.dist to local_settings.py and modify it to match your previous configuration configuration.
+* Copy ``djnro/local_settings.py.dist`` to ``djnro/local_settings.py`` and modify it to match your previous configuration.
 
 * edit the apache configuration in order to work with the new location of wsgi and
 set the python-path attribute.
 
-* remove old wsgi file '/path/to/djnro/apache/django.wsgi'
+* remove old wsgi file ``/path/to/djnro/apache/django.wsgi`` and parent directory
 
 * remove django-extensions from `INSTALLED_APPS`
 
@@ -323,11 +369,10 @@ set the python-path attribute.
 
   * python-yaml
 
-* run manage.py migrate
+* run ``./manage.py migrate``
 
 .. attention::
-   urls.py.dist is now deprecated. We just use urls.py. Urls that provide sensitive data are commented out by default. Feel free to edit the file according to your needs.
-
+   You had previously copied ``urls.py.dist`` to ``urls.py``. This is no longer supported; we now use ``djnro/urls.py``. URLs that provide sensitive data are disabled (commented out) by default. You may have to edit the file according to your needs.
 
 Pip Support
 ^^^^^^^^^^^^
