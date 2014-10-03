@@ -20,10 +20,16 @@ body {
 
 
 span.new {
-  background: #eeeeee;
+  background: #c41f1f;
+  padding: 4px;
+  border-radius: 5px;
   color: white;
   margin-left: 10px;
   font-weight: 800;
+  position: absolute;
+  left: 90px;
+  top: 18px;
+  font-size: 9px;
 }
 
 .wrapper {
