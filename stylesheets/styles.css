@@ -19,9 +19,8 @@ body {
 }
 
 
-.new {
-  padding: 5px;
-  background: red;
+span.new {
+  background: #eeeeee;
   color: white;
   margin-left: 10px;
   font-weight: 800;
