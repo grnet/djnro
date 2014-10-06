@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-14 15:07+0300\n"
+"POT-Creation-Date: 2014-10-06 13:25+0300\n"
 "PO-Revision-Date: 2012-10-23 11:29+0300\n"
 "Last-Translator: Leonidas Poulopoulos <leopoul@noc.grnet.gr>\n"
 "Language-Team: Greek <leopoul@noc.grnet.gr>\n"
@@ -17,29 +17,1094 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: accounts/views.py:80
+#: accounts/views.py:79
 #, python-format
 msgid "%sUser account activated"
 msgstr ""
 
-#: djnro/settings.py:69
-msgid "Greek"
-msgstr "Ελληνικά"
-
-#: djnro/settings.py:70
-msgid "English"
-msgstr "Αγγλικά"
-
-#: djnro/settings.py:276
+#: djnro/local_settings.py:104
 msgid "My Country"
-msgstr ""
+msgstr "χώρα μου"
 
-#: djnro/settings.py:291
+#: djnro/local_settings.py:118
 msgid "Domain Helpdesk"
 msgstr "Helpdesk ΕΔΕΤ"
 
-#: edumanage/decorators.py:18 edumanage/views.py:1158 edumanage/views.py:1181
-#: edumanage/views.py:1242
+#: djnro/settings.py:45
+msgid "Greek"
+msgstr "Ελληνικά"
+
+#: djnro/settings.py:46
+msgid "English"
+msgstr "Αγγλικά"
+
+#: djnro/templates/404.html:6 djnro/templates/500.html:6
+#: djnro/templates/base.html:81 djnro/templates/base.html.py:124
+#: djnro/templates/status.html:6 djnro/templates/edumanage/catenroll.html:4
+#: djnro/templates/edumanage/contacts.html:4
+#: djnro/templates/edumanage/contacts_edit.html:4
+#: djnro/templates/edumanage/institution.html:12
+#: djnro/templates/edumanage/institution_edit.html:5
+#: djnro/templates/edumanage/instrealmmon_edit.html:4
+#: djnro/templates/edumanage/instrealmmons.html:4
+#: djnro/templates/edumanage/monlocauthpar_edit.html:4
+#: djnro/templates/edumanage/realms.html:4
+#: djnro/templates/edumanage/realms_edit.html:4
+#: djnro/templates/edumanage/server_details.html:4
+#: djnro/templates/edumanage/servers.html:4
+#: djnro/templates/edumanage/servers_edit.html:4
+#: djnro/templates/edumanage/service_details.html:5
+#: djnro/templates/edumanage/services.html:4
+#: djnro/templates/edumanage/services_edit.html:5
+#: djnro/templates/edumanage/welcome.html:186
+#: djnro/templates/edumanage/welcome.html:198
+#: djnro/templates/edumanage/welcome.html:244
+#: djnro/templates/front/index.html:3
+#: djnro/templates/registration/activate.html:7
+#: djnro/templates/registration/activation_complete.html:7
+#: djnro/templates/registration/select_institution.html:6
+msgid "Home"
+msgstr "Αρχική"
+
+#: djnro/templates/base.html:94
+#: djnro/templates/edumanage/services_edit.html:378
+msgid "Language"
+msgstr "Γλώσσα"
+
+#: djnro/templates/base.html:125
+msgid "USERS"
+msgstr "ΧΡΗΣΤΕΣ"
+
+#: djnro/templates/base.html:126
+msgid "The service"
+msgstr "Η υπηρεσία"
+
+#: djnro/templates/base.html:128
+msgid "INSTITUTIONS"
+msgstr "ΦΟΡΕΙΣ"
+
+#: djnro/templates/base.html:129 djnro/templates/front/management.html:3
+#: djnro/templates/front/management.html:10
+msgid "Management"
+msgstr "Διαχείριση"
+
+#: djnro/templates/base.html:130
+msgid "SERVICE"
+msgstr "ΥΠΗΡΕΣΙΑ"
+
+#: djnro/templates/base.html:131
+msgid "Closest eduroam"
+msgstr "Πλησιέστερο eduroam"
+
+#: djnro/templates/base.html:132
+msgid "World eduroam"
+msgstr "eduroam στον κόσμο"
+
+#: djnro/templates/base.html:133 djnro/templates/front/participants.html:3
+msgid "Participants"
+msgstr "Συμμετέχοντες"
+
+#: djnro/templates/base.html:134
+msgid "pebduroam"
+msgstr "pebduroam"
+
+#: djnro/templates/base.html:135
+msgid "API"
+msgstr ""
+
+#: djnro/templates/base.html:136
+msgid "Closest point"
+msgstr "Πλησιέστερο σημείο"
+
+#: djnro/templates/footer.html:5
+msgid "If you have any questions or need help, contact"
+msgstr "Αν έχετε απορίες ή χρειάζεστε βοήθεια, επικοινωνήστε με το"
+
+#: djnro/templates/footer.html:7
+msgid "This is a service provided by"
+msgstr "Αυτή η υπηρεσία παρέχεται από το"
+
+#: djnro/templates/edumanage/add_user.html:6
+#: djnro/templates/edumanage/contacts.html:114
+#: djnro/templates/edumanage/contacts_edit.html:32
+#: djnro/templates/edumanage/institution.html:35
+#: djnro/templates/edumanage/institution_edit.html:87
+#: djnro/templates/edumanage/servers.html:118
+#: djnro/templates/edumanage/services.html:114
+#: djnro/templates/edumanage/services_edit.html:378
+#: djnro/templates/front/index.html:183
+#: djnro/templates/overview/index.html:170
+#: djnro/templates/overview/index.html:194
+msgid "Name"
+msgstr "Όνομα"
+
+#: djnro/templates/edumanage/add_user.html:14
+#: djnro/templates/edumanage/contacts.html:115
+#: djnro/templates/edumanage/contacts_edit.html:40
+#: djnro/templates/overview/index.html:169
+#: djnro/templates/registration/select_institution.html:48
+msgid "Email"
+msgstr ""
+
+#: djnro/templates/edumanage/add_user.html:22
+#: djnro/templates/edumanage/contacts.html:116
+#: djnro/templates/edumanage/contacts_edit.html:48
+msgid "Phone"
+msgstr "Τηλέφωνο"
+
+#: djnro/templates/edumanage/catenroll.html:5
+msgid "CAT Enroll"
+msgstr ""
+
+#: djnro/templates/edumanage/catenroll.html:34
+#, fuzzy
+msgid "CAT Institution ID"
+msgstr "Φορέας"
+
+#: djnro/templates/edumanage/catenroll.html:35
+msgid "CAT configuration profiles"
+msgstr ""
+
+#: djnro/templates/edumanage/catenroll.html:36
+msgid "URL/Status"
+msgstr "URL/Κατάσταση"
+
+#: djnro/templates/edumanage/catenroll.html:37
+#: djnro/templates/edumanage/catenroll.html:63
+msgid "CAT instance"
+msgstr ""
+
+#: djnro/templates/edumanage/catenroll.html:38
+msgid "Applier"
+msgstr "Χρήστης"
+
+#: djnro/templates/edumanage/catenroll.html:75
+#: djnro/templates/edumanage/contacts_edit.html:58
+#: djnro/templates/edumanage/institution_edit.html:172
+#: djnro/templates/edumanage/instrealmmon_edit.html:48
+#: djnro/templates/edumanage/monlocauthpar_edit.html:76
+#: djnro/templates/edumanage/realms_edit.html:58
+#: djnro/templates/edumanage/servers_edit.html:118
+#: djnro/templates/edumanage/services_edit.html:504
+#: djnro/templates/registration/select_institution.html:72
+msgid "Apply"
+msgstr "Εφαρμογή"
+
+#: djnro/templates/edumanage/contacts.html:5
+#: djnro/templates/edumanage/contacts.html:99
+#: djnro/templates/edumanage/contacts_edit.html:5
+#: djnro/templates/edumanage/institution.html:59
+#: djnro/templates/edumanage/institution_edit.html:115
+#: djnro/templates/edumanage/service_details.html:137
+#: djnro/templates/edumanage/services_edit.html:417
+#: djnro/templates/edumanage/welcome.html:219
+#: djnro/templates/overview/index.html:196
+msgid "Contacts"
+msgstr "Επαφές"
+
+#: djnro/templates/edumanage/contacts.html:35
+#: djnro/templates/edumanage/instrealmmons.html:39
+#: djnro/templates/edumanage/realms.html:32
+#: djnro/templates/edumanage/servers.html:38
+#: djnro/templates/edumanage/services.html:41
+#: djnro/templates/overview/index.html:42
+#: djnro/templates/overview/index.html:86
+msgid "Display"
+msgstr "Προβολή"
+
+#: djnro/templates/edumanage/contacts.html:35
+#: djnro/templates/edumanage/instrealmmons.html:39
+#: djnro/templates/edumanage/realms.html:32
+#: djnro/templates/edumanage/servers.html:38
+#: djnro/templates/edumanage/services.html:41
+#: djnro/templates/overview/index.html:42
+#: djnro/templates/overview/index.html:86
+msgid "All"
+msgstr "Όλα"
+
+#: djnro/templates/edumanage/contacts.html:35
+msgid "contacts"
+msgstr "επαφές"
+
+#: djnro/templates/edumanage/contacts.html:37
+#: djnro/templates/edumanage/instrealmmons.html:41
+#: djnro/templates/edumanage/realms.html:34
+#: djnro/templates/edumanage/servers.html:40
+#: djnro/templates/edumanage/services.html:43
+#: djnro/templates/overview/index.html:44
+#: djnro/templates/overview/index.html:88
+msgid "No records to display"
+msgstr "Δεν υπάρχουν δεδομένα για προβολή"
+
+#: djnro/templates/edumanage/contacts.html:39
+#: djnro/templates/edumanage/instrealmmons.html:43
+#: djnro/templates/edumanage/realms.html:36
+#: djnro/templates/edumanage/servers.html:42
+#: djnro/templates/edumanage/services.html:45
+#: djnro/templates/overview/index.html:46
+#: djnro/templates/overview/index.html:90
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Προβολή 0 έως 0 από 0 εγγραφές"
+
+#: djnro/templates/edumanage/contacts.html:42
+#: djnro/templates/edumanage/instrealmmons.html:46
+#: djnro/templates/edumanage/realms.html:39
+#: djnro/templates/edumanage/servers.html:45
+#: djnro/templates/edumanage/services.html:48
+#: djnro/templates/overview/index.html:49
+#: djnro/templates/overview/index.html:93
+msgid "Search:"
+msgstr "Αναζήτηση"
+
+#: djnro/templates/edumanage/contacts.html:45
+#: djnro/templates/edumanage/instrealmmons.html:49
+#: djnro/templates/edumanage/realms.html:42
+#: djnro/templates/edumanage/servers.html:48
+#: djnro/templates/edumanage/services.html:51
+#: djnro/templates/overview/index.html:52
+#: djnro/templates/overview/index.html:96
+msgid "First"
+msgstr "Πρώτη"
+
+#: djnro/templates/edumanage/contacts.html:46
+#: djnro/templates/edumanage/instrealmmons.html:50
+#: djnro/templates/edumanage/realms.html:43
+#: djnro/templates/edumanage/servers.html:49
+#: djnro/templates/edumanage/services.html:52
+#: djnro/templates/overview/index.html:53
+#: djnro/templates/overview/index.html:97
+msgid "Previous"
+msgstr "Προηγούμενο"
+
+#: djnro/templates/edumanage/contacts.html:47
+#: djnro/templates/edumanage/instrealmmons.html:51
+#: djnro/templates/edumanage/realms.html:44
+#: djnro/templates/edumanage/servers.html:50
+#: djnro/templates/edumanage/services.html:53
+#: djnro/templates/overview/index.html:54
+#: djnro/templates/overview/index.html:98
+msgid "Next"
+msgstr "Επόμενο"
+
+#: djnro/templates/edumanage/contacts.html:48
+#: djnro/templates/edumanage/instrealmmons.html:52
+#: djnro/templates/edumanage/realms.html:45
+#: djnro/templates/edumanage/servers.html:51
+#: djnro/templates/edumanage/services.html:54
+#: djnro/templates/overview/index.html:55
+#: djnro/templates/overview/index.html:99
+msgid "Last"
+msgstr "Τελευταία"
+
+#: djnro/templates/edumanage/contacts.html:58
+msgid "You are about to delete contact"
+msgstr "Πρόκειται να διαγράψετε την επαφή"
+
+#: djnro/templates/edumanage/contacts.html:58
+#: djnro/templates/edumanage/instrealmmons.html:62
+#: djnro/templates/edumanage/instrealmmons.html:92
+#: djnro/templates/edumanage/services.html:63
+msgid "Press Delete to proceed or Cancel to cancel deletion"
+msgstr "Επιλέξτε Διαγραφή για να συνεχίσετε ή Άκυρο για να ακυρώσετε"
+
+#: djnro/templates/edumanage/contacts.html:59
+#: djnro/templates/edumanage/contacts.html:136
+msgid "Delete contact"
+msgstr "Διαγραφή Επαφής"
+
+#: djnro/templates/edumanage/contacts.html:108
+msgid "Add new contact"
+msgstr "Προσθήκη Επαφής"
+
+#: djnro/templates/edumanage/contacts.html:117
+#: djnro/templates/edumanage/instrealmmons.html:151
+#: djnro/templates/edumanage/realms.html:115
+#: djnro/templates/edumanage/servers.html:122
+msgid "Action"
+msgstr "Ενέργεια"
+
+#: djnro/templates/edumanage/contacts.html:127
+#: djnro/templates/edumanage/contacts_edit.html:6
+#: djnro/templates/edumanage/contacts_edit.html:19
+#: djnro/templates/edumanage/institution.html:104
+#: djnro/templates/edumanage/instrealmmon_edit.html:6
+#: djnro/templates/edumanage/instrealmmon_edit.html:19
+#: djnro/templates/edumanage/instrealmmons.html:167
+#: djnro/templates/edumanage/instrealmmons.html:186
+#: djnro/templates/edumanage/monlocauthpar_edit.html:6
+#: djnro/templates/edumanage/monlocauthpar_edit.html:25
+#: djnro/templates/edumanage/realms.html:124
+#: djnro/templates/edumanage/realms_edit.html:6
+#: djnro/templates/edumanage/realms_edit.html:19
+#: djnro/templates/edumanage/servers.html:133
+#: djnro/templates/edumanage/servers_edit.html:6
+#: djnro/templates/edumanage/servers_edit.html:21
+#: djnro/templates/edumanage/services.html:130
+#: djnro/templates/edumanage/services_edit.html:7
+#: djnro/templates/edumanage/services_edit.html:334
+msgid "edit"
+msgstr "επεξεργασία"
+
+#: djnro/templates/edumanage/contacts.html:127
+#: djnro/templates/edumanage/instrealmmons.html:168
+#: djnro/templates/edumanage/instrealmmons.html:187
+#: djnro/templates/edumanage/realms.html:124
+#: djnro/templates/edumanage/servers.html:133
+#: djnro/templates/edumanage/services.html:130
+msgid "delete"
+msgstr "διαγραφή"
+
+#: djnro/templates/edumanage/contacts.html:142
+#: djnro/templates/edumanage/instrealmmons.html:213
+#: djnro/templates/edumanage/instrealmmons.html:227
+#: djnro/templates/edumanage/realms.html:140
+#: djnro/templates/edumanage/servers.html:148
+#: djnro/templates/edumanage/services.html:146
+msgid "Cancel"
+msgstr "Άκυρο"
+
+#: djnro/templates/edumanage/contacts.html:143
+#: djnro/templates/edumanage/instrealmmons.html:214
+#: djnro/templates/edumanage/instrealmmons.html:228
+#: djnro/templates/edumanage/realms.html:141
+#: djnro/templates/edumanage/servers.html:149
+#: djnro/templates/edumanage/services.html:147
+msgid "Delete"
+msgstr "Διαγραφή"
+
+#: djnro/templates/edumanage/contacts_edit.html:6
+#: djnro/templates/edumanage/contacts_edit.html:19
+msgid "Add Contact"
+msgstr "Προσθήκη Επαφής"
+
+#: djnro/templates/edumanage/institution.html:13
+#: djnro/templates/edumanage/institution.html:18
+#: djnro/templates/edumanage/institution_edit.html:6
+#: djnro/templates/edumanage/welcome.html:202
+#: djnro/templates/overview/index.html:172
+#: djnro/templates/registration/activate_edit.html:36
+#: djnro/templates/registration/select_institution.html:61
+msgid "Institution"
+msgstr "Φορέας"
+
+#: djnro/templates/edumanage/institution.html:41
+#: djnro/templates/edumanage/institution_edit.html:93
+#: djnro/templates/edumanage/instrealmmons.html:148
+#: djnro/templates/edumanage/server_details.html:31
+#: djnro/templates/edumanage/servers.html:119
+#: djnro/templates/edumanage/servers_edit.html:34
+#: djnro/templates/overview/index.html:195
+msgid "Type"
+msgstr "Τύπος"
+
+#: djnro/templates/edumanage/institution.html:47
+#: djnro/templates/edumanage/institution_edit.html:99
+#: djnro/templates/edumanage/services_edit.html:393
+msgid "Address Street"
+msgstr "Οδός"
+
+#: djnro/templates/edumanage/institution.html:53
+#: djnro/templates/edumanage/institution_edit.html:107
+#: djnro/templates/edumanage/services_edit.html:401
+msgid "Address City"
+msgstr "Πόλη"
+
+#: djnro/templates/edumanage/institution.html:67
+#: djnro/templates/edumanage/institution_edit.html:123
+#: djnro/templates/edumanage/service_details.html:192
+#: djnro/templates/edumanage/services_edit.html:481
+msgid "Urls"
+msgstr "Σύνδεσμοι"
+
+#: djnro/templates/edumanage/institution.html:77
+#: djnro/templates/edumanage/institution_edit.html:144
+msgid "Domain Name"
+msgstr "Όνομα Χώρου"
+
+#: djnro/templates/edumanage/institution.html:85
+msgid "Number User"
+msgstr "Αριθμός Χρηστών"
+
+#: djnro/templates/edumanage/institution.html:92
+#: djnro/templates/edumanage/institution_edit.html:163
+msgid "Number of IDs"
+msgstr "Αριθμός ΙDs"
+
+#: djnro/templates/edumanage/institution.html:99
+#: djnro/templates/edumanage/institution_edit.html:7
+#: djnro/templates/edumanage/institution_edit.html:74
+#: djnro/templates/edumanage/server_details.html:88
+#: djnro/templates/edumanage/service_details.html:201
+#: djnro/templates/edumanage/welcome.html:248
+msgid "Edit"
+msgstr "Επεξεργασία"
+
+#: djnro/templates/edumanage/institution.html:104
+msgid "No institution details defined yet for"
+msgstr "Δεν έχουν καθοριστεί λεπτομέρειες για το φορέα"
+
+#: djnro/templates/edumanage/institution.html:107
+msgid "No institution defined"
+msgstr "Δεν έχει καθοριστεί φορέας"
+
+#: djnro/templates/edumanage/institution_edit.html:154
+msgid "Number of Users"
+msgstr "Αριθμός Χρηστών"
+
+#: djnro/templates/edumanage/institution_edit.html:179
+#: djnro/templates/edumanage/services_edit.html:512
+msgid "Add User"
+msgstr "Νέος Χρήστης"
+
+#: djnro/templates/edumanage/institution_edit.html:185
+#: djnro/templates/edumanage/services.html:160
+#: djnro/templates/edumanage/services_edit.html:518
+msgid "Close"
+msgstr "Κλείσιμο"
+
+#: djnro/templates/edumanage/institution_edit.html:186
+msgid "Save changes"
+msgstr "Αποθήκευση"
+
+#: djnro/templates/edumanage/instrealmmon_edit.html:5
+#: djnro/templates/edumanage/instrealmmons.html:5
+#: djnro/templates/edumanage/instrealmmons.html:131
+#: djnro/templates/edumanage/monlocauthpar_edit.html:5
+#: djnro/templates/edumanage/welcome.html:216
+msgid "Monitored Realms"
+msgstr "Παρακολουθούμενες Περιοχές"
+
+#: djnro/templates/edumanage/instrealmmon_edit.html:6
+#: djnro/templates/edumanage/instrealmmon_edit.html:19
+msgid "Add Monitored Realm"
+msgstr "Προσθήκη περιοχής προς παρακολούθηση"
+
+#: djnro/templates/edumanage/instrealmmon_edit.html:30
+#: djnro/templates/edumanage/instrealmmons.html:147
+#: djnro/templates/edumanage/monlocauthpar_edit.html:36
+#: djnro/templates/edumanage/realms_edit.html:40
+msgid "Realm"
+msgstr "Περιοχή"
+
+#: djnro/templates/edumanage/instrealmmon_edit.html:38
+msgid "Monitoring Method"
+msgstr "Μέθοδος παρακολούθησης"
+
+#: djnro/templates/edumanage/instrealmmons.html:39
+#: djnro/templates/edumanage/realms.html:32
+msgid "realms"
+msgstr "περιοχές"
+
+#: djnro/templates/edumanage/instrealmmons.html:62
+msgid "You are about to delete monitored realm (and its parameters if any)"
+msgstr "Θα διαγραφεί η περιοχή (και οι ρυθμίσεις της)"
+
+#: djnro/templates/edumanage/instrealmmons.html:63
+msgid "Delete Monitored Realm"
+msgstr "Διαγραφή Monitored Realm"
+
+#: djnro/templates/edumanage/instrealmmons.html:92
+msgid "You are about to delete monitored realm parameters for "
+msgstr "Πρόκειται να διαγράψετε τις παραμέτρους για το monitored realm"
+
+#: djnro/templates/edumanage/instrealmmons.html:93
+msgid "Delete Monitored Realm Parameters"
+msgstr "Διαγραφή Παραμέτρων Monitored Realm"
+
+#: djnro/templates/edumanage/instrealmmons.html:141
+msgid "Add monitored realm"
+msgstr "Προσθήκη Monitored Realm"
+
+#: djnro/templates/edumanage/instrealmmons.html:153
+msgid "Parameters"
+msgstr "Παράμετροι"
+
+#: djnro/templates/edumanage/instrealmmons.html:193
+msgid "add"
+msgstr "προσθήκη"
+
+#: djnro/templates/edumanage/instrealmmons.html:207
+#: djnro/templates/edumanage/instrealmmons.html:221
+msgid "Delete monitored realm"
+msgstr "Διαγραφή Monitored Realm"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:6
+#: djnro/templates/edumanage/monlocauthpar_edit.html:25
+msgid "Add Monitored Realm Parameters"
+msgstr "Προσθήκη παραμέτρων Monitored Realm"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:42
+msgid "EAP Method"
+msgstr "Μέθοδος EAP"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:50
+msgid "EAP2 Method"
+msgstr "Μέθοδος EAP2"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:58
+#: djnro/templates/overview/index.html:168
+msgid "Username"
+msgstr "Όνομα Χρήστη"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:66
+msgid "Password"
+msgstr "Κωδικός"
+
+#: djnro/templates/edumanage/realms.html:5
+#: djnro/templates/edumanage/realms_edit.html:5
+#: djnro/templates/edumanage/welcome.html:213
+msgid "Realms"
+msgstr "Περιοχές"
+
+#: djnro/templates/edumanage/realms.html:106
+msgid "Add new realm"
+msgstr "Προσθήκη Περιοχής"
+
+#: djnro/templates/edumanage/realms.html:134
+msgid "Delete Realm"
+msgstr "Διαγραφή Περιοχής"
+
+#: djnro/templates/edumanage/realms_edit.html:6
+#: djnro/templates/edumanage/realms_edit.html:19
+msgid "Add Realm"
+msgstr "Προσθήκη περιοχής"
+
+#: djnro/templates/edumanage/realms_edit.html:48
+msgid "Proxy to Servers"
+msgstr "Proxy σε Εξυπηρετητές"
+
+#: djnro/templates/edumanage/realms_edit.html:52 edumanage/forms.py:135
+#: edumanage/models.py:210
+msgid "Only IdP and IdP/SP server types are allowed"
+msgstr "Επιτρέπονται servers τύπου IdP ή IdP/SP"
+
+#: djnro/templates/edumanage/server_details.html:5
+#: djnro/templates/edumanage/servers.html:5
+#: djnro/templates/edumanage/servers.html:103
+#: djnro/templates/edumanage/servers_edit.html:5
+#: djnro/templates/edumanage/welcome.html:210
+msgid "Servers"
+msgstr "Εξυπηρετητές"
+
+#: djnro/templates/edumanage/server_details.html:37
+#: djnro/templates/edumanage/servers_edit.html:58
+msgid "Label"
+msgstr "Ετικέτα"
+
+#: djnro/templates/edumanage/server_details.html:43
+#: djnro/templates/edumanage/servers_edit.html:42
+msgid "Address Family"
+msgstr "Οικογένεια διευθύνσεων"
+
+#: djnro/templates/edumanage/server_details.html:49
+msgid "Host"
+msgstr ""
+
+#: djnro/templates/edumanage/server_details.html:56
+#: djnro/templates/edumanage/servers_edit.html:67
+msgid "RADIUS Packet Types"
+msgstr ""
+
+#: djnro/templates/edumanage/server_details.html:62
+#: djnro/templates/edumanage/servers.html:120
+#: djnro/templates/edumanage/servers_edit.html:75
+msgid "Authentication Port"
+msgstr ""
+
+#: djnro/templates/edumanage/server_details.html:68
+#: djnro/templates/edumanage/servers_edit.html:83
+msgid "Accounting Port"
+msgstr ""
+
+#: djnro/templates/edumanage/server_details.html:75
+msgid "Status Server"
+msgstr "Εξυπηρετητής Καταστάσεων"
+
+#: djnro/templates/edumanage/server_details.html:81
+#: djnro/templates/edumanage/servers.html:121
+#: djnro/templates/edumanage/servers_edit.html:108
+msgid "Protocol"
+msgstr "Πρωτόκολο"
+
+#: djnro/templates/edumanage/servers.html:38
+msgid "servers"
+msgstr "εξυπηρετητές"
+
+#: djnro/templates/edumanage/servers.html:112
+msgid "Add new server"
+msgstr "Προσθήκη εξυπηρετητή"
+
+#: djnro/templates/edumanage/servers.html:142
+msgid "Delete Server"
+msgstr "Διαγραφή Εξυπηρετητή"
+
+#: djnro/templates/edumanage/servers_edit.html:6
+#: djnro/templates/edumanage/servers_edit.html:21
+msgid "Add Server"
+msgstr "Προσθήκη Εξυπηρετητή"
+
+#: djnro/templates/edumanage/servers_edit.html:50
+msgid "Hostname"
+msgstr ""
+
+#: djnro/templates/edumanage/servers_edit.html:92
+msgid "Status-Server"
+msgstr "Εξυπηρετητής Καταστάσεων"
+
+#: djnro/templates/edumanage/servers_edit.html:100
+msgid "Secret"
+msgstr "Κωδικός"
+
+#: djnro/templates/edumanage/service_details.html:6
+#: djnro/templates/edumanage/services.html:5
+#: djnro/templates/edumanage/services.html:96
+#: djnro/templates/edumanage/services_edit.html:6
+#: djnro/templates/edumanage/welcome.html:207
+msgid "Locations"
+msgstr "Τοποθεσίες"
+
+#: djnro/templates/edumanage/service_details.html:104
+#: djnro/templates/edumanage/services_edit.html:347
+msgid "Location"
+msgstr "Τοποθεσία"
+
+#: djnro/templates/edumanage/service_details.html:113
+#: djnro/templates/edumanage/services_edit.html:373
+msgid "Location Name"
+msgstr "Όνομα Τοποθεσίας"
+
+#: djnro/templates/edumanage/service_details.html:122
+#: djnro/templates/edumanage/services.html:115
+#: djnro/templates/front/index.html:186
+#: djnro/templates/overview/index.html:197
+msgid "Address"
+msgstr "Διεύθυνση"
+
+#: djnro/templates/edumanage/service_details.html:145
+#: djnro/templates/edumanage/services.html:117
+#: djnro/templates/edumanage/services_edit.html:425
+msgid "Encryption Level"
+msgstr "Επίπεδο Κρυπτογράφησης"
+
+#: djnro/templates/edumanage/service_details.html:151
+#: djnro/templates/edumanage/services_edit.html:433
+#: djnro/templates/front/index.html:201
+msgid "Port Restrict"
+msgstr "Περιορισμός θύρας"
+
+#: djnro/templates/edumanage/service_details.html:158
+#: djnro/templates/edumanage/services_edit.html:441
+msgid "Transparent Proxy"
+msgstr ""
+
+#: djnro/templates/edumanage/service_details.html:179
+#: djnro/templates/edumanage/services_edit.html:465
+msgid "AP number"
+msgstr "Αριθμός APs"
+
+#: djnro/templates/edumanage/service_details.html:186
+#: djnro/templates/edumanage/services_edit.html:473
+#: djnro/templates/front/index.html:213
+msgid "Wired"
+msgstr ""
+
+#: djnro/templates/edumanage/services.html:41
+msgid "locations"
+msgstr "τοποθεσίες"
+
+#: djnro/templates/edumanage/services.html:63
+msgid "You are about to delete location"
+msgstr "Πρόκειται να διαγράψετε την τοποθεσία"
+
+#: djnro/templates/edumanage/services.html:64
+#: djnro/templates/edumanage/services.html:140
+msgid "Delete Location"
+msgstr "Διαγραφή Τοποθεσίας"
+
+#: djnro/templates/edumanage/services.html:82
+msgid "Service"
+msgstr "Υπηρεσία"
+
+#: djnro/templates/edumanage/services.html:82
+msgid "successfully deleted"
+msgstr "διαγράφηκε επιτυχώς"
+
+#: djnro/templates/edumanage/services.html:106
+msgid "Add location"
+msgstr "Προσθήκη τοποθεσίας"
+
+#: djnro/templates/edumanage/services.html:116
+#: djnro/templates/front/index.html:192
+msgid "SSID"
+msgstr ""
+
+#: djnro/templates/edumanage/services.html:118
+msgid "AP no"
+msgstr "Αριθμός AP"
+
+#: djnro/templates/edumanage/services.html:119
+msgid "Actions"
+msgstr "Ενέργειες"
+
+#: djnro/templates/edumanage/services.html:154
+msgid "Location Details"
+msgstr "Λεπτομέρειες Τοποθεσίας"
+
+#: djnro/templates/edumanage/services_edit.html:7
+#: djnro/templates/edumanage/services_edit.html:334
+msgid "Add Location"
+msgstr "Προσθήκη Tοποθεσίας"
+
+#: djnro/templates/edumanage/services_edit.html:355
+msgid "Search location"
+msgstr "Αναζήτηση τοποθεσίας"
+
+#: djnro/templates/edumanage/services_edit.html:360
+msgid "Update Map"
+msgstr "Ενημέρωση χάρτη"
+
+#: djnro/templates/edumanage/services_edit.html:363
+msgid "Current Location"
+msgstr "Τρέχουσα Τοποθεσία"
+
+#: djnro/templates/edumanage/services_edit.html:486
+msgid "url"
+msgstr "σύνδεσμος"
+
+#: djnro/templates/edumanage/services_edit.html:486
+msgid "type"
+msgstr "τύπος"
+
+#: djnro/templates/edumanage/services_edit.html:486
+msgid "language"
+msgstr "γλώσσα"
+
+#: djnro/templates/edumanage/services_edit.html:519
+msgid "Save Changes"
+msgstr "Αποθήκευση Αλλαγών"
+
+#: djnro/templates/edumanage/welcome.html:107
+#: djnro/templates/front/index.html:177
+msgid "Info"
+msgstr "Στοιχεία"
+
+#: djnro/templates/edumanage/welcome.html:108
+#: djnro/templates/front/index.html:178
+msgid "More..."
+msgstr "Περισσότερα..."
+
+#: djnro/templates/edumanage/welcome.html:189
+#: djnro/templates/overview/index.html:122
+#: djnro/templates/overview/index.html:134
+msgid "Logout"
+msgstr "Έξοδος"
+
+#: djnro/templates/edumanage/welcome.html:223
+msgid "eduroam CAT"
+msgstr "eduroam CAT"
+
+#: djnro/templates/edumanage/welcome.html:244
+msgid "Service Locations"
+msgstr "Τοποθεσίες Υπηρεσιών"
+
+#: djnro/templates/edumanage/welcome.html:248
+msgid "No services defined yet"
+msgstr "Δεν έχουν εισαχθεί υπηρεσίες"
+
+#: djnro/templates/edumanage/welcome.html:248
+msgid "Add new service"
+msgstr "Προσθήκη υπηρεσίας"
+
+#: djnro/templates/front/api.html:3
+msgid "Closest Point API"
+msgstr "API για το κοντινότερο σημείο"
+
+#: djnro/templates/front/api.html:10
+msgid "Closest point API"
+msgstr "API για το κοντινότερο σημείο"
+
+#: djnro/templates/front/api.html:13
+msgid ""
+"Since we collect information from eduroam.org about the available eduroam "
+"points, we developed the closest point service API, which handles locating "
+"the closest eduroam service location."
+msgstr ""
+"Μιας και συλλέγουμε πληροφορίες για τα διαθέσιμα σημεία eduroam από το "
+"eduroam.org, δημιουργήσαμε το API για το κοντινότερο σημείο, το οποίο "
+"χειρίζεται την έυρεση του κοντινότερου σημείου eduroam."
+
+#: djnro/templates/front/api.html:14
+msgid ""
+"The API receives the current location coordinates in a GET request, "
+"calculates the closest point through server-side triangulation and returns a "
+"JSON reply with its’ coordinates and a detailed description."
+msgstr ""
+"Το API λαμβάνει τις συντεταγμένες μια τοποθεσίας σε ένα GET request, "
+"υπολογίζει το κοντινότερο σημείο πρόσβασης βάσει server-side triangulation "
+"και επιστρέφει μια απάντηση σε JSON μορφή με τις συντεταγμένες του σημείου "
+"πρόσβασης και μια αναλυτική περιγραφή. "
+
+#: djnro/templates/front/api.html:16
+msgid ""
+"Based on this API, we developed the closest point web page that allows users "
+"to find the closest eduroam location or a location they search for."
+msgstr ""
+"Βασιζόμενοι σε αυτό το API, δημιουργήσαμε τη σελίδα εύρεσης του κοντινότερου "
+"σημείου που επιτρέπει τους χρήστες να βρίσκουν την τοποθεσία του "
+"κοντινότερου σημείου eduroam στην θέση που βρίσκονται ή σε οποιαδήποτε άλλη "
+"θέση θελήσουν να ψάξουν."
+
+#: djnro/templates/front/api.html:17
+msgid ""
+"Potentials are limitless! You can build your own application either it is "
+"web or mobile or a widget for a wearable device."
+msgstr ""
+"Οι δυνατότητες είναι απεριόριστες! Μπορείτε να δημιουργήσετε την δική σας "
+"εφαρμογή είτε είναι στο διαδίκτυο είτε σε κινητό είτε σε κάποια άλλη συσκευή."
+
+#: djnro/templates/front/geolocate.html:6
+msgid "Closest"
+msgstr "Πλησιέστερο"
+
+#: djnro/templates/front/index.html:189
+msgid "Encryption"
+msgstr "Κρυπτογράφηση"
+
+#: djnro/templates/front/index.html:195
+msgid "Number of APs"
+msgstr "Αριθμός APs"
+
+#: djnro/templates/front/index.html:204
+msgid "transp_proxy"
+msgstr ""
+
+#: djnro/templates/front/index.html:371
+msgid "Eduroam in"
+msgstr "Eduroam στην"
+
+#: djnro/templates/front/management.html:13
+msgid ""
+"The management application provides an interface for administrators of "
+"federation member institutions to maintain the data that is necessary for "
+"participating in the federation."
+msgstr ""
+"Η εφαρμογή διαχείρισης παρέχει μια διεπαφή για τους διαχειριστές των φορέων-"
+"μελών της ομοσπονδίας για τη διαχείριση των δεδομένων που είναι απαραίτητα "
+"για τη συμμετοχή του φορέα στην ομοσπονδία."
+
+#: djnro/templates/front/management.html:14
+msgid ""
+"Administrators can log in using either Social Networks or the AAI Federation:"
+msgstr ""
+"Οι διαχειριστές μπορούν να συνδεθούν χρησιμοποιώντας είτε Social Networks ή "
+"την Ομοσπονδία AAI:"
+
+#: djnro/templates/front/management.html:17
+msgid ""
+"Social networks that have been enabled for authenticating users to the "
+"management application are listed under the <b>Manage</b> drop-down menu. "
+"Once authenticated, a user may need to assert any missing information that "
+"is required by the application (such as an e-mail address). After that, the "
+"user can proceed with activation."
+msgstr ""
+"Τα Social Networks που έχουν ενεργοποιηθεί για ταυτοποίηση χρηστών από την "
+"εφαρμογή διαχείρισης αναφέρονται κάτω από το μενού <b>Διαχείριση</b>. Μετά "
+"την ταυτοποίηση ο χρήστης ίσως χρειαστεί να παράσχει στοιχεία που τυχόν "
+"λείπουν καιαπαιτούνται από την εφαρμογή (όπως η διεύθυνση e-mail). Στη "
+"συνέχεια ο χρήστης μπορεί να προχωρήσει στη διαδικασία ενεργοποίησης του "
+"λογαριασμού του."
+
+#: djnro/templates/front/management.html:20
+msgid "Authentication and authorization are carried out through a"
+msgstr "Η ταυτοποίηση και εξουσιοδότηση των χρηστών πραγματοποιείται μέσω ενός"
+
+#: djnro/templates/front/management.html:21
+msgid ""
+"The following attributes are required for administrators and must be "
+"released by their home IdPs to the SP"
+msgstr ""
+"Τα εξής χαρακτηριστικά απαιτούνται για τους διαχειριστές και πρέπει να "
+"απελευθερώνονται από τον οικείο IdP προς τον SP"
+
+#: djnro/templates/front/management.html:21
+msgid "according to the"
+msgstr "σύμφωνα με την"
+
+#: djnro/templates/front/management.html:21
+msgid "policy and procedures documentation"
+msgstr "τεκμηρίωση πολιτικής και διαδικασιών"
+
+#: djnro/templates/front/management.html:21
+msgid "provided by the GRNET AAI federation"
+msgstr "που παρέχεται από την Ομοσπονδία AAI του ΕΔΕΤ"
+
+#: djnro/templates/front/management.html:23
+msgid "Attribute"
+msgstr "Χαρακτηριστικό"
+
+#: djnro/templates/front/management.html:23
+msgid "Description"
+msgstr "Περιγραφή"
+
+#: djnro/templates/front/management.html:25
+msgid ""
+"Provides a string that uniquely identifies an administrator in the "
+"management application."
+msgstr ""
+"Παρέχει μια συμβολοσειρά κειμένου που χρησιμοποιείται ως μοναδικό "
+"αναγνωριστικό του διαχεριστή στην εφαρμογή διαχείρισης."
+
+#: djnro/templates/front/management.html:26
+msgid "A specific URN value must be provided to authorize an administrator:"
+msgstr ""
+"Μια συγκεκριμένη τιμή σε μορφή URN πρέπει να επιστρέφεται προκειμένου ένας "
+"χρήστης να εξουσιοδοτείται ως διαχειριστής:"
+
+#: djnro/templates/front/management.html:27
+msgid ""
+"The e-mail address (one or more) of the administrator. It is used for "
+"notifications from the management application. It may also be used for "
+"further communication, with prior consent."
+msgstr ""
+"Διεύθυνση e-mail (μία ή περισσότερες) του διαχειριστή. Χρησιμοποιείται για "
+"ειδοποιήσεις από την εφαρμογή διαχείρισης. Μπορεί επίσης να χρησιμοποιηθεί "
+"για περαιτέρω επικοινωνία με το διαχειριστή, με προηγούμενη συγκατάθεσή του."
+
+#: djnro/templates/front/management.html:28
+msgid "The person's first name."
+msgstr "Το όνομα του διαχειριστή."
+
+#: djnro/templates/front/management.html:29
+msgid "The person's last name."
+msgstr "Το επώνυμο του διαχειριστή."
+
+#: djnro/templates/front/management.html:33
+msgid ""
+"Once attribute release is setup properly an administrator can login to the "
+"management application."
+msgstr ""
+"Εφόσον απελευθερώνονται τα απαραίτητα χαρακτηριστικά, ο διαχειριστής μπορεί "
+"να συνδεθεί στην εφαρμογή διαχείρισης."
+
+#: djnro/templates/front/management.html:36
+msgid ""
+"After the first login, administrators are asked to associate their account "
+"with the institution they want to manage. Their choice must then be ratified "
+"by the operators of their management application. Following that, they will "
+"be notified through e-mail and they will then be able to start using the "
+"management application."
+msgstr ""
+"Κατά την πρώτη είσοδο, ζητείται από το διαχειριστή να συνδέσει το λογαριασμό "
+"του με το φορέα που επιθυμεί να διαχειρίζεται. Η επιλογή του θα πρέπει να "
+"επικυρωθεί από τους διαχειριστές της εφαρμογής. Στη συνέχεια ο διαχειριστής "
+"θα ενημερωθεί μέσω e-mail ότι μπορεί να ξεκινήσει να χρησιμοποιεί την "
+"εφαρμογή διαχειρίσης."
+
+#: djnro/templates/front/management.html:39
+msgid ""
+"Among other things, the metadata provided by administrators through the "
+"management application are used to compile database data for the federation"
+msgstr ""
+"Μεταξύ άλλων, τα μεταδεδομένα που παρέχονται από τους διαχειριστές μέσω της "
+"εφαρμογής διαχείρισης χρησιμοποιούνται για την ενημέρωση της βάσης δεδομένων "
+"της ομοσπονδίας"
+
+#: djnro/templates/front/management_dropdown.html:3
+msgid "Manage"
+msgstr "Διαχείριση"
+
+#: djnro/templates/front/participants.html:18
+msgid "Participating Institutions"
+msgstr "Συμμετέχοντες Φορείς"
+
+#: djnro/templates/front/participants.html:20
+msgid "In"
+msgstr "Στην"
+
+#: djnro/templates/front/participants.html:20
+msgid "eduroam is provided by the following instituitons/organizations"
+msgstr "το eduroam παρέχεται από τους ακόλουθους φορείς/οργανισμούς"
+
+#: djnro/templates/front/world.html:284
+msgid "Eduroam Worldwide"
+msgstr "Eduroam Παγκοσμίως"
+
+#: djnro/templates/overview/index.html:42
+msgid "users"
+msgstr ""
+
+#: djnro/templates/overview/index.html:86
+msgid "institutions"
+msgstr "φορείς"
+
+#: djnro/templates/overview/index.html:119
+#: djnro/templates/overview/index.html:131
+msgid "Overview"
+msgstr "Επισκόπηση"
+
+#: djnro/templates/overview/index.html:150
+msgid "Users - Institutions"
+msgstr "Χρήστες - Φορείς"
+
+#: djnro/templates/overview/index.html:157
+msgid "Users"
+msgstr "Χρήστες"
+
+#: djnro/templates/overview/index.html:158
+msgid "Institutions"
+msgstr "Φορείς"
+
+#: djnro/templates/overview/index.html:171
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: djnro/templates/overview/index.html:181
+msgid "Active"
+msgstr "Ενεργός"
+
+#: djnro/templates/overview/index.html:181
+msgid "Inactive"
+msgstr "Ανενεργός"
+
+#: djnro/templates/overview/index.html:181
+msgid "Key Expired"
+msgstr ""
+
+#: djnro/templates/overview/index.html:198
+msgid "Admin Users"
+msgstr "Διαχειριστές"
+
+#: djnro/templates/registration/activate.html:3
+#: djnro/templates/registration/activation_complete.html:3
+#: djnro/templates/registration/activation_complete.html:25
+msgid "Activation Complete"
+msgstr "Ολοκλήρωση Ενεργοποίησης"
+
+#: djnro/templates/registration/activate.html:25
+msgid "Activation Status"
+msgstr "Κατάσταση Ενεργοποίησης"
+
+#: djnro/templates/registration/activate.html:30
+msgid "succesfully activated"
+msgstr "ενεργοποιήθηκε επιτυχώς"
+
+#: djnro/templates/registration/activate.html:32
+msgid "The user has probably been already activated."
+msgstr "Ο χρήστης φαίνεται να έχει ήδη ενεργοποιηθεί"
+
+#: djnro/templates/registration/activate_edit.html:28
+msgid "User"
+msgstr "Χρήστης"
+
+#: djnro/templates/registration/activate_edit.html:47
+msgid "Activate"
+msgstr "Ενεργοποίηση"
+
+#: djnro/templates/registration/activation_complete.html:29
+msgid "The user will be notified about his/her account activation"
+msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
+
+#: edumanage/decorators.py:18 edumanage/views.py:1582 edumanage/views.py:1672
 #, python-format
 msgid ""
 "User account <strong>%s</strong> is pending activation. Administrators have "
@@ -61,11 +1126,6 @@ msgstr "Αυτό το πεδίο είναι απαραίτητο"
 #: edumanage/forms.py:113
 msgid "Invalid network address/hostname format"
 msgstr "Λανθασμένη IP διεύθυνση ή όνομα host"
-
-#: edumanage/forms.py:135 edumanage/models.py:210
-#: templates/edumanage/realms_edit.html:52
-msgid "Only IdP and IdP/SP server types are allowed"
-msgstr "Επιτρέπονται servers τύπου IdP ή IdP/SP"
 
 #: edumanage/forms.py:163 edumanage/forms.py:165
 msgid "Fill in at least one location name in English"
@@ -102,24 +1162,22 @@ msgstr ""
 
 #: edumanage/models.py:318
 #, python-format
-msgid ""
-"Institution: %(inst)s, Monitored Realm: %(monrealm)s, Proxyback Client: "
-"%(servername)s"
+msgid "Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s"
 msgstr ""
 
-#: edumanage/models.py:361
+#: edumanage/models.py:360
 #, python-format
 msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
 "%(phase2)s, Username: %(username)s"
 msgstr ""
 
-#: edumanage/models.py:407
+#: edumanage/models.py:406
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr ""
 
-#: edumanage/models.py:472
+#: edumanage/models.py:471
 msgid ""
 "The primary, registered domain name for your institution, eg. example.com."
 "<br>This is used to derive the Operator-Name attribute according to RFC5580, "
@@ -129,7 +1187,7 @@ msgstr ""
 "παράγεται το attribute Operator-Name σύμφωνα με το RFC5580, παρ. 4.1, "
 "χρησιμοποιώντας το REALM namespace, π.χ. 1example.com"
 
-#: edumanage/models.py:474
+#: edumanage/models.py:473
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -137,7 +1195,7 @@ msgstr ""
 "Συνολικός αριθμός χρηστών (προσώπων) που δύνανται να συμμετέχουν στην "
 "υπηρεσία eduroam"
 
-#: edumanage/models.py:475
+#: edumanage/models.py:474
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
@@ -145,17 +1203,17 @@ msgstr ""
 "Συνολικός αριθμός λογαριασμών που μπορούν να χρησιμοποιηθούν για ταυτοποίηση "
 "χρηστών στην υπηρεσία eduroam"
 
-#: edumanage/models.py:483
+#: edumanage/models.py:482
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:514
+#: edumanage/models.py:513
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr ""
 
-#: edumanage/models.py:544
+#: edumanage/models.py:543
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
@@ -163,41 +1221,41 @@ msgid ""
 "%(numid)s"
 msgstr ""
 
-#: edumanage/views.py:1126
+#: edumanage/views.py:1530
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
 msgstr ""
 
-#: edumanage/views.py:1128
+#: edumanage/views.py:1536
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:1130
+#: edumanage/views.py:1541
 msgid "Your idP should release the mail attribute towards this service"
 msgstr ""
 
-#: edumanage/views.py:1162
+#: edumanage/views.py:1594
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
 "%s"
 msgstr ""
 
-#: edumanage/views.py:1166
+#: edumanage/views.py:1603
 #, python-format
 msgid "Invalid login procedure. Error: %s"
 msgstr "Λανθασμένη διαδικασία εισαγωγής στη διαχείριση. Σφάλμα: %s"
 
-#: edumanage/views.py:1228
+#: edumanage/views.py:1654
 msgid ""
 "Violation warning: User account is already associated with an institution."
 "The event has been logged and our administrators will be notified about it"
 msgstr ""
 
-#: edumanage/management/commands/importcsv.py:46
+#: edumanage/management/commands/importcsv.py:50
 msgid "Error in usage. See help"
 msgstr ""
 
@@ -234,1082 +1292,84 @@ msgstr ""
 msgid "This %(provider)s account is already in use."
 msgstr ""
 
-#: templates/404.html:6 templates/500.html:6 templates/base.html:81
-#: templates/base.html.py:124 templates/status.html:6
-#: templates/edumanage/catenroll.html:4 templates/edumanage/contacts.html:4
-#: templates/edumanage/contacts_edit.html:4
-#: templates/edumanage/institution.html:12
-#: templates/edumanage/institution_edit.html:5
-#: templates/edumanage/instrealmmon_edit.html:4
-#: templates/edumanage/instrealmmons.html:4
-#: templates/edumanage/monlocauthpar_edit.html:4
-#: templates/edumanage/realms.html:4 templates/edumanage/realms_edit.html:4
-#: templates/edumanage/server_details.html:4
-#: templates/edumanage/servers.html:4 templates/edumanage/servers_edit.html:4
-#: templates/edumanage/service_details.html:5
-#: templates/edumanage/services.html:4
-#: templates/edumanage/services_edit.html:5
-#: templates/edumanage/welcome.html:186 templates/edumanage/welcome.html:198
-#: templates/edumanage/welcome.html:242 templates/front/index.html:3
-#: templates/registration/activate.html:7
-#: templates/registration/activation_complete.html:7
-#: templates/registration/select_institution.html:6
-msgid "Home"
-msgstr "Αρχική"
+msgid "Greece"
+msgstr "Ελλάδα"
 
-#: templates/base.html:94 templates/edumanage/services_edit.html:378
-msgid "Language"
-msgstr "Γλώσσα"
+msgid "Designed and developed by"
+msgstr "Σχεδιάζεται και αναπτύσσεται από το"
 
-#: templates/base.html:125
-msgid "USERS"
-msgstr "ΧΡΗΣΤΕΣ"
-
-#: templates/base.html:126
-msgid "The service"
-msgstr "Η υπηρεσία"
-
-#: templates/base.html:128
-msgid "INSTITUTIONS"
-msgstr "ΦΟΡΕΙΣ"
-
-#: templates/base.html:129 templates/front/management.html:3
-#: templates/front/management.html.py:10
-msgid "Management"
-msgstr "Διαχείριση"
-
-#: templates/base.html:130
-msgid "SERVICE"
-msgstr "ΥΠΗΡΕΣΙΑ"
-
-#: templates/base.html:131
-msgid "Closest eduroam"
-msgstr "Πλησιέστερο eduroam"
-
-#: templates/base.html:132
-msgid "World eduroam"
-msgstr "eduroam στον κόσμο"
-
-#: templates/base.html:133 templates/front/participants.html:3
-msgid "Participants"
-msgstr "Συμμετέχοντες"
-
-#: templates/base.html:134
-msgid "API"
+msgid ""
+"The following are the requirements for admitting administrators to the "
+"management application. Having fulfilled these, an administrator can log "
+"in by clicking Manage below or by selecting Manage from the top menu."
 msgstr ""
+"Τα ακόλουθα απαιτούνται για να αποκτήσει πρόσβαση ένας διαχειριστής στην "
+"εφαρμογή. Έχοντας εκπληρώσει αυτές τις προϋποθέσεις ο διαχειριστής μπορεί "
+"να συνδεθεί στην εφαρμογή χρησιμοποιώντας την επιλογή Shibboleth από από "
+"το μενού <b>Διαχείριση</b> στο επάνω μέρος της σελίδας."
 
-#: templates/base.html:135
-msgid "Closest point"
-msgstr "Πλησιέστερο σημείο"
+msgid ""
+"Management can be carried out by users with a valid social media account. "
+"The supported social media are depicted under the <b>manage</b> drop down "
+"menu on top. Users can authenticate via their social media account. Once "
+"they are activated they can manage their data"
+msgstr ""
+"Η διαχείριση μπορεί να πραγματοποιηθεί από χρήστες με λογαριασμούς social "
+"media.Τα social media που επιτρέπουν τη διαχείριση παρουσιάζονται κάτω "
+"από το μενού <b>Διαχείριση</b> στο επάνω μέρος της σελίδας. Οι "
+"διαχειριστές ταυτοποιούνται με το social media λογαρισμό τους. Αφού "
+"ενεργοποιηθούν, αποκτούν πρόσβαση στα δεδομένα του ιδρύματός τους"
 
-#: templates/footer.html:5
-msgid "If you have any questions or need help, contact"
-msgstr "Αν έχετε απορίες ή χρειάζεστε βοήθεια, επικοινωνήστε με το"
+msgid "GRNET NOC"
+msgstr "το NOC του ΕΔΕΤ"
 
-#: templates/footer.html:7
-msgid "This is a service provided by"
-msgstr "Αυτή η υπηρεσία παρέχεται από το"
+msgid "contact GRNET Helpdesk"
+msgstr "επικοινωνήστε με το Helpdesk του ΕΔΕΤ"
 
-#: templates/edumanage/add_user.html:6 templates/edumanage/contacts.html:114
-#: templates/edumanage/contacts_edit.html:32
-#: templates/edumanage/institution.html:35
-#: templates/edumanage/institution_edit.html:87
-#: templates/edumanage/servers.html:118 templates/edumanage/services.html:114
-#: templates/edumanage/services_edit.html:378 templates/front/index.html:173
-#: templates/overview/index.html:170 templates/overview/index.html.py:194
-msgid "Name"
+msgid "Timeout"
+msgstr "Όριο Λήξης"
+
+msgid "Timeout in seconds"
+msgstr "Όριο λήξης σε δευτερόλεπτα"
+
+msgid "files"
+msgstr "αρχείων"
+
+msgid "Main"
+msgstr "Βασικές"
+
+msgid "Advanced"
+msgstr "Προηγμένες"
+
+msgid "A valid registered domain name for your institution, eg. example.com"
+msgstr "Ένα έγκυρο domain name για το φορέα σας, πχ. example.com "
+
+msgid "services"
+msgstr "υπηρεσίες"
+
+msgid "You are about to delete service"
+msgstr "Πρόκειται να διαγράψετε την υπηρεσία"
+
+msgid "Delete Service"
+msgstr "Διαγραφή Υπηρεσίας"
+
+msgid "Service Details"
+msgstr "Λεπτομέρειες Υπηρεσίας"
+
+msgid "Add Service"
+msgstr "Προσθήκη Υπηρεσίας"
+
+msgid "Services"
+msgstr "Υπηρεσίες"
+
+msgid "First name"
 msgstr "Όνομα"
 
-#: templates/edumanage/add_user.html:14 templates/edumanage/contacts.html:115
-#: templates/edumanage/contacts_edit.html:40 templates/overview/index.html:169
-#: templates/registration/select_institution.html:45
-msgid "Email"
-msgstr ""
+msgid "Last name"
+msgstr "Επώνυμο"
 
-#: templates/edumanage/add_user.html:22 templates/edumanage/contacts.html:116
-#: templates/edumanage/contacts_edit.html:48
-msgid "Phone"
-msgstr "Τηλέφωνο"
+msgid "What"
+msgstr "Τι είναι"
 
-#: templates/edumanage/catenroll.html:5
-msgid "CAT Enroll"
-msgstr ""
-
-#: templates/edumanage/catenroll.html:34
-#, fuzzy
-msgid "CAT Institution ID"
-msgstr "Φορέας"
-
-#: templates/edumanage/catenroll.html:35
-msgid "CAT configuration profiles"
-msgstr ""
-
-#: templates/edumanage/catenroll.html:36
-msgid "URL/Status"
-msgstr "URL/Κατάσταση"
-
-#: templates/edumanage/catenroll.html:37 templates/edumanage/catenroll.html:63
-msgid "CAT instance"
-msgstr ""
-
-#: templates/edumanage/catenroll.html:38
-msgid "Applier"
-msgstr "Χρήστης"
-
-#: templates/edumanage/catenroll.html:75
-#: templates/edumanage/contacts_edit.html:58
-#: templates/edumanage/institution_edit.html:172
-#: templates/edumanage/instrealmmon_edit.html:48
-#: templates/edumanage/monlocauthpar_edit.html:76
-#: templates/edumanage/realms_edit.html:58
-#: templates/edumanage/servers_edit.html:118
-#: templates/edumanage/services_edit.html:504
-#: templates/registration/select_institution.html:69
-msgid "Apply"
-msgstr "Εφαρμογή"
-
-#: templates/edumanage/contacts.html:5 templates/edumanage/contacts.html:99
-#: templates/edumanage/contacts_edit.html:5
-#: templates/edumanage/institution.html:59
-#: templates/edumanage/institution_edit.html:115
-#: templates/edumanage/service_details.html:137
-#: templates/edumanage/services_edit.html:417
-#: templates/edumanage/welcome.html:219 templates/overview/index.html:196
-msgid "Contacts"
-msgstr "Επαφές"
-
-#: templates/edumanage/contacts.html:35
-#: templates/edumanage/instrealmmons.html:39
-#: templates/edumanage/realms.html:32 templates/edumanage/servers.html:38
-#: templates/edumanage/services.html:41 templates/overview/index.html:42
-#: templates/overview/index.html.py:86
-msgid "Display"
-msgstr "Προβολή"
-
-#: templates/edumanage/contacts.html:35
-#: templates/edumanage/instrealmmons.html:39
-#: templates/edumanage/realms.html:32 templates/edumanage/servers.html:38
-#: templates/edumanage/services.html:41 templates/overview/index.html:42
-#: templates/overview/index.html.py:86
-msgid "All"
-msgstr "Όλα"
-
-#: templates/edumanage/contacts.html:35
-msgid "contacts"
-msgstr "επαφές"
-
-#: templates/edumanage/contacts.html:37
-#: templates/edumanage/instrealmmons.html:41
-#: templates/edumanage/realms.html:34 templates/edumanage/servers.html:40
-#: templates/edumanage/services.html:43 templates/overview/index.html:44
-#: templates/overview/index.html.py:88
-msgid "No records to display"
-msgstr "Δεν υπάρχουν δεδομένα για προβολή"
-
-#: templates/edumanage/contacts.html:39
-#: templates/edumanage/instrealmmons.html:43
-#: templates/edumanage/realms.html:36 templates/edumanage/servers.html:42
-#: templates/edumanage/services.html:45 templates/overview/index.html:46
-#: templates/overview/index.html.py:90
-msgid "Showing 0 to 0 of 0 entries"
-msgstr "Προβολή 0 έως 0 από 0 εγγραφές"
-
-#: templates/edumanage/contacts.html:42
-#: templates/edumanage/instrealmmons.html:46
-#: templates/edumanage/realms.html:39 templates/edumanage/servers.html:45
-#: templates/edumanage/services.html:48 templates/overview/index.html:49
-#: templates/overview/index.html.py:93
-msgid "Search:"
-msgstr "Αναζήτηση"
-
-#: templates/edumanage/contacts.html:45
-#: templates/edumanage/instrealmmons.html:49
-#: templates/edumanage/realms.html:42 templates/edumanage/servers.html:48
-#: templates/edumanage/services.html:51 templates/overview/index.html:52
-#: templates/overview/index.html.py:96
-msgid "First"
-msgstr "Πρώτη"
-
-#: templates/edumanage/contacts.html:46
-#: templates/edumanage/instrealmmons.html:50
-#: templates/edumanage/realms.html:43 templates/edumanage/servers.html:49
-#: templates/edumanage/services.html:52 templates/overview/index.html:53
-#: templates/overview/index.html.py:97
-msgid "Previous"
-msgstr "Προηγούμενο"
-
-#: templates/edumanage/contacts.html:47
-#: templates/edumanage/instrealmmons.html:51
-#: templates/edumanage/realms.html:44 templates/edumanage/servers.html:50
-#: templates/edumanage/services.html:53 templates/overview/index.html:54
-#: templates/overview/index.html.py:98
-msgid "Next"
-msgstr "Επόμενο"
-
-#: templates/edumanage/contacts.html:48
-#: templates/edumanage/instrealmmons.html:52
-#: templates/edumanage/realms.html:45 templates/edumanage/servers.html:51
-#: templates/edumanage/services.html:54 templates/overview/index.html:55
-#: templates/overview/index.html.py:99
-msgid "Last"
-msgstr "Τελευταία"
-
-#: templates/edumanage/contacts.html:58
-msgid "You are about to delete contact"
-msgstr "Πρόκειται να διαγράψετε την επαφή"
-
-#: templates/edumanage/contacts.html:58
-#: templates/edumanage/instrealmmons.html:62
-#: templates/edumanage/instrealmmons.html:92
-#: templates/edumanage/services.html:63
-msgid "Press Delete to proceed or Cancel to cancel deletion"
-msgstr "Επιλέξτε Διαγραφή για να συνεχίσετε ή Άκυρο για να ακυρώσετε"
-
-#: templates/edumanage/contacts.html:59 templates/edumanage/contacts.html:136
-msgid "Delete contact"
-msgstr "Διαγραφή Επαφής"
-
-#: templates/edumanage/contacts.html:108
-msgid "Add new contact"
-msgstr "Προσθήκη Επαφής"
-
-#: templates/edumanage/contacts.html:117
-#: templates/edumanage/instrealmmons.html:151
-#: templates/edumanage/realms.html:115 templates/edumanage/servers.html:122
-msgid "Action"
-msgstr "Ενέργεια"
-
-#: templates/edumanage/contacts.html:127
-#: templates/edumanage/contacts_edit.html:6
-#: templates/edumanage/contacts_edit.html:19
-#: templates/edumanage/institution.html:104
-#: templates/edumanage/instrealmmon_edit.html:6
-#: templates/edumanage/instrealmmon_edit.html:19
-#: templates/edumanage/instrealmmons.html:167
-#: templates/edumanage/instrealmmons.html:186
-#: templates/edumanage/monlocauthpar_edit.html:6
-#: templates/edumanage/monlocauthpar_edit.html:25
-#: templates/edumanage/realms.html:124 templates/edumanage/realms_edit.html:6
-#: templates/edumanage/realms_edit.html:19
-#: templates/edumanage/servers.html:133
-#: templates/edumanage/servers_edit.html:6
-#: templates/edumanage/servers_edit.html:21
-#: templates/edumanage/services.html:130
-#: templates/edumanage/services_edit.html:7
-#: templates/edumanage/services_edit.html:334
-msgid "edit"
-msgstr "επεξεργασία"
-
-#: templates/edumanage/contacts.html:127
-#: templates/edumanage/instrealmmons.html:168
-#: templates/edumanage/instrealmmons.html:187
-#: templates/edumanage/realms.html:124 templates/edumanage/servers.html:133
-#: templates/edumanage/services.html:130
-msgid "delete"
-msgstr "διαγραφή"
-
-#: templates/edumanage/contacts.html:142
-#: templates/edumanage/instrealmmons.html:213
-#: templates/edumanage/instrealmmons.html:227
-#: templates/edumanage/realms.html:140 templates/edumanage/servers.html:148
-#: templates/edumanage/services.html:146
-msgid "Cancel"
-msgstr "Άκυρο"
-
-#: templates/edumanage/contacts.html:143
-#: templates/edumanage/instrealmmons.html:214
-#: templates/edumanage/instrealmmons.html:228
-#: templates/edumanage/realms.html:141 templates/edumanage/servers.html:149
-#: templates/edumanage/services.html:147
-msgid "Delete"
-msgstr "Διαγραφή"
-
-#: templates/edumanage/contacts_edit.html:6
-#: templates/edumanage/contacts_edit.html:19
-msgid "Add Contact"
-msgstr "Προσθήκη Επαφής"
-
-#: templates/edumanage/institution.html:13
-#: templates/edumanage/institution.html:18
-#: templates/edumanage/institution_edit.html:6
-#: templates/edumanage/welcome.html:202 templates/overview/index.html:172
-#: templates/registration/activate_edit.html:36
-#: templates/registration/select_institution.html:58
-msgid "Institution"
-msgstr "Φορέας"
-
-#: templates/edumanage/institution.html:41
-#: templates/edumanage/institution_edit.html:93
-#: templates/edumanage/instrealmmons.html:148
-#: templates/edumanage/server_details.html:31
-#: templates/edumanage/servers.html:119
-#: templates/edumanage/servers_edit.html:34 templates/overview/index.html:195
-msgid "Type"
-msgstr "Τύπος"
-
-#: templates/edumanage/institution.html:47
-#: templates/edumanage/institution_edit.html:99
-#: templates/edumanage/services_edit.html:393
-msgid "Address Street"
-msgstr "Οδός"
-
-#: templates/edumanage/institution.html:53
-#: templates/edumanage/institution_edit.html:107
-#: templates/edumanage/services_edit.html:401
-msgid "Address City"
-msgstr "Πόλη"
-
-#: templates/edumanage/institution.html:67
-#: templates/edumanage/institution_edit.html:123
-#: templates/edumanage/service_details.html:192
-#: templates/edumanage/services_edit.html:481
-msgid "Urls"
-msgstr "Σύνδεσμοι"
-
-#: templates/edumanage/institution.html:77
-#: templates/edumanage/institution_edit.html:144
-msgid "Domain Name"
-msgstr "Όνομα Χώρου"
-
-#: templates/edumanage/institution.html:85
-msgid "Number User"
-msgstr "Αριθμός Χρηστών"
-
-#: templates/edumanage/institution.html:92
-#: templates/edumanage/institution_edit.html:163
-msgid "Number of IDs"
-msgstr "Αριθμός ΙDs"
-
-#: templates/edumanage/institution.html:99
-#: templates/edumanage/institution_edit.html:7
-#: templates/edumanage/institution_edit.html:74
-#: templates/edumanage/server_details.html:88
-#: templates/edumanage/service_details.html:201
-#: templates/edumanage/welcome.html:246
-msgid "Edit"
-msgstr "Επεξεργασία"
-
-#: templates/edumanage/institution.html:104
-msgid "No institution details defined yet for"
-msgstr "Δεν έχουν καθοριστεί λεπτομέρειες για το φορέα"
-
-#: templates/edumanage/institution.html:107
-msgid "No institution defined"
-msgstr "Δεν έχει καθοριστεί φορέας"
-
-#: templates/edumanage/institution_edit.html:154
-msgid "Number of Users"
-msgstr "Αριθμός Χρηστών"
-
-#: templates/edumanage/institution_edit.html:179
-#: templates/edumanage/services_edit.html:512
-msgid "Add User"
-msgstr "Νέος Χρήστης"
-
-#: templates/edumanage/institution_edit.html:185
-#: templates/edumanage/services.html:160
-#: templates/edumanage/services_edit.html:518
-msgid "Close"
-msgstr "Κλείσιμο"
-
-#: templates/edumanage/institution_edit.html:186
-msgid "Save changes"
-msgstr "Αποθήκευση"
-
-#: templates/edumanage/instrealmmon_edit.html:5
-#: templates/edumanage/instrealmmons.html:5
-#: templates/edumanage/instrealmmons.html:131
-#: templates/edumanage/monlocauthpar_edit.html:5
-#: templates/edumanage/welcome.html:216
-msgid "Monitored Realms"
-msgstr "Παρακολουθούμενες Περιοχές"
-
-#: templates/edumanage/instrealmmon_edit.html:6
-#: templates/edumanage/instrealmmon_edit.html:19
-msgid "Add Monitored Realm"
-msgstr "Προσθήκη περιοχής προς παρακολούθηση"
-
-#: templates/edumanage/instrealmmon_edit.html:30
-#: templates/edumanage/instrealmmons.html:147
-#: templates/edumanage/monlocauthpar_edit.html:36
-#: templates/edumanage/realms_edit.html:40
-msgid "Realm"
-msgstr "Περιοχή"
-
-#: templates/edumanage/instrealmmon_edit.html:38
-msgid "Monitoring Method"
-msgstr "Μέθοδος παρακολούθησης"
-
-#: templates/edumanage/instrealmmons.html:39
-#: templates/edumanage/realms.html:32
-msgid "realms"
-msgstr "περιοχές"
-
-#: templates/edumanage/instrealmmons.html:62
-msgid "You are about to delete monitored realm (and its parameters if any)"
-msgstr "Θα διαγραφεί η περιοχή (και οι ρυθμίσεις της)"
-
-#: templates/edumanage/instrealmmons.html:63
-msgid "Delete Monitored Realm"
-msgstr "Διαγραφή Monitored Realm"
-
-#: templates/edumanage/instrealmmons.html:92
-msgid "You are about to delete monitored realm parameters for "
-msgstr "Πρόκειται να διαγράψετε τις παραμέτρους για το monitored realm"
-
-#: templates/edumanage/instrealmmons.html:93
-msgid "Delete Monitored Realm Parameters"
-msgstr "Διαγραφή Παραμέτρων Monitored Realm"
-
-#: templates/edumanage/instrealmmons.html:141
-msgid "Add monitored realm"
-msgstr "Προσθήκη Monitored Realm"
-
-#: templates/edumanage/instrealmmons.html:153
-msgid "Parameters"
-msgstr "Παράμετροι"
-
-#: templates/edumanage/instrealmmons.html:193
-msgid "add"
-msgstr "προσθήκη"
-
-#: templates/edumanage/instrealmmons.html:207
-#: templates/edumanage/instrealmmons.html:221
-msgid "Delete monitored realm"
-msgstr "Διαγραφή Monitored Realm"
-
-#: templates/edumanage/monlocauthpar_edit.html:6
-#: templates/edumanage/monlocauthpar_edit.html:25
-msgid "Add Monitored Realm Parameters"
-msgstr "Προσθήκη παραμέτρων Monitored Realm"
-
-#: templates/edumanage/monlocauthpar_edit.html:42
-msgid "EAP Method"
-msgstr "Μέθοδος EAP"
-
-#: templates/edumanage/monlocauthpar_edit.html:50
-msgid "EAP2 Method"
-msgstr "Μέθοδος EAP2"
-
-#: templates/edumanage/monlocauthpar_edit.html:58
-#: templates/overview/index.html:168
-msgid "Username"
-msgstr "Όνομα Χρήστη"
-
-#: templates/edumanage/monlocauthpar_edit.html:66
-msgid "Password"
-msgstr "Κωδικός"
-
-#: templates/edumanage/realms.html:5 templates/edumanage/realms_edit.html:5
-#: templates/edumanage/welcome.html:213
-msgid "Realms"
-msgstr "Περιοχές"
-
-#: templates/edumanage/realms.html:106
-msgid "Add new realm"
-msgstr "Προσθήκη Περιοχής"
-
-#: templates/edumanage/realms.html:134
-msgid "Delete Realm"
-msgstr "Διαγραφή Περιοχής"
-
-#: templates/edumanage/realms_edit.html:6
-#: templates/edumanage/realms_edit.html:19
-msgid "Add Realm"
-msgstr "Προσθήκη περιοχής"
-
-#: templates/edumanage/realms_edit.html:48
-msgid "Proxy to Servers"
-msgstr "Proxy σε Εξυπηρετητές"
-
-#: templates/edumanage/server_details.html:5
-#: templates/edumanage/servers.html:5 templates/edumanage/servers.html:103
-#: templates/edumanage/servers_edit.html:5
-#: templates/edumanage/welcome.html:210
-msgid "Servers"
-msgstr "Εξυπηρετητές"
-
-#: templates/edumanage/server_details.html:37
-#: templates/edumanage/servers_edit.html:58
-msgid "Label"
-msgstr "Ετικέτα"
-
-#: templates/edumanage/server_details.html:43
-#: templates/edumanage/servers_edit.html:42
-msgid "Address Family"
-msgstr "Οικογένεια διευθύνσεων"
-
-#: templates/edumanage/server_details.html:49
-msgid "Host"
-msgstr ""
-
-#: templates/edumanage/server_details.html:56
-#: templates/edumanage/servers_edit.html:67
-msgid "RADIUS Packet Types"
-msgstr ""
-
-#: templates/edumanage/server_details.html:62
-#: templates/edumanage/servers.html:120
-#: templates/edumanage/servers_edit.html:75
-msgid "Authentication Port"
-msgstr ""
-
-#: templates/edumanage/server_details.html:68
-#: templates/edumanage/servers_edit.html:83
-msgid "Accounting Port"
-msgstr ""
-
-#: templates/edumanage/server_details.html:75
-msgid "Status Server"
-msgstr "Εξυπηρετητής Καταστάσεων"
-
-#: templates/edumanage/server_details.html:81
-#: templates/edumanage/servers.html:121
-#: templates/edumanage/servers_edit.html:108
-msgid "Protocol"
-msgstr "Πρωτόκολο"
-
-#: templates/edumanage/servers.html:38
-msgid "servers"
-msgstr "εξυπηρετητές"
-
-#: templates/edumanage/servers.html:112
-msgid "Add new server"
-msgstr "Προσθήκη εξυπηρετητή"
-
-#: templates/edumanage/servers.html:142
-msgid "Delete Server"
-msgstr "Διαγραφή Εξυπηρετητή"
-
-#: templates/edumanage/servers_edit.html:6
-#: templates/edumanage/servers_edit.html:21
-msgid "Add Server"
-msgstr "Προσθήκη Εξυπηρετητή"
-
-#: templates/edumanage/servers_edit.html:50
-msgid "Hostname"
-msgstr ""
-
-#: templates/edumanage/servers_edit.html:92
-msgid "Status-Server"
-msgstr "Εξυπηρετητής Καταστάσεων"
-
-#: templates/edumanage/servers_edit.html:100
-msgid "Secret"
-msgstr "Κωδικός"
-
-#: templates/edumanage/service_details.html:6
-#: templates/edumanage/services.html:5 templates/edumanage/services.html:96
-#: templates/edumanage/services_edit.html:6
-#: templates/edumanage/welcome.html:207
-msgid "Locations"
-msgstr "Τοποθεσίες"
-
-#: templates/edumanage/service_details.html:104
-#: templates/edumanage/services_edit.html:347
-msgid "Location"
-msgstr "Τοποθεσία"
-
-#: templates/edumanage/service_details.html:113
-#: templates/edumanage/services_edit.html:373
-msgid "Location Name"
-msgstr "Όνομα Τοποθεσίας"
-
-#: templates/edumanage/service_details.html:122
-#: templates/edumanage/services.html:115 templates/front/index.html:176
-#: templates/overview/index.html:197
-msgid "Address"
-msgstr "Διεύθυνση"
-
-#: templates/edumanage/service_details.html:145
-#: templates/edumanage/services.html:117
-#: templates/edumanage/services_edit.html:425
-msgid "Encryption Level"
-msgstr "Επίπεδο Κρυπτογράφησης"
-
-#: templates/edumanage/service_details.html:151
-#: templates/edumanage/services_edit.html:433 templates/front/index.html:191
-msgid "Port Restrict"
-msgstr "Περιορισμός θύρας"
-
-#: templates/edumanage/service_details.html:158
-#: templates/edumanage/services_edit.html:441
-msgid "Transparent Proxy"
-msgstr ""
-
-#: templates/edumanage/service_details.html:179
-#: templates/edumanage/services_edit.html:465
-msgid "AP number"
-msgstr "Αριθμός APs"
-
-#: templates/edumanage/service_details.html:186
-#: templates/edumanage/services_edit.html:473 templates/front/index.html:203
-msgid "Wired"
-msgstr ""
-
-#: templates/edumanage/services.html:41
-msgid "locations"
-msgstr "τοποθεσίες"
-
-#: templates/edumanage/services.html:63
-msgid "You are about to delete location"
-msgstr "Πρόκειται να διαγράψετε την τοποθεσία"
-
-#: templates/edumanage/services.html:64 templates/edumanage/services.html:140
-msgid "Delete Location"
-msgstr "Διαγραφή Τοποθεσίας"
-
-#: templates/edumanage/services.html:82
-msgid "Service"
-msgstr "Υπηρεσία"
-
-#: templates/edumanage/services.html:82
-msgid "successfully deleted"
-msgstr "διαγράφηκε επιτυχώς"
-
-#: templates/edumanage/services.html:106
-msgid "Add location"
-msgstr "Προσθήκη τοποθεσίας"
-
-#: templates/edumanage/services.html:116 templates/front/index.html:182
-msgid "SSID"
-msgstr ""
-
-#: templates/edumanage/services.html:118
-msgid "AP no"
-msgstr "Αριθμός AP"
-
-#: templates/edumanage/services.html:119
-msgid "Actions"
-msgstr "Ενέργειες"
-
-#: templates/edumanage/services.html:154
-msgid "Location Details"
-msgstr "Λεπτομέρειες Τοποθεσίας"
-
-#: templates/edumanage/services_edit.html:7
-#: templates/edumanage/services_edit.html:334
-msgid "Add Location"
-msgstr "Προσθήκη Tοποθεσίας"
-
-#: templates/edumanage/services_edit.html:355
-msgid "Search location"
-msgstr "Αναζήτηση τοποθεσίας"
-
-#: templates/edumanage/services_edit.html:360
-msgid "Update Map"
-msgstr "Ενημέρωση χάρτη"
-
-#: templates/edumanage/services_edit.html:363
-msgid "Current Location"
-msgstr "Τρέχουσα Τοποθεσία"
-
-#: templates/edumanage/services_edit.html:486
-msgid "url"
-msgstr "σύνδεσμος"
-
-#: templates/edumanage/services_edit.html:486
-msgid "type"
-msgstr "τύπος"
-
-#: templates/edumanage/services_edit.html:486
-msgid "language"
-msgstr "γλώσσα"
-
-#: templates/edumanage/services_edit.html:519
-msgid "Save Changes"
-msgstr "Αποθήκευση Αλλαγών"
-
-#: templates/edumanage/welcome.html:107 templates/front/index.html:167
-msgid "Info"
-msgstr "Στοιχεία"
-
-#: templates/edumanage/welcome.html:108 templates/front/index.html:168
-msgid "More..."
-msgstr "Περισσότερα..."
-
-#: templates/edumanage/welcome.html:189 templates/overview/index.html:122
-#: templates/overview/index.html.py:134
-msgid "Logout"
-msgstr "Έξοδος"
-
-#: templates/edumanage/welcome.html:222
-msgid "eduroam CAT"
-msgstr "eduroam CAT"
-
-#: templates/edumanage/welcome.html:242
-msgid "Service Locations"
-msgstr "Τοποθεσίες Υπηρεσιών"
-
-#: templates/edumanage/welcome.html:246
-msgid "No services defined yet"
-msgstr "Δεν έχουν εισαχθεί υπηρεσίες"
-
-#: templates/edumanage/welcome.html:246
-msgid "Add new service"
-msgstr "Προσθήκη υπηρεσίας"
-
-#: templates/front/api.html:3
-msgid "Closest Point API"
-msgstr "API για το κοντινότερο σημείο"
-
-#: templates/front/api.html:10
-msgid "Closest point API"
-msgstr "API για το κοντινότερο σημείο"
-
-#: templates/front/api.html:13
-msgid ""
-"Since we collect information from eduroam.org about the available eduroam "
-"points, we developed the closest point service API, which handles locating "
-"the closest eduroam service location."
-msgstr ""
-"Μιας και συλλέγουμε πληροφορίες για τα διαθέσιμα σημεία eduroam από το eduroam.org, "
-"δημιουργήσαμε το API για το κοντινότερο σημείο, το οποίο χειρίζεται την έυρεση του κοντινότερου σημείου eduroam."
-
-#: templates/front/api.html:14
-msgid ""
-"The API receives the current location coordinates in a GET request, "
-"calculates the closest point through server-side triangulation and returns a "
-"JSON reply with its’ coordinates and a detailed description."
-msgstr ""
-"Το API λαμβάνει τις συντεταγμένες μια τοποθεσίας σε ένα GET request, "
-"υπολογίζει το κοντινότερο σημείο πρόσβασης βάσει server-side triangulation και επιστρέφει μια απάντηση σε JSON μορφή με τις συντεταγμένες του σημείου πρόσβασης και μια αναλυτική περιγραφή. "
-
-#: templates/front/api.html:16
-msgid ""
-"Based on this API, we developed the closest point web page that allows users "
-"to find the closest eduroam location or a location they search for."
-msgstr ""
-"Βασιζόμενοι σε αυτό το API, δημιουργήσαμε τη σελίδα εύρεσης του κοντινότερου σημείου που επιτρέπει τους χρήστες "
-"να βρίσκουν την τοποθεσία του κοντινότερου σημείου eduroam στην θέση που βρίσκονται ή σε οποιαδήποτε άλλη θέση θελήσουν να ψάξουν."
-
-#: templates/front/api.html:17
-msgid ""
-"Potentials are limitless! You can build your own application either it is "
-"web or mobile or a widget for a wearable device."
-msgstr ""
-"Οι δυνατότητες είναι απεριόριστες! Μπορείτε να δημιουργήσετε την δική σας εφαρμογή είτε είναι στο διαδίκτυο είτε σε κινητό είτε σε κάποια άλλη συσκευή."
-
-#: templates/front/geolocate.html:6
-msgid "Closest"
-msgstr "Πλησιέστερο"
-
-#: templates/front/index.html:179
-msgid "Encryption"
-msgstr "Κρυπτογράφηση"
-
-#: templates/front/index.html:185
-msgid "Number of APs"
-msgstr "Αριθμός APs"
-
-#: templates/front/index.html:194
-msgid "transp_proxy"
-msgstr ""
-
-#: templates/front/index.html:361
-msgid "Eduroam in"
-msgstr "Eduroam στην"
-
-#: templates/front/management.html:13
-msgid ""
-"The management application provides an interface for administrators of "
-"federation member institutions to maintain the data that is necessary for "
-"participating in the federation."
-msgstr ""
-"Η εφαρμογή διαχείρισης παρέχει μια διεπαφή για τους διαχειριστές των φορέων-"
-"μελών της ομοσπονδίας για τη διαχείριση των δεδομένων που είναι απαραίτητα "
-"για τη συμμετοχή του φορέα στην ομοσπονδία."
-
-#: templates/front/management.html:14
-msgid ""
-"Administrators can log in using either Social Networks or the AAI Federation:"
-msgstr ""
-"Οι διαχειριστές μπορούν να συνδεθούν χρησιμοποιώντας είτε Social Networks ή "
-"την Ομοσπονδία AAI:"
-
-#: templates/front/management.html:17
-msgid ""
-"Social networks that have been enabled for authenticating users to the "
-"management application are listed under the <b>Manage</b> drop-down menu. "
-"Once authenticated, a user may need to assert any missing information that "
-"is required by the application (such as an e-mail address). After that, the "
-"user can proceed with activation."
-msgstr ""
-"Τα Social Networks που έχουν ενεργοποιηθεί για ταυτοποίηση χρηστών από την "
-"εφαρμογή διαχείρισης αναφέρονται κάτω από το μενού <b>Διαχείριση</b>. Μετά "
-"την ταυτοποίηση ο χρήστης ίσως χρειαστεί να παράσχει στοιχεία που τυχόν "
-"λείπουν καιαπαιτούνται από την εφαρμογή (όπως η διεύθυνση e-mail). Στη "
-"συνέχεια ο χρήστης μπορεί να προχωρήσει στη διαδικασία ενεργοποίησης του "
-"λογαριασμού του."
-
-#: templates/front/management.html:20
-msgid "Authentication and authorization are carried out through a"
-msgstr "Η ταυτοποίηση και εξουσιοδότηση των χρηστών πραγματοποιείται μέσω ενός"
-
-#: templates/front/management.html:21
-msgid ""
-"The following attributes are required for administrators and must be "
-"released by their home IdPs to the SP"
-msgstr ""
-"Τα εξής χαρακτηριστικά απαιτούνται για τους διαχειριστές και πρέπει να "
-"απελευθερώνονται από τον οικείο IdP προς τον SP"
-
-#: templates/front/management.html:21
-msgid "according to the"
-msgstr "σύμφωνα με την"
-
-#: templates/front/management.html:21
-msgid "policy and procedures documentation"
-msgstr "τεκμηρίωση πολιτικής και διαδικασιών"
-
-#: templates/front/management.html:21
-msgid "provided by the GRNET AAI federation"
-msgstr "που παρέχεται από την Ομοσπονδία AAI του ΕΔΕΤ"
-
-#: templates/front/management.html:23
-msgid "Attribute"
-msgstr "Χαρακτηριστικό"
-
-#: templates/front/management.html:23
-msgid "Description"
-msgstr "Περιγραφή"
-
-#: templates/front/management.html:25
-msgid ""
-"Provides a string that uniquely identifies an administrator in the "
-"management application."
-msgstr ""
-"Παρέχει μια συμβολοσειρά κειμένου που χρησιμοποιείται ως μοναδικό "
-"αναγνωριστικό του διαχεριστή στην εφαρμογή διαχείρισης."
-
-#: templates/front/management.html:26
-msgid "A specific URN value must be provided to authorize an administrator:"
-msgstr ""
-"Μια συγκεκριμένη τιμή σε μορφή URN πρέπει να επιστρέφεται προκειμένου ένας "
-"χρήστης να εξουσιοδοτείται ως διαχειριστής:"
-
-#: templates/front/management.html:27
-msgid ""
-"The e-mail address (one or more) of the administrator. It is used for "
-"notifications from the management application. It may also be used for "
-"further communication, with prior consent."
-msgstr ""
-"Διεύθυνση e-mail (μία ή περισσότερες) του διαχειριστή. Χρησιμοποιείται για "
-"ειδοποιήσεις από την εφαρμογή διαχείρισης. Μπορεί επίσης να χρησιμοποιηθεί "
-"για περαιτέρω επικοινωνία με το διαχειριστή, με προηγούμενη συγκατάθεσή του."
-
-#: templates/front/management.html:28
-msgid "The person's first name."
-msgstr "Το όνομα του διαχειριστή."
-
-#: templates/front/management.html:29
-msgid "The person's last name."
-msgstr "Το επώνυμο του διαχειριστή."
-
-#: templates/front/management.html:33
-msgid ""
-"Once attribute release is setup properly an administrator can login to the "
-"management application."
-msgstr ""
-"Εφόσον απελευθερώνονται τα απαραίτητα χαρακτηριστικά, ο διαχειριστής μπορεί "
-"να συνδεθεί στην εφαρμογή διαχείρισης."
-
-#: templates/front/management.html:36
-msgid ""
-"After the first login, administrators are asked to associate their account "
-"with the institution they want to manage. Their choice must then be ratified "
-"by the operators of their management application. Following that, they will "
-"be notified through e-mail and they will then be able to start using the "
-"management application."
-msgstr ""
-"Κατά την πρώτη είσοδο, ζητείται από το διαχειριστή να συνδέσει το λογαριασμό "
-"του με το φορέα που επιθυμεί να διαχειρίζεται. Η επιλογή του θα πρέπει να "
-"επικυρωθεί από τους διαχειριστές της εφαρμογής. Στη συνέχεια ο διαχειριστής "
-"θα ενημερωθεί μέσω e-mail ότι μπορεί να ξεκινήσει να χρησιμοποιεί την "
-"εφαρμογή διαχειρίσης."
-
-#: templates/front/management.html:39
-msgid ""
-"Among other things, the metadata provided by administrators through the "
-"management application are used to compile database data for the federation"
-msgstr ""
-"Μεταξύ άλλων, τα μεταδεδομένα που παρέχονται από τους διαχειριστές μέσω της "
-"εφαρμογής διαχείρισης χρησιμοποιούνται για την ενημέρωση της βάσης δεδομένων "
-"της ομοσπονδίας"
-
-#: templates/front/management_dropdown.html:3
-msgid "Manage"
-msgstr "Διαχείριση"
-
-#: templates/front/participants.html:18
-msgid "Participating Institutions"
-msgstr "Συμμετέχοντες Φορείς"
-
-#: templates/front/participants.html:20
-msgid "In"
-msgstr "Στην"
-
-#: templates/front/participants.html:20
-msgid "eduroam is provided by the following instituitons/organizations"
-msgstr "το eduroam παρέχεται από τους ακόλουθους φορείς/οργανισμούς"
-
-#: templates/front/world.html:284
-msgid "Eduroam Worldwide"
-msgstr "Eduroam Παγκοσμίως"
-
-#: templates/overview/index.html:42
-msgid "users"
-msgstr ""
-
-#: templates/overview/index.html:86
-msgid "institutions"
-msgstr "φορείς"
-
-#: templates/overview/index.html:119 templates/overview/index.html.py:131
-msgid "Overview"
-msgstr "Επισκόπηση"
-
-#: templates/overview/index.html:150
-msgid "Users - Institutions"
-msgstr "Χρήστες - Φορείς"
-
-#: templates/overview/index.html:157
-msgid "Users"
-msgstr "Χρήστες"
-
-#: templates/overview/index.html:158
-msgid "Institutions"
-msgstr "Φορείς"
-
-#: templates/overview/index.html:171
-msgid "Status"
-msgstr "Κατάσταση"
-
-#: templates/overview/index.html:181
-msgid "Active"
-msgstr "Ενεργός"
-
-#: templates/overview/index.html:181
-msgid "Inactive"
-msgstr "Ανενεργός"
-
-#: templates/overview/index.html:181
-msgid "Key Expired"
-msgstr ""
-
-#: templates/overview/index.html:198
-msgid "Admin Users"
-msgstr "Διαχειριστές"
-
-#: templates/registration/activate.html:3
-#: templates/registration/activation_complete.html:3
-#: templates/registration/activation_complete.html:25
-msgid "Activation Complete"
-msgstr "Ολοκλήρωση Ενεργοποίησης"
-
-#: templates/registration/activate.html:25
-msgid "Activation Status"
-msgstr "Κατάσταση Ενεργοποίησης"
-
-#: templates/registration/activate.html:30
-msgid "succesfully activated"
-msgstr "ενεργοποιήθηκε επιτυχώς"
-
-#: templates/registration/activate.html:32
-msgid "The user has probably been already activated."
-msgstr "Ο χρήστης φαίνεται να έχει ήδη ενεργοποιηθεί"
-
-#: templates/registration/activate_edit.html:28
-msgid "User"
-msgstr "Χρήστης"
-
-#: templates/registration/activate_edit.html:47
-msgid "Activate"
-msgstr "Ενεργοποίηση"
-
-#: templates/registration/activation_complete.html:29
-msgid "The user will be notified about his/her account activation"
-msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού"
-
-#~ msgid "Greece"
-#~ msgstr "Ελλάδα"
-
-#~ msgid "Designed and developed by"
-#~ msgstr "Σχεδιάζεται και αναπτύσσεται από το"
-
-#, fuzzy
-#~ msgid ""
-#~ "The following are the requirements for admitting administrators to the "
-#~ "management application. Having fulfilled these, an administrator can log "
-#~ "in by clicking Manage below or by selecting Manage from the top menu."
-#~ msgstr ""
-#~ "Τα ακόλουθα απαιτούνται για να αποκτήσει πρόσβαση ένας διαχειριστής στην "
-#~ "εφαρμογή. Έχοντας εκπληρώσει αυτές τις προϋποθέσεις ο διαχειριστής μπορεί "
-#~ "να συνδεθεί στην εφαρμογή χρησιμοποιώντας την επιλογή Shibboleth από από "
-#~ "το μενού <b>Διαχείριση</b> στο επάνω μέρος της σελίδας."
-
-#~ msgid ""
-#~ "Management can be carried out by users with a valid social media account. "
-#~ "The supported social media are depicted under the <b>manage</b> drop down "
-#~ "menu on top. Users can authenticate via their social media account. Once "
-#~ "they are activated they can manage their data"
-#~ msgstr ""
-#~ "Η διαχείριση μπορεί να πραγματοποιηθεί από χρήστες με λογαριασμούς social "
-#~ "media.Τα social media που επιτρέπουν τη διαχείριση παρουσιάζονται κάτω "
-#~ "από το μενού <b>Διαχείριση</b> στο επάνω μέρος της σελίδας. Οι "
-#~ "διαχειριστές ταυτοποιούνται με το social media λογαρισμό τους. Αφού "
-#~ "ενεργοποιηθούν, αποκτούν πρόσβαση στα δεδομένα του ιδρύματός τους"
-
-#~ msgid "GRNET NOC"
-#~ msgstr "το NOC του ΕΔΕΤ"
-
-#~ msgid "contact GRNET Helpdesk"
-#~ msgstr "επικοινωνήστε με το Helpdesk του ΕΔΕΤ"
-
-#~ msgid "Timeout"
-#~ msgstr "Όριο Λήξης"
-
-#~ msgid "Timeout in seconds"
-#~ msgstr "Όριο λήξης σε δευτερόλεπτα"
-
-#~ msgid "files"
-#~ msgstr "αρχείων"
-
-#~ msgid "Main"
-#~ msgstr "Βασικές"
-
-#~ msgid "Advanced"
-#~ msgstr "Προηγμένες"
-
-#~ msgid "A valid registered domain name for your institution, eg. example.com"
-#~ msgstr "Ένα έγκυρο domain name για το φορέα σας, πχ. example.com "
-
-#~ msgid "services"
-#~ msgstr "υπηρεσίες"
-
-#~ msgid "You are about to delete service"
-#~ msgstr "Πρόκειται να διαγράψετε την υπηρεσία"
-
-#~ msgid "Delete Service"
-#~ msgstr "Διαγραφή Υπηρεσίας"
-
-#~ msgid "Service Details"
-#~ msgstr "Λεπτομέρειες Υπηρεσίας"
-
-#~ msgid "Add Service"
-#~ msgstr "Προσθήκη Υπηρεσίας"
-
-#~ msgid "Services"
-#~ msgstr "Υπηρεσίες"
-
-#~ msgid "First name"
-#~ msgstr "Όνομα"
-
-#~ msgid "Last name"
-#~ msgstr "Επώνυμο"
-
-#~ msgid "What"
-#~ msgstr "Τι είναι"
-
-#~ msgid "You are logged in as"
-#~ msgstr "Έχετε εισαχθεί ως"
+msgid "You are logged in as"
+msgstr "Έχετε εισαχθεί ως"
