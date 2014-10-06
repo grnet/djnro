@@ -28,9 +28,10 @@ Installation and customization is fairly easy and is described in the following 
 .. attention::
    Installation instructions assume a clean Debian Wheezy with Django 1.4
 
-Currently the source code is availiable at code.grnet.gr and can be cloned via git::
+Currently the source code is availiable at code.grnet.gr and github and can be cloned via git::
 
 	git clone https://code.grnet.gr/git/djnro
+    git clone https://github.com/grnet/djnro.git
 
 The Greek eduroam webpage is a living example of DjNRO: `eduroam|gr <http://www.eduroam.gr>`_ 
 
@@ -44,6 +45,7 @@ Features
 * **New** Allow for eduroam CAT institution enrollments
 * **New** Extract contact info for mailing list creation
 * **New** Server monitoring data
+* **New** Pebble watch app with closest eduroam walking instrunctions
 
 Bootstrap CSS framework with responsive design makes it work on every device
 
