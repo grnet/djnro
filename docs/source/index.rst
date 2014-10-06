@@ -30,7 +30,7 @@ Installation and customization is fairly easy and is described in the following 
 
 Currently the source code is availiable at code.grnet.gr and github and can be cloned via git::
 
-	git clone https://code.grnet.gr/git/djnro
+    git clone https://code.grnet.gr/git/djnro
     git clone https://github.com/grnet/djnro.git
 
 The Greek eduroam webpage is a living example of DjNRO: `eduroam|gr <http://www.eduroam.gr>`_ 
