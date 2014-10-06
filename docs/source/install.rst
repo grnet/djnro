@@ -216,7 +216,7 @@ You must also set the following parameters for each CAT instance in CAT_AUTH:
 
 For more information about eduroam CAT, you may read: `A guide to eduroam CAT for federation administrators <https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators>`_.
 
-In case one wants to extend some of the settings only for the local instance, they can prepend 'EXTRA_' on the attribute they want to extend. For example::
+In case one wants to extend some of the settings only for the local instance, they can prepend *EXTRA_* on the attribute they want to extend. For example::
 
 	EXTRA_INSTALLED_APPS = (
 		'django_debug_toolbar',
@@ -282,7 +282,7 @@ We suggest using Apache and mod_wsgi. Below is an example configuration::
 Once you are done, restart apache.
 
 Fetch KML
-^^^^^^^^^^^
+^^^^^^^^^
 A Django management command, named fetch_kml, fetches the KML document and updates the cache with eduroam service locations. It is suggested to periodically run this command in a cron job in order to keep the map up to date::
 
 		./manage.py fetch_kml
@@ -295,7 +295,7 @@ In DjNRO the NRO sets the environment for the institution eduroam admins. Theref
 		./manage.py parse_instituion_xml
 
 Exporting Data
-^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^
 
 DjNRO can export data in formats suitable for use by other software.
 
@@ -350,8 +350,7 @@ Upgrade Instructions
 
 * Copy ``djnro/local_settings.py.dist`` to ``djnro/local_settings.py`` and modify it to match your previous configuration.
 
-* edit the apache configuration in order to work with the new location of wsgi and
-set the python-path attribute.
+* edit the apache configuration in order to work with the new location of wsgi and set the python-path attribute.
 
 * remove old wsgi file ``/path/to/djnro/apache/django.wsgi`` and parent directory
 
@@ -375,7 +374,7 @@ set the python-path attribute.
    You had previously copied ``urls.py.dist`` to ``urls.py``. This is no longer supported; we now use ``djnro/urls.py``. URLs that provide sensitive data are disabled (commented out) by default. You may have to edit the file according to your needs.
 
 Pip Support
-^^^^^^^^^^^^
+^^^^^^^^^^^
 We have added a requirements.txt file, tested for django 1.4.5. You can use it
 with ``pip install -r requirements.txt``.
 
@@ -414,4 +413,25 @@ If you want to use LDAP authentication, local_settings.py must be amended::
 		"is_staff": "cn=staff, ou=Groups, dc=foo, dc=bar, dc=org",
 		"is_superuser": "cn=NOC, ou=Groups,dc=foo, dc=bar, dc=org"
 	}
+
+
+Pebble Watch Application - pebduroam
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The closest point API allows for development of location aware-applications.
+Pebduroam is a Pebble watch application that fetches the closest eduroam access point plus walking instructions on how to reach it.
+Installing the application on your Pebble watch can be done in 2 ways:
+
+* You can install the application via the Pebble App Store: `pebduroam <https://apps.getpebble.com/applications/5384b2119c84af48350000c7>`_
+
+* You can install the application and contribute to its development via github: `pebduroam github repo <https://github.com/leopoul/pebduroam>`_.
+
+  * You need to have a Cloudpebble account to accomplish this.
+  
+  * Once logged-in you need to select Import - Import from github and paste the pebduroam github repo url in the corresponding text box.
+  
+  * Having configured your Pebble watch in developer mode will allow you to build and install your cloned project source directly on your watch.
+
+.. attention::
+   Currently pebduroam uses GRNET's djnro closest point API. To switch the Pebble app to your djnro installation you need to follow the second method of installation 
 
