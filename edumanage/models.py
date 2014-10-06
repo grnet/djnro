@@ -315,9 +315,8 @@ class MonProxybackClient(models.Model):
         verbose_name_plural = "Instituion Proxyback Clients"
 
     def __unicode__(self):
-        return _('Institution: %(inst)s, Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s') % {
+        return _('Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s') % {
         # but name is many-to-many from institution
-            'inst': self.instid.name,
             'monrealm': self.instrealmmonid.realm,
             'servername': self.name,
             }
