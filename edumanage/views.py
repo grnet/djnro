@@ -1640,7 +1640,10 @@ def participants(request):
             pass
     return render_to_response(
         'front/participants.html',
-        {'institutions': dets, 'catexists':cat_exists},
+        {
+            'institutions': dets,
+            'catexists': cat_exists
+        },
         context_instance=RequestContext(request)
     )
 
@@ -1651,6 +1654,7 @@ def selectinst(request):
         request_data = request.POST.copy()
         user = request_data['user']
         try:
+            UserProfile.objects.get(user=user)
             error = _("Violation warning: User account is already associated with an institution.The event has been logged and our administrators will be notified about it")
             return render_to_response(
                 'status.html',
