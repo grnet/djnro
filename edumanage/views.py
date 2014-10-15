@@ -186,6 +186,7 @@ def add_institution_details(request, institution_pk):
         if form.is_valid() and urls_form.is_valid():
             instdets = form.save()
             urls_form.instance = instdets
+            urls_form.save()
             return HttpResponseRedirect(reverse("institutions"))
         else:
             form.fields['institution'] = forms.ModelChoiceField(
@@ -216,7 +217,7 @@ def services(request, service_pk):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [2, 3]:
