@@ -1,21 +1,24 @@
 {% extends "edumanage/welcome.html"%}
+{% load staticfiles %}
 {% load i18n %}
+
 {% block crumbs %}
 	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li><a href="{% url servers %}">{% trans "Servers" %}</a><span class="divider">/</span></li>
 	<li class="active">{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Server" %}{% endif %}</li>
 {% endblock %}
+
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
-<script src="/static/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/static/js/showpass.js"></script>
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/showpass.js' %}"></script>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$('#id_secret').showPassword();
 });
 </script>
-{% endblock %}			
+{% endblock %}
 {% block homeactive %}{% endblock %}
 {% block serversactive %}class="active"{% endblock %}
 {% block subcontent %} <h4>{% if edit %}{{form.instance.get_name}} ({% trans "edit" %}){% else %}{% trans "Add Server" %}{% endif %}</h4>
@@ -120,4 +123,4 @@ $(document).ready(function() {
 	</div>
 </form>
 {% endblock %}
-         
+

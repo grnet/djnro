@@ -1,6 +1,8 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
 {% load tolocale %}
+{% load staticfiles %}
+
 {% block crumbs %}
     <li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
     <li><a href="{% url services %}">{% trans "Locations" %}</a><span class="divider">/</span></li>
@@ -13,10 +15,8 @@
 		width: auto !important;
 	}
 </style>
- <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
-
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
-        
         var map = '';
         var lat = "{{service.latitude}}";
 		var lat = parseFloat(lat.replace(",","."));
@@ -24,9 +24,9 @@
 		var lng = parseFloat(lng.replace(",","."));
 		var latlng = new google.maps.LatLng(lat,lng);
 		var zoomLevel = 16;
-		
+
         function initialize() {
-            image = new google.maps.MarkerImage('/static/img/edupin.png',
+            image = new google.maps.MarkerImage('{% static 'img/edupin.png' %}',
                     // This marker is 29 pixels wide by 40 pixels tall.
                     new google.maps.Size(29, 40),
                     // The origin for this image is 0,0.
@@ -73,25 +73,25 @@
         		'map' : map,
         		'icon': image,
         		});
-        	
+
             }
 
 
         $(document).ready(function() {
-            
+
             initialize();
-           
-             
+
+
         });
-       
-        
-        
-        
+
+
+
+
     </script>
 
 
 {% endblock %}
-            
+
 {% block homeactive %}{% endblock %}
 {% block servicesactive %}class="active"{% endblock %}
 {% block subcontent %}
@@ -111,7 +111,7 @@
 
     <div class="control-group">
         <label class="control-label" for="id_address_city">{% trans "Location Name" %}</label>
-        
+
         <div class="controls">
         	{% for name in service.loc_name.all %}
         		{{name.name}} ({{name.get_lang_display}}){% if not forloop.last %}<br>{% endif %}
@@ -123,14 +123,14 @@
         <div class="controls">
             {{ service.address_street }}<br>
             {{ service.address_city }}
-           
+
         </div>
     </div>
     <div class="control-group {% if form.SSID.errors %} error {% endif %}">
         <label class="control-label" for="id_url">SSID</label>
         <div class="controls">
             {{ service.SSID }}
-            
+
         </div>
     </div>
     <div class="control-group {% if form.contact.errors %} error {% endif %}">
@@ -151,35 +151,35 @@
         <label class="control-label" for="id_number_user">{% trans "Port Restrict" %}</label>
         <div class="controls">
             {{ service.port_restrict }}
-           
+
         </div>
     </div>
     <div class="control-group {% if form.transp_proxy.errors %} error {% endif %}">
         <label class="control-label" for="id_number_id">{% trans "Transparent Proxy" %}</label>
         <div class="controls">
             {{ service.transp_proxy }}
-            
+
         </div>
     </div>
     <div class="control-group {% if form.IPv6.errors %} error {% endif %}">
         <label class="control-label" for="id_number_id">IPv6</label>
         <div class="controls">
             {{ service.IPv6 }}
-        
+
         </div>
     </div>
     <div class="control-group {% if form.NAT.errors %} error {% endif %}">
         <label class="control-label" for="id_number_id">NAT</label>
         <div class="controls">
             {{ service.NAT }}
-   
+
         </div>
     </div>
     <div class="control-group {% if form.AP_no.errors %} error {% endif %}">
         <label class="control-label" for="id_number_id">{% trans "AP number" %}</label>
         <div class="controls">
             {{ service.AP_no }}
-          
+
         </div>
     </div>
     <div class="control-group {% if form.wired.errors %} error {% endif %}">

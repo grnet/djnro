@@ -1,8 +1,11 @@
 {% extends "base.html"%}
 {% load i18n %}
+{% load staticfiles %}
+
 {% block currentpagetitle %}Management{% endblock %}
-{% block extrahead %} <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-<script type="text/javascript" src="/static/js/markerclusterer.js"></script>
+
+{% block extrahead %} <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script %}>
+<script type="text/javascript" src="{% static 'js/markerclusterer.js' %}"></script>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
 	var lat = "{{MAP_CENTER.0}}";
@@ -17,21 +20,21 @@
 	var infoWindow;
 
 var styles = [{
-	url: '/static/img/edugroup.png',
+	url: '{% static 'img/edugroup.png' %}',
 	height: 54,
 	width: 63,
 	textColor: '#ffffff',
 	textSize: 11
 	},
 	{
-	url: '/static/img/edugroup.png',
+	url: '{% static 'img/edugroup.png' %}',
 	height: 54,
 	width: 63,
 	textColor: '#ffffff',
 	textSize: 11
 	},
 	{
-	url: '/static/img/edugroup.png',
+	url: '{% static 'img/edugroup.png' %}',
 	height: 54,
 	width: 63,
 	textColor: '#ffffff',
@@ -39,7 +42,7 @@ var styles = [{
 }];
 
 function initialize() {
-	image = new google.maps.MarkerImage('/static/img/edupin.png',
+	image = new google.maps.MarkerImage('{% static 'img/edupin.png' %}',
 	// This marker is 29 pixels wide by 40 pixels tall.
 	new google.maps.Size(29, 40),
 	// The origin for this image is 0,0.
