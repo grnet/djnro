@@ -1,5 +1,6 @@
-{% extends "base.html" %} {% block content %}
-
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block content %}
 <div class="container-fluid">
 	<div class="row-fluid">
 
@@ -7,24 +8,24 @@
 		<div class="span4">
 			<div class="well">
 				<div class="row-fluid">
-					
+
 					<div class="span12"><h3>Login</h3><hr></div>
 				</div>
 				<div class="row-fluid">
 					<div class="span12">
 
 							<a class="btn btnlogin" href="{% url manage_login 'shibboleth' %}"><img
-								src="/static/img/image_shibboleth_logo_color.png"
+								src="{% static 'img/image_shibboleth_logo_color.png' %}"
 								style="padding: 0px;"><br>Shibboleth</a>
 							<a class="btn btnlogin" href="{% url manage_login 'twitter' %}"><img
-								src="/static/img/twitter_img.png"
+								src="{% static 'img/twitter_img.png' %}"
 								style="padding: 0px;"><br>Twitter</a>
 							<a class="btn btnlogin" href="{% url manage_login 'google' %}"><img
-								 src="/static/img/google_img.png"
+								 src="{% static 'img/google_img.png' %}"
 								style="padding: 0px;"><br>Google</a>
-							
+
 					</div>
-					
+
 				</div>
 			</div>
 		</div>

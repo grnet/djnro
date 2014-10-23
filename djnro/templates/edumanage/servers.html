@@ -1,13 +1,15 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
-			{% block crumbs %}
-	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Servers" %}</li>
-	    			{% endblock %}
-{% load i18n %}
+{% load staticfiles %}
+
+{% block crumbs %}
+<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+<li class="active">{% trans "Servers" %}</li>
+{% endblock %}
+
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/js/datatables_bootstrap.js"></script>
+<script type="text/javascript" src="{% 'static/js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% 'static/js/datatables_bootstrap.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	 {% if servers %}
@@ -62,7 +64,7 @@ $('[id^=del_server_]').click(function(){
 	$("#myModalLabel").html("Delete Server "+name);
 	$('#myModal').modal('show');
 	$(".modal-footer").show();
-	$("#server_name_del").html(name)	
+	$("#server_name_del").html(name)
 	return false;
 });
 
@@ -79,7 +81,7 @@ $("#delserverSubmit").click(function(){
 				$(".modal-footer").hide();
 				$("#mymodalbody").html("Server "+name+" successfully deleted");
 				window.setTimeout('location.reload()', 1000);
-				
+
 			}
 			}
 		});
@@ -92,14 +94,14 @@ $("#delserverSubmit").click(function(){
 {% endblock %}
 
 	{% block navbar %}
-			
+
     		{% endblock %}
-    		
+
     		{% block homeactive %}{% endblock %}
     		{% block serversactive %}class="active"{% endblock %}
             {% block subcontent %}
 
-	            	
+
 	              <h4>{% trans "Servers" %}</h4>
 	              <hr>
 	              {% if messages %}

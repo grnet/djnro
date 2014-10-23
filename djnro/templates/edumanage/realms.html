@@ -1,13 +1,15 @@
 {% extends "edumanage/welcome.html"%}
+{% load staticfiles %}
 {% load i18n %}
-			{% block crumbs %}
-	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Realms" %}</li>
-	    			{% endblock %}
-{% load i18n %}
+
+{% block crumbs %}
+<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+<li class="active">{% trans "Realms" %}</li>
+{% endblock %}
+
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/js/datatables_bootstrap.js"></script>
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/datatables_bootstrap.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	 {% if realms %}
@@ -56,7 +58,7 @@ $('[id^=del_realm_]').click(function(){
 	$("#myModalLabel").html("Delete Realm "+name);
 	$('#myModal').modal('show');
 	$(".modal-footer").show();
-	$("#realm_name_del").html(name)	
+	$("#realm_name_del").html(name)
 	return false;
 });
 
@@ -73,7 +75,7 @@ $("#delrealmSubmit").click(function(){
 				$(".modal-footer").hide();
 				$("#mymodalbody").html("Realm "+name+" successfully deleted");
 				window.setTimeout('location.reload()', 1000);
-				
+
 			}
 			}
 		});
@@ -85,19 +87,19 @@ $("#delrealmSubmit").click(function(){
 {% endblock %}
 
 	{% block navbar %}
-			
+
     		{% endblock %}
-    		
+
     		{% block homeactive %}{% endblock %}
     		{% block realmsactive %}class="active"{% endblock %}
             {% block subcontent %}
 
-	            	
+
 	              <h4>Realms</h4>
 	              <hr>
 	              {% if messages %}
 	                <table class="table table-condensed">
-					
+
 					    {% for message in messages %}
 					    <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
 					    {% endfor %}
@@ -115,7 +117,7 @@ $("#delrealmSubmit").click(function(){
 							<th style="text-align: center;">{% trans "Action" %}</th>
 						</tr>
 						</thead>
-						
+
 						<tbody>
 		                {% for realm in realms %}
 		              	<tr class="GradeC">

@@ -1,13 +1,15 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
-			{% block crumbs %}
-	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Contacts" %}</li>
-	    			{% endblock %}
-{% load i18n %}
+{% load staticfiles %}
+
+{% block crumbs %}
+<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+<li class="active">{% trans "Contacts" %}</li>
+{% endblock %}
+
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/js/datatables_bootstrap.js"></script>
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/datatables_bootstrap.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	 {% if contacts %}
@@ -59,7 +61,7 @@ $('[id^=del_contact_]').click(function(){
 	$("#myModalLabel").html("{% trans 'Delete contact' %} "+name);
 	$('#myModal').modal('show');
 	$(".modal-footer").show();
-	$("#contact_name_del").html(name)	
+	$("#contact_name_del").html(name)
 	return false;
 });
 
@@ -76,7 +78,7 @@ $("#delcontactSubmit").click(function(){
 				$(".modal-footer").hide();
 				$("#mymodalbody").html("contact "+name+" successfully deleted");
 				window.setTimeout('location.reload()', 1000);
-				
+
 			}
 			}
 		});
@@ -88,14 +90,14 @@ $("#delcontactSubmit").click(function(){
 {% endblock %}
 
 	{% block navbar %}
-			
+
     		{% endblock %}
-    		
+
     		{% block homeactive %}{% endblock %}
     		{% block contactsactive %}class="active"{% endblock %}
             {% block subcontent %}
 
-	            	
+
 	              <h4>{% trans "Contacts" %}</h4>
 	              <hr>
 	              {% if messages %}
@@ -117,7 +119,7 @@ $("#delcontactSubmit").click(function(){
 						<th style="text-align: center;">{% trans "Action" %}</th>
 					</tr>
 					</thead>
-					
+
 					<tbody>
 	                {% for contact in contacts %}
 	              	<tr class="GradeC">
