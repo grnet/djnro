@@ -1,18 +1,21 @@
 {% extends "edumanage/welcome.html"%}
+{% load staticfiles %}
 {% load i18n %}
 {% load tolocale %}
+
 {% block crumbs %}
 	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
 	<li><a href="{% url institutions %}">{% trans "Institution" %}</a><span class="divider">/</span></li>
 	<li class="active">{% tolocale institution LANGUAGE_CODE%} ({% trans "Edit" %})</li>
 {% endblock %}
+
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.formset.js"></script>
+<script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$("#adduserSubmit").click(function(){
 		$.ajax({
-			url:"{% url adduser %}", 
+			url:"{% url adduser %}",
 			data:$("#add_user_form").serialize(),
 			type: "POST",
 			cache: false,
@@ -21,7 +24,7 @@ $(document).ready(function() {
 						value = data.value;
 						text = data.text;
 						if (typeof value === 'undefined' && typeof text === 'undefined'){
-							$('#mymodalbody').html(data);	
+							$('#mymodalbody').html(data);
 						}
 						else{
 							$('#id_contact').append($("<option></option>").attr("value",value).text(text));
@@ -30,12 +33,12 @@ $(document).ready(function() {
 					}
 					catch (exception) {
 						$('#mymodalbody').html(data);
-					}					
+					}
 				}
 				});
 		return false;
 	});
-	
+
 	$("#add_contact").click(function(){
 	 $('#myModal').modal('show')
 	 $.ajax({
@@ -45,11 +48,11 @@ $(document).ready(function() {
 				$('#mymodalbody').html(data);
 				}
 			});
-	
+
 	 return false;
 	});
-	
-	
+
+
 	 $('#urlsform tbody tr').formset({
         prefix: '{{urls_form.prefix}}',
         formCssClass: "dynamic-formset1",
@@ -58,13 +61,13 @@ $(document).ready(function() {
 
      $(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
      $(".add-row").prepend('<i class="icon-plus-sign icon-white"></i> ').addClass('btn btn-small btn-info');
-     
-     
+
+
 });
 function addButton(row){
             $(row).find(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
         }
-        
+
 </script>
 
 {% endblock %}
@@ -127,13 +130,13 @@ function addButton(row){
             <table id="urlsform"><thead><tr><td>url</td><td>type</td><td>language</td></tr></thead><tbody>
         {% for formset in urls_form.forms %}
         {{ formset.id }}
-        
-        
+
+
             <tr id="{{ formset.prefix }}-row">
-            <td> {% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="help-inline"> {{ formset.url.errors|join:", " }} </div>{% endif %}</td> 
+            <td> {% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="help-inline"> {{ formset.url.errors|join:", " }} </div>{% endif %}</td>
              <td>{{formset.urltype}}{% if formset.urltype.errors %}<br><p class="help-inline"> {{ formset.urltype.errors|join:", " }} </p>{% endif %}</td>
              <td>{{formset.lang}}{% if formset.lang.errors %}<br><p class="help-inline"> {{ formset.lang.errors|join:", " }} </p>{% endif %}</td>
-             
+
         </tr>
         {% endfor %}
         </tbody></table>
@@ -187,4 +190,4 @@ function addButton(row){
 </div>
 </div>
 {% endblock %}
-              
+

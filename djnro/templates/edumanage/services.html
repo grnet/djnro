@@ -1,13 +1,14 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
-			{% block crumbs %}
-	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Locations" %}</li>
-	    			{% endblock %}
-{% load i18n %}
+{% load staticfiles %}
+
+{% block crumbs %}
+<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+<li class="active">{% trans "Locations" %}</li>
+{% endblock %}
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/js/datatables_bootstrap.js"></script>
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/datatables_bootstrap.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	 {% if services %}
@@ -64,7 +65,7 @@ $('[id^=del_service_]').click(function(){
 	$("#myModalLabel").html("{% trans 'Delete Location' %} "+name);
 	$('#myModal').modal('show');
 	$(".modal-footer").show();
-	$("#service_name_del").html(name)	
+	$("#service_name_del").html(name)
 	return false;
 });
 
@@ -81,7 +82,7 @@ $("#delserviceSubmit").click(function(){
 				$(".modal-footer").hide();
 				$("#mymodalbody").html("{% trans 'Service' %} "+name+" {% trans 'successfully deleted' %}");
 				window.setTimeout('location.reload()', 1000);
-				
+
 			}
 			}
 		});
@@ -97,7 +98,7 @@ $("#delserviceSubmit").click(function(){
               <hr>
               {% if messages %}
 	                <table class="table table-condensed">
-					
+
 					    {% for message in messages %}
 					    <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
 					    {% endfor %}

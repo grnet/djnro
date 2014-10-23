@@ -1,14 +1,16 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
-			{% block crumbs %}
-	    			<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	    			<li class="active">{% trans "Monitored Realms" %}</li>
-	    			{% endblock %}
-{% load i18n %}
-{% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/static/js/datatables_bootstrap.js"></script>
+{% load staticfiles %}
 
+{% block crumbs %}
+    <li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+    <li class="active">{% trans "Monitored Realms" %}</li>
+{% endblock %}
+
+
+{% block extrahead %}
+<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/datatables_bootstrap.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 {% if realms %}
@@ -79,7 +81,7 @@ $("#delrealmSubmit").click(function(){
                 $(".modal-footer").hide();
                 $("#mymodalbody").html("monitored realm "+name+" successfully deleted");
                 window.setTimeout('location.reload()', 1000);
-                
+
             }
             }
         });
@@ -109,7 +111,7 @@ $("#delmonlocauthparSubmit").click(function(){
 				$("#modalfooter2").hide();
 				$("#mymodalbody2").html("monitored realm parameters "+name+" successfully deleted");
 				window.setTimeout('location.reload()', 1000);
-				
+
 			}
 			}
 		});
@@ -121,9 +123,9 @@ $("#delmonlocauthparSubmit").click(function(){
 {% endblock %}
 
 	{% block navbar %}
-			
+
     		{% endblock %}
-    		
+
     		{% block homeactive %}{% endblock %}
     		{% block instrealmmon %}class="active"{% endblock %}
             {% block subcontent %}
@@ -132,7 +134,7 @@ $("#delmonlocauthparSubmit").click(function(){
 	              <hr>
 	              {% if messages %}
                     <table class="table table-condensed">
-                    
+
                         {% for message in messages %}
                         <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
                         {% endfor %}
@@ -146,15 +148,15 @@ $("#delmonlocauthparSubmit").click(function(){
 					<tr>
 						<th>{% trans "Realm" %}</th>
 						<th>{% trans "Type" %}</th>
-						
-	                		
+
+
 						<th style="text-align: center;">{% trans "Action" %}</th>
 						<th>
 	                		{% trans "Parameters" %}
 	                		</th>
 					</tr>
 					</thead>
-					
+
 					<tbody>
 	                {% for realm in realms %}
 	              	<tr class="GradeC">
@@ -163,8 +165,8 @@ $("#delmonlocauthparSubmit").click(function(){
 	                	{{realm.get_mon_type_display}}
 	                	</td>
 	                	<td style="text-align: center;">
-	                		
-	                		<a href="{% url edit-instrealmmon realm.pk %}" class="btn btn-small">{% trans "edit" %}</a> 
+
+	                		<a href="{% url edit-instrealmmon realm.pk %}" class="btn btn-small">{% trans "edit" %}</a>
 	                		<a href="#" id="del_instrealmmon_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
 	                	</td>
 	                		<td style="text-align: center;">
@@ -172,7 +174,7 @@ $("#delmonlocauthparSubmit").click(function(){
 	                		<div class="well paramwell">
 <div class="row">
 <div class="span6">
-                            
+
                                 <dl class="dl-horizontal" style=" text-align: left;">
                                 <dt>Method</dt>
                                 <dd>{{realm.monlocalauthnparam.get_eap_method_display}}</dd>
@@ -185,18 +187,18 @@ $("#delmonlocauthparSubmit").click(function(){
 <div class="span6">
                             <a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini">{% trans "edit" %}</a>
                             <a href="#" id="del_monlocauthpar_{{realm.monlocalauthnparam.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
-                            
+
 </div>
 </div>
-	                		    
+
 	                		{% else %}
 	                		{% if not realm.monlocalauthnparam %}<a href="{% url edit-monlocauthpar realm.pk %}" class="btn btn-mini btn-primary">{% trans "add" %}</a>{% endif %}
 	                		{% endif %}
 	                		</td>
-	                	
-	                	
+
+
 	                </tr>
-	                
+
 	              	{% endfor %}
 	              	</tbody>
 	              </table>

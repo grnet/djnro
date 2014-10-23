@@ -1,15 +1,16 @@
 {% extends "base.html" %}
 {% load i18n %}
-    {% block currentpagetitle %}{% trans "Participants" %}{% endblock %}
-    {% block homepage %}{% endblock %}
-    {% block hometop %}{% endblock %}
-    {% block participants %}class="active"{% endblock %}
-    {% block extrahead %}
-    <style type="text/css">
-      
-      .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
-    </style>
-    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+{% load staticfiles %}
+{% block currentpagetitle %}{% trans "Participants" %}{% endblock %}
+{% block homepage %}{% endblock %}
+{% block hometop %}{% endblock %}
+{% block participants %}class="active"{% endblock %}
+
+{% block extrahead %}
+<style type="text/css">
+  .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
+</style>
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 {% endblock %}
 
 
@@ -35,16 +36,16 @@
 						</dd>
     						</dl>
     						{% endif %}
-    					
-    					
+
+
 					</address>
-						
-						
-						
+
+
+
 					{% endfor %}</div>
 					{% if catexists %}
 					<span style="font-size:11px;"><span style="color:red;">*</span>: Institution admiminstrators may have not created CAT profiles for all/any devices</span>
 					{% endif %}
 					{% endblock %}
-				
-				
+
+

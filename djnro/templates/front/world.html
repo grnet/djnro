@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 {% load i18n %}
-    {% block currentpagetitle %}World{% endblock %}
-    {% block homepage %}{% endblock %}
-    {% block hometop %}{% endblock %}
-    {% block world %}class="active"{% endblock %}
-    {% block extrahead %}
-    <style type="text/css">
-     
-      .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
-    </style>
-    <script type="text/javascript" src="/static/js/jquery.min.js"></script>
-<script type="text/javascript" src="/static/js/markerclusterer.js"></script>
+{% load staticfiles %}
+{% block currentpagetitle %}World{% endblock %}
+{% block homepage %}{% endblock %}
+{% block hometop %}{% endblock %}
+{% block world %}class="active"{% endblock %}
+{% block extrahead %}
+<style type="text/css">
+
+  .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
+</style>
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/markerclusterer.js' %}"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
 <script type="text/javascript">
 	var lat = "{{MAP_CENTER.0}}";
@@ -24,22 +25,22 @@
 	var image = '';
 	var infoWindow;
 	addr = {};
-	
+
 
 	var styles = [ {
-		url : '/static/img/edugroup.png',
+		url : '{% static '/img/edugroup.png' %}',
 		height : 54,
 		width : 63,
 		textColor : '#ffffff',
 		textSize : 11
 	}, {
-		url : '/static/img/edugroup.png',
+		url : '{% static '/img/edugroup.png' %}',
 		height : 54,
 		width : 63,
 		textColor : '#ffffff',
 		textSize : 11
 	}, {
-		url : '/static/img/edugroup.png',
+		url : '{% static '/img/edugroup.png' %}',
 		height : 54,
 		width : 63,
 		textColor : '#ffffff',
@@ -47,7 +48,7 @@
 	} ];
 
 	function initialize() {
-		image = new google.maps.MarkerImage('/static/img/edupin.png',
+		image = new google.maps.MarkerImage('{% static '/img/edupin.png' %}',
 		// This marker is 29 pixels wide by 40 pixels tall.
 		new google.maps.Size(29, 40),
 		// The origin for this image is 0,0.
@@ -105,8 +106,8 @@
 		};
 		map = new google.maps.Map(document.getElementById("map_canvas"),
 				mapOptions);
-		
-		
+
+
 		var homeControlDiv = document.createElement('div');
 		homeControlDiv.className='roundButtonHolder';
 		homeControlDiv.id="locationButton";
@@ -134,7 +135,7 @@
 				$("#showCountryBtn").hide();
 			}
 		});
-		
+
 
 	}
 
@@ -223,7 +224,7 @@
 					}
 				});
 	}
-	
+
 	function codeAddress(address) {
 	    geocoder.geocode( { 'address': address}, function(results, status) {
 	      if (status == google.maps.GeocoderStatus.OK) {
@@ -246,7 +247,7 @@
 		  var controlUI = document.createElement('button');
 		  controlUI.className='btn btn-warning roundButton';
 		  controlUI.id = "showCityBtn";
-		  extraCSS = 'background-image: url(/static/img/city.png);background-position: center center; background-repeat: no-repeat;';
+		  extraCSS = 'background-image: url({% static '/img/city.png' %});background-position: center center; background-repeat: no-repeat;';
 		  controlUI.style.cssText='display:none; cursor:pointer; white-space:nowrap; position:absolute; '+extraCSS;
 		  controlUI.title = "City View";
 
@@ -254,13 +255,13 @@
 		  var controlUI2 = document.createElement('button');
 		  controlUI2.className='btn btn-warning roundButton';
 		  controlUI2.id = "showCountryBtn";
-		  extraCSS2 = 'background-image: url(/static/img/country.png);background-position: center center; background-repeat: no-repeat;';
+		  extraCSS2 = 'background-image: url({% static '/img/country.png' %});background-position: center center; background-repeat: no-repeat;';
 		  controlUI2.style.cssText='display:none; cursor:pointer; white-space:nowrap; position:absolute; '+extraCSS2;
 		  controlUI2.title = "Country View";
-		  
+
 		  controlDiv.appendChild(controlUI);
 		  controlDiv.appendChild(controlUI2);
-		  
+
 		  // Setup the click event listeners: simply set the map to Chicago.
 		  google.maps.event.addDomListener(controlUI, 'click', function() {
 		    codeAddress(addr.city+','+addr.country);
@@ -268,9 +269,9 @@
 		  google.maps.event.addDomListener(controlUI2, 'click', function() {
 			    codeAddress(addr.country);
 			  });
-		  
+
 		}
-	
+
 	$(document).ready(function() {
 		initialize();
 		marks = placeMarkers();
@@ -283,8 +284,8 @@
 					{% block subcontent %}
 					<h4>{% trans "Eduroam Worldwide" %}</h4>
 					<hr>
-					
+
 					<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;"></div>
 					{% endblock %}
-				
-				
+
+
