@@ -1512,7 +1512,7 @@ def manage_login(request, backend):
     qs = '?%s' % qs if qs else ''
     if backend == 'shibboleth':
         return redirect(reverse('login'))
-    return redirect(reverse('socialauth_begin', args=[backend]) + qs)
+    return redirect(reverse('social:begin', args=[backend]) + qs)
 
 
 @never_cache

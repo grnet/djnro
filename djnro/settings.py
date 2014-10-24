@@ -101,7 +101,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'edumanage.context_processors.country_code',
     'edumanage.context_processors.cat_instances',
-    'social_auth.context_processors.social_auth_by_type_backends',
+    'social.apps.django_app.context_processors.backends',
+    'social.apps.django_app.context_processors.login_redirect',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -123,13 +124,16 @@ MIDDLEWARE_CLASSES = (
 AUTHENTICATION_BACKENDS = (
     'djangobackends.shibauthBackend.shibauthBackend',
     # 'django_auth_ldap.backend.LDAPBackend',
-    'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.facebook.FacebookBackend',
-    'social_auth.backends.google.GoogleBackend',
-    'social_auth.backends.contrib.linkedin.LinkedinBackend',
-    'social_auth.backends.contrib.yahoo.YahooOAuthBackend',
-    'social_auth.backends.yahoo.YahooBackend',
-    'social_auth.backends.OpenIDBackend',
+
+    'social.backends.twitter.TwitterOAuth',
+    # 'social.backends.facebook.FacebookOAuth2',
+    'social.backends.google.GoogleOpenId',
+    'social.backends.google.GoogleOAuth2',
+    'social.backends.google.GoogleOAuth',
+    # 'social.backends.linkedin.LinkedinOAuth2',
+    # 'social.backends.yahoo.YahooOpenId',
+    # 'social.backends.open_id.OpenIdAuth',
+
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -159,12 +163,12 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.admindocs',
     'django.contrib.staticfiles',
+    'social.apps.django_app.default',
     'edumanage',
     'accounts',
     'south',
     'registration',
     'tinymce',
-    'social_auth',
     'utils',
 )
 
