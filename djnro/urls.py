@@ -6,7 +6,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    (r'^accounts/', include('social_auth.urls')),
+    (r'^accounts/', include('social.apps.django_app.urls', namespace='social')),
     (r'^setlang/?$', 'django.views.i18n.set_language'),
     # Uncomment the next line to enable django admin documentation:
     #(r'^admin/doc/', include('django.contrib.admindocs.urls')),
