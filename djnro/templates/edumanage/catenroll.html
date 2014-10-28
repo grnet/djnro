@@ -1,19 +1,17 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
+{% load staticfiles %}
+
 {% block crumbs %}
-	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	<li class="active">{% trans "CAT Enroll" %}</li>
+<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+<li class="active">{% trans "CAT Enroll" %}</li>
 {% endblock %}
+
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
-
-       
-<script src="/static/js/bootstrap.min.js"></script>
-
-
-
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
 {% endblock %}
-			
+
 {% block homeactive %}{% endblock %}
 {% block catactive %}class="active"{% endblock %}
 {% block subcontent %} <h4>eduroam CAT enroll</h4>
@@ -38,7 +36,7 @@
 						<th>{% trans "Applier" %}</th>
 					</tr>
 					</thead>
-					
+
 					<tbody>
 	                {% for enrollment in current_enrollments %}
 	              	<tr class="GradeC">
@@ -94,4 +92,4 @@
 </div>
 {% endif %}
 {% endblock %}
-         
+

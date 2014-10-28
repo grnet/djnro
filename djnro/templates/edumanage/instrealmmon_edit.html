@@ -1,4 +1,5 @@
 {% extends "edumanage/welcome.html"%}
+{% load staticfiles %}
 {% load i18n %}
 {% block crumbs %}
 	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
@@ -6,14 +7,14 @@
 	<li class="active">{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</li>
 {% endblock %}
 {% block extrahead %}
-<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
  <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
-      
+
 
 
 
 {% endblock %}
-			
+
 {% block homeactive %}{% endblock %}
 {% block instrealmmon %}class="active"{% endblock %}
 {% block subcontent %} <h4>{% if edit %}Monitored realm: {{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</h4>
@@ -50,4 +51,4 @@
 	</div>
 </form>
 {% endblock %}
-         
+

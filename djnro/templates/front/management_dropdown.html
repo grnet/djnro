@@ -1,28 +1,29 @@
 {% load i18n %}
+{% load staticfiles %}
 <li class="dropdown"><a id="drop2" class="dropdown-toggle"
-    data-toggle="dropdown" role="button" href="#"> {% trans "Manage" %}
-    <b class="caret"></b>
-    </a>
-    <ul class="dropdown-menu loginoptions" role="menu"
-        aria-labelledby="drop2">
-        <li><a tabindex="-1" href="{% url manage_login 'shibboleth' %}">Shibboleth</a><img
-            class="hidden-phone"
-            src="/static/img/image_shibboleth_logo_color.png"
-            style="padding: 0px;"></li>
-        <li><a tabindex="-1" href="{% url manage_login 'twitter' %}">Twitter</a><img
-            class="hidden-phone" src="/static/img/twitter_img.png"
-            style="padding: 0px;"></li>
-        {% comment %}<li><a tabindex="-1" href="{% url manage_login 'facebook' %}">Facebook</a><img
-            class="hidden-phone" src="/static/img/facebook_img.png"
-            style="padding: 0px;"></li>{% endcomment %}
-        <li><a tabindex="-1" href="{% url manage_login 'google' %}">Google</a><img
-            class="hidden-phone" src="/static/img/google_img.png"
-            style="padding: 0px;"></li>
-        {% comment %}<li><a tabindex="-1" href="{% url socialauth_begin 'linkedin' %}">LinkedIn</a><img
-            class="hidden-phone" src="/static/img/linkedin_img.png"
-            style="padding: 0px;"></li>
-        <li><a tabindex="-1" href="{% url socialauth_begin 'yahoo' %}">Yahoo</a><img
-            class="hidden-phone" src="/static/img/yahoo_img.png"
-            style="padding: 0px;"></li>{% endcomment %}
-    </ul>
+	data-toggle="dropdown" role="button" href="#"> {% trans "Manage" %}
+		<b class="caret"></b>
+	</a>
+	<ul class="dropdown-menu loginoptions" role="menu"
+		aria-labelledby="drop2">
+		<li><a tabindex="-1" href="{% url manage_login 'shibboleth' %}">Shibboleth</a><img
+			class="hidden-phone"
+			src="{% static 'img/image_shibboleth_logo_color.png' %}"
+			style="padding: 0px;"></li>
+		<li><a tabindex="-1" href="{% url manage_login 'twitter' %}">Twitter</a><img
+			class="hidden-phone" src="{% static 'img/twitter_img.png' %}"
+			style="padding: 0px;"></li>
+		{% comment %}<li><a tabindex="-1" href="{% url manage_login 'facebook' %}">Facebook</a><img
+			class="hidden-phone" src="{% static 'img/facebook_img.png' %}"
+			style="padding: 0px;"></li>{% endcomment %}
+		<li><a tabindex="-1" href="{% url manage_login 'google' %}">Google</a><img
+			class="hidden-phone" src="{% static 'img/google_img.png' %}"
+			style="padding: 0px;"></li>
+		{% comment %}<li><a tabindex="-1" href="{% url socialauth_begin 'linkedin' %}">LinkedIn</a><img
+			class="hidden-phone" src="{% static 'img/linkedin_img.png' %}"
+			style="padding: 0px;"></li>
+		<li><a tabindex="-1" href="{% url socialauth_begin 'yahoo' %}">Yahoo</a><img
+			class="hidden-phone" src="{% static 'img/yahoo_img.png' %}"
+			style="padding: 0px;"></li>{% endcomment %}
+	</ul>
 </li>
