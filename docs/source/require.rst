@@ -13,7 +13,8 @@ DjNRO heavily depends on the following:
 * mysql-client
 * apache2 (We suggest apache with mod_rewrite enabled - use your preferred server)
 * A mail server - Tested with exim
-* python packages located in requirements.txt
+* python-pip
+* python packages located in requirements.txt, you can install them with `pip install -r requirements.txt`
 
 Conditional Dependencies
 ^^^^^^^^^^^^^^^^^^^^^^^^
