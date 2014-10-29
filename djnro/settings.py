@@ -170,6 +170,7 @@ INSTALLED_APPS = (
     'registration',
     'tinymce',
     'utils',
+    'oauthlib',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -254,15 +255,6 @@ LINKEDIN_EXTRA_DATA = [('id', 'id'),
                        ('headline', 'headline'),
                        ('industry', 'industry')]
 
-
-SOCIAL_AUTH_PIPELINE = (
-    'social_auth.backends.pipeline.social.social_auth_user',
-    'social_auth.backends.pipeline.user.get_username',
-    'social_auth.backends.pipeline.user.create_user',
-    'social_auth.backends.pipeline.social.associate_user',
-    'social_auth.backends.pipeline.social.load_extra_data',
-    'social_auth.backends.pipeline.user.update_user_details',
-)
 
 CAT_INSTANCES = ()
 
