@@ -144,17 +144,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 
-FACEBOOK_APP_ID = ''
-FACEBOOK_API_SECRET = ''
-
-LINKEDIN_CONSUMER_KEY = ''
-LINKEDIN_CONSUMER_SECRET = ''
-
-YAHOO_CONSUMER_KEY = ''
-YAHOO_CONSUMER_SECRET = ''
-
-GOOGLE_SREG_EXTRA_DATA = []
-
 ###### eduroam CAT integration ###########
 # In order to enable provisioning to CAT, you must list at least one instance and the
 # corresponding description in CAT_INSTANCES. Beware that pages accessible by end users
