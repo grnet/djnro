@@ -8,20 +8,13 @@ Dependencies
 DjNRO heavily depends on the following:
 
 * Python (<3 & >=2.6)
-* Django (1.4) - python-django
 * memcached
 * python-mysqldb (If you wish to use MySQL as the DB backend)
 * mysql-client
-* python-ipaddr
-* python-six
-* python-django-south (For database migrations). If you deploy MySQL >=5.5 and earlier versions of south (< 0.7.5), you are advised to upgrade to South >=0.7.5, as you may suffer from this `bug <http://south.aeracode.org/ticket/523>`_
-* python-django-tinymce (Flatpages editing made easier)
-* python-memcache (Yeap! You need that for Google maps locations caching)
-* python-django-registration (User activation made easy)
 * apache2 (We suggest apache with mod_rewrite enabled - use your preferred server)
-* libapache2-mod-wsgi
-* libapache2-mod-shib2 : The server should be setup as a Shibboleth SP
 * A mail server - Tested with exim
+* python-pip
+* python packages located in requirements.txt, you can install them with `pip install -r requirements.txt`
 
 Conditional Dependencies
 ^^^^^^^^^^^^^^^^^^^^^^^^
