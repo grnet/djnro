@@ -7,6 +7,6 @@ Institution: {{institution}}
 To activate the user's account and allow them to access the service, click on
 the following link:
 
-https://{{ site.domain }}{% url activate_account activation_key %}
+    https://{{ site.domain }}{% url activate_account activation_key %}
 
 The user will be notified via mail about the account activation

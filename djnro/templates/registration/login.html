@@ -3,23 +3,23 @@
 {% block content %}
 
 <div class="container-fluid">
-	<div class="row-fluid">
+        <div class="row-fluid">
 
-	<div class="span3"></div>
-	<div class="span6">
-	<div class="hero-unit">
-	<div class="row-fluid">
-	<div class="span3"></div>
-	<div class="span9">Institutional eduroam management</div>
-	</div>
+        <div class="span3"></div>
+        <div class="span6">
+        <div class="hero-unit">
+        <div class="row-fluid">
+        <div class="span3"></div>
+        <div class="span9">Institutional eduroam management</div>
+        </div>
     <form class="form-horizontal" method="post" action="{% url login %}">
 
      {% if form.non_field_errors %}
      {% for err in form.non_field_errors %}
            <div class="control-group error ">
-           	 <div class="controls error">
-           		<span style="color: #B94A48;">{{err}}</span>
-           		</div>
+                <div class="controls error">
+                        <span style="color: #B94A48;">{{err}}</span>
+                        </div>
             </div>
             {% endfor %}
             {% endif %}
@@ -49,7 +49,7 @@
     <div class="control-group">
     <div class="controls">
     <button type="submit" class="btn">Sign in</button><input type="hidden"
-				name="next" value="{% url manage %}" />
+                name="next" value="{% url manage %}" />
     </div>
     </div>
     </form>
