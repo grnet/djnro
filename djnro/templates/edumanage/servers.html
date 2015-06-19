@@ -8,8 +8,8 @@
 {% endblock %}
 
 {% block extrahead %}
-<script type="text/javascript" src="{% 'static/js/jquery.dataTables.min.js' %}"></script>
-<script type="text/javascript" src="{% 'static/js/datatables_bootstrap.js' %}"></script>
+<script type="text/javascript" src="{% static '/js/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static '/js/datatables_bootstrap.js' %}"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 	 {% if servers %}
