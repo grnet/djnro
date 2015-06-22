@@ -4,10 +4,10 @@ import json
 import bz2
 import math
 import datetime
-from xml.etree import ElementTree as ET
+from xml.etree import ElementTree
 
 from django.shortcuts import render_to_response, redirect
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -23,14 +23,41 @@ from django.db.models import Max
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 from django.core.cache import cache
 
-from edumanage.models import *
-from accounts.models import *
-from edumanage.forms import *
+from edumanage.models import (
+    ServiceLoc,
+    InstRealmMon,
+    InstitutionDetails,
+    Realm,
+    InstServer,
+    URL_i18n,
+    MonLocalAuthnParam,
+    Institution,
+    CatEnrollment,
+    InstitutionContactPool,
+    InstRealm,
+    Contact,
+    Name_i18n,
+)
+from accounts.models import UserProfile
+from edumanage.forms import (
+    InstDetailsForm,
+    UrlFormSetFactInst,
+    InstRealmForm,
+    UserProfileForm,
+    ContactForm,
+    MonLocalAuthnParamForm,
+    InstRealmMonForm,
+    ServiceLocForm,
+    NameFormSetFact,
+    UrlFormSetFact,
+    InstServerForm
+)
 from registration.models import RegistrationProfile
 from edumanage.decorators import social_active_required
-from utils.cat_helper import *
+from utils.cat_helper import CatQuery
 
 
 @never_cache
@@ -279,7 +306,7 @@ def add_services(request, service_pk):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [2, 3]:
@@ -400,8 +427,8 @@ def add_services(request, service_pk):
             service = serviceloc
             names_form.instance = service
             urls_form.instance = service
-            names_inst = names_form.save()
-            urls_inst = urls_form.save()
+            names_form.save()
+            urls_form.save()
             return HttpResponseRedirect(reverse("services"))
         else:
             form.fields['institutionid'] = forms.ModelChoiceField(
@@ -438,13 +465,13 @@ def del_service(request):
         user = request.user
         req_data = request.GET.copy()
         service_pk = req_data['service_pk']
+        resp = {}
         try:
             profile = user.get_profile()
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete service. Not enough rights"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp = {}
         try:
             service = ServiceLoc.objects.get(
                 institutionid=institution,
@@ -509,7 +536,7 @@ def add_server(request, server_pk):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
@@ -557,7 +584,7 @@ def add_server(request, server_pk):
                 return HttpResponseRedirect(reverse("servers"))
 
         if form.is_valid():
-            instserverf = form.save()
+            form.save()
             return HttpResponseRedirect(reverse("servers"))
         else:
             form.fields['instid'] = forms.ModelChoiceField(
@@ -591,7 +618,7 @@ def cat_enroll(request):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [1, 3]:
@@ -637,7 +664,7 @@ def cat_enroll(request):
     elif request.method == 'POST':
         request_data = request.POST.copy()
         instance = request_data['catinstance']
-        #Check if cat enrollment exists. It should not!
+        # Check if cat enrollment exists. It should not!
         if inst.catenrollment_set.filter(cat_instance=instance):
             messages.add_message(
                 request,
@@ -705,13 +732,13 @@ def del_server(request):
         user = request.user
         req_data = request.GET.copy()
         server_pk = req_data['server_pk']
+        resp = {}
         try:
             profile = user.get_profile()
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete server. Not enough rights"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp = {}
         try:
             server = InstServer.objects.get(instid=institution, pk=server_pk)
         except InstServer.DoesNotExist:
@@ -765,7 +792,7 @@ def add_realm(request, realm_pk):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [1, 3]:
@@ -821,7 +848,7 @@ def add_realm(request, realm_pk):
                 )
                 return HttpResponseRedirect(reverse("realms"))
         if form.is_valid():
-            instserverf = form.save()
+            form.save()
             return HttpResponseRedirect(reverse("realms"))
         else:
             form.fields['instid'] = forms.ModelChoiceField(
@@ -850,13 +877,13 @@ def del_realm(request):
         user = request.user
         req_data = request.GET.copy()
         realm_pk = req_data['realm_pk']
+        resp = {}
         try:
             profile = user.get_profile()
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Not enough rights"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp = {}
         try:
             realm = InstRealm.objects.get(instid=institution, pk=realm_pk)
         except InstRealm.DoesNotExist:
@@ -884,7 +911,7 @@ def contacts(request):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst:
@@ -915,7 +942,7 @@ def add_contact(request, contact_pk):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
@@ -968,11 +995,11 @@ def add_contact(request, contact_pk):
 
         if form.is_valid():
             contact = form.save()
-            instContPool, created = InstitutionContactPool.objects.get_or_create(
+            inst_cont_pool, created = InstitutionContactPool.objects.get_or_create(
                 contact=contact,
                 institution=inst
             )
-            instContPool.save()
+            inst_cont_pool.save()
             return HttpResponseRedirect(reverse("contacts"))
         if contact:
             edit = True
@@ -991,13 +1018,13 @@ def del_contact(request):
         user = request.user
         req_data = request.GET.copy()
         contact_pk = req_data['contact_pk']
+        resp = {}
         try:
             profile = user.get_profile()
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete contact. Not enough rights"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp = {}
         try:
             contactinst = InstitutionContactPool.objects.get(
                 institution=institution,
@@ -1051,7 +1078,7 @@ def instrealmmon(request):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if inst:
@@ -1077,7 +1104,7 @@ def add_instrealmmon(request, instrealmmon_pk):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
@@ -1128,7 +1155,7 @@ def add_instrealmmon(request, instrealmmon_pk):
                 )
                 return HttpResponseRedirect(reverse("instrealmmon"))
         if form.is_valid():
-            instrealmmonobj = form.save()
+            form.save()
             return HttpResponseRedirect(reverse("instrealmmon"))
         if instrealmmon:
             edit = True
@@ -1153,13 +1180,13 @@ def del_instrealmmon(request):
         user = request.user
         req_data = request.GET.copy()
         instrealmmon_pk = req_data['instrealmmon_pk']
+        resp = {}
         try:
             profile = user.get_profile()
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete monitored realm. Not enough rights"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp = {}
         try:
             instrealmmon = InstRealmMon.objects.get(
                 pk=instrealmmon_pk,
@@ -1187,7 +1214,7 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
-        instdetails = inst.institutiondetails
+        inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     if request.method == "GET":
@@ -1260,7 +1287,7 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
                 )
             return HttpResponseRedirect(reverse("instrealmmon"))
         if form.is_valid():
-            monlocauthparobj = form.save()
+            form.save()
             return HttpResponseRedirect(reverse("instrealmmon"))
         if monlocauthpar:
             edit = True
@@ -1283,13 +1310,13 @@ def del_monlocauthpar(request):
         user = request.user
         req_data = request.GET.copy()
         monlocauthpar_pk = req_data['monlocauthpar_pk']
+        resp = {}
         try:
             profile = user.get_profile()
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete realm monitoring parameters. Not enough rights"
             return HttpResponse(json.dumps(resp), mimetype='application/json')
-        resp = {}
         try:
             monlocauthpar = MonLocalAuthnParam.objects.get(
                 pk=monlocauthpar_pk,
@@ -1327,11 +1354,11 @@ def adduser(request):
         form = ContactForm(request_data)
         if form.is_valid():
             contact = form.save()
-            instContPool = InstitutionContactPool(
+            inst_cont_pool = InstitutionContactPool(
                 contact=contact,
                 institution=inst
             )
-            instContPool.save()
+            inst_cont_pool.save()
             response_data = {}
             response_data['value'] = "%s" % contact.pk
             response_data['text'] = "%s" % contact
@@ -1563,11 +1590,17 @@ def user_login(request):
         if user is not None:
             try:
                 profile = user.get_profile()
-                inst = profile.institution
+                profile.institution
             except UserProfile.DoesNotExist:
                 form = UserProfileForm()
-                form.fields['user'] = forms.ModelChoiceField(queryset=User.objects.filter(pk=user.pk), empty_label=None)
-                form.fields['institution'] = forms.ModelChoiceField(queryset=Institution.objects.all(), empty_label=None)
+                form.fields['user'] = forms.ModelChoiceField(
+                    queryset=User.objects.filter(pk=user.pk),
+                    empty_label=None
+                )
+                form.fields['institution'] = forms.ModelChoiceField(
+                    queryset=Institution.objects.all(),
+                    empty_label=None
+                )
                 form.fields['email'] = forms.CharField(initial=user.email)
                 return render_to_response(
                     'registration/select_institution.html',
@@ -1694,12 +1727,12 @@ def selectinst(request):
                 empty_label=None
             )
             nomail = False
-            userObj = User.objects.get(pk=user)
-            if not userObj.email:
+            user_obj = User.objects.get(pk=user)
+            if not user_obj.email:
                 nomail = True
                 form.fields['email'] = forms.CharField()
             else:
-                form.fields['email'] = forms.CharField(initial=userObj.email)
+                form.fields['email'] = forms.CharField(initial=user_obj.email)
             return render_to_response(
                 'registration/select_institution.html',
                 {'form': form, 'nomail': nomail},
@@ -1819,7 +1852,7 @@ def getPoints():
         return json.loads(points)
     else:
         point_list = []
-        doc = ET.parse(settings.KML_FILE)
+        doc = ElementTree.parse(settings.KML_FILE)
         root = doc.getroot()
         r = root.getchildren()[0]
         for (counter, i) in enumerate(r.getchildren()):
@@ -1828,13 +1861,13 @@ def getPoints():
                 pointname = j[0].text
                 point = j[2].getchildren()[0].text
                 pointlng, pointlat, pointele = point.split(',')
-                Marker = {
+                marker = {
                     "name": pointname,
                     "lat": pointlat,
                     "lng": pointlng,
                     "text": j[1].text
                 }
-                point_list.append(Marker)
+                point_list.append(marker)
         points = json.dumps(point_list)
         cache.set('points', bz2.compress(points), 60 * 3600 * 24)
         return json.loads(points)
@@ -1842,10 +1875,10 @@ def getPoints():
 
 @never_cache
 def instxml(request):
-    ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
-    root = ET.Element("institutions")
-    NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
-    root.set(NS_XSI + "noNamespaceSchemaLocation", "institution.xsd")
+    ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
+    root = ElementTree.Element("institutions")
+    ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
+    root.set(ns_xsi + "noNamespaceSchemaLocation", "institution.xsd")
     institutions = Institution.objects.all()
     for institution in institutions:
         try:
@@ -1855,41 +1888,41 @@ def instxml(request):
         except InstitutionDetails.DoesNotExist:
             continue
 
-        instElement = ET.SubElement(root, "institution")
+        instElement = ElementTree.SubElement(root, "institution")
 
-        instCountry = ET.SubElement(instElement, "country")
+        instCountry = ElementTree.SubElement(instElement, "country")
         instCountry.text = ("%s" % inst.institution.realmid.country).upper()
 
-        instType = ET.SubElement(instElement, "type")
+        instType = ElementTree.SubElement(instElement, "type")
         instType.text = "%s" % inst.institution.ertype
 
         for realm in institution.instrealm_set.all():
-            instRealm = ET.SubElement(instElement, "inst_realm")
+            instRealm = ElementTree.SubElement(instElement, "inst_realm")
             instRealm.text = realm.realm
 
         for name in inst.institution.org_name.all():
-            instOrgName = ET.SubElement(instElement, "org_name")
+            instOrgName = ElementTree.SubElement(instElement, "org_name")
             instOrgName.attrib["lang"] = name.lang
             instOrgName.text = u"%s" % name.name
 
-        instAddress = ET.SubElement(instElement, "address")
+        instAddress = ElementTree.SubElement(instElement, "address")
 
-        instAddrStreet = ET.SubElement(instAddress, "street")
+        instAddrStreet = ElementTree.SubElement(instAddress, "street")
         instAddrStreet.text = inst.address_street
 
-        instAddrCity = ET.SubElement(instAddress, "city")
+        instAddrCity = ElementTree.SubElement(instAddress, "city")
         instAddrCity.text = inst.address_city
 
         for contact in inst.contact.all():
-            instContact = ET.SubElement(instElement, "contact")
+            instContact = ElementTree.SubElement(instElement, "contact")
 
-            instContactName = ET.SubElement(instContact, "name")
+            instContactName = ElementTree.SubElement(instContact, "name")
             instContactName.text = "%s" % (contact.name)
 
-            instContactEmail = ET.SubElement(instContact, "email")
+            instContactEmail = ElementTree.SubElement(instContact, "email")
             instContactEmail.text = contact.email
 
-            instContactPhone = ET.SubElement(instContact, "phone")
+            instContactPhone = ElementTree.SubElement(instContact, "phone")
             instContactPhone.text = contact.phone
 
         url_map = {}
@@ -1898,79 +1931,79 @@ def instxml(request):
 
         for urltype in ('info', 'policy'):
             for url in url_map.get(urltype, []):
-                instUrl = ET.SubElement(instElement, "%s_URL" % (url.urltype))
+                instUrl = ElementTree.SubElement(instElement, "%s_URL" % (url.urltype))
                 instUrl.attrib["lang"] = url.lang
                 instUrl.text = url.url
 
         if 'policy' not in url_map:
-            instUrl = ET.SubElement(instElement, "policy_URL")
+            instUrl = ElementTree.SubElement(instElement, "policy_URL")
             instUrl.attrib["lang"] = 'en'
             instUrl.text = '-'
 
-        instTs = ET.SubElement(instElement, "ts")
+        instTs = ElementTree.SubElement(instElement, "ts")
         instTs.text = "%s" % inst.ts.isoformat()
         #Let's go to Institution Service Locations
 
         for serviceloc in inst.institution.serviceloc_set.all():
-            instLocation = ET.SubElement(instElement, "location")
+            instLocation = ElementTree.SubElement(instElement, "location")
 
-            instLong = ET.SubElement(instLocation, "longitude")
+            instLong = ElementTree.SubElement(instLocation, "longitude")
             instLong.text = "%s" % serviceloc.longitude
 
-            instLat = ET.SubElement(instLocation, "latitude")
+            instLat = ElementTree.SubElement(instLocation, "latitude")
             instLat.text = "%s" % serviceloc.latitude
 
             for instlocname in serviceloc.loc_name.all():
-                instLocName = ET.SubElement(instLocation, "loc_name")
+                instLocName = ElementTree.SubElement(instLocation, "loc_name")
                 instLocName.attrib["lang"] = instlocname.lang
                 instLocName.text = instlocname.name
 
-            instLocAddress = ET.SubElement(instLocation, "address")
+            instLocAddress = ElementTree.SubElement(instLocation, "address")
 
-            instLocAddrStreet = ET.SubElement(instLocAddress, "street")
+            instLocAddrStreet = ElementTree.SubElement(instLocAddress, "street")
             instLocAddrStreet.text = serviceloc.address_street
 
-            instLocAddrCity = ET.SubElement(instLocAddress, "city")
+            instLocAddrCity = ElementTree.SubElement(instLocAddress, "city")
             instLocAddrCity.text = serviceloc.address_city
 
             for contact in serviceloc.contact.all():
-                instLocContact = ET.SubElement(instLocation, "contact")
+                instLocContact = ElementTree.SubElement(instLocation, "contact")
 
-                instLocContactName = ET.SubElement(instLocContact, "name")
+                instLocContactName = ElementTree.SubElement(instLocContact, "name")
                 instLocContactName.text = "%s" % (contact.name)
 
-                instLocContactEmail = ET.SubElement(instLocContact, "email")
+                instLocContactEmail = ElementTree.SubElement(instLocContact, "email")
                 instLocContactEmail.text = contact.email
 
-                instLocContactPhone = ET.SubElement(instLocContact, "phone")
+                instLocContactPhone = ElementTree.SubElement(instLocContact, "phone")
                 instLocContactPhone.text = contact.phone
 
-            instLocSSID = ET.SubElement(instLocation, "SSID")
+            instLocSSID = ElementTree.SubElement(instLocation, "SSID")
             instLocSSID.text = serviceloc.SSID
 
-            instLocEncLevel = ET.SubElement(instLocation, "enc_level")
+            instLocEncLevel = ElementTree.SubElement(instLocation, "enc_level")
             instLocEncLevel.text = ', '.join(serviceloc.enc_level)
 
-            instLocPortRestrict = ET.SubElement(instLocation, "port_restrict")
+            instLocPortRestrict = ElementTree.SubElement(instLocation, "port_restrict")
             instLocPortRestrict.text = ("%s" % serviceloc.port_restrict).lower()
 
-            instLocTransProxy = ET.SubElement(instLocation, "transp_proxy")
+            instLocTransProxy = ElementTree.SubElement(instLocation, "transp_proxy")
             instLocTransProxy.text = ("%s" % serviceloc.transp_proxy).lower()
 
-            instLocIpv6 = ET.SubElement(instLocation, "IPv6")
+            instLocIpv6 = ElementTree.SubElement(instLocation, "IPv6")
             instLocIpv6.text = ("%s" % serviceloc.IPv6).lower()
 
-            instLocNAT = ET.SubElement(instLocation, "NAT")
+            instLocNAT = ElementTree.SubElement(instLocation, "NAT")
             instLocNAT.text = ("%s" % serviceloc.NAT).lower()
 
-            instLocAP_no = ET.SubElement(instLocation, "AP_no")
+            instLocAP_no = ElementTree.SubElement(instLocation, "AP_no")
             instLocAP_no.text = "%s" % int(serviceloc.AP_no)
 
-            instLocWired = ET.SubElement(instLocation, "wired")
+            instLocWired = ElementTree.SubElement(instLocation, "wired")
             instLocWired.text = ("%s" % serviceloc.wired).lower()
 
             for url in serviceloc.url.all():
-                instLocUrl = ET.SubElement(
+                instLocUrl = ElementTree.SubElement(
                     instLocation,
                     "%s_URL" % (url.urltype)
                 )
@@ -1990,41 +2023,41 @@ def instxml(request):
 @never_cache
 def realmxml(request):
     realm = Realm.objects.all()[0]
-    ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
-    root = ET.Element("realms")
-    NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
-    root.set(NS_XSI + "noNamespaceSchemaLocation", "realm.xsd")
-    realmElement = ET.SubElement(root, "realm")
+    ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
+    root = ElementTree.Element("realms")
+    ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
+    root.set(ns_xsi + "noNamespaceSchemaLocation", "realm.xsd")
+    realmElement = ElementTree.SubElement(root, "realm")
 
-    realmCountry = ET.SubElement(realmElement, "country")
+    realmCountry = ElementTree.SubElement(realmElement, "country")
     realmCountry.text = realm.country.upper()
 
-    realmStype = ET.SubElement(realmElement, "stype")
+    realmStype = ElementTree.SubElement(realmElement, "stype")
     realmStype.text = "%s" % realm.stype
 
     for name in realm.org_name.all():
-        realmOrgName = ET.SubElement(realmElement, "org_name")
+        realmOrgName = ElementTree.SubElement(realmElement, "org_name")
         realmOrgName.attrib["lang"] = name.lang
         realmOrgName.text = u"%s" % name.name
 
-    realmAddress = ET.SubElement(realmElement, "address")
+    realmAddress = ElementTree.SubElement(realmElement, "address")
 
-    realmAddrStreet = ET.SubElement(realmAddress, "street")
+    realmAddrStreet = ElementTree.SubElement(realmAddress, "street")
     realmAddrStreet.text = realm.address_street
 
-    realmAddrCity = ET.SubElement(realmAddress, "city")
+    realmAddrCity = ElementTree.SubElement(realmAddress, "city")
     realmAddrCity.text = realm.address_city
 
     for contact in realm.contact.all():
-        realmContact = ET.SubElement(realmElement, "contact")
+        realmContact = ElementTree.SubElement(realmElement, "contact")
 
-        realmContactName = ET.SubElement(realmContact, "name")
+        realmContactName = ElementTree.SubElement(realmContact, "name")
         realmContactName.text = "%s" % (contact.name)
 
-        realmContactEmail = ET.SubElement(realmContact, "email")
+        realmContactEmail = ElementTree.SubElement(realmContact, "email")
         realmContactEmail.text = contact.email
 
-        realmContactPhone = ET.SubElement(realmContact, "phone")
+        realmContactPhone = ElementTree.SubElement(realmContact, "phone")
         realmContactPhone.text = contact.phone
 
     url_map = {}
@@ -2033,11 +2066,11 @@ def realmxml(request):
 
     for urltype in ('info', 'policy'):
         for url in url_map.get(urltype, []):
-            realmUrl = ET.SubElement(realmElement, "%s_URL" % (url.urltype))
+            realmUrl = ElementTree.SubElement(realmElement, "%s_URL" % (url.urltype))
             realmUrl.attrib["lang"] = url.lang
             realmUrl.text = url.url
 
-    instTs = ET.SubElement(realmElement, "ts")
+    instTs = ElementTree.SubElement(realmElement, "ts")
     instTs.text = "%s" % realm.ts.isoformat()
 
     return render_to_response(
@@ -2051,29 +2084,29 @@ def realmxml(request):
 @never_cache
 def realmdataxml(request):
     realm = Realm.objects.all()[0]
-    ET._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
-    root = ET.Element("realm_data_root")
-    NS_XSI = "{http://www.w3.org/2001/XMLSchema-instance}"
-    root.set(NS_XSI + "noNamespaceSchemaLocation", "realm_data.xsd")
+    ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
+    root = ElementTree.Element("realm_data_root")
+    ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
+    root.set(ns_xsi + "noNamespaceSchemaLocation", "realm_data.xsd")
 
-    realmdataElement = ET.SubElement(root, "realm_data")
+    realmdataElement = ElementTree.SubElement(root, "realm_data")
 
-    realmCountry = ET.SubElement(realmdataElement, "country")
+    realmCountry = ElementTree.SubElement(realmdataElement, "country")
     realmCountry.text = realm.country.upper()
 
-    nIdpCountry = ET.SubElement(realmdataElement, "number_IdP")
+    nIdpCountry = ElementTree.SubElement(realmdataElement, "number_IdP")
     nIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=1))
 
-    nSPCountry = ET.SubElement(realmdataElement, "number_SP")
+    nSPCountry = ElementTree.SubElement(realmdataElement, "number_SP")
     nSPCountry.text = "%s" % len(realm.institution_set.filter(ertype=2))
 
-    nSPIdpCountry = ET.SubElement(realmdataElement, "number_SPIdP")
+    nSPIdpCountry = ElementTree.SubElement(realmdataElement, "number_SPIdP")
     nSPIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=3))
 
-    ninstCountry = ET.SubElement(realmdataElement, "number_inst")
+    ninstCountry = ElementTree.SubElement(realmdataElement, "number_inst")
     ninstCountry.text = "%s" % len(realm.institution_set.all())
 
-    nuserCountry = ET.SubElement(realmdataElement, "number_user")
+    nuserCountry = ElementTree.SubElement(realmdataElement, "number_user")
     insts = realm.institution_set.all()
     users = 0
     for inst in insts:
@@ -2084,7 +2117,7 @@ def realmdataxml(request):
             pass
     nuserCountry.text = "%s" % users
 
-    nIdCountry = ET.SubElement(realmdataElement, "number_id")
+    nIdCountry = ElementTree.SubElement(realmdataElement, "number_id")
     insts = realm.institution_set.all()
     ids = 0
     for inst in insts:
@@ -2107,7 +2140,7 @@ def realmdataxml(request):
         datetimes.append(ServiceLoc.objects.aggregate(Max('ts'))['ts__max'])
     if len(datetimes) == 0:
         datetimes.append(datetime.datetime.now())
-    instTs = ET.SubElement(realmdataElement, "ts")
+    instTs = ElementTree.SubElement(realmdataElement, "ts")
     instTs.text = "%s" % max(datetimes).isoformat()
     return render_to_response(
         "general/realm_data.xml",
@@ -2240,7 +2273,7 @@ def to_xml(ele, encoding="UTF-8"):
     Convert and return the XML for an *ele*
     (:class:`~xml.etree.ElementTree.Element`)
     with specified *encoding*.'''
-    xml = ET.tostring(ele, encoding)
+    xml = ElementTree.tostring(ele, encoding)
     return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
 
 
@@ -2294,7 +2327,3 @@ def lookupShibAttr(attrmap, requestMeta):
             if len(requestMeta[attr]) > 0:
                 return requestMeta[attr]
     return ''
-
-
-
-

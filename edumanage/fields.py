@@ -1,6 +1,7 @@
 from django import forms
 from django.core.validators import email_re
 
+
 class MultipleEmailsField(forms.Field):
     def clean(self, value):
         """

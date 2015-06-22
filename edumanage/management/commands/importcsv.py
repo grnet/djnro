@@ -2,15 +2,15 @@
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 
 # Copyright © 2011-2014 Greek Research and Technology Network (GRNET S.A.)
-# 
+#
 # Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr),
 # Zenon Mousmoulas (zmousm-at-noc-dot-grnet-dot-gr) and Stavros Kroustouris
 # (staurosk-at-noc-dot-grnet-dot-gr), GRNET NOC
-# 
+#
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
-#  
+#
 # THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHORS DISCLAIM ALL WARRANTIES WITH REGARD
 # TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
 # FITNESS. IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR
@@ -23,11 +23,11 @@ Django management command to import a CSV
 '''
 
 from django.core.management.base import BaseCommand, CommandError
-from django.conf import settings
+from django.utils.translation import ugettext as _
 from edumanage.models import InstRealmMon, MonLocalAuthnParam, InstRealm
 import sys
 import csv
-import re
+
 
 class Command(BaseCommand):
     '''
@@ -55,7 +55,15 @@ class Command(BaseCommand):
             reader = csv.reader(f)
             for row in reader:
                 print row
-                (username, password, timeout, port, method, eaptype, eap2type) = row[:7]
+                (
+                    username,
+                    password,
+                    timeout,
+                    port,
+                    method,
+                    eaptype,
+                    eap2type
+                ) = row[:7]
 
                 realm = username.split('@')[1]
                 try:
@@ -63,15 +71,16 @@ class Command(BaseCommand):
                     instrealmmon = InstRealmMon(realm=instrealm, mon_type='localauthn')
                     instrealmmon.save()
                     monlocalauthnparams = MonLocalAuthnParam(
-                            instrealmmonid = instrealmmon,
-                            eap_method = eaptype,
-                            phase2 = eap2type,
-                            username = username,
-                            passwp = password)
+                        instrealmmonid=instrealmmon,
+                        eap_method=eaptype,
+                        phase2=eap2type,
+                        username=username,
+                        passwp=password
+                    )
                     monlocalauthnparams.save()
                 except InstRealm.DoesNotExist:
                     print "Realm %s does not exit" % realm
-                
-                print 'OK: realm %s' % ( realm )
-                count +=1
+
+                print 'OK: realm %s' % (realm)
+                count += 1
             print 'Total ' + str(count)

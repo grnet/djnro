@@ -1,8 +1,6 @@
 from django.contrib import admin
-from accounts.models import *
-from django.contrib.auth.models import User
-from django.conf import settings
-from edumanage.models import *
+from accounts.models import UserProfile
+
 
 class UserPrAdmin(admin.ModelAdmin):
     list_display = ('user', 'institution')

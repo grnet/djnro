@@ -1,26 +1,45 @@
 # -*- coding: utf-8 -*-.
 from django.contrib import admin
-from edumanage.models import *
+from edumanage.models import (
+    Name_i18n,
+    URL_i18n,
+    Contact,
+    InstitutionContactPool,
+    InstRealm,
+    InstServer,
+    InstRealmMon,
+    MonProxybackClient,
+    MonLocalAuthnParam,
+    ServiceLoc,
+    Institution,
+    InstitutionDetails,
+    Realm,
+    RealmData,
+    CatEnrollment
+)
 
 from django.contrib.contenttypes import generic
 
 
 class NameInline(generic.GenericTabularInline):
     model = Name_i18n
-    
+
+
 class UrlInline(generic.GenericTabularInline):
     model = URL_i18n
 
 
 class InstitutionAdmin(admin.ModelAdmin):
     inlines = [
-        NameInline, 
+        NameInline,
     ]
+
 
 class InstitutionDetailsAdmin(admin.ModelAdmin):
     inlines = [
         UrlInline,
     ]
+
 
 class ServiceLocAdmin(admin.ModelAdmin):
     list_display = ('get_name', 'institutionid')
@@ -28,13 +47,16 @@ class ServiceLocAdmin(admin.ModelAdmin):
         NameInline,
     ]
 
+
 class RealmInLine(admin.ModelAdmin):
     inlines = [
         UrlInline, NameInline
     ]
 
+
 class InstRealmAdmin(admin.ModelAdmin):
     list_display = ('realm', 'instid')
+
 
 class CatEnrollmentAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'cat_active')

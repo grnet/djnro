@@ -1,23 +1,15 @@
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
-
-'''
-TODO main description
-'''
-
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
-from django.db import models
-from django import forms
-from django import forms
-from django.db import models
 from django.utils.text import capfirst
 from django.core import exceptions
 from django.conf import settings
 from django.contrib.auth.models import User
+from django import forms
+
 
 class MultiSelectFormField(forms.MultipleChoiceField):
     widget = forms.CheckboxSelectMultiple
@@ -50,8 +42,12 @@ class MultiSelectField(models.Field):
 
     def formfield(self, **kwargs):
         # don't call super, as that overrides default widget if it has choices
-        defaults = {'required': not self.blank, 'label': capfirst(self.verbose_name),
-                    'help_text': self.help_text, 'choices': self.choices}
+        defaults = {
+            'required': not self.blank,
+            'label': capfirst(self.verbose_name),
+            'help_text': self.help_text,
+            'choices': self.choices
+        }
         if self.has_default():
             defaults['initial'] = self.get_default()
         defaults.update(kwargs)
@@ -101,34 +97,32 @@ class MultiSelectField(models.Field):
 from south.modelsinspector import add_introspection_rules
 add_introspection_rules([], ["^edumanage\.models\.MultiSelectField"])
 
-
-
-
 ERTYPES = (
-        (1, 'IdP only' ),
-        (2, 'SP only'),
-        (3, 'IdP and SP'),
-    )
+    (1, 'IdP only'),
+    (2, 'SP only'),
+    (3, 'IdP and SP'),
+)
 
 RADPROTOS = (
-        ('radius', 'traditional RADIUS over UDP' ),
+    ('radius', 'traditional RADIUS over UDP'),
 #        ('radius-tcp', 'RADIUS over TCP (RFC6613)'),
 #        ('radius-tls', 'RADIUS over TLS (RFC6614)'),
 #        ('radius-dtls', 'RADIUS over datagram TLS (RESERVED)'),
-    )
+)
 
 
 ADDRTYPES = (
-        ('any', 'Default'),
-        ('ipv4', 'IPv4 only'),
-        #('ipv6', 'IPv6 only'), # Commented for the time...not yet in use
-    )
+    ('any', 'Default'),
+    ('ipv4', 'IPv4 only'),
+    #('ipv6', 'IPv6 only'), # Commented for the time...not yet in use
+)
 
 RADTYPES = (
-            ('auth', 'Handles Access-Request packets only'),
-            ('acct', 'Handles Accounting-Request packets only'),
-            ('auth+acct', 'Handles both Access-Request and Accounting-Request packets'),
-            )
+    ('auth', 'Handles Access-Request packets only'),
+    ('acct', 'Handles Accounting-Request packets only'),
+    ('auth+acct', 'Handles both Access-Request and Accounting-Request packets'),
+)
+
 
 class Name_i18n(models.Model):
     '''
@@ -177,15 +171,16 @@ class InstitutionContactPool(models.Model):
         verbose_name = "Instutution Contact (Pool)"
         verbose_name_plural = "Instutution Contacts (Pool)"
 
+
 class URL_i18n(models.Model):
     '''
     URL of a particular type in a particular language
     '''
 
     URLTYPES = (
-                ('info', 'Info' ),
-                ('policy', 'Policy'),
-               )
+        ('info', 'Info'),
+        ('policy', 'Policy'),
+    )
     url = models.CharField(max_length=180, db_column='URL')
     lang = models.CharField(max_length=5, choices=settings.URL_NAME_LANGS)
     urltype = models.CharField(max_length=10, choices=URLTYPES, db_column='type')
@@ -200,13 +195,14 @@ class URL_i18n(models.Model):
     def __unicode__(self):
         return self.url
 
+
 class InstRealm(models.Model):
     '''
     Realm of an IdP Institution
     '''
     # accept if instid.ertype: 1 (idp) or 3 (idpsp)
     realm = models.CharField(max_length=160)
-    instid = models.ForeignKey("Institution",verbose_name="Institution")
+    instid = models.ForeignKey("Institution", verbose_name="Institution")
     proxyto = models.ManyToManyField("InstServer", help_text=_("Only IdP and IdP/SP server types are allowed"))
 
     class Meta:
@@ -216,9 +212,8 @@ class InstRealm(models.Model):
     def __unicode__(self):
         return '%s' % self.realm
 
-
     def get_servers(self):
-        return ",".join(["%s"%x for x in self.proxyto.all()])
+        return ",".join(["%s" % x for x in self.proxyto.all()])
 
 
 class InstServer(models.Model):
@@ -233,7 +228,7 @@ class InstServer(models.Model):
     # 3: accept if instid.ertype: 3 (idpsp)
 
     # hostname/ipaddr or descriptive label of server
-    name = models.CharField(max_length=80, help_text=_("Descriptive label"),  null=True, blank=True) # ** (acts like a label)
+    name = models.CharField(max_length=80, help_text=_("Descriptive label"), null=True, blank=True) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
     addr_type = models.CharField(max_length=16, choices=ADDRTYPES, default='ipv4')
     host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
@@ -254,12 +249,12 @@ class InstServer(models.Model):
 
     def __unicode__(self):
         return _('Server: %(servername)s, Type: %(ertype)s') % {
-        # but name is many-to-many from institution
-            #'inst': self.instid,
+            # but name is many-to-many from institution
+            # 'inst': self.instid,
             'servername': self.get_name(),
-        # the human-readable name would be nice here
+            # the human-readable name would be nice here
             'ertype': self.get_ertype_display(),
-            }
+        }
 
     def get_name(self):
         if self.name:
@@ -273,20 +268,20 @@ class InstRealmMon(models.Model):
     '''
 
     MONTYPES = (
-                ('localauthn', 'Institution provides account for the NRO to monitor the realm' ),
-                #('loopback', 'Institution proxies the realm back to the NRO'),
-               )
+        ('localauthn', 'Institution provides account for the NRO to monitor the realm' ),
+        # ('loopback', 'Institution proxies the realm back to the NRO'),
+    )
 
     realm = models.ForeignKey(InstRealm)
     mon_type = models.CharField(max_length=16, choices=MONTYPES)
 
     class Meta:
-        unique_together = ('realm','mon_type')
+        unique_together = ('realm', 'mon_type')
         verbose_name = "Institution Monitored Realm"
         verbose_name_plural = "Institution Monitored Realms"
 
     def __unicode__(self):
-        return "%s-%s" %(self.realm.realm, self.mon_type)
+        return "%s-%s" % (self.realm.realm, self.mon_type)
 #    def __unicode__(self):
 #        return _('Institution: %(inst)s, Monitored Realm: %(monrealm)s, Monitoring Type: %(montype)s') % {
 #        # but name is many-to-many from institution
@@ -295,6 +290,7 @@ class InstRealmMon(models.Model):
 #            'montype': self.mon_type,
 #            }
 
+
 class MonProxybackClient(models.Model):
     '''
     Server of an Institution that will be proxying back requests for a monitored realm
@@ -302,9 +298,17 @@ class MonProxybackClient(models.Model):
 
     instrealmmonid = models.ForeignKey("InstRealmMon")
     # hostname/ipaddr or descriptive label of server
-    name = models.CharField(max_length=80, help_text=_("Descriptive label"),  null=True, blank=True) # ** (acts like a label)
+    name = models.CharField(
+        max_length=80,
+        help_text=_("Descriptive label"),
+        null=True,
+        blank=True
+    )  # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
-    host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
+    host = models.CharField(
+        max_length=80,
+        help_text=_("IP address | FQDN hostname")
+    )  # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     status_server = models.BooleanField()
     secret = models.CharField(max_length=80)
     proto = models.CharField(max_length=12, choices=RADPROTOS)
@@ -316,10 +320,11 @@ class MonProxybackClient(models.Model):
 
     def __unicode__(self):
         return _('Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s') % {
-        # but name is many-to-many from institution
+            # but name is many-to-many from institution
             'monrealm': self.instrealmmonid.realm,
             'servername': self.name,
-            }
+        }
+
 
 class MonLocalAuthnParam(models.Model):
     '''
@@ -327,15 +332,15 @@ class MonLocalAuthnParam(models.Model):
     '''
 
     EAPTYPES = (
-                ('PEAP', 'EAP-PEAP' ),
-                ('TTLS', 'EAP-TTLS'),
-#                ('TLS', 'EAP-TLS'),
-               )
+        ('PEAP', 'EAP-PEAP'),
+        ('TTLS', 'EAP-TTLS'),
+        # ('TLS', 'EAP-TLS'),
+    )
     EAP2TYPES = (
-                ('PAP', 'PAP' ),
-                ('CHAP', 'CHAP'),
-                ('MS-CHAPv2', 'MS-CHAPv2'),
-               )
+        ('PAP', 'PAP'),
+        ('CHAP', 'CHAP'),
+        ('MS-CHAPv2', 'MS-CHAPv2'),
+    )
 #    MONRESPTYPES = (
 #                ('accept', 'Access-Accept expected' ),
 #                ('reject', 'Access-Reject expected'),
@@ -349,8 +354,8 @@ class MonLocalAuthnParam(models.Model):
     username = models.CharField(max_length=36)
     passwp = models.CharField(max_length=80, db_column='pass')
     # TODO: In next releast change it to TextField and add a key field
-    #cert = models.CharField(max_length=32)
-    #exp_response = models.CharField(max_length=6, choices=MONRESPTYPES)
+    # cert = models.CharField(max_length=32)
+    # exp_response = models.CharField(max_length=6, choices=MONRESPTYPES)
 
     class Meta:
         verbose_name = "Monitored Realm (local authn)"
@@ -358,12 +363,13 @@ class MonLocalAuthnParam(models.Model):
 
     def __unicode__(self):
         return _('Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: %(phase2)s, Username: %(username)s') % {
-        # but name is many-to-many from institution
+            # but name is many-to-many from institution
             'monrealm': self.instrealmmonid.realm,
             'eapmethod': self.eap_method,
             'phase2': self.phase2,
             'username': self.username,
-            }
+        }
+
 
 class ServiceLoc(models.Model):
     '''
@@ -371,11 +377,11 @@ class ServiceLoc(models.Model):
     '''
 
     ENCTYPES = (
-                ('WPA/TKIP', 'WPA-TKIP' ),
-                ('WPA/AES', 'WPA-AES'),
-                ('WPA2/TKIP', 'WPA2-TKIP'),
-                ('WPA2/AES', 'WPA2-AES'),
-               )
+        ('WPA/TKIP', 'WPA-TKIP'),
+        ('WPA/AES', 'WPA-AES'),
+        ('WPA2/TKIP', 'WPA2-TKIP'),
+        ('WPA2/AES', 'WPA2-AES'),
+    )
 
     # accept if institutionid.ertype: 2 (sp) or 3 (idpsp)
     institutionid = models.ForeignKey("Institution", verbose_name="Institution")
@@ -404,12 +410,11 @@ class ServiceLoc(models.Model):
 
     def __unicode__(self):
         return _('Institution: %(inst)s, Service Location: %(locname)s') % {
-        # but name is many-to-many from institution
+            # but name is many-to-many from institution
             'inst': self.institutionid,
-        # but locname is many-to-many
+            # but locname is many-to-many
             'locname': self.get_name(),
-            }
-
+        }
 
     def get_name(self, lang=None):
         name = ', '.join([i.name for i in self.loc_name.all()])
@@ -419,7 +424,7 @@ class ServiceLoc(models.Model):
             try:
                 name = self.loc_name.get(lang=lang)
                 return name
-            except Exception as e:
+            except Exception:
                 return name
     get_name.short_description = 'Location Name'
 
@@ -436,7 +441,6 @@ class Institution(models.Model):
     def __unicode__(self):
         return "%s" % ', '.join([i.name for i in self.org_name.all()])
 
-
     def get_name(self, lang=None):
         name = ', '.join([i.name for i in self.org_name.all()])
         if not lang:
@@ -445,7 +449,7 @@ class Institution(models.Model):
             try:
                 name = self.org_name.get(lang=lang)
                 return name
-            except Exception as e:
+            except Exception:
                 return name
 
     def get_active_cat_enrl(self):
@@ -468,7 +472,12 @@ class InstitutionDetails(models.Model):
     contact = models.ManyToManyField(Contact)
     url = generic.GenericRelation(URL_i18n)
     # accept if ertype: 2 (sp) or 3 (idpsp) (Applies to the following field)
-    oper_name = models.CharField(max_length=24, null=True, blank=True, help_text=_('The primary, registered domain name for your institution, eg. example.com.<br>This is used to derive the Operator-Name attribute according to RFC5580, par.4.1, using the REALM namespace.'))
+    oper_name = models.CharField(
+        max_length=24,
+        null=True,
+        blank=True,
+        help_text=_('The primary, registered domain name for your institution, eg. example.com.<br>This is used to derive the Operator-Name attribute according to RFC5580, par.4.1, using the REALM namespace.')
+    )
     # accept if ertype: 1 (idp) or 3 (idpsp) (Applies to the following field)
     number_user = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
     number_id = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of issued e-identities (credentials) that may be used for authentication in eduroam service"))
@@ -480,14 +489,14 @@ class InstitutionDetails(models.Model):
 
     def __unicode__(self):
         return _('Institution: %(inst)s, Type: %(ertype)s') % {
-        # but name is many-to-many from institution
+            # but name is many-to-many from institution
             'inst': ', '.join([i.name for i in self.institution.org_name.all()]),
             'ertype': self.institution.get_ertype_display(),
-            }
-    def get_inst_name(self):
-        return join([i.name for i in self.institution.org_name.all()])
-    get_inst_name.short_description = "Institution Name"
+        }
 
+    def get_inst_name(self):
+        return ", ".join([i.name for i in self.institution.org_name.all()])
+    get_inst_name.short_description = "Institution Name"
 
 
 class Realm(models.Model):
@@ -511,10 +520,10 @@ class Realm(models.Model):
 
     def __unicode__(self):
         return _('Country: %(country)s, NRO: %(orgname)s') % {
-        # but name is many-to-many from institution
+            # but name is many-to-many from institution
             'orgname': ', '.join([i.name for i in self.org_name.all()]),
             'country': self.country,
-            }
+        }
 
 
 # TODO: this represents a *database view* "realm_data", find a better way to write it
@@ -541,7 +550,7 @@ class RealmData(models.Model):
 
     def __unicode__(self):
         return _('Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: %(idp)s, SPs: %(sp)s, IdPSPs: %(idpsp)s, Users: %(numuser)s, Identities: %(numid)s') % {
-        # but name is many-to-many from institution
+            # but name is many-to-many from institution
             'orgname': self.org_name,
             'country': self.country,
             'inst': self.number_inst,
@@ -550,7 +559,7 @@ class RealmData(models.Model):
             'idpsp': self.number_IdPSP,
             'numuser': self.number_user,
             'numid': self.number_id,
-            }
+        }
 
 
 class CatEnrollment(models.Model):
@@ -577,13 +586,10 @@ class CatEnrollment(models.Model):
     def cat_configuration_url(self):
         if self.cat_active():
             try:
-                return "%s?idp=%s"%(settings.CAT_AUTH[self.cat_instance]['CAT_PROFILES_URL'],self.cat_inst_id)
+                return "%s?idp=%s" % (settings.CAT_AUTH[self.cat_instance]['CAT_PROFILES_URL'],self.cat_inst_id)
             except:
                 return False
         return False
 
     cat_active.boolean = True
     cat_active.short_description = "CAT profiles"
-
-
-

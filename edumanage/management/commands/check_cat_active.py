@@ -4,10 +4,11 @@ import warnings
 warnings.simplefilter("ignore", DeprecationWarning)
 warnings.simplefilter("ignore", FutureWarning)
 
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.conf import settings
-from utils.cat_helper import *
-from edumanage.models import CatEnrollment 
+from utils.cat_helper import CatQuery
+from edumanage.models import CatEnrollment
+
 
 class Command(BaseCommand):
     args = ''
@@ -21,7 +22,7 @@ class Command(BaseCommand):
             cat_api_key = cat_instance['CAT_API_KEY']
             cat_api_url = cat_instance['CAT_API_URL']
             inst_uid = catentry.cat_inst_id
-            params = {"INST_IDENTIFIER":inst_uid}
+            params = {"INST_IDENTIFIER": inst_uid}
             c = CatQuery(cat_api_key, cat_api_url)
             cq = c.admincount(params)
             if cq:

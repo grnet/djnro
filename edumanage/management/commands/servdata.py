@@ -4,16 +4,19 @@ import warnings
 warnings.simplefilter("ignore", DeprecationWarning)
 
 from optparse import make_option
-from django.core.management.base import BaseCommand, CommandError
-from edumanage.models import *
+from django.core.management.base import BaseCommand
+from edumanage.models import InstServer, Institution
+
 
 class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
-        make_option('--output',
-                    dest='output',
-                    default="yaml",
-                    help="Output type: json, yaml"),
-        )
+        make_option(
+            '--output',
+            dest='output',
+            default="yaml",
+            help="Output type: json, yaml"
+        ),
+    )
     args = ''
     help = "Exports server data"
 
@@ -21,28 +24,28 @@ class Command(BaseCommand):
         if options['output'] == "yaml":
             from yaml import dump
             try:
-                from yaml import \
-                    CDumper as Dumper, \
-                    CSafeDumper as SafeDumper
+                from yaml import CDumper as Dumper, CSafeDumper as SafeDumper
             except ImportError:
-                from yaml import \
-                    Dumper, \
-                    SafeDumper
-
+                from yaml import Dumper, SafeDumper
             self.stdout.write(
-                dump(servdata(),
-                     Dumper=SafeDumper,
-                     allow_unicode=True,
-                     default_flow_style=False)
+                dump(
+                    servdata(),
+                    Dumper=SafeDumper,
+                    allow_unicode=True,
+                    default_flow_style=False
                 )
+            )
 
         elif options['output'] == "json":
             from json import dumps
 
             self.stdout.write(
-                dumps(servdata(),
-                      indent=2)
+                dumps(
+                    servdata(),
+                    indent=2
                 )
+            )
+
 
 def srv_identifier(srv, prefix):
     if not hasattr(srv, "id"):
@@ -54,6 +57,7 @@ def srv_identifier(srv, prefix):
         retid = "{0}_{1}".format(retid,
                                  slugify(srv.name))
     return retid
+
 
 def servdata():
     root = {}
