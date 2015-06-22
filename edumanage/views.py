@@ -6,7 +6,7 @@ import math
 import datetime
 from xml.etree import ElementTree
 
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, render
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -62,9 +62,9 @@ from utils.cat_helper import CatQuery
 
 @never_cache
 def index(request):
-    return render_to_response(
+    return render(
+        request,
         'front/index.html',
-        context_instance=RequestContext(request)
     )
 
 
@@ -79,16 +79,18 @@ def manage_login_front(request):
             context_instance=RequestContext(request, base_response(request))
         )
     except AttributeError:
-        return render_to_response(
+        return render(
+            request,
             'edumanage/welcome_manage.html',
-            context_instance=RequestContext(request, base_response(request))
+            {}
         )
     if user.is_authenticated() and user.is_active and profile.is_social_active:
         return redirect(reverse('manage'))
     else:
-        return render_to_response(
+        return render(
+            request,
             'edumanage/welcome_manage.html',
-            context_instance=RequestContext(request, base_response(request))
+            {}
         )
 
 
@@ -1454,7 +1456,10 @@ def get_service_points(request):
             else:
                 response_location['enc'] = u"-"
             response_location['AP_no'] = u"%s" % (sl.AP_no)
-            response_location['name'] = sl.loc_name.get(lang='en').name
+            try:
+                response_location['name'] = sl.loc_name.get(lang='en').name
+            except Name_i18n.DoesNotExist:
+                response_location['name'] = 'unknown'
             response_location['port_restrict'] = u"%s" % (sl.port_restrict)
             response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
             response_location['IPv6'] = u"%s" % (sl.IPv6)
@@ -1514,13 +1519,10 @@ def get_all_services(request):
                 lang=lang
             ).name
         except Name_i18n.DoesNotExist:
-            response_location['inst'] = sl.institutionid.org_name.get(
-                lang='en'
-            ).name
-        try:
-            response_location['name'] = sl.loc_name.get(lang=lang).name
-        except Name_i18n.DoesNotExist:
-            response_location['name'] = sl.loc_name.get(lang='en').name
+            try:
+                response_location['name'] = sl.loc_name.get(lang='en').name
+            except Name_i18n.DoesNotExist:
+                response_location['name'] = 'unknown'
         response_location['port_restrict'] = u"%s" % (sl.port_restrict)
         response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
         response_location['IPv6'] = u"%s" % (sl.IPv6)
