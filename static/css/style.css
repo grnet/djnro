@@ -1,158 +1,78 @@
-body{
-	font-size: 13px;
+a.navbar-brand {
+	padding: 0;
 }
 
-#footcontainer{
+a.navbar-brand img {
+	height: 100%;
+}
+
+html, body {
+	height: 100%;
+}
+
+footer {
+	height: 60px;
+	background: #eee;
 	text-align: center;
-	/*background-color: white;*/
-	margin-top: 5px;
-	/*padding: 5px 10px 0 10px;*/
-	/*border: 1px solid grey;*/
+	padding: 20px;
 }
-#footer {
-	clear: both;
-	padding-top: 1em;
-	font-size: 0.9em;
+
+
+#wrap {
+	min-height: 100%;
+	height: auto !important;
+	margin: 0 auto -60px;
+}
+
+.push-top {
+	height: 51px;
+}
+
+.push {
+	height: 60px;
+}
+
+.home .squares {
+	position: relative;
+	margin: 600px auto 0;
+	padding: 50px 0;
+	z-index: 1000;
+	background: white;
+}
+
+.home .squares .square > div {
+	background: #9eb5bd;
+	padding: 5%;
+	text-align: center;
+	height: 400px;
+}
+
+.home .squares .square > div:hover {
+	background: #8da4ac;
+}
+
+.home .squares .square h3 {
 	text-align: center;
 }
-.footer {
-    background-color: #F5F5F5;
-    border-top: 1px solid #E5E5E5;
-    margin-top: 30px;
-    padding: 30px 0;
-    text-align: center;
+
+.home #map_wrapper {
+	position: fixed ;
+	height: 600px;
+	z-index: 0;
+	left: 0;
+	right: 0;
 }
 
-label, input, button, select, textarea {
-    font-size: 13px;
-   }
-
-input, textarea {
-    width: 140px;
+.headtitle {
+	font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif;
+	letter-spacing: -1px;
 }
 
-select {
-    width: 140px;
-}
-
-.btnlogin{
-	width: 70px;
-	height: 50px;
-	text-align: center;
-}
-
-.side-menu > li > a {
-    border: 1px solid #E5E5E5;
-    display: block;
-    margin: 0 0 -1px;
-    padding: 8px 14px;
-}
-
-select, textarea, input[type="text"], input[type="password"], input[type="datetime"], input[type="datetime-local"], input[type="date"], input[type="month"], input[type="time"], input[type="week"], input[type="number"], input[type="email"], input[type="url"], input[type="search"], input[type="tel"], input[type="color"], .uneditable-input {
-    font-size: 13px;
-}
-
-.side-menu > li:first-child > a {
-    border-radius: 6px 6px 0 0;
-}
-
-.btn{
-	font-size: 13px;
-}
-
-
-.form-horizontal .help-block {
-    font-size: 10px;
-    font-style: italic;
-    margin-bottom: 0;
-    margin-top: 5px;
-}
-
-.paramwell{
-	margin-bottom: 0px;
-    padding: 0px;
-}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- *
- * Everything below this line is the same as demo_table.css. This file is
- * required for 'cleanliness' of the markup
- *
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * DataTables features
- */
-
-div.dataTables_length label {
-	float: left;
-	text-align: left;
-}
-
-div.dataTables_length select {
-	width: 75px;
-}
-
-div.dataTables_filter label {
-	float: right;
-}
-
-div.dataTables_info {
-	padding-top: 8px;
-}
-
-div.dataTables_paginate {
-	float: right;
-	margin: 0;
-}
-
-table.table {
-	clear: both;
-	margin-bottom: 6px !important;
-}
-
-table.table thead .sorting,
-table.table thead .sorting_asc,
-table.table thead .sorting_desc,
-table.table thead .sorting_asc_disabled,
-table.table thead .sorting_desc_disabled {
-	cursor: pointer;
-	*cursor: hand;
-}
-
-table.table thead .sorting { background: url('/static/img/sort_both.png') no-repeat center right; }
-table.table thead .sorting_asc { background: url('/static/img/sort_asc.png') no-repeat center right; }
-table.table thead .sorting_desc { background: url('/static/img/sort_desc.png') no-repeat center right; }
-
-table.table thead .sorting_asc_disabled { background: url('/static/img/sort_asc_disabled.png') no-repeat center right; }
-table.table thead .sorting_desc_disabled { background: url('/static/img/sort_desc_disabled.png') no-repeat center right; }
-
-table.dataTable th:active {
-	outline: none;
-}
-
-
-tr.even {
-	background: #eaeaea;
-}
-
-.breadcrumb{
-	background-color: white;
-}
-
-.roundButton {
-    border-radius: 55px 55px 55px 55px !important;
-    height: 55px !important;
-    width: 55px !important;
-}
-
-.roundButtonHolder {
-    left: 74px !important;
-    top: 12px !important;
-}
-
-.hidden-phone img {
-	width: 100%;
+.closest #map_canvas{
+	position: fixed !important;
+	top: 52px;
+	bottom: 60px;
+	left: 0;
+	right: 0;
+	z-index: 10000;
 }

@@ -1,54 +1,19 @@
-{% extends "base.html" %}
-{% load i18n %}
-{% load staticfiles %}
-{% block currentpagetitle %}World{% endblock %}
-{% block homepage %}{% endblock %}
-{% block hometop %}{% endblock %}
-{% block world %}class="active"{% endblock %}
-{% block extrahead %}
-<style type="text/css">
-
-  .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
-</style>
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/markerclusterer.js' %}"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-<script type="text/javascript">
-	var lat = "{{MAP_CENTER.0}}";
-	var lat = parseFloat(lat.replace(",","."));
-	var lng = "{{MAP_CENTER.1}}";
-	var lng = parseFloat(lng.replace(",","."));
+	var lat;
+	var lng;
 	var zoomLevel = 6;
-	var latlng = new google.maps.LatLng(lat,lng);
-	var map = '';
-	var bounds = '';
-	var image = '';
+	var latlng;
+	var map;
+	var bounds;
+	var image;
 	var infoWindow;
-	addr = {};
-
-
-	var styles = [ {
-		url : '{% static '/img/edugroup.png' %}',
-		height : 54,
-		width : 63,
-		textColor : '#ffffff',
-		textSize : 11
-	}, {
-		url : '{% static '/img/edugroup.png' %}',
-		height : 54,
-		width : 63,
-		textColor : '#ffffff',
-		textSize : 11
-	}, {
-		url : '{% static '/img/edugroup.png' %}',
-		height : 54,
-		width : 63,
-		textColor : '#ffffff',
-		textSize : 11
-	} ];
+	var cityImg;
+	var countryImg;
+	var styles;
+	var markersUrl;
+	var pinImg;
 
 	function initialize() {
-		image = new google.maps.MarkerImage('{% static '/img/edupin.png' %}',
+		image = new google.maps.MarkerImage(pinImg,
 		// This marker is 29 pixels wide by 40 pixels tall.
 		new google.maps.Size(29, 40),
 		// The origin for this image is 0,0.
@@ -91,8 +56,17 @@
 
 		];
 
-	geocoder = new google.maps.Geocoder();
-	var mapOptions = {
+		geocoder = new google.maps.Geocoder();
+		// disable scrolling/draging in maps
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+			isDraggable = false;
+			isScrollable = true;
+		} else {
+			isDraggable = true;
+			isScrollable = false;
+		}
+
+		var mapOptions = {
 			center : latlng,
 			zoom : zoomLevel,
 			mapTypeId : google.maps.MapTypeId.ROADMAP,
@@ -103,9 +77,10 @@
 			},
 			navigationControl : true,
 			mapTypeControl : false,
+			scrollwheel: isScrollable,
+			draggable: isDraggable
 		};
-		map = new google.maps.Map(document.getElementById("map_canvas"),
-				mapOptions);
+		map = new google.maps.Map(document.getElementById("map_canvas"),mapOptions);
 
 
 		var homeControlDiv = document.createElement('div');
@@ -136,55 +111,100 @@
 			}
 		});
 
-
 	}
 
 	var markers = new Array();
 	function placeMarkers() {
+		$.get(markersUrl,
+			function(data) {
+				$.each(
+					data,
+					function(index, jsonMarker) {
+						var marker = createMarker(jsonMarker);
+						if (marker) {
+							bounds.extend(marker.position);
+								markers.push(marker);
+								google.maps.event.addListener(
+									marker,
+									'click',
+									function() {
+										infoWindow.setContent ( "<div><h4>"
+												+ jsonMarker.inst
+												+ "</h4>"
+												+
 
-		$
-				.get(
-						"{% url worldPoints %}",
-						function(data) {
-							$
-									.each(
-											data,
-											function(index, jsonMarker) {
-												var marker = createMarker(jsonMarker);
-												if (marker) {
-													bounds
-															.extend(marker.position);
-													markers.push(marker);
-													google.maps.event
-															.addListener(
-																	marker,
-																	'click',
-																	function() {
-																		infoWindow.setContent(jsonMarker.text);
-																		infoWindow
-																				.open(
-																						map,
-																						marker);
-																	});
-												}
-											});
+												"<div class='tabbable'>"
+												+ "<ul class='nav nav-tabs'>"
+												+ "<li class='active'><a href='#tab1' data-toggle='tab'>{% trans 'Info' %}</a></li>"
+												+ "<li><a href='#tab2' data-toggle='tab'>{% trans 'More...' %}</a></li>"
+												+ "</ul>"
+												+ "<div class='tab-content'>"
+												+ "<div class='tab-pane active' id='tab1'>"
+												+ "<dl class='dl-horizontal'>"
+												+ "<dt>{% trans 'Name' %}</dt><dd>"
+												+ jsonMarker.name
+												+ "&nbsp;</dd>"
+												+ "<dt>{% trans 'Address' %}</dt><dd>"
+												+ jsonMarker.address
+												+ "&nbsp;</dd>"
+												+ "<dt>{% trans 'Encryption' %}</dt><dd>"
+												+ jsonMarker.enc
+												+ "&nbsp;</dd>"
+												+ "<dt>{% trans 'SSID' %}</dt><dd>"
+												+ jsonMarker.SSID
+												+ "&nbsp;</dd>"
+												+ "<dt>{% trans 'Number of APs' %}</dt><dd>"
+												+ jsonMarker.AP_no
+												+ "&nbsp;</dd></dl>"
+												+ "</div>"
+												+ "<div class='tab-pane' id='tab2'>"
+												+ "<dl class='dl-horizontal'>"
+												+ "<dt>{% trans 'Port Restrict' %}</dt><dd>"
+												+ jsonMarker.port_restrict
+												+ "&nbsp;</dd>"
+												+ "<dt>{% trans 'transp_proxy' %}</dt><dd>"
+												+ jsonMarker.transp_proxy
+												+ "&nbsp;</dd>"
+												+ "<dt>IPv6</dt><dd>"
+												+ jsonMarker.IPv6
+												+ "&nbsp;</dd>"
+												+ "<dt>NAT</dt><dd>"
+												+ jsonMarker.NAT
+												+ "&nbsp;</dd>"
+												+ "<dt>{% trans 'Wired' %}</dt><dd>"
+												+ jsonMarker.wired
+												+ "&nbsp;</dd></dl>"
+												+ "</div>"
+												+ "</div>"
+												+ "</div>"
+												+ "</div>");
+										infoWindow.open(
+											map,
+											marker
+										);
+									});
+								}
+							});
 							var mcOptions = {
-								gridSize : 60,
-								maxZoom : null,
+								gridSize : 50,
+								maxZoom : 15,
 								styles : styles
 							};
-
 							var markerCluster = new MarkerClusterer(map,
 									markers, mcOptions);
-							map.fitBounds(bounds);
+							map.fitBounds(bounds)
 						});
 	}
 
 	function createMarker(markerObj) {
+		var title = markerObj.name;
+		var address = markerObj.address;
 		var latLng = new google.maps.LatLng(markerObj.lat, markerObj.lng);
 		var marker = new google.maps.Marker({
 			'position' : latLng,
 			'map' : map,
+			'title' : title,
+			'address' : address,
 			'icon' : image,
 		});
 		return marker
@@ -194,6 +214,33 @@
 		var markerCluster = new MarkerClusterer(map, markers);
 	}
 
+	function rad(x) {
+		return x * Math.PI / 180;
+	}
+
+	function find_closest_marker(event) {
+		var lat = event.latLng.lat();
+		var lng = event.latLng.lng();
+		var R = 6371; // radius of earth in km
+		var distances = [];
+		var closest = -1;
+		for (i = 0; i < markers.length; i++) {
+			var mlat = markers[i].position.lat();
+			var mlng = markers[i].position.lng();
+			var dLat = rad(mlat - lat);
+			var dLong = rad(mlng - lng);
+			var a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+					+ Math.cos(rad(lat)) * Math.cos(rad(lat))
+					* Math.sin(dLong / 2) * Math.sin(dLong / 2);
+			var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+			var d = R * c;
+			distances[i] = d;
+			if (closest == -1 || d < distances[closest]) {
+				closest = i;
+			}
+		}
+
+	}
 
 	function geocode(position){
 		addr = {};
@@ -231,7 +278,6 @@
 	        map.setCenter(results[0].geometry.location);
 	    	map.fitBounds(results[0].geometry.bounds)
 	      } else {
-	        //alert("Geocode was not successful for the following reason: " + status);
 	      }
 	    });
 	  }
@@ -247,7 +293,7 @@
 		  var controlUI = document.createElement('button');
 		  controlUI.className='btn btn-warning roundButton';
 		  controlUI.id = "showCityBtn";
-		  extraCSS = 'background-image: url({% static '/img/city.png' %});background-position: center center; background-repeat: no-repeat;';
+		  extraCSS = 'background-image: url(' + cityImg + ');background-position: center center; background-repeat: no-repeat;';
 		  controlUI.style.cssText='display:none; cursor:pointer; white-space:nowrap; position:absolute; '+extraCSS;
 		  controlUI.title = "City View";
 
@@ -255,7 +301,7 @@
 		  var controlUI2 = document.createElement('button');
 		  controlUI2.className='btn btn-warning roundButton';
 		  controlUI2.id = "showCountryBtn";
-		  extraCSS2 = 'background-image: url({% static '/img/country.png' %});background-position: center center; background-repeat: no-repeat;';
+		  extraCSS2 = 'background-image: url(' + countryImg + ');background-position: center center; background-repeat: no-repeat;';
 		  controlUI2.style.cssText='display:none; cursor:pointer; white-space:nowrap; position:absolute; '+extraCSS2;
 		  controlUI2.title = "Country View";
 
@@ -273,19 +319,45 @@
 		}
 
 	$(document).ready(function() {
+		mapDiv = $('#map_canvas')
+		lat = mapDiv.data("map-center-lat");
+		lat = parseFloat(lat.toString().replace(",","."));
+		lng = mapDiv.data("map-center-lng");
+		lng = parseFloat(lng.toString().replace(",","."));
+		cityImg = mapDiv.data("city");
+		countryImg = mapDiv.data("country");
+		zoomLevel = 6;
+		latlng = new google.maps.LatLng(lat,lng);
+		map = '';
+		bounds = '';
+		image = '';
+		infoWindow;
+		pinImg = mapDiv.data("pin");
+		addr = {};
+		styles = [{
+			url : mapDiv.data("pin"),
+			height : 54,
+			width : 63,
+			textColor : '#ffffff',
+			textSize : 11
+		}, {
+			url : mapDiv.data("pin"),
+			height : 54,
+			width : 63,
+			textColor : '#ffffff',
+			textSize : 11
+		}, {
+			url : mapDiv.data("pin"),
+			height : 54,
+			width : 63,
+			textColor : '#ffffff',
+			textSize : 11
+		}];
+
+		markersUrl = mapDiv.data('markers');
+
 		initialize();
 		marks = placeMarkers();
 		clusterMarkers(marks);
 	});
-</script>
-{% endblock %}
-
-
-					{% block content %}
-					<h4>{% trans "Eduroam Worldwide" %}</h4>
-					<hr>
-
-					<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;"></div>
-					{% endblock %}
-
 
