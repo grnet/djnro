@@ -35,7 +35,7 @@
               <ul class="nav navbar-nav">
                 <li class="{% block hometop %}{% endblock %}"><a href="{% url index %}">{% trans "Home" %}</a></li>
                 <li class="{% block faqtop %}{% endblock %}"><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
-                <li><a href="{% url manage %}"> {% trans "Manage" %}</a></li>
+                <li class="{% block manage %}{% endblock %}"><a href="{% url manage %}"> {% trans "Manage" %}</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">

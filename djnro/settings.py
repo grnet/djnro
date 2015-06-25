@@ -123,12 +123,12 @@ MIDDLEWARE_CLASSES = (
 AUTHENTICATION_BACKENDS = (
     'djangobackends.shibauthBackend.shibauthBackend',
     # 'django_auth_ldap.backend.LDAPBackend',
-
     'social.backends.twitter.TwitterOAuth',
+    'social.backends.google.GoogleOpenIdConnect',
     # 'social.backends.facebook.FacebookOAuth2',
-    'social.backends.google.GoogleOpenId',
+
     'social.backends.google.GoogleOAuth2',
-    'social.backends.google.GoogleOAuth',
+    # 'social.backends.google.GoogleOAuth',
     # 'social.backends.linkedin.LinkedinOAuth2',
     # 'social.backends.yahoo.YahooOpenId',
     # 'social.backends.open_id.OpenIdAuth',
