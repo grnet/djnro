@@ -6,46 +6,40 @@
 {% block hometop %}{% endblock %}
 {% block participants %}active{% endblock %}
 
-{% block extrahead %}
-<style type="text/css">
-  .headtitle {font-family: "Franklin Gothic Demi", "Franklin Gothic", "ITC Franklin Gothic", Arial, sans-serif; letter-spacing: -1px; }
-</style>
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
-{% endblock %}
-
 
 {% block subcontent %}
-	{% load tolocale %}
-	<h4>{% trans "Participating Institutions" %}</h4>
-	<hr>
-	<div>{% trans "In"%} {% trans COUNTRY_NAME %} {% trans "eduroam is provided by the following instituitons/organizations" %}</div><br>
-					<div>{% for i in institutions %}
-					<address>
-						<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br>
-						{% with i.institution.get_active_cat_enrl as cats %}
-    						{% for cat in cats %}
-    						<a href="{{cat}}" target="_blank">eduroam CAT configuration profiles</a><span style="font-weight: bold; font-size:15px; color:red;">*</span><br>{% endfor %}
-    					{% endwith %}
-						{{i.address_street}}<br>
-						{{i.address_city}}
-						{% if i.url.all|length > 0 %}
-						    <dl style="margin-top: 0px;">
-    							<dt style="font-weight: normal;">urls</dt>
-    							<dd>
-						{% for u in i.url.all %}{% if u %}<a href="{{u.url}}">{{u.url}}</a>  {{u.get_urltype_display}} ({{u.get_lang_display}})<br>{% endif %}{% endfor %}
-						</dd>
-    						</dl>
-    						{% endif %}
-
-
-					</address>
-
-
-
-					{% endfor %}</div>
-					{% if catexists %}
-					<span style="font-size:11px;"><span style="color:red;">*</span>: Institution admiminstrators may have not created CAT profiles for all/any devices</span>
-					{% endif %}
-					{% endblock %}
+{% load tolocale %}
+<h1>{% trans "Participating Institutions" %}</h1>
+<hr>
+<div>{% trans "In"%} {% trans COUNTRY_NAME %} {% trans "eduroam is provided by the following instituitons/organizations" %}</div>
+<div>
+	{% for i in institutions %}
+	<div class="col-md-6">
+		<address>
+			<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br/>
+			{% with i.institution.get_active_cat_enrl as cats %}
+				{% for cat in cats %}
+						<a href="{{cat}}" target="_blank">eduroam CAT configuration profiles</a><br/>
+						<span style="font-weight: bold; font-size:15px; color:red;">*</span><br/>
+				{% endfor %}
+			{% endwith %}
+			{{i.address_street}}<br>
+			{{i.address_city}}
+			{% if i.url.all|length > 0 %}
+		    <dl style="margin-top: 0px;">
+				<dt style="font-weight: normal;">urls</dt>
+				<dd>
+					{% for u in i.url.all %}{% if u %}<a href="{{u.url}}">{{u.url}}</a>  {{u.get_urltype_display}} ({{u.get_lang_display}})<br>{% endif %}{% endfor %}
+				</dd>
+			</dl>
+			{% endif %}
+		</address>
+	</div>
+	{% endfor %}
+</div>
+{% if catexists %}
+	<span style="font-size:11px;"><span style="color:red;">*</span>: Institution admiminstrators may have not created CAT profiles for all/any devices</span>
+{% endif %}
+{% endblock %}
 
 

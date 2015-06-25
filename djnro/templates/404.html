@@ -1,38 +1,17 @@
 {% extends "base.html" %}
 {% load i18n %}
-    {% block topmenu %}
-    <ul class="nav">
-        <li>
-            <a href="{% url index %}">{% trans "Home" %}</a>
-        </li>
-        <li>
-            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
-        </li>
-        {% include "front/management_dropdown.html" %}
 
-    </ul>
-    {% endblock %}
-    {% block content %}
-	<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2">
-        </div><!--/span-->
-
-
-		<div class="span10">
+{% block subcontent %}
+<div class="container-fluid">
+    <div class="row-fluid">
+		<div class="span12">
 			<div class="row-fluid">
 				<!--/span-->
-				<h3>Oops! You got a nice 404: Page does not exist</h3>
+				<h1>Oops! You got a nice 404: Page does not exist</h1>
 				<hr>
-					{% block subcontent %}
-					<div class="span10 alert alert-error">No matter how you reached this page, it simply does not exist!</div>
-					{% endblock %}
-				
-				<!--/span-->
-			</div><!--/row-->
-		</div><!--/span-->
-
-        </div><!--/span-->
-
-    </div><!--/.fluid-container-->
-	{% endblock %}
+			     <div class="span10 alert alert-error">No matter how you reached this page, it simply does not exist!</div>
+		  </div><!--/row-->
+		</div>
+    </div>
+</div>
+{% endblock %}
