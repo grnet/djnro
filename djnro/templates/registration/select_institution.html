@@ -1,86 +1,56 @@
 {% extends "base.html" %}
 {% load i18n %}
-    {% block topmenu %}
-    <ul class="nav">
-        <li>
-            <a href="{% url index %}">{% trans "Home" %}</a>
-        </li>
-        <li>
-            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
-        </li>
-        {% include "front/management_dropdown.html" %}
-    </ul>
-    {% endblock %}
-{% block content %}
-<div class="container-fluid">
-
-    <div class="row-fluid">
-        <div class="span2">
-        </div><!--/span-->
-        <div class="span10">
-            <div class="row-fluid">
-                <!--/span-->
-                <div class="span10">
-                <h4>Select your institution</h4>
-<hr>
-<div class="span1"></div>
-<div class="span7">
-Excellent! You are a click away from getting into your institution eduroam management.
-Select your institution to proceed. Our administrators will activate your account and notify you via e-mail.
-
-Please do not continue if you are not the eduroam administrator for this institution.
-Any inappropriate requests will be reported directly to the institution, along with your name and email.
-</div>
-<div class="span12"></div>
-<div class="span12">
-<form method="POST" class="form-horizontal" action="{% url selectinst %}">
-    {% csrf_token %}
-    {% if form.non_field_errors %}
-    <p class="error">
-        {{ form.non_field_errors}}
-    </p>
-    {% endif %}
-    <div style="display: none">
-        {{form.user}}
-    </div>
-   {% if nomail %}
-    <div class="control-group {% if form.email.errors %} error {% endif %}">
-        <label class="control-label" for="id_email"><b>{% trans "Email" %}</b></label>
-        <div class="controls">
-            {{ form.email }}
-            {% if form.email.errors %} <span class="help-inline"> {{ form.email.errors|join:", " }} </span>
-            {% endif %} <span class="help-block"> {{ form.institution.help_text }}</span>
-        </div>
-    </div>
-    {% else %}
-    <div style="display: none">
-        {{form.email}}
-    </div>
-    {% endif %}
-    <div class="control-group {% if form.institution.errors %} error {% endif %}">
-        <label class="control-label" for="id_institution"><b>{% trans "Institution" %}</b></label>
-        <div class="controls">
-            {{ form.institution }}
-            {% if form.institution.errors %} <span class="help-inline"> {{ form.institution.errors|join:", " }} </span>
-            {% endif %} <span class="help-block"> {{ form.institution.help_text }}</span>
-        </div>
-    </div>
-
-    <div class="control-group">
-        <div class="controls">
-            <button type="submit" id="applybutton" value="Apply" class="btn btn-primary">
-            {% trans "Apply" %}</button>
-        </div>
-    </div>
-</form>
-</div>
-                </div><!--/span-->
-                <!--/span-->
-            </div><!--/row-->
-        </div><!--/span-->
-</div><!--/.fluid-container-->
-{% endblock %}
-
 
 {% block subcontent %}
+    <h1>Select your institution</h1>
+    <hr>
+    <div class="row">
+        Excellent! You are a click away from getting into your institution eduroam management.
+        Select your institution to proceed. Our administrators will activate your account and notify you via e-mail.
+
+        Please do not continue if you are not the eduroam administrator for this institution.
+        Any inappropriate requests will be reported directly to the institution, along with your name and email.
+    </div>
+    <form method="POST" class="form-horizontal" action="{% url selectinst %}">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+        <p class="error">
+            {{ form.non_field_errors}}
+        </p>
+        {% endif %}
+        <div style="display: none">
+            {{ form.user }}
+        </div>
+       {% if nomail %}
+        <div class="control-group {% if form.email.errors %} error {% endif %}">
+            <label class="control-label" for="id_email"><b>{% trans "Email" %}</b></label>
+            <div class="controls">
+                {{ form.email }}
+                {% if form.email.errors %} <span class="help-inline"> {{ form.email.errors|join:", " }} </span>
+                {% endif %} <span class="help-block"> {{ form.institution.help_text }}</span>
+            </div>
+        </div>
+        {% else %}
+        <div style="display: none">
+            {{form.email}}
+        </div>
+        {% endif %}
+        <div class="control-group {% if form.institution.errors %} error {% endif %}">
+            <label class="control-label" for="id_institution"><b>{% trans "Institution" %}</b></label>
+            <div class="controls">
+                {{ form.institution }}
+                {% if form.institution.errors %} <span class="help-inline"> {{ form.institution.errors|join:", " }} </span>
+                {% endif %} <span class="help-block"> {{ form.institution.help_text }}</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" id="applybutton" value="Apply" class="btn btn-primary">
+                {% trans "Apply" %}</button>
+            </div>
+        </div>
+    </form>
+
 {% endblock %}
+

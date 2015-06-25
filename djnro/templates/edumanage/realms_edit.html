@@ -15,7 +15,9 @@
 
 {% block homeactive %}{% endblock %}
 {% block realmsactive %}class="active"{% endblock %}
-{% block subcontent %}<h4>{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Realm" %}{% endif %}</h4>
+{% block management_content %}
+
+<h4>{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Realm" %}{% endif %}</h4>
 <hr>
 {% if messages %}
 	<table class="table table-condensed">

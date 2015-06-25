@@ -1,37 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}
-    {% block topmenu %}
-    <ul class="nav">
-        <li>
-            <a href="{% url index %}">{% trans "Home" %}</a>
-        </li>
-        <li>
-            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
-        </li>
-        {% include "front/management_dropdown.html" %}
-
-    </ul>
-    {% endblock %}
-    {% block content %}
-	<div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span2">
-        </div><!--/span-->
-
-
-		<div class="span10">
-			<div class="row-fluid">
-				<!--/span-->
-				<h3>{% if status %}Status{% else %}{% if error %}Error{% endif%}{% endif %}</h3>
-				<hr>
-					{% block subcontent %}
-					<div class="span10 alert {% if status%}alert-success{% else %}{% if error %}alert-error{% endif %}{% endif %}">{% autoescape off %}{{error}}{{status}}{% endautoescape %}</div>
-					{% endblock %}
-				
-				<!--/span-->
-			</div><!--/row-->
-		</div><!--/span-->
-
-        </div><!--/span-->
-    </div><!--/.fluid-container-->
-	{% endblock %}
+{% block subcontent %}
+	<h1>{% if status %}Status{% else %}{% if error %}Error{% endif%}{% endif %}</h1>
+	<hr>
+	<div class="span12 alert {% if status%}alert-success{% else %}{% if error %}alert-error{% endif %}{% endif %}">
+        {% autoescape off %}{{error}}{{status}}{% endautoescape %}
+    </div>
+{% endblock %}

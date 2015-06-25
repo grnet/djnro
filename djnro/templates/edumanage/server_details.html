@@ -15,7 +15,9 @@
 {% endblock %}
 {% block homeactive %}{% endblock %}
 {% block serversactive %}class="active"{% endblock %}
-{% block subcontent %} <h4>{{server.get_name}}</h4>
+{% block management_content %}
+
+ <h4>{{server.get_name}}</h4>
 <hr>
 <div class="form-horizontal">
 	{% csrf_token %}
@@ -90,4 +92,4 @@
     </div>
 </div>
 {% endblock %}
-         
+

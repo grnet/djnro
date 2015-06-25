@@ -69,6 +69,9 @@
                         <li class="{% block api %}{% endblock %}"><a href="{% url api %}">{% trans "Closest point api" %}</a>
                     </ul>
                 </li>
+                {% if request.user.is_authenticated %}
+                <li><a href="{% url logout %}">Logout</a></li>
+                {% endif %}
               </ul>
             </div><!--/.nav-collapse -->
           </div>
@@ -85,8 +88,8 @@
     </div>
     {% include "partial/footer.html" %}
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     {% block extrajs %}{% endblock %}
   </body>
 </html>

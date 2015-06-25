@@ -21,7 +21,9 @@ $(document).ready(function() {
 {% endblock %}
 {% block homeactive %}{% endblock %}
 {% block serversactive %}class="active"{% endblock %}
-{% block subcontent %} <h4>{% if edit %}{{form.instance.get_name}} ({% trans "edit" %}){% else %}{% trans "Add Server" %}{% endif %}</h4>
+{% block management_content %}
+
+<h4>{% if edit %}{{form.instance.get_name}} ({% trans "edit" %}){% else %}{% trans "Add Server" %}{% endif %}</h4>
 <hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}

@@ -14,7 +14,7 @@ footer {
 	height: 60px;
 	background: #eee;
 	text-align: center;
-	padding: 20px;
+	padding: 8px;
 }
 
 
@@ -75,4 +75,10 @@ footer {
 	left: 0;
 	right: 0;
 	z-index: 10000;
+}
+
+
+.sidebar-nav .active {
+	background: #eee;
+
 }

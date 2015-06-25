@@ -17,7 +17,8 @@
 
 {% block homeactive %}{% endblock %}
 {% block instrealmmon %}class="active"{% endblock %}
-{% block subcontent %} <h4>{% if edit %}Monitored realm: {{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</h4>
+{% block management_content %}
+ <h4>{% if edit %}Monitored realm: {{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</h4>
 <hr>
 <form method="POST" class="form-horizontal">
 	{% csrf_token %}
