@@ -1,6 +1,6 @@
 {% load i18n %}
 
-    <form id="add_user_form" method="POST"  class="form-horizontal">
+    <form id="add_user_form" method="POST"  class="">
     {% csrf_token %}
 		<div class="control-group {% if form.name.errors %} error {% endif %}">
 		<label class="control-label" for="id_name"><b>{% trans "Name" %}</b></label>

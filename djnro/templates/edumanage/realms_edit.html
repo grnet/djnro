@@ -2,21 +2,11 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block crumbs %}
-	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	<li><a href="{% url realms %}">{% trans "Realms" %}</a><span class="divider">/</span></li>
-	<li class="active">{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Realm" %}{% endif %}</li>
-{% endblock %}
-
-{% block extrahead %}
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
-<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
-{% endblock %}
 
 {% block homeactive %}{% endblock %}
 {% block realmsactive %}class="active"{% endblock %}
-{% block management_content %}
 
+{% block management_content %}
 <h4>{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Realm" %}{% endif %}</h4>
 <hr>
 {% if messages %}
@@ -27,7 +17,7 @@
 	</table>
 {% endif %}
 {% if institution.ertype == 1 or institution.ertype == 3 %}
-<form method="POST" class="form-horizontal">
+<form method="POST" class="">
 	{% csrf_token %}
 	{% if form.non_field_errors %}
 	<p class="error">
@@ -37,7 +27,7 @@
 	<div style="display: none">
 		{{form.instid}}
 	</div>
-	<div class="control-group {% if form.realm.errors %} error {% endif %}">
+	<div class="form-group {% if form.realm.errors %} error {% endif %}">
 		<label class="control-label" for="id_realm"><b>{% trans "Realm" %}</b></label>
 		<div class="controls">
 			{{ form.realm }}

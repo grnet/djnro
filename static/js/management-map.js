@@ -77,8 +77,8 @@ $.get(servicesUrl, function(data){
 
 	"<div class='tabbable'>"+
     "<ul class='nav nav-tabs'>"+
-    "<li class='active'><a href='#tab1' data-toggle='tab'>{% trans 'Info' %}</a></li>"+
-    "<li><a href='#tab2' data-toggle='tab'>{% trans 'More...' %}</a></li>"+
+    "<li class='active'><a href='#tab1' data-toggle='tab'>Info</a></li>"+
+    "<li><a href='#tab2' data-toggle='tab'>More...</a></li>"+
     "</ul>"+
     "<div class='tab-content'>"+
     "<div class='tab-pane active' id='tab1'>"+

@@ -1,3 +1,10 @@
+Version 1
+==============
+
+	- redesign (bootstrap 3)
+	- fix google auth
+	- add requirements.txt file (for pip)
+
 Version 0.9
 ==============
 

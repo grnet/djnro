@@ -1,10 +1,9 @@
 {% load i18n %}
-<footer>
+<footer {% if user.is_authenticated %}class="auth"{% endif %}>
     <div class="container">
     	{% if user.is_authenticated %}
-    		<p>{% trans "If you have any questions or need help, contact" %} {{DOMAIN_HELPDESK_DICT.name}} (<a href="{{DOMAIN_HELPDESK_DICT.uri}}">{{DOMAIN_HELPDESK_DICT.uri}}</a>) - {{DOMAIN_HELPDESK_DICT.phone}}</p>
+    		{% trans "If you have any questions or need help, contact" %} {{DOMAIN_HELPDESK_DICT.name}} (<a href="{{DOMAIN_HELPDESK_DICT.uri}}">{{DOMAIN_HELPDESK_DICT.uri}}</a>) - {{DOMAIN_HELPDESK_DICT.phone}}</br>
     	{% endif %}
-
     	{% trans "This is a service provided by" %} <a href="{{PROV_TEAM.url}}" target="_blank">{{PROV_TEAM.name}}</a>
     	{% for media in SOCIAL_MEDIA_LIST %}
     		<a href="{{media.url}}" target="_blank">

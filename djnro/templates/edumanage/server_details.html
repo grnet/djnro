@@ -5,19 +5,12 @@
 	<li><a href="{% url servers %}">{% trans "Servers" %}</a><span class="divider">/</span></li>
 	<li class="active">{{server.name}}</li>
 {% endblock %}
-{% block extrahead %}
-<style type="text/css">
-	.control-label{
-		padding-top: 0px !important;
-		width: auto !important;
-	}
-</style>
-{% endblock %}
+
 {% block homeactive %}{% endblock %}
 {% block serversactive %}class="active"{% endblock %}
 {% block management_content %}
 
- <h4>{{server.get_name}}</h4>
+<h4>{{server.get_name}}</h4>
 <hr>
 <div class="form-horizontal">
 	{% csrf_token %}

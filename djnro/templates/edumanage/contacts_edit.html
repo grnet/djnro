@@ -1,21 +1,13 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
 {% load staticfiles %}
-{% block crumbs %}
-	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	<li><a href="{% url contacts %}">{% trans "Contacts" %}</a><span class="divider">/</span></li>
-	<li class="active">{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</li>
-{% endblock %}
-{% block extrahead %}
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
-<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
-{% endblock %}
 
 {% block homeactive %}{% endblock %}
 {% block contactsactive %}class="active"{% endblock %}
-{% block management_content %} <h4>{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</h4>
+{% block management_content %}
+<h4>{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</h4>
 <hr>
-<form method="POST" class="form-horizontal">
+<form method="POST" class="">
 	{% csrf_token %}
 	{% if form.non_field_errors %}
 	<p class="error">

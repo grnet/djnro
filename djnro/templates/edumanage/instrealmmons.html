@@ -2,70 +2,182 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block crumbs %}
-    <li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-    <li class="active">{% trans "Monitored Realms" %}</li>
+{% block homeactive %}{% endblock %}
+{% block instrealmmon %}class="active"{% endblock %}
+{% block management_content %}
+
+      <h4>{% trans "Monitored Realms" %}</h4>
+      <hr>
+      {% if messages %}
+        <table class="table table-condensed">
+
+            {% for message in messages %}
+            <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
+            {% endfor %}
+        </table>
+      {% endif %}
+
+      <div class="span10"></div>
+      {% if realms %}
+      <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
+		<thead>
+		<tr>
+			<th>{% trans "Realm" %}</th>
+			<th>{% trans "Type" %}</th>
+
+
+			<th style="text-align: center;">{% trans "Action" %}</th>
+			<th>
+        		{% trans "Parameters" %}
+        		</th>
+		</tr>
+		</thead>
+
+		<tbody>
+        {% for realm in realms %}
+      	<tr class="GradeC">
+        	<td>{{realm.realm}}</td>
+        	<td style="width: 120px;">
+        	{{realm.get_mon_type_display}}
+        	</td>
+        	<td style="text-align: center;">
+
+        		<a href="{% url edit-instrealmmon realm.pk %}" class="btn btn-small">{% trans "edit" %}</a>
+        		<a href="#" id="del_instrealmmon_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
+        	</td>
+        		<td style="text-align: center;">
+        		{% if realm.monlocalauthnparam %}
+        		<div class="well paramwell">
+<div class="row">
+<div class="span6">
+
+                    <dl class="dl-horizontal" style=" text-align: left;">
+                    <dt>Method</dt>
+                    <dd>{{realm.monlocalauthnparam.get_eap_method_display}}</dd>
+                    <dt>Phase 2</dt>
+                    <dd>{{realm.monlocalauthnparam.get_phase2_display}}</dd>
+                    <dt>Username</dt>
+                    <dd>{{realm.monlocalauthnparam.username}}</dd>
+                    </dl>
+                    </div>
+<div class="span6">
+                <a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini">{% trans "edit" %}</a>
+                <a href="#" id="del_monlocauthpar_{{realm.monlocalauthnparam.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
+
+</div>
+</div>
+
+        		{% else %}
+        		{% if not realm.monlocalauthnparam %}<a href="{% url edit-monlocauthpar realm.pk %}" class="btn btn-mini btn-primary">{% trans "add" %}</a>{% endif %}
+        		{% endif %}
+        		</td>
+
+
+        </tr>
+
+      	{% endfor %}
+      	</tbody>
+      </table>
+      {% endif %}
+      <div><a href="{% url edit-instrealmmon %}" class="btn btn-primary">{% trans "Add monitored realm" %}</a></div>
+
+<div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">{% trans "Delete monitored realm" %}</h3>
+            </div>
+            <div class="modal-body" id="mymodalbody">
+            </div>
+            <div class="modal-footer" id="modalfooter1">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+                <a class="btn btn-warning" id="delrealmSubmit" href="#">{% trans "Delete" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel2">{% trans "Delete monitored realm" %}</h3>
+            </div>
+            <div class="modal-body" id="mymodalbody2">
+            </div>
+            <div class="modal-footer" id="modalfooter2">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
+                <a class="btn btn-warning" id="delmonlocauthparSubmit" href="#">{% trans "Delete" %}</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
-
-{% block extrahead %}
-<script type="text/javascript" src="{% static 'js/jquery.dataTables.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/datatables_bootstrap.js' %}"></script>
+{% block extrajs %}
+<script type="text/javascript" src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/1/dataTables.bootstrap.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
 {% if realms %}
-var oTable = $('#table').dataTable({
-	"sPaginationType": "bootstrap",
-	"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-	"aoColumns": [{
-        "bSearchable": true,
-        "bSortable": true
-    }, {
-        "bSearchable": true,
-        "bSortable": true
-    },
-    {
-        "bVisible": true,
-        "bSearchable": false,
-        "bSortable": false
-    },
-    {
-        "bSearchable": true,
-        "bSortable": true
-    }
-   ],
-    "aaSorting": [[0, 'desc']],
-    "iDisplayLength": 25,
-    "oSearch": {"bSmart": false, "bRegex":true},
-    "oLanguage": {
-    	"sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "realms" %}',
-        "sProcessing":   "Processing...",
-        "sZeroRecords": '{% trans "No records to display" %}',
-        "sInfo":         "Showing _START_ to _END_ of _TOTAL_ entries",
-        "sInfoEmpty":    "{% trans "Showing 0 to 0 of 0 entries" %}",
-        "sInfoFiltered": "(filtered from _MAX_ total entries)",
-        "sInfoPostFix":  "",
-        "sSearch":       '{% trans "Search:" %}',
-        "sUrl":          "",
-        "oPaginate": {
-            "sFirst":    '{% trans "First" %}',
-            "sPrevious": '{% trans "Previous" %}',
-            "sNext":     '{% trans "Next" %}',
-            "sLast":     '{% trans "Last" %}'
+var oTable = $('#table')
+    .on( 'init.dt', function () {
+            $('.pagination ul').addClass('pagination');
+        })
+    .dataTable({
+        "sPaginationType": "bootstrap",
+        "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+        "aoColumns": [{
+            "bSearchable": true,
+            "bSortable": true
+        }, {
+            "bSearchable": true,
+            "bSortable": true
+        },
+        {
+            "bVisible": true,
+            "bSearchable": false,
+            "bSortable": false
+        },
+        {
+            "bSearchable": true,
+            "bSortable": true
         }
-    }
-});
+       ],
+        "aaSorting": [[0, 'desc']],
+        "iDisplayLength": 25,
+        "oSearch": {"bSmart": false, "bRegex":true},
+        "oLanguage": {
+            "sLengthMenu": '{% trans "Display" %} <select><option value="25">25</option><option value="50">50</option><option value="-1">{% trans "All" %}</option></select> {% trans "realms" %}',
+            "sProcessing":   "Processing...",
+            "sZeroRecords": '{% trans "No records to display" %}',
+            "sInfo":         "Showing _START_ to _END_ of _TOTAL_ entries",
+            "sInfoEmpty":    "{% trans "Showing 0 to 0 of 0 entries" %}",
+            "sInfoFiltered": "(filtered from _MAX_ total entries)",
+            "sInfoPostFix":  "",
+            "sSearch":       '{% trans "Search:" %}',
+            "sUrl":          "",
+            "oPaginate": {
+                "sFirst":    '{% trans "First" %}',
+                "sPrevious": '{% trans "Previous" %}',
+                "sNext":     '{% trans "Next" %}',
+                "sLast":     '{% trans "Last" %}'
+            }
+        }
+    });
 
 oTable.fnDraw();
 
 $('[id^=del_instrealmmon_]').click(function(){
-	instrealmmon_pk = (this.id).replace("del_instrealmmon_", '');
-	name = this.getAttribute("data-realmname");
-	$("#mymodalbody").html("{% trans 'You are about to delete monitored realm (and its parameters if any)' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
-	$("#myModalLabel").html("{% trans 'Delete Monitored Realm' %} "+name);
-	$('#myModal').modal('show');
-	$("#modalfooter1").show();
-	return false;
+    instrealmmon_pk = (this.id).replace("del_instrealmmon_", '');
+    name = this.getAttribute("data-realmname");
+    $("#mymodalbody").html("{% trans 'You are about to delete monitored realm (and its parameters if any)' %}: <b>"+name+"</b><br>{% trans 'Press Delete to proceed or Cancel to cancel deletion' %}");
+    $("#myModalLabel").html("{% trans 'Delete Monitored Realm' %} "+name);
+    $('#myModal').modal('show');
+    $("#modalfooter1").show();
+    return false;
 });
 
 $("#delrealmSubmit").click(function(){
@@ -85,7 +197,7 @@ $("#delrealmSubmit").click(function(){
             }
             }
         });
-});
+    });
 
 
 $('[id^=del_monlocauthpar_]').click(function(){
@@ -99,136 +211,25 @@ $('[id^=del_monlocauthpar_]').click(function(){
 });
 
 $("#delmonlocauthparSubmit").click(function(){
-	$.ajax({
-		url:"{% url del-monlocauthpar %}/?monlocauthpar_pk="+monlocauthpar_pk,
-		type: "GET",
-		success: function(data){
-			if (data.error){
-				$("#modalfooter2").hide();
-				$("#mymodalbody2").html("<font style='color:#B94A48'>"+data.error+"</font>");
-			}
-			if (data.success){
-				$("#modalfooter2").hide();
-				$("#mymodalbody2").html("monitored realm parameters "+name+" successfully deleted");
-				window.setTimeout('location.reload()', 1000);
+    $.ajax({
+        url:"{% url del-monlocauthpar %}/?monlocauthpar_pk="+monlocauthpar_pk,
+        type: "GET",
+        success: function(data){
+            if (data.error){
+                $("#modalfooter2").hide();
+                $("#mymodalbody2").html("<font style='color:#B94A48'>"+data.error+"</font>");
+            }
+            if (data.success){
+                $("#modalfooter2").hide();
+                $("#mymodalbody2").html("monitored realm parameters "+name+" successfully deleted");
+                window.setTimeout('location.reload()', 1000);
 
-			}
-			}
-		});
+            }
+            }
+        });
 });
 {% endif %}
 });
 </script>
 
 {% endblock %}
-
-	{% block navbar %}
-
-    		{% endblock %}
-
-    		{% block homeactive %}{% endblock %}
-    		{% block instrealmmon %}class="active"{% endblock %}
-            {% block management_content %}
-
-	              <h4>{% trans "Monitored Realms" %}</h4>
-	              <hr>
-	              {% if messages %}
-                    <table class="table table-condensed">
-
-                        {% for message in messages %}
-                        <tr {% if message.tags %} class="{{ message.tags }}"{% endif %}><td>{{ message }}<td></tr>
-                        {% endfor %}
-                    </table>
-                  {% endif %}
-	              <div><a href="{% url edit-instrealmmon %}" class="btn btn-primary">{% trans "Add monitored realm" %}</a></div>
-	              <div class="span10"></div>
-	              {% if realms %}
-	              <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
-					<thead>
-					<tr>
-						<th>{% trans "Realm" %}</th>
-						<th>{% trans "Type" %}</th>
-
-
-						<th style="text-align: center;">{% trans "Action" %}</th>
-						<th>
-	                		{% trans "Parameters" %}
-	                		</th>
-					</tr>
-					</thead>
-
-					<tbody>
-	                {% for realm in realms %}
-	              	<tr class="GradeC">
-	                	<td>{{realm.realm}}</td>
-	                	<td style="width: 120px;">
-	                	{{realm.get_mon_type_display}}
-	                	</td>
-	                	<td style="text-align: center;">
-
-	                		<a href="{% url edit-instrealmmon realm.pk %}" class="btn btn-small">{% trans "edit" %}</a>
-	                		<a href="#" id="del_instrealmmon_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
-	                	</td>
-	                		<td style="text-align: center;">
-	                		{% if realm.monlocalauthnparam %}
-	                		<div class="well paramwell">
-<div class="row">
-<div class="span6">
-
-                                <dl class="dl-horizontal" style=" text-align: left;">
-                                <dt>Method</dt>
-                                <dd>{{realm.monlocalauthnparam.get_eap_method_display}}</dd>
-                                <dt>Phase 2</dt>
-                                <dd>{{realm.monlocalauthnparam.get_phase2_display}}</dd>
-                                <dt>Username</dt>
-                                <dd>{{realm.monlocalauthnparam.username}}</dd>
-                                </dl>
-                                </div>
-<div class="span6">
-                            <a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini">{% trans "edit" %}</a>
-                            <a href="#" id="del_monlocauthpar_{{realm.monlocalauthnparam.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
-
-</div>
-</div>
-
-	                		{% else %}
-	                		{% if not realm.monlocalauthnparam %}<a href="{% url edit-monlocauthpar realm.pk %}" class="btn btn-mini btn-primary">{% trans "add" %}</a>{% endif %}
-	                		{% endif %}
-	                		</td>
-
-
-	                </tr>
-
-	              	{% endfor %}
-	              	</tbody>
-	              </table>
-	              {% endif %}
-<div class="modal hide fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabel">{% trans "Delete monitored realm" %}</h3>
-</div>
-<div class="modal-body" id="mymodalbody">
-
-</div>
-<div class="modal-footer" id="modalfooter1">
-<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
-<a class="btn btn-warning" id="delrealmSubmit" href="#">{% trans "Delete" %}</a>
-</div>
-</div>
-
-<div class="modal hide fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-header">
-<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-<h3 id="myModalLabel2">{% trans "Delete monitored realm" %}</h3>
-</div>
-<div class="modal-body" id="mymodalbody2">
-
-</div>
-<div class="modal-footer" id="modalfooter2">
-<button class="btn" data-dismiss="modal" aria-hidden="true">{% trans "Cancel" %}</button>
-<a class="btn btn-warning" id="delmonlocauthparSubmit" href="#">{% trans "Delete" %}</a>
-</div>
-</div>
-            {% endblock %}
-

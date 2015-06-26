@@ -12,10 +12,17 @@
 {% block extrahead %}
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 <META HTTP-EQUIV="Expires" CONTENT="-1">
-<style type="text/css">
+{% endblock %}
 
-</style>
-<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+{% block subcontent %}
+	<h1>{{ flatpage.title }}</h1>
+	<hr>
+	<div class="span6">
+	   {{ flatpage.content|linebreaks }}
+	</div>
+{% endblock %}
+
+{% block extrajs %}
 <script type="text/javascript">
     function setlang(lang) {
         $("#langsel").val(lang);
@@ -32,12 +39,3 @@
     }
 </script>
 {% endblock %}
-
-{% block subcontent %}
-	<h1>{{ flatpage.title }}</h1>
-	<hr>
-	<div class="span6">
-	   {{ flatpage.content|linebreaks }}
-	</div>
-{% endblock %}
-
