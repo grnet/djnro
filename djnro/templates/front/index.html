@@ -8,7 +8,7 @@
 {% block bodyclass %}home{% endblock %}
 {% block content %}
 	<div id="map_wrapper">
-		<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;" data-map-center-lat="{{MAP_CENTER.0}}" data-map-center-lng="{{MAP_CENTER.1}}" data-pin="{% static 'img/edugroup.png' %}" data-city="{% static 'img/city.png' %}" data-country="{% static 'img/country.png' %}" data-markers="{% url get-all-services %}"></div>
+		<div id="map_canvas" style="width:100%; height:600px; overflow: hidden;" data-map-center-lat="{{MAP_CENTER.0}}" data-map-center-lng="{{MAP_CENTER.1}}" data-group-pin="{% static 'img/edugroup.png' %}" data-pin="{% static 'img/edupin.png' %}" data-city="{% static 'img/city.png' %}" data-country="{% static 'img/country.png' %}" data-markers="{% url get-all-services %}"></div>
 	</div>
 	<div class="squares">
 		<div class="container">

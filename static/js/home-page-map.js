@@ -205,7 +205,7 @@
 			'map' : map,
 			'title' : title,
 			'address' : address,
-			'icon' : image,
+			'icon' : pinImg,
 		});
 		return marker
 	}
@@ -333,21 +333,22 @@
 		image = '';
 		infoWindow;
 		pinImg = mapDiv.data("pin");
+		pinGrpImg = mapDiv.data("group-pin");
 		addr = {};
 		styles = [{
-			url : mapDiv.data("pin"),
+			url : pinGrpImg,
 			height : 54,
 			width : 63,
 			textColor : '#ffffff',
 			textSize : 11
 		}, {
-			url : mapDiv.data("pin"),
+			url : pinGrpImg,
 			height : 54,
 			width : 63,
 			textColor : '#ffffff',
 			textSize : 11
 		}, {
-			url : mapDiv.data("pin"),
+			url : pinGrpImg,
 			height : 54,
 			width : 63,
 			textColor : '#ffffff',
