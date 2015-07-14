@@ -7,6 +7,9 @@ DjNRO heavily depends on the following:
 * Python (<3 & >=2.6)
 * memcached
 * A mail server - Tested with exim
+* python-dev
+* libxml2-dev
+* libxslt1-dev
 * python packages located in requirements.txt, you can install them with `pip install -r requirements.txt`
 
 ## Conditional Dependencies

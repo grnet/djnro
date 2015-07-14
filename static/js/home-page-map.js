@@ -135,34 +135,34 @@
 
 												"<div class='tabbable'>"
 												+ "<ul class='nav nav-tabs'>"
-												+ "<li class='active'><a href='#tab1' data-toggle='tab'>{% trans 'Info' %}</a></li>"
-												+ "<li><a href='#tab2' data-toggle='tab'>{% trans 'More...' %}</a></li>"
+												+ "<li class='active'><a href='#tab1' data-toggle='tab'>Info</a></li>"
+												+ "<li><a href='#tab2' data-toggle='tab'>More...</a></li>"
 												+ "</ul>"
 												+ "<div class='tab-content'>"
 												+ "<div class='tab-pane active' id='tab1'>"
 												+ "<dl class='dl-horizontal'>"
-												+ "<dt>{% trans 'Name' %}</dt><dd>"
+												+ "<dt>Name</dt><dd>"
 												+ jsonMarker.name
 												+ "&nbsp;</dd>"
-												+ "<dt>{% trans 'Address' %}</dt><dd>"
+												+ "<dt>Address</dt><dd>"
 												+ jsonMarker.address
 												+ "&nbsp;</dd>"
-												+ "<dt>{% trans 'Encryption' %}</dt><dd>"
+												+ "<dt>Encryption</dt><dd>"
 												+ jsonMarker.enc
 												+ "&nbsp;</dd>"
-												+ "<dt>{% trans 'SSID' %}</dt><dd>"
+												+ "<dt>SSID</dt><dd>"
 												+ jsonMarker.SSID
 												+ "&nbsp;</dd>"
-												+ "<dt>{% trans 'Number of APs' %}</dt><dd>"
+												+ "<dt>Number of APs</dt><dd>"
 												+ jsonMarker.AP_no
 												+ "&nbsp;</dd></dl>"
 												+ "</div>"
 												+ "<div class='tab-pane' id='tab2'>"
 												+ "<dl class='dl-horizontal'>"
-												+ "<dt>{% trans 'Port Restrict' %}</dt><dd>"
+												+ "<dt>Port Restrict</dt><dd>"
 												+ jsonMarker.port_restrict
 												+ "&nbsp;</dd>"
-												+ "<dt>{% trans 'transp_proxy' %}</dt><dd>"
+												+ "<dt>transp_proxy</dt><dd>"
 												+ jsonMarker.transp_proxy
 												+ "&nbsp;</dd>"
 												+ "<dt>IPv6</dt><dd>"
@@ -171,7 +171,7 @@
 												+ "<dt>NAT</dt><dd>"
 												+ jsonMarker.NAT
 												+ "&nbsp;</dd>"
-												+ "<dt>{% trans 'Wired' %}</dt><dd>"
+												+ "<dt>Wired</dt><dd>"
 												+ jsonMarker.wired
 												+ "&nbsp;</dd></dl>"
 												+ "</div>"
