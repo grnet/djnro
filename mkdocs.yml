@@ -1,0 +1,13 @@
+site_name: DjNRO
+repo_url: https://github.com/grnet/djnro/
+docs_dir: docs
+site_author: Stavros Kroustouris
+theme: readthedocs
+pages:
+    - 'Introduction': 'index.md'
+    - 'Installation':
+        - 'Requirements': 'installation/requirements.md'
+        - 'Installing DjNRO': 'installation/install.md'
+    #     - 'Debian': 'installation/debian_wheezy.md'
+    #     - 'Red Hat': 'installation/redhat.md'
+    # - 'Configuration': 'configuration.md'
