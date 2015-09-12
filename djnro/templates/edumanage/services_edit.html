@@ -47,9 +47,9 @@
 			 				<button class="btn btn-info" id="myloc">
 			 					{% trans "Current Location" %}
 			 				</button>
-			 				{% if form.longitude.errors %} <span class="help-inline"> {{ form.longitude.errors|join:", " }} </span>
+			 				{% if form.longitude.errors %} <div class="alert-danger"> {{ form.longitude.errors|join:", " }} </div>
 			 				{% endif %}
-			 				{% if form.latitude.errors %} <span class="help-inline"> {{ form.latitude.errors|join:", " }} </span>
+			 				{% if form.latitude.errors %} <div class="alert-danger"> {{ form.latitude.errors|join:", " }} </div>
 			 				{% endif %} <span class="help-block">{{ form.longitude.help_text }}</span>
 			 </div>
 		</div>
@@ -62,14 +62,14 @@
 			{{services_form.management_form}}
 			<div class="controls">
 			{% for err in services_form.errors %}{% if err|length > 0 %}<span class="help-inline"></span>{% endif %}{% endfor %}
-			{% if services_form.non_form_errors %} <span class="help-inline"> {{ services_form.non_form_errors|join:", "}}</span>{% endif %}
+			{% if services_form.non_form_errors %} <div class="alert-danger"> {{ services_form.non_form_errors|join:", "}}</div>{% endif %}
 				<table id="locsform"><thead><tr><td>{% trans "Name" %}</td><td>{% trans "Language" %}</td></tr></thead><tbody>
 			{% for formset_s in services_form.forms %}
 			{{ formset_s.id }}
 
 
 				<tr id="{{ formset_s.prefix }}-row">
-				<td> {% if formset_s.instance.pk %}{{ formset_s.DELETE }}{% endif %}{{ formset_s.name }}{% if formset_s.name.errors %}<br><div class="help-inline"> {{ formset_s.name.errors|join:", " }} </div>{% endif %}</td>
+				<td> {% if formset_s.instance.pk %}{{ formset_s.DELETE }}{% endif %}{{ formset_s.name }}{% if formset_s.name.errors %}<br><div class="alert-danger">{{ formset_s.name.errors|join:", " }} </div>{% endif %}</td>
 		             <td>{{formset_s.lang}}{% if formset_s.lang.errors %}<br><p class="help-inline"> {{ formset_s.lang.errors|join:", " }} </p>{% endif %}</td>
 
 			</tr>
@@ -83,7 +83,7 @@
 			<label for="id_address_street">{% trans "Address Street" %}</label>
 			<div class="controls">
 				{{ form.address_street }}
-				{% if form.address_street.errors %} <span class="help-inline"> {{ form.address_street.errors|join:", " }} </span>
+				{% if form.address_street.errors %} <div class="alert-danger"> {{ form.address_street.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.address_street.help_text }}</span>
 			</div>
 		</div>
@@ -93,7 +93,7 @@
 			<label for="id_address_city"><b>{% trans "Address City" %}</b></label>
 			<div class="controls">
 				{{ form.address_city }}
-				{% if form.address_city.errors %} <span class="help-inline"> {{ form.address_city.errors|join:", " }} </span>
+				{% if form.address_city.errors %} <div class="alert-danger"> {{ form.address_city.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.address_city.help_text }}</span>
 			</div>
 		</div>
@@ -103,7 +103,7 @@
 			<label for="id_url"><b>SSID</b></label>
 			<div class="controls">
 				{{ form.SSID }}
-				{% if form.SSID.errors %} <span class="help-inline"> {{ form.SSID.errors|join:", " }} </span>
+				{% if form.SSID.errors %}<div class="alert-danger"> {{ form.SSID.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.SSID.help_text }}</span>
 			</div>
 		</div>
@@ -113,7 +113,7 @@
 			<label for="id_contact">{% trans "Contacts" %}</label>
 			<div class="controls">
 				{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
-				{% if form.contact.errors %} <span class="help-inline"> {{ form.contact.errors|join:", " }} </span>
+				{% if form.contact.errors %} <div class="alert-danger"> {{ form.contact.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
 			</div>
 		</div>
@@ -123,7 +123,7 @@
 			<label for="id_oper_name">{% trans "Encryption Level" %}</label>
 			<div class="controls">
 				{{ form.enc_level }}
-				{% if form.enc_level.errors %} <span class="help-inline"> {{ form.enc_level.errors|join:", " }} </span>
+				{% if form.enc_level.errors %} <div class="alert-danger"> {{ form.enc_level.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.enc_level.help_text }}</span>
 			</div>
 		</div>
@@ -133,7 +133,7 @@
 			<label for="id_number_user">{% trans "Port Restrict" %}</label>
 			<div class="controls">
 				{{ form.port_restrict }}
-				{% if form.port_restrict.errors %} <span class="help-inline"> {{ form.port_restrict.errors|join:", " }} </span>
+				{% if form.port_restrict.errors %} <div class="alert-danger"> {{ form.port_restrict.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.port_restrict.help_text }}</span>
 			</div>
 		</div>
@@ -143,7 +143,7 @@
 			<label for="id_number_id">{% trans "Transparent Proxy" %}</label>
 			<div class="controls">
 				{{ form.transp_proxy }}
-				{% if form.transp_proxy.errors %} <span class="help-inline"> {{ form.transp_proxy.errors|join:", " }} </span>
+				{% if form.transp_proxy.errors %} <div class="alert-danger"> {{ form.transp_proxy.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.transp_proxy.help_text }}</span>
 			</div>
 		</div>
@@ -153,7 +153,7 @@
 			<label for="id_number_id">IPv6</label>
 			<div class="controls">
 				{{ form.IPv6 }}
-				{% if form.IPv6.errors %} <span class="help-inline"> {{ form.IPv6.errors|join:", " }} </span>
+				{% if form.IPv6.errors %} <div class="alert-danger"> {{ form.IPv6.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.IPv6.help_text }}</span>
 			</div>
 		</div>
@@ -163,7 +163,7 @@
 			<label for="id_number_id">NAT</label>
 			<div class="controls">
 				{{ form.NAT }}
-				{% if form.NAT.errors %} <span class="help-inline"> {{ form.NAT.errors|join:", " }} </span>
+				{% if form.NAT.errors %} <div class="alert-danger"> {{ form.NAT.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.NAT.help_text }}</span>
 			</div>
 		</div>
@@ -173,7 +173,7 @@
 			<label for="id_number_id"><b>{% trans "AP number" %}</b></label>
 			<div class="controls">
 				{{ form.AP_no }}
-				{% if form.AP_no.errors %} <span class="help-inline"> {{ form.AP_no.errors|join:", " }} </span>
+				{% if form.AP_no.errors %} <div class="alert-danger"> {{ form.AP_no.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.AP_no.help_text }}</span>
 			</div>
 		</div>
@@ -183,7 +183,7 @@
 			<label for="id_number_id">{% trans "Wired" %}</label>
 			<div class="controls">
 				{{ form.wired }}
-				{% if form.wired.errors %} <span class="help-inline"> {{ form.wired.errors|join:", " }} </span>
+				{% if form.wired.errors %} <div class="alert-danger"> {{ form.wired.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.wired.help_text }}</span>
 			</div>
 		</div>
@@ -193,8 +193,8 @@
 			<label for="id_urls">{% trans "Urls" %}</label>
 			{{urls_form.management_form}}
 			<div class="controls">
-			{% for err in urls_form.errors %}{% if err|length > 0 %}<span class="help-inline">{{err}}</span>{% endif %}{% endfor %}
-			{% if urls_form.non_form_errors %} <span class="help-inline"> {{ urls_form.non_form_errors|join:", "}}</span>{% endif %}
+			{% for err in urls_form.errors %}{% if err|length > 0 %}<div class="alert-danger">{{err}}</div>{% endif %}{% endfor %}
+			{% if urls_form.non_form_errors %} <div class="alert-danger"> {{ urls_form.non_form_errors|join:", "}}</div>{% endif %}
 				<table id="urlsform">
 					<thead>
 						<tr>
@@ -208,7 +208,7 @@
 						{{ formset.id }}
 						<tr id="{{ formset.prefix }}-row">
 							<td>
-								{% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="help-inline"> {{ formset.url.errors|join:", " }} </div>{% endif %}
+								{% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="alert-danger"> {{ formset.url.errors|join:", " }} </div>{% endif %}
 							</td>
 		             		<td>
 		             			{{formset.urltype}}{% if formset.urltype.errors %}<br><p class="help-inline"> {{ formset.urltype.errors|join:", " }} </p>{% endif %}
