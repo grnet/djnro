@@ -23,7 +23,7 @@
 		<label class="control-label" for="id_realm"><b>{% trans "Realm" %}</b></label>
 		<div class="controls">
 			{{ form.realm }}
-			{% if form.realm.errors %} <span class="help-inline"> {{ form.realm.errors|join:", " }} </span>
+			{% if form.realm.errors %} <div class="alert-danger"> {{ form.realm.errors|join:", " }} </div>
 			{% endif %} <span class="help-block"> {{ form.realm.help_text }}</span>
 		</div>
 	</div>
@@ -31,7 +31,7 @@
 		<label class="control-label" for="id_mon_type"><b>{% trans "Monitoring Method" %}</b></label>
 		<div class="controls">
 			{{ form.mon_type }}
-			{% if form.mon_type.errors %} <span class="help-inline"> {{ form.mon_type.errors|join:", " }} </span>
+			{% if form.mon_type.errors %} <div class="alert-danger"> {{ form.mon_type.errors|join:", " }} </div>
 			{% endif %} <span class="help-block"> {{ form.mon_type.help_text }}</span>
 		</div>
 	</div>

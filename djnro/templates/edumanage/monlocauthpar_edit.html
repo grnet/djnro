@@ -26,7 +26,7 @@
 		<label class="control-label" for="id_eap_method"><b>{% trans "EAP Method" %}</b></label>
 		<div class="controls">
 			{{ form.eap_method }}
-			{% if form.eap_method.errors %} <span class="help-inline"> {{ form.eap_method.errors|join:", " }} </span>
+			{% if form.eap_method.errors %} <div class="alert-danger"> {{ form.eap_method.errors|join:", " }} </div>
 			{% endif %} <span class="help-block"> {{ form.eap_method.help_text }}</span>
 		</div>
 	</div>
@@ -34,7 +34,7 @@
 		<label class="control-label" for="id_phase2"><b>{% trans "EAP2 Method" %}</b></label>
 		<div class="controls">
 			{{ form.phase2 }}
-			{% if form.phase2.errors %} <span class="help-inline"> {{ form.phase2.errors|join:", " }} </span>
+			{% if form.phase2.errors %} <div class="alert-danger"> {{ form.phase2.errors|join:", " }} </div>
 			{% endif %} <span class="help-block"> {{ form.phase2.help_text }}</span>
 		</div>
 	</div>
@@ -42,7 +42,7 @@
 		<label class="control-label" for="id_username"><b>{% trans "Username" %}</b></label>
 		<div class="controls">
 			{{ form.username }}
-			{% if form.username.errors %} <span class="help-inline"> {{ form.username.errors|join:", " }} </span>
+			{% if form.username.errors %} <div class="alert-danger"> {{ form.username.errors|join:", " }} </div>
 			{% endif %} <span class="help-block"> {{ form.username.help_text }}</span>
 		</div>
 	</div>
@@ -50,7 +50,7 @@
 		<label class="control-label" for="id_passwp"><b>{% trans "Password" %}</b></label>
 		<div class="controls">
 			<input type="password" maxlength="80" name="passwp" id="id_passwp" {% if edit %}value='{{form.instance.passwp}}'{% endif %} {% if form.data.passwp %}value='{{form.data.passwp}}'{% endif %}>
-			{% if form.passwp.errors %} <span class="help-inline"> {{ form.passwp.errors|join:", " }} </span>
+			{% if form.passwp.errors %} <div class="alert-danger"> {{ form.passwp.errors|join:", " }} </div>
 			{% endif %} <span class="help-block"> {{ form.passwp.help_text }}</span>
 		</div>
 	</div>
