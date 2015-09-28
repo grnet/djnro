@@ -1668,6 +1668,8 @@ def participants(request):
     dets = []
     cat_exists = False
     for i in institutions:
+        if i.institutiondetails is None:
+            continue
         try:
             dets.append(i.institutiondetails)
             if i.get_active_cat_enrl():
