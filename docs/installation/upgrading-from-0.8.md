@@ -2,7 +2,8 @@
 
 DjNRO 0.8 was developed with django 1.2. Version 1.0 was developed with django 1.4.2.
 
-Dumpdata with the help of south (always keep a backup):
+Dump data with the help of south (always keep a backup):
+
 	./manage.py dumpdata --indent=4 --natural --exclude=contenttypes --exclude=auth.Permission > /tmp/eduroam_0.8.json
 
 ## Install DjNro
