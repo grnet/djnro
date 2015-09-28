@@ -8,6 +8,4 @@ pages:
     - 'Installation':
         - 'Requirements': 'installation/requirements.md'
         - 'Installing DjNRO': 'installation/install.md'
-    #     - 'Debian': 'installation/debian_wheezy.md'
-    #     - 'Red Hat': 'installation/redhat.md'
-    # - 'Configuration': 'configuration.md'
+        - 'Upgrading from 0.8': 'installation/upgrading-from-0.8.md'

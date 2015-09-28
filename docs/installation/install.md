@@ -238,13 +238,13 @@ In DjNRO the NRO sets the environment for the institution eduroam admins. Theref
 ## Exporting Data
 DjNRO can export data in formats suitable for use by other software.
 
-XML documents conforming to the `eduroam database <https://monitor.eduroam.org/database.php>`_ schemata are exported at the following URLs, as required for harvesting by eduroam.org::
+XML documents conforming to the [eduroam database](https://monitor.eduroam.org/database.php>) schemata are exported at the following URLs, as required for harvesting by eduroam.org:
 
     /general/realm.xml
     /general/institution.xml
     /usage/realm_data.xml
 
-A list of institution administrators can be exported in CSV format or a plain format suitable for use by a mailing list (namely `Sympa <http://www.sympa.org/manual/parameters-data-sources#include_remote_file>`_). This data is available through:
+A list of institution administrators can be exported in CSV format or a plain format suitable for use by a mailing list (namely [Sympa](http://www.sympa.org/manual/parameters-data-sources#include_remote_file>). This data is available through:
 
 * a management comand `./manage.py contacts`, which defaults to CSV output (currently with headers in Greek!) and can switch to plain output using `--mail-list`.
 
@@ -354,9 +354,9 @@ The closest point API allows for development of location aware-applications.
 Pebduroam is a Pebble watch application that fetches the closest eduroam access point plus walking instructions on how to reach it.
 Installing the application on your Pebble watch can be done in 2 ways:
 
-* You can install the application via the Pebble App Store: `pebduroam <https://apps.getpebble.com/applications/5384b2119c84af48350000c7>`_
+* You can install the application via the Pebble App Store: [pebduroam](https://apps.getpebble.com/applications/5384b2119c84af48350000c7>)
 
-* You can install the application and contribute to its development via github: `pebduroam github repo <https://github.com/leopoul/pebduroam>`_.
+* You can install the application and contribute to its development via github: [pebduroam github repo](https://github.com/leopoul/pebduroam>).
 
   * You need to have a Cloudpebble account to accomplish this.
 

@@ -26,7 +26,7 @@ Currently the source code is availiable at code.grnet.gr and github and can be c
     git clone https://code.grnet.gr/git/djnro
     git clone https://github.com/grnet/djnro.git
 
-The Greek eduroam webpage is a living example of DjNRO: `eduroam|gr <http://www.eduroam.gr>`_
+The Greek eduroam webpage is a living example of DjNRO: [eduroam|gr](http://www.eduroam.gr)
 
 ## Features
 
