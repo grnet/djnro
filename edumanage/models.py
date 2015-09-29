@@ -315,8 +315,8 @@ class MonProxybackClient(models.Model):
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name = "Instituion Proxyback Client"
-        verbose_name_plural = "Instituion Proxyback Clients"
+        verbose_name = "Institution Proxyback Client"
+        verbose_name_plural = "Institution Proxyback Clients"
 
     def __unicode__(self):
         return _('Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s') % {

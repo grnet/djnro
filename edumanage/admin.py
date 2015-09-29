@@ -33,12 +33,14 @@ class InstitutionAdmin(admin.ModelAdmin):
     inlines = [
         NameInline,
     ]
+    list_filter = ('ertype',)
 
 
 class InstitutionDetailsAdmin(admin.ModelAdmin):
     inlines = [
         UrlInline,
     ]
+    list_filter = ('institution__ertype',)
 
 
 class ServiceLocAdmin(admin.ModelAdmin):
@@ -46,6 +48,8 @@ class ServiceLocAdmin(admin.ModelAdmin):
     inlines = [
         NameInline,
     ]
+    list_filter = ('SSID', 'enc_level', 'port_restrict',
+                   'transp_proxy', 'IPv6', 'NAT', 'wired')
 
 
 class RealmInLine(admin.ModelAdmin):
@@ -56,20 +60,34 @@ class RealmInLine(admin.ModelAdmin):
 
 class InstRealmAdmin(admin.ModelAdmin):
     list_display = ('realm', 'instid')
+    list_filter = ('instid__ertype',)
+
+
+class InstServerAdmin(admin.ModelAdmin):
+    list_filter = ('ertype',)
+
+
+class InstRealmMonAdmin(admin.ModelAdmin):
+    list_filter = ('mon_type',)
+
+
+class MonLocalAuthnParamAdmin(admin.ModelAdmin):
+    list_filter = ('eap_method', 'phase2')
 
 
 class CatEnrollmentAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'cat_active')
+    list_filter = ('cat_instance',)
 
 admin.site.register(Name_i18n)
 admin.site.register(Contact)
 admin.site.register(InstitutionContactPool)
 admin.site.register(URL_i18n)
 admin.site.register(InstRealm, InstRealmAdmin)
-admin.site.register(InstServer)
-admin.site.register(InstRealmMon)
+admin.site.register(InstServer, InstServerAdmin)
+admin.site.register(InstRealmMon, InstRealmMonAdmin)
 admin.site.register(MonProxybackClient)
-admin.site.register(MonLocalAuthnParam)
+admin.site.register(MonLocalAuthnParam, MonLocalAuthnParamAdmin)
 admin.site.register(ServiceLoc, ServiceLocAdmin)
 admin.site.register(Institution, InstitutionAdmin)
 admin.site.register(InstitutionDetails, InstitutionDetailsAdmin)
