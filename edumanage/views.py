@@ -1670,12 +1670,9 @@ def participants(request):
     for i in institutions:
         if i.institutiondetails is None:
             continue
-        try:
-            dets.append(i.institutiondetails)
-            if i.get_active_cat_enrl():
-                cat_exists = True
-        except InstitutionDetails.DoesNotExist:
-            pass
+        dets.append(i.institutiondetails)
+        if i.get_active_cat_enrl():
+            cat_exists = True
     return render_to_response(
         'front/participants.html',
         {
