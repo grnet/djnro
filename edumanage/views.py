@@ -2266,7 +2266,7 @@ def adminlist(request):
             onoma=onoma
         ) + "\n"
     return HttpResponse(resp_body,
-                        mimetype="text/plain")
+                        mimetype="text/plain; charset=utf-8")
 
 
 def to_xml(ele, encoding="UTF-8"):
