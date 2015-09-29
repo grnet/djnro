@@ -643,7 +643,7 @@ def cat_enroll(request):
         available_enrollments = [
             (x[0], x[1]) for x in settings.CAT_INSTANCES if x[0] not in current_enrollments_list
         ]
-        if len(available_enrollments) == 0:
+        if len(available_enrollments) == 0 and len(current_enrollments_list) == 0:
             messages.add_message(
                 request,
                 messages.ERROR,
@@ -651,7 +651,7 @@ def cat_enroll(request):
             )
             return render_to_response(
                 'edumanage/catenroll.html',
-                {'status': False, 'cat_instances': available_enrollments},
+                {'status': False},
                 context_instance=RequestContext(request, base_response(request))
             )
         return render_to_response(
