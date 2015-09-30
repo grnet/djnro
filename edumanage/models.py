@@ -591,5 +591,13 @@ class CatEnrollment(models.Model):
                 return False
         return False
 
+    def cat_idpmgmt_url(self):
+        if self.cat_active():
+            try:
+                return "%s?inst_id=%s" % (settings.CAT_AUTH[self.cat_instance]['CAT_IDPMGMT_URL'],self.cat_inst_id)
+            except:
+                return False
+        return False
+
     cat_active.boolean = True
     cat_active.short_description = "CAT profiles"
