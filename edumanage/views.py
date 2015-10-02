@@ -1474,26 +1474,24 @@ def get_service_points(request):
         return HttpResponseNotFound('<h1>Something went really wrong</h1>')
 
 
+@login_required
 @never_cache
 def overview(request):
     user = request.user
-    if user.is_authenticated():
-        if user.has_perm('accounts.overview'):
-            users = User.objects.all()
-            institutions = Institution.objects.all()
-            return render_to_response(
-                'overview/index.html',
-                {'users': users, 'institutions': institutions},
-                context_instance=RequestContext(request)
-            )
-        else:
-            return render_to_response(
-                'overview/index.html',
-                {'violation': True},
-                context_instance=RequestContext(request)
-            )
+    if user.has_perm('accounts.overview'):
+        users = User.objects.all()
+        institutions = Institution.objects.all()
+        return render_to_response(
+            'overview/index.html',
+            {'users': users, 'institutions': institutions},
+            context_instance=RequestContext(request)
+        )
     else:
-        return HttpResponseRedirect(reverse("altlogin"))
+        return render_to_response(
+            'overview/index.html',
+            {'violation': True},
+            context_instance=RequestContext(request)
+        )
 
 
 @never_cache
