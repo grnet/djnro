@@ -4,6 +4,7 @@ import warnings
 warnings.simplefilter("ignore", DeprecationWarning)
 warnings.simplefilter("ignore", FutureWarning)
 
+from django.db.models import Q
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from utils.cat_helper import CatQuery
@@ -15,8 +16,8 @@ class Command(BaseCommand):
     help = 'Checks if CAT enrollments have active registered IdP admins'
 
     def handle(self, *args, **options):
-        all_cat_entries = CatEnrollment.objects.all()
-        for catentry in all_cat_entries:
+        not_active_cat_entries = CatEnrollment.objects.filter(~Q(url='ACTIVE'))
+        for catentry in not_active_cat_entries:
             instance = catentry.cat_instance
             cat_instance = settings.CAT_AUTH[instance]
             cat_api_key = cat_instance['CAT_API_KEY']
@@ -27,6 +28,5 @@ class Command(BaseCommand):
             cq = c.admincount(params)
             if cq:
                 if c.response['number_of_admins'] > 0:
-                    if catentry.url != "ACTIVE":
-                        catentry.url = "ACTIVE"
-                        catentry.save()
+                    catentry.url = "ACTIVE"
+                    catentry.save()
