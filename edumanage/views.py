@@ -25,6 +25,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.contrib.auth import REDIRECT_FIELD_NAME
 
 from edumanage.models import (
     ServiceLoc,
@@ -1540,7 +1541,7 @@ def manage_login(request, backend):
     qs = request.GET.urlencode()
     qs = '?%s' % qs if qs else ''
     if backend == 'shibboleth':
-        return redirect(reverse('login'))
+        return redirect(reverse('login') + qs)
     return redirect(reverse('social:begin', args=[backend]) + qs)
 
 
@@ -1612,7 +1613,10 @@ def user_login(request):
 
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(reverse("manage"))
+                return HttpResponseRedirect(
+                    request.GET.get(REDIRECT_FIELD_NAME,
+                                    default=reverse('manage'))
+                )
             else:
                 status = _(
                     "User account <strong>%s</strong> is pending activation."
