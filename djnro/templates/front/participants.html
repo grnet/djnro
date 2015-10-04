@@ -12,33 +12,41 @@
 <h1>{% trans "Participating Institutions" %}</h1>
 <hr>
 <div>{% trans "In"%} {% trans COUNTRY_NAME %} {% trans "eduroam is provided by the following instituitons/organizations" %}</div>
-<div>
+<br/>
+<div class="row">
 	{% for i in institutions %}
 	<div class="col-md-6">
 		<address>
 			<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br/>
-			{% with i.institution.get_active_cat_enrl as cats %}
-				{% for cat in cats %}
-						<a href="{{cat}}" target="_blank">eduroam CAT configuration profiles</a><br/>
-						<span style="font-weight: bold; font-size:15px; color:red;">*</span><br/>
-				{% endfor %}
-			{% endwith %}
 			{{i.address_street}}<br>
 			{{i.address_city}}
-			{% if i.url.all|length > 0 %}
-		    <dl style="margin-top: 0px;">
-				<dt style="font-weight: normal;">urls</dt>
+			{% if i.url.all|length > 0 or catexists %}
+		    <dl style="margin-top: 10px;">
+				<dt style="font-weight: normal;">URLs:</dt>
+				{% for u in i.url.all %}{% if u %}
 				<dd>
-					{% for u in i.url.all %}{% if u %}<a href="{{u.url}}">{{u.url}}</a>  {{u.get_urltype_display}} ({{u.get_lang_display}})<br>{% endif %}{% endfor %}
+					<a href="{{u.url}}">{{u.get_urltype_display}} ({{u.get_lang_display}})</a>
 				</dd>
+				{% endif %}{% endfor %}
+			{% with cats=i.institution.get_active_cat_enrl %}
+				{% for cat in cats %}
+				<dd>
+					<a href="{{cat}}" target="_blank">eduroam CAT configuration profiles</a>
+					<span style="font-weight: bold; font-size:15px; color:red;">*</span>
+				</dd>
+				{% endfor %}
+			{% endwith %}
 			</dl>
 			{% endif %}
 		</address>
 	</div>
+	{% cycle "" '<div class="clearfix visible-md visible-lg"></div>' %}
 	{% endfor %}
 </div>
 {% if catexists %}
-	<span style="font-size:11px;"><span style="color:red;">*</span>: Institution admiminstrators may have not created CAT profiles for all/any devices</span>
+<div class="row">
+	<div class="col-md-6"><span style="font-weight: bold; font-size:15px; color:red;">*</span> CAT profiles may have not been published yet</div>
+</div>
 {% endif %}
 {% endblock %}
 
