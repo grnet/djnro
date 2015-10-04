@@ -5,6 +5,7 @@ import bz2
 import math
 import datetime
 from xml.etree import ElementTree
+import locale
 
 from django.shortcuts import render_to_response, redirect, render
 from django.http import (
@@ -1680,6 +1681,10 @@ def participants(request):
         dets.append(i.institutiondetails)
         if i.get_active_cat_enrl():
             cat_exists = True
+    locale.setlocale(locale.LC_COLLATE, [request.LANGUAGE_CODE, 'UTF-8'])
+    dets.sort(cmp=locale.strcoll,
+              key=lambda x: unicode(x.institution.
+                                    get_name(lang=request.LANGUAGE_CODE)))
     return render_to_response(
         'front/participants.html',
         {
