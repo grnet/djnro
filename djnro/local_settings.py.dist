@@ -152,7 +152,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 # CAT_API_KEY: API key for authentication to CAT
 # CAT_API_URL: API endpoint URL
 # CAT_PROFILES_URL: Base URL for Intitution Download Area pages
-# CAT_FEDMGMT_URL: URL For Federation Overview page (currently not in use)
+# CAT_IDPMGMT_URL: URL For IdP Overview page
 
 # CAT_INSTANCES = (
 #     ('production', 'cat.eduroam.org'),
@@ -164,12 +164,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 #         "CAT_API_KEY": "<provided API key>",
 #         "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
 #         "CAT_PROFILES_URL": "https://cat.eduroam.org/",
-#         "CAT_FEDMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
+#         "CAT_IDPMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
 #     },
 #     'testing': {
 #         "CAT_API_KEY": "<provided API key>",
 #         "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
 #         "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
-#         "CAT_FEDMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_federation.php"
+#         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_federation.php"
 #     },
 # }
