@@ -17,17 +17,21 @@ class Command(BaseCommand):
     help = 'Fetches the kml from eduroam.org and updates cache'
 
     def handle(self, *args, **options):
+        if int(options['verbosity']) > 0:
+            write = self.stdout.write
+        else:
+            write = lambda *args: None
         eduroam_kml_url = settings.EDUROAM_KML_URL
         rnd = int(time.time()*1000)
         eduroam_kml_url = "%s?gmaprnd=%s" % (eduroam_kml_url, rnd)
-        self.stdout.write('Fetching data from %s...\n'%eduroam_kml_url)
+        write('Fetching data from %s...\n'%eduroam_kml_url)
         file = settings.KML_FILE
         urllib.urlretrieve(eduroam_kml_url, file)
-        self.stdout.write('Done fetching!\n')
-        self.stdout.write('Updating cache\n')
+        write('Done fetching!\n')
+        write('Updating cache\n')
         self.refresh_cache(file)
-        self.stdout.write('Done updating cache\n')
-        self.stdout.write('Finished!\n')
+        write('Done updating cache\n')
+        write('Finished!\n')
 
     def refresh_cache(self, file):
         point_list = []
