@@ -7,7 +7,12 @@ import datetime
 from xml.etree import ElementTree
 
 from django.shortcuts import render_to_response, redirect, render
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    HttpResponseNotFound,
+    HttpResponseBadRequest
+)
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -1784,8 +1789,11 @@ def closest(request):
                 json.dumps(response),
                 mimetype='application/json'
             )
-        lat = float(request_data['lat'])
-        lng = float(request_data['lng'])
+        try:
+            lat = float(request_data.get('lat'))
+            lng = float(request_data.get('lng'))
+        except ValueError:
+            return HttpResponseBadRequest()
         R = 6371
         distances = {}
         closestMarker = {}
