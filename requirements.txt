@@ -1,4 +1,4 @@
-Django==1.4.5
+Django==1.4.22
 South==1.0
 argparse>=1.2.1
 django-registration==1.0
