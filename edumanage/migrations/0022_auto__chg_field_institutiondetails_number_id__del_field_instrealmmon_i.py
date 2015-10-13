@@ -17,7 +17,22 @@ class Migration(SchemaMigration):
         # Renaming column for 'InstRealmMon.realm' to match new field type.
         db.rename_column('edumanage_instrealmmon', 'realm', 'realm_id')
         # Changing field 'InstRealmMon.realm'
-        db.alter_column('edumanage_instrealmmon', 'realm_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['edumanage.InstRealm']))
+        # WORKAROUND NEEDED
+        # This migration breaks with PostgreSQL with:
+        #   ERROR:  column "realm_id" cannot be cast automatically to type integer
+        #   HINT:  Specify a USING expression to perform the conversion.
+        #   STATEMENT:  ALTER TABLE "edumanage_instrealmmon" ALTER COLUMN "realm_id" TYPE integer,
+        #          ALTER COLUMN "realm_id" SET NOT NULL, ALTER COLUMN "realm_id" DROP DEFAULT;
+        # This is a known problem: http://south.aeracode.org/ticket/484
+        # (PostgreSQL will not automatically convert and conversion must be provided with the USING clause)
+        # Workaround: For PostgreSQL invoke a direct SQL statement amended with a USING clause to do the converion explicitly.
+        # Credits:
+        # * http://codeinthehole.com/writing/altering-postgres-table-columns-with-south/
+        # * http://stackoverflow.com/questions/13170570/change-type-of-varchar-field-to-integer-cannot-be-cast-automatically-to-type-i
+        if ( db._get_connection().vendor == "postgresql" ):
+            db.execute('ALTER TABLE "edumanage_instrealmmon" ALTER COLUMN "realm_id" TYPE integer USING (trim(realm_id)::integer), ALTER COLUMN "realm_id" SET NOT NULL, ALTER COLUMN "realm_id" DROP DEFAULT;')
+        else:
+            db.alter_column('edumanage_instrealmmon', 'realm_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['edumanage.InstRealm']))
 
         # Adding index on 'InstRealmMon', fields ['realm']
         db.create_index('edumanage_instrealmmon', ['realm_id'])
