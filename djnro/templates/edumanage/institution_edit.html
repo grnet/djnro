@@ -52,9 +52,9 @@
 				<div class="controls">
 					<div class="">{{ form.contact }}</div>
 					<button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
-					{% if form.errors.contact %}
-					<div class="alert-danger" > {{ form.contact.errors|join:", " }} </div>
-					{% endif %}
+					  {% if form.contact.errors %} <div class="alert-danger"> {{ form.contact.errors|join:", " }} </div>
+                                       {% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
+
 					<span class="help-block"> {{ form.contact.help_text }}</span>
 				</div>
 			</div>
