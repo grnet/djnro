@@ -1,8 +1,3 @@
-local_settings.py
-/urls.py
 *.pyc
 *.db
 all.kml
-static/img/logo_holder.png
-static/img/logo_small.png
-static/img/right_logo_small.png
