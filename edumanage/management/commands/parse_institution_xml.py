@@ -30,7 +30,6 @@ class Command(BaseCommand):
     institution realm, contact and service location entries
     '''
     args = '<file>'
-    label = 'file name to be imported'
 
     def handle(self, *args, **options):
         '''
