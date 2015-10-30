@@ -25,12 +25,10 @@ import sys
 
 
 class Command(BaseCommand):
-    args = ''
     help = '''
     Parses an institution XML file and creates institution,
     institution realm, contact and service location entries
     '''
-    help = 'Imports djnro models from a specified institution.xml'
     args = '<file>'
     label = 'file name to be imported'
 
