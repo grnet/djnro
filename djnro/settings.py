@@ -207,7 +207,6 @@ AUTH_PROFILE_MODULE = 'accounts.UserProfile'
 LOGIN_URL = '/manage/login/'
 
 KML_FILE = os.path.join(PROJECT_DIR, 'all.kml')
-INST_XML_FILE = os.path.join(PROJECT_DIR, 'institution.xml')
 
 EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 

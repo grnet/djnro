@@ -1,24 +1,33 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
-from django.core.management.base import BaseCommand
+from django.core.management.base import BaseCommand, CommandError
 from edumanage.models import *
 from xml.etree import ElementTree
-from django.conf import settings
+import sys
 
 
 class Command(BaseCommand):
     args = ''
     help = '''
-    Parses the institution XML file and creates institution,
-    institution realm, contact and service point entries
+    Parses an institution XML file and creates institution,
+    institution realm, contact and service location entries
     '''
+    help = 'Imports djnro models from a specified institution.xml'
+    args = '<file>'
+    label = 'file name to be imported'
 
     def handle(self, *args, **options):
-        file = settings.INST_XML_FILE
-        self.parse_and_create(file)
+        '''
+        Handle command
+        '''
 
-    def parse_and_create(self, file):
-        doc = ElementTree.parse(file)
+        if args is None or len(args) != 1:
+            raise CommandError('You must supply a file name')
+
+        self.parse_and_create(args[0])
+
+    def parse_and_create(self, instxmlfile):
+        doc = ElementTree.parse(instxmlfile)
         realmid = Realm.objects.get(pk=1)
         root = doc.getroot()
         institutions = []
