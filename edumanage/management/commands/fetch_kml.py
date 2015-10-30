@@ -18,8 +18,6 @@
 # DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
-import warnings
-warnings.simplefilter("ignore", DeprecationWarning)
 from django.core.management.base import BaseCommand
 import time
 from django.conf import settings
