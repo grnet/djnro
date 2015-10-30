@@ -42,6 +42,11 @@ class Command(BaseCommand):
         if args is None or len(args) != 1:
             raise CommandError('You must supply a file name')
 
+        if int(options['verbosity']) > 0:
+            write = self.stdout.write
+        else:
+            write = lambda *args: None
+
         self.parse_and_create(args[0])
 
     def parse_and_create(self, instxmlfile):
@@ -54,7 +59,7 @@ class Command(BaseCommand):
             created_inst_details = False
             instcontactslist = []
             for instdetails in institution:
-                self.stdout.write('Parsing: %s\n' % (instdetails.tag))
+                write('Parsing: %s\n' % (instdetails.tag))
                 if instdetails.tag == 'country':
                     continue
                 if instdetails.tag == 'type':
@@ -64,7 +69,7 @@ class Command(BaseCommand):
                         ertype=int(type)
                     )
                     institution_obj.save()
-                    self.stdout.write('Created inst %s\n' % institution_obj.pk)
+                    write('Created inst %s\n' % institution_obj.pk)
                     continue
                 if instdetails.tag == 'inst_realm':
                     inst_realm = instdetails.text
@@ -218,7 +223,7 @@ class Command(BaseCommand):
                             if loc_wired_txt in ('true', '1'):
                                 loc_wired = True
                         if not parsedLocation:
-                            self.stdout.write('Creating location:\n')
+                            write('Creating location:\n')
                             try:
                                 serviceloc = ServiceLoc(
                                     institutionid=institution_obj,
@@ -244,6 +249,6 @@ class Command(BaseCommand):
                                     )
                                     t.save()
                             except Exception as e:
-                                self.stdout.write('ERROR: %s\n' % e)
+                                write('ERROR: %s\n' % e)
                     continue
         return True
