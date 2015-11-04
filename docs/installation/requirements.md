@@ -10,7 +10,8 @@ DjNRO heavily depends on the following:
 * python-dev
 * libxml2-dev
 * libxslt1-dev
-* python packages located in requirements.txt, you can install them with `pip install -r requirements.txt`
+* lib32z1-dev (System architecture independent)
+* python packages located in requirements.txt, you can install them with `pip install -r requirements.txt`.
 
 ## Conditional Dependencies
 * python-pip
