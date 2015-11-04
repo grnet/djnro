@@ -11,10 +11,18 @@ html, body {
 }
 
 footer {
-	height: 60px;
-	background: #eee;
+	height: 300px;
 	text-align: center;
+	position: relative;
+}
+
+footer > div {
+	position: absolute;
+	bottom: 0;
 	padding: 25px;
+	background: #eee;
+	left: 0;
+	right: 0;
 }
 
 footer.auth {
@@ -25,7 +33,7 @@ footer.auth {
 #wrap {
 	min-height: 100%;
 	height: auto !important;
-	margin: 0 auto -60px;
+	margin: 0 auto -300px;
 }
 
 .push-top {
@@ -33,7 +41,7 @@ footer.auth {
 }
 
 .push {
-	height: 60px;
+	height: 300px;
 }
 
 .home .squares {

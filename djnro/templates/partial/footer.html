@@ -1,15 +1,20 @@
 {% load i18n %}
 <footer {% if user.is_authenticated %}class="auth"{% endif %}>
-    <div class="container">
-    	{% if user.is_authenticated %}
-    		{% trans "If you have any questions or need help, contact" %} {{DOMAIN_HELPDESK_DICT.name}} (<a href="{{DOMAIN_HELPDESK_DICT.uri}}">{{DOMAIN_HELPDESK_DICT.uri}}</a>) - {{DOMAIN_HELPDESK_DICT.phone}}</br>
-    	{% endif %}
-    	{% trans "This is a service provided by" %} <a href="{{PROV_TEAM.url}}" target="_blank">{{PROV_TEAM.name}}</a>
-    	{% for media in SOCIAL_MEDIA_LIST %}
-    		<a href="{{media.url}}" target="_blank">
-    			<i class="{{media.icon}}"></i>
-    		</a>
-    	{% endfor %}
-    	Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
+    <div class="">
+        <div class="container">
+            {% if user.is_authenticated %}
+                {% trans "If you have any questions or need help, contact" %} {{ BRANDING.helpdesk.name }} (<a href="{{ BRANDING.helpdesk.uri}}">{{BRANDING.helpdesk.uri}}</a>) - {{BRANDING.helpdesk.phone}}</br>
+            {% endif %}
+            {% trans "This is a service provided by" %} <a href="{{ BRANDING.service_provided_by.url}}" target="_blank">{{BRANDING.service_provided_by.name}}</a>
+            {% for media in BRANDING.social_media %}
+                <a href="{{media.url}}" target="_blank">
+                    <i class="{{media.icon}}"></i>
+                </a>
+            {% endfor %}
+            Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
+            <div class="">
+                {% include 'partial/bottom_iframe.html' %}
+            </div>
+        </div>
     </div>
 </footer>
