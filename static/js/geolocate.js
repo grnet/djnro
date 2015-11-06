@@ -68,7 +68,6 @@
 			navigationControl : true,
 			mapTypeControl : false,
 		};
-		console.log(mapOptions);
 		map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
 		var input = document.getElementById('searchTextField');

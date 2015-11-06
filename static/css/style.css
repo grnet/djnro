@@ -26,6 +26,10 @@ footer > div {
 	right: 0;
 }
 
+.pac-container {
+	z-index: 100000;
+}
+
 footer.auth {
 	padding: 8px;
 }
