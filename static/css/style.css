@@ -88,7 +88,7 @@ footer.auth {
 .closest #map_canvas{
 	position: fixed !important;
 	top: 52px;
-	bottom: 60px;
+	bottom: 300px;
 	left: 0;
 	right: 0;
 	z-index: 10000;
