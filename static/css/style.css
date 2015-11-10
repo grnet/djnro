@@ -88,7 +88,7 @@ footer.auth {
 .closest #map_canvas{
 	position: fixed !important;
 	top: 52px;
-	bottom: 300px;
+	bottom: 0px;
 	left: 0;
 	right: 0;
 	z-index: 10000;
@@ -98,4 +98,8 @@ footer.auth {
 .sidebar-nav .active {
 	background: #eee;
 
+}
+
+.closest footer {
+	display: none;
 }
