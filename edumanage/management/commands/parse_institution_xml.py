@@ -246,6 +246,6 @@ class Command(BaseCommand):
                                     )
                                     t.save()
                             except Exception as e:
-                                write('ERROR: %s\n' % e)
+                                self.stderr.write('ERROR: %s\n' % e)
                     continue
         return True
