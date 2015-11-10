@@ -44,9 +44,9 @@ class Command(BaseCommand):
         else:
             write = lambda *args: None
 
-        self.parse_and_create(args[0])
+        self.parse_and_create(args[0], write)
 
-    def parse_and_create(self, instxmlfile):
+    def parse_and_create(self, instxmlfile, write):
         doc = ElementTree.parse(instxmlfile)
         realmid = Realm.objects.get(pk=1)
         root = doc.getroot()
