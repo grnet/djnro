@@ -103,3 +103,18 @@ footer.auth {
 .closest footer {
 	display: none;
 }
+
+
+
+@media screen and ( max-height: 480px ){
+	.home #map_wrapper {
+		position: relative;
+		height: 300px;
+	}
+
+	.home .squares {
+		margin-top: 0;
+	}
+}
+
+
