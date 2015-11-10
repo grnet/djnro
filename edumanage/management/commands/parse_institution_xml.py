@@ -122,7 +122,7 @@ class Command(BaseCommand):
                         address_city=city,
                         number_id=1
                     )
-                    print instcontactslist
+                    write('Institution contact list: %s\n' % instcontactslist)
                     instdets_obj.save()
                     instdets_obj.contact = instcontactslist
                     instdets_obj.save()
