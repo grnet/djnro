@@ -95,12 +95,19 @@ NRO specific parameters. These affect HTML templates::
 	#Helpdesk, used in base.html:
 	NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
+
 Set the Realm country for REALM model::
 
 	#Countries for Realm model:
 	REALM_COUNTRIES = (
 	             ('country_2letters', 'Country' ),
 	            )
+
+
+### Adding iframe in footer
+
+In case you need to add an iframe with banners at the bottom of the every page, you can paste your iframe code at bottom_iframe template under 'djnro/templates/partial/bottom_iframe.html'
+
 
 Attribute map to match your AAI policy and SSO software (typically Shibboleth SP)::
 

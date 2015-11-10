@@ -44,9 +44,9 @@ class Command(BaseCommand):
         else:
             write = lambda *args: None
 
-        self.parse_and_create(args[0])
+        self.parse_and_create(args[0], write)
 
-    def parse_and_create(self, instxmlfile):
+    def parse_and_create(self, instxmlfile, write):
         doc = ElementTree.parse(instxmlfile)
         realmid = Realm.objects.get(pk=1)
         root = doc.getroot()
@@ -122,7 +122,7 @@ class Command(BaseCommand):
                         address_city=city,
                         number_id=1
                     )
-                    print instcontactslist
+                    write('Institution contact list: %s\n' % instcontactslist)
                     instdets_obj.save()
                     instdets_obj.contact = instcontactslist
                     instdets_obj.save()
@@ -246,6 +246,6 @@ class Command(BaseCommand):
                                     )
                                     t.save()
                             except Exception as e:
-                                write('ERROR: %s\n' % e)
+                                self.stderr.write('ERROR: %s\n' % e)
                     continue
         return True
