@@ -11,15 +11,11 @@ html, body {
 }
 
 footer {
-	height: 300px;
 	text-align: center;
-	position: relative;
-	background: white;
+	background: #eee;
 }
 
 footer > div {
-	position: absolute;
-	bottom: 0;
 	padding: 25px;
 	background: #eee;
 	left: 0;
@@ -34,27 +30,12 @@ footer.auth {
 	padding: 8px;
 }
 
-
-#wrap {
-	min-height: 100%;
-	height: auto !important;
-	margin: 0 auto -300px;
-}
-
 .push-top {
 	height: 51px;
 }
 
-.push {
-	height: 300px;
-}
-
 .home .squares {
-	position: relative;
-	margin: 600px auto 0;
 	padding: 50px 0;
-	z-index: 1000;
-	background: white;
 }
 
 .home .squares .square > div {
@@ -73,9 +54,6 @@ footer.auth {
 }
 
 .home #map_wrapper {
-	position: fixed ;
-	height: 600px;
-	z-index: 0;
 	left: 0;
 	right: 0;
 }
@@ -103,18 +81,3 @@ footer.auth {
 .closest footer {
 	display: none;
 }
-
-
-
-@media screen and ( max-height: 480px ){
-	.home #map_wrapper {
-		position: relative;
-		height: 300px;
-	}
-
-	.home .squares {
-		margin-top: 0;
-	}
-}
-
-
