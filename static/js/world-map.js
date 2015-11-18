@@ -248,6 +248,25 @@
 
 		}
 
+	function mapescape_callback(mapescape_active) {
+	    var defControlOptions = {},
+	    curControlOptions = {},
+	    objCmp = function(a, b) {
+		return JSON.stringify(a) == JSON.stringify(b);
+	    }
+	    for (var k in mapescapeControlOptions) {
+		defControlOptions[k] = {};
+		curControlOptions[k] = map[k];
+	    }
+	    if (mapescape_active &&
+		!objCmp(curControlOptions, mapescapeControlOptions)) {
+		map.setOptions(mapescapeControlOptions);
+	    } else if (!mapescape_active &&
+		       !objCmp(curControlOptions, defControlOptions)) {
+		map.setOptions(defControlOptions);
+	    }
+	}
+
 	$(document).ready(function() {
 		mapDiv = $('#map_canvas');
 		lat = mapDiv.data('center-lat');
@@ -279,7 +298,20 @@
 			textColor : '#ffffff',
 			textSize : 11
 		} ];
+		mapescapeControlOptions = {
+			zoomControlOptions: {
+				position: google.maps.ControlPosition.LEFT_CENTER
+			},
+			streetViewControlOptions: {
+				position: google.maps.ControlPosition.LEFT_CENTER
+			}
+		};
 		initialize();
 		marks = placeMarkers();
 		clusterMarkers(marks);
+		$('#map_canvas').mapescape({
+		    callback: mapescape_callback
+		}).adapt_height(function($tgt, height) {
+		    $tgt.css('max-height', height);
+		});
 	});

@@ -63,8 +63,14 @@
 	</div>
 {% endblock %}
 
+{% block extrahead %}
+<link href="{% static 'css/mapescape.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block extrajs %}
 <script type="text/javascript" src="{% static 'js/markerclusterer.js' %}"></script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="{% static 'js/jquery.adapt_height.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/mapescape.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/home-page-map.js' %}"></script>
 {% endblock %}
