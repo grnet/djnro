@@ -59,11 +59,11 @@
 		geocoder = new google.maps.Geocoder();
 		// disable scrolling/draging in maps
 		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-			isDraggable = false;
+			isDraggable = true;
 			isScrollable = true;
 		} else {
 			isDraggable = true;
-			isScrollable = false;
+			isScrollable = true;
 		}
 
 		var mapOptions = {
