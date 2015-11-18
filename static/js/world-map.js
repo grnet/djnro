@@ -70,11 +70,9 @@
 			zoom : zoomLevel,
 			mapTypeId : google.maps.MapTypeId.ROADMAP,
 			styles : styleArray,
-			mapTypeId : google.maps.MapTypeId.ROADMAP,
 			mapTypeControlOptions : {
 				style : google.maps.MapTypeControlStyle.DEFAULT
 			},
-			navigationControl : true,
 			mapTypeControl : false,
 			scrollwheel: isScrollable,
 			draggable: isDraggable
