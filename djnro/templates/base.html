@@ -17,7 +17,6 @@
 {% block extrahead %}{% endblock %}
 </head>
 <body class="{% block bodyclass %}{% endblock%}">
-    <div id="wrap">
         {% block header %}
         <div class="push-top"></div>
         <nav class="navbar navbar-default navbar-fixed-top">
@@ -78,14 +77,15 @@
         </nav>
         {% endblock %}
 
+	<div class="stickyfooter-container">
         {% block content %}
             <div class="container">
                 {% block subcontent %}
                 {% endblock %}
             </div>
         {% endblock %}
-    </div>
-    {% include "partial/footer.html" %}
+	{% include "partial/footer.html" %}
+	</div>
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>

@@ -1,6 +1,6 @@
 {% load i18n %}
-<footer {% if user.is_authenticated %}class="auth"{% endif %}>
-    <div class="">
+<footer class="stickyfooter">
+    <div>
         <div class="container">
             {% if user.is_authenticated %}
                 {% trans "If you have any questions or need help, contact" %} {{ BRANDING.helpdesk.name }} (<a href="{{ BRANDING.helpdesk.uri}}">{{BRANDING.helpdesk.uri}}</a>) - {{BRANDING.helpdesk.phone}}</br>
