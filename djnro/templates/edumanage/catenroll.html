@@ -35,7 +35,7 @@
 					<td>{{enrollment.cat_inst_id}}</td>
 					<td>{% if enrollment.cat_configuration_url %}<a href="{{enrollment.cat_configuration_url}}" target="_blank">{{enrollment.cat_configuration_url|truncatechars:50}}</a>{% else %}-{% endif %}</td>
 					<td>{% if not enrollment.cat_active %}{% if enrollment.url %}<a href="{{enrollment.url}}" target="_blank">{{enrollment.url|truncatechars:50}}</a>{% else %}-{% endif %}{% else %}ACTIVE{% endif %}</td>
-					<td>{% if enrollment.cat_active and enrollment.cat_idpmgmt_url %}<a href="{{enrollment.cat_idpmgmt_url}}" target="_blank">{{enrollment.cat_instance}}</a>{% else %}-{{enrollment.cat_instance}}{% endif %}</td>
+					<td>{% if enrollment.cat_active and enrollment.cat_idpmgmt_url %}<a href="{{enrollment.cat_idpmgmt_url}}" target="_blank">{{enrollment.cat_instance}}</a>{% else %}{{enrollment.cat_instance}}{% endif %}</td>
 					<td>{{enrollment.applier.get_full_name|default:enrollment.applier.email}}</td>
 				</tr>
 			{% endfor %}
