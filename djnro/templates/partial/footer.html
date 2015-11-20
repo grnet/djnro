@@ -1,4 +1,6 @@
 {% load i18n %}
+{% load include_maybe %}
+
 <footer class="stickyfooter">
     <div>
         <div class="container">
@@ -12,9 +14,11 @@
                 </a>
             {% endfor %}
             Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
+            {% if "partial/bottom_iframe.html"|template_exists %}
             <div class="">
                 {% include 'partial/bottom_iframe.html' %}
             </div>
+            {% endif %}
         </div>
     </div>
 </footer>
