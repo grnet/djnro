@@ -106,7 +106,7 @@ Set the Realm country for REALM model::
 
 ### Adding iframe in footer
 
-In case you need to add an iframe with banners at the bottom of the every page, you can paste your iframe code at bottom_iframe template under 'djnro/templates/partial/bottom_iframe.html'
+In case you need to add an iframe with banners at the bottom of the every page, you can paste your iframe code at a file called bottom_iframe template placed under 'djnro/templates/partial/bottom_iframe.html'
 
 
 Attribute map to match your AAI policy and SSO software (typically Shibboleth SP)::
