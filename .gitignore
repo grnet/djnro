@@ -1,4 +1,5 @@
-local_settings.py
+djnro/local_settings.py
+*~
 *.pyc
 *.db
 all.kml
