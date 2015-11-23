@@ -103,10 +103,9 @@ Set the Realm country for REALM model::
 	             ('country_2letters', 'Country' ),
 	            )
 
+### Custom content in footer
 
-### Adding iframe in footer
-
-In case you need to add an iframe with banners at the bottom of the every page, you can paste your iframe code at bottom_iframe template under 'djnro/templates/partial/bottom_iframe.html'
+If you need to present custom content in the footer at the bottom of the every page, you can add HTML/template code in `djnro/templates/partial/extra.footer.html`.
 
 
 Attribute map to match your AAI policy and SSO software (typically Shibboleth SP)::
