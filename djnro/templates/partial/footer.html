@@ -16,7 +16,7 @@
             Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
             {% if "partial/bottom_iframe.html"|template_exists %}
             <div class="">
-                {% include 'partial/bottom_iframe.html' %}
+                {% include_maybe 'partial/bottom_iframe.html' %}
             </div>
             {% endif %}
         </div>
