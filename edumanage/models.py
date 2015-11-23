@@ -9,6 +9,7 @@ from django.core import exceptions
 from django.conf import settings
 from django.contrib.auth.models import User
 from django import forms
+from django.core.exceptions import ValidationError
 
 
 class MultiSelectFormField(forms.MultipleChoiceField):
@@ -239,7 +240,7 @@ class InstServer(models.Model):
     acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
 
-    secret = models.CharField(max_length=80)
+    secret = models.CharField(max_length=80, )
     proto = models.CharField(max_length=12, choices=RADPROTOS, default='radius')
     ts = models.DateTimeField(auto_now=True)
 
@@ -260,6 +261,20 @@ class InstServer(models.Model):
         if self.name:
             return self.name
         return self.host
+
+    # If a server is a proxy to a realm,
+    # cannot change its type to SP
+    def clean(self):
+        if self.ertype == 2:
+            realms = InstRealm.objects.filter(proxyto=self)
+            if realms:
+                text = str()
+                for realm in realms:
+                    text = text + ' ' + realm.realm
+                raise ValidationError(
+                    'You cannot change this server to SP (realms "'
+                    + text + '" use him as a proxy)'
+                )
 
 
 class InstRealmMon(models.Model):
