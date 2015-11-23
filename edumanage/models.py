@@ -220,7 +220,9 @@ class InstServer(models.Model):
     '''
     Server of an Institution
     '''
-    instid = models.ForeignKey("Institution")
+    # instid = models.ForeignKey("Institution", null=True)
+    # instid_m2m = models.ManyToManyField('Institution', related_name='servers_tmp', default = 'none')
+    instid = models.ManyToManyField('Institution', related_name='servers', default = 'none')
     ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
     # ertype:
     # 1: accept if instid.ertype: 1 (idp) or 3 (idpsp)

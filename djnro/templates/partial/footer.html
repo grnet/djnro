@@ -14,9 +14,10 @@
                 </a>
             {% endfor %}
             Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
-            {% if "partial/bottom_iframe.html"|template_exists %}
+            {% if "partial/extra.footer.html"|template_exists %}
             <div class="">
-                {% include_maybe 'partial/bottom_iframe.html' %}
+                {% include_maybe 'partial/extra.footer.html' %}
+
             </div>
             {% endif %}
         </div>
