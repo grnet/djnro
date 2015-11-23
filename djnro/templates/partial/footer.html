@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load template_exists %}
+{% load template_maybe %}
 
 <footer class="stickyfooter">
     <div>
@@ -16,7 +16,7 @@
             Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
             {% if "partial/extra.footer.html"|template_exists %}
             <div class="">
-                {% include "partial/extra.footer.html" %}
+                {% include_maybe "partial/extra.footer.html" %}
             </div>
             {% endif %}
         </div>
