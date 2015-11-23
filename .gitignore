@@ -1,8 +1,9 @@
-local_settings.py
+djnro/local_settings.py
+*~
 *.pyc
 *.db
 all.kml
 static/img/logo_holder.png
 static/img/logo_small.png
 static/img/right_logo_small.png
-bottom_iframe.html
+djnro/templates/partial/extra.footer.html

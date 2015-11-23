@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load include_maybe %}
+{% load template_exists %}
 
 <footer class="stickyfooter">
     <div>
@@ -14,9 +14,9 @@
                 </a>
             {% endfor %}
             Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
-            {% if "partial/bottom_iframe.html"|template_exists %}
+            {% if "partial/extra.footer.html"|template_exists %}
             <div class="">
-                {% include_maybe 'partial/bottom_iframe.html' %}
+                {% include "partial/extra.footer.html" %}
             </div>
             {% endif %}
         </div>
