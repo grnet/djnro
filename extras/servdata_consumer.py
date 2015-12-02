@@ -37,7 +37,7 @@ class ServerDataReader:
         if re.match(r"^https?://", self.src) is not None:
             try:
                 resp = requests.get(src)
-            except ConnectionError:
+            except requests.ConnectionError:
                 exit_with_error("Connection failed for %s" % src)
             if resp.status_code > 304 or not resp.ok:
                 exit_with_error("Fetch failed from %s" % src)
