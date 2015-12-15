@@ -23,6 +23,9 @@ def wildcard_realm_least_precedence(a, b):
 #{{{${' ' + inst['id'] if 'id' in inst else ''}
 % if inst['type'] in (2, 3) and 'clients' in inst:
 % for client in inst['clients']:
+% if 'seen' in clients[client]:
+# client ${client} defined previously
+% else:
 rewrite rewrite-${client}-sp {
         include /etc/radsecproxy.conf.d/rewrite-default-sp.conf
 % if 'id' in inst:
@@ -40,6 +43,10 @@ client ${client} {
 % endif
         rewriteIn rewrite-${client}-sp
 }
+% endif
+<%
+clients[client]['seen'] = True
+%>\
 % endfor
 % endif
 % if inst['type'] in (1, 3) and 'realms' in inst:
@@ -53,6 +60,9 @@ for r in inst['realms']:
 for srv in inst_servers:
 </%doc>\
 % for srv in set([s for r in inst['realms'] for s in inst['realms'][r]['proxy_to'] if 'proxy_to' in inst['realms'][r]]):
+% if 'seen' in servers[srv]:
+# server ${srv} defined previously
+% else:
 rewrite rewrite-${srv}-idp {
         include /etc/radsecproxy.conf.d/rewrite-default-idp.conf
 }
@@ -79,6 +89,10 @@ server ${srv}-acct {
 % endif
         rewriteIn rewrite-${srv}-idp
 }
+% endif
+<%
+servers[srv]['seen'] = True
+%>\
 % endif
 % endfor
 % for realm in sorted([r for r in inst['realms'] if 'proxy_to' in inst['realms'][r]], cmp=wildcard_realm_least_precedence, reverse=True):
