@@ -31,6 +31,9 @@ for r in inst['realms']:
 for srv in inst_servers:
 </%doc>\
 % for srv in set([s for r in inst['realms'] for s in inst['realms'][r]['proxy_to'] if 'proxy_to' in inst['realms'][r]]):
+% if 'seen' in servers[srv]:
+# server ${srv} defined previously
+% else:
 home_server ${srv} {
         type                 = ${servers[srv]['rad_pkt_type']}
         ipaddr               = ${servers[srv]['host']}
@@ -47,6 +50,10 @@ home_server ${srv} {
         check_interval       = 30
         num_answers_to_alive = 3
 }
+<%
+servers[srv]['seen'] = True
+%>\
+% endif
 % endfor
 % for realm in sorted([r for r in inst['realms'] if 'proxy_to' in inst['realms'][r]], cmp=wildcard_realm_least_precedence, reverse=True):
 <%

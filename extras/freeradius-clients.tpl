@@ -6,6 +6,9 @@ import re
 % if inst['type'] in (2, 3) and 'clients' in inst:
 #{{{${' ' + inst['id'] if 'id' in inst else ''}
 % for client in inst['clients']:
+% if 'seen' in clients[client]:
+# client ${client} defined previously
+% else:
 client ${client} {
         secret          = ${clients[client]['secret']}
 <%
@@ -21,6 +24,10 @@ ipaddr = re.split(r'/(?=[0-9]{1,2}$)', clients[client]['host'])
 % endif
         eduroamspco     = GR
 }
+<%
+clients[client]['seen'] = True
+%>\
+% endif
 % endfor
 #}}}
 % endif
