@@ -209,6 +209,9 @@ We suggest using Apache and mod_wsgi. Below is an example configuration::
 		SSLCertificateChainFile	...
 		SSLCertificateKeyFile	...
 
+		# Tell Django the request was forwarded from a secure SSL connection
+		RequestHeader set X-Forwarded-SSL on
+
 		# Shibboleth SP configuration
 		ShibConfig	/etc/shibboleth/shibboleth2.xml
 		Alias		/shibboleth-sp	/usr/share/shibboleth
