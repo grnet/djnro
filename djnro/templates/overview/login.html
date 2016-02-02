@@ -37,7 +37,11 @@
 							<div class="form-group">
 								<div class="controls">
 									<button type="submit" class="btn">Sign in</button>
+                                                                        {% if next %}
+									<input type="hidden" name="next" value="{{ next }}" />
+                                                                        {% else %}
 									<input type="hidden" name="next" value="{% url overview %}" />
+                                                                        {% endif %}
 								</div>
 							</div>
 						</form>
