@@ -58,8 +58,8 @@
 	                				<td>{{user.email}}</td>
 	                				<td>{{user.first_name}} {{user.last_name}}</td>
 	                				<td>
-	                					{% if user.registrationprofile_set.all %}
-	                						{% if user.registrationprofile_set.all.0.activation_key == "ALREADY_ACTIVATED" %}
+	                					{% if user.registrationprofile %}
+	                						{% if user.registrationprofile.activation_key == "ALREADY_ACTIVATED" %}
 	                							{% trans "Active" %}
 	                						{% else %}
 	                							{% trans "Inactive" %} or {% trans "Key Expired" %}

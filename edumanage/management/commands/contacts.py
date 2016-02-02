@@ -45,8 +45,8 @@ class Command(BaseCommand):
                 u.first_name + " " + u.last_name,
                 m
             ) for u in users if (
-                len(u.registrationprofile_set.all()) > 0
-                and u.registrationprofile_set.all()[0].activation_key == "ALREADY_ACTIVATED"
+                u.registrationprofile
+                and u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
             ) for m in u.email.split(';')
         ]
         data.sort(key=lambda d: unicode(d[0]))
