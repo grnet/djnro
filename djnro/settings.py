@@ -24,7 +24,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
