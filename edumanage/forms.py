@@ -24,12 +24,14 @@ class MonLocalAuthnParamForm(forms.ModelForm):
 
     class Meta:
         model = MonLocalAuthnParam
+        fields = '__all__'
 
 
 class InstRealmMonForm(forms.ModelForm):
 
     class Meta:
         model = InstRealmMon
+        fields = '__all__'
 
 
 class UserProfileForm(forms.ModelForm):
@@ -38,12 +40,14 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
+        fields = '__all__'
 
 
 class InstDetailsForm(forms.ModelForm):
 
     class Meta:
         model = InstitutionDetails
+        fields = '__all__'
 
     def clean_oper_name(self):
         oper_name = self.cleaned_data['oper_name']
@@ -62,6 +66,7 @@ class InstServerForm(forms.ModelForm):
 
     class Meta:
         model = InstServer
+        fields = '__all__'
         exclude = ['instid']
 
     def clean_ertype(self):
@@ -135,12 +140,14 @@ class ContactForm(forms.ModelForm):
 
     class Meta:
         model = Contact
+        fields = '__all__'
 
 
 class InstRealmForm(forms.ModelForm):
 
     class Meta:
         model = InstRealm
+        fields = '__all__'
 
     def clean_proxyto(self):
         proxied_servers = self.cleaned_data['proxyto']
@@ -158,6 +165,7 @@ class ServiceLocForm(forms.ModelForm):
 
     class Meta:
         model = ServiceLoc
+        fields = '__all__'
 
 
 class NameFormSetFact(BaseGenericInlineFormSet):
