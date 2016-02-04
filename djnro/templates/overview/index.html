@@ -14,10 +14,10 @@
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
 					<li {% block homeactive %}class="active"{% endblock %}>
-						<a href="{% url overview %}">{% trans "Overview" %}</a>
+						<a href="{% url 'overview' %}">{% trans "Overview" %}</a>
 					</li>
 					<li>
-						<a href="{% url logout %}">{% trans "Logout" %}</a>
+						<a href="{% url 'logout' %}">{% trans "Logout" %}</a>
 					</li>
 				</ul>
 			</div><!--/.well -->

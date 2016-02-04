@@ -1,8 +1,8 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
 {% block crumbs %}
-	<li><a href="{% url manage %}">{% trans "Home" %}</a><span class="divider">/</span></li>
-	<li><a href="{% url servers %}">{% trans "Servers" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'manage' %}">{% trans "Home" %}</a><span class="divider">/</span></li>
+	<li><a href="{% url 'servers' %}">{% trans "Servers" %}</a><span class="divider">/</span></li>
 	<li class="active">{{server.name}}</li>
 {% endblock %}
 
@@ -80,7 +80,7 @@
 	</div>
 	 <div class="control-group">
         <div class="controls">
-            <a class="btn btn-primary" href="{% url edit-servers server.pk %}">{% trans "Edit" %}</a>
+            <a class="btn btn-primary" href="{% url 'edit-servers' server.pk %}">{% trans "Edit" %}</a>
         </div>
     </div>
 </div>

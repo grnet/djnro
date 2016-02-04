@@ -33,17 +33,17 @@
 	<tbody>
 	{% for server in servers %}
 		<tr class="GradeC">
-		<td><a href = "{% url servers server.pk %}">{{server.get_name}}</a></td>
+		<td><a href = "{% url 'servers' server.pk %}">{{server.get_name}}</a></td>
 		<td>{{server.get_ertype_display}}</td>
 		<td>{{server.auth_port}}</td>
 		<td>{{server.proto}}</td>
-		<td style="text-align: center;"><a href="{% url edit-servers server.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_server_{{server.pk}}" data-servername="{{server.get_name}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
+		<td style="text-align: center;"><a href="{% url 'edit-servers' server.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_server_{{server.pk}}" data-servername="{{server.get_name}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
 	</tr>
 		{% endfor %}
 		</tbody>
 	</table>
 {% endif %}
-	<div><a href="{% url edit-servers %}" class="btn btn-primary">{% trans "Add new server" %}</a></div>
+	<div><a href="{% url 'edit-servers' %}" class="btn btn-primary">{% trans "Add new server" %}</a></div>
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
     	<div class="modal-content">
@@ -131,7 +131,7 @@ $('[id^=del_server_]').click(function(){
 
 $("#delserverSubmit").click(function(){
 	$.ajax({
-		url:"{% url del-server %}/?server_pk="+server_id,
+		url:"{% url 'del-server' %}/?server_pk="+server_id,
 		type: "GET",
 		success: function(data){
 			if (data.error){

@@ -32,15 +32,15 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
               <ul class="nav navbar-nav">
-                <li class="{% block hometop %}{% endblock %}"><a href="{% url index %}">{% trans "Home" %}</a></li>
+                <li class="{% block hometop %}{% endblock %}"><a href="{% url 'index' %}">{% trans "Home" %}</a></li>
                 <li class="{% block faqtop %}{% endblock %}"><a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a></li>
-                <li class="{% block manage %}{% endblock %}"><a href="{% url manage %}"> {% trans "Manage" %}</a></li>
+                <li class="{% block manage %}{% endblock %}"><a href="{% url 'manage' %}"> {% trans "Manage" %}</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %} <span class="caret"></span></a>
                   <ul class="dropdown-menu">
-                    <form action="{% url django.views.i18n.set_language %}" method="post" id="langform">
+                    <form action="{% url 'django.views.i18n.set_language' %}" method="post" id="langform">
                         {% csrf_token %}
                         <input name="next" type="hidden" value="{{ next }}" />
                         <input id="langsel" name="language" type="hidden" value="" />
@@ -55,21 +55,21 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Institutions" %}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li class="{% block mgmt %}{% endblock %}"><a href="{% url managementPage %}">{% trans "Management" %}</a></li>
-                        <li class="{% block participants %}{% endblock %}"><a href="{% url participants %}">{% trans "Participants" %}</a></li>
+                        <li class="{% block mgmt %}{% endblock %}"><a href="{% url 'managementPage' %}">{% trans "Management" %}</a></li>
+                        <li class="{% block participants %}{% endblock %}"><a href="{% url 'participants' %}">{% trans "Participants" %}</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Service" %}<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                          <li class="{% block closest %}{% endblock %}"><a href="{% url geolocate %}" target="_blank">{% trans "Closest eduroam" %}</a></li>
-                          <li class="{% block world %}{% endblock %}"><a href="{% url world %}">{% trans "World eduroam" %}</a></li>
+                          <li class="{% block closest %}{% endblock %}"><a href="{% url 'geolocate' %}" target="_blank">{% trans "Closest eduroam" %}</a></li>
+                          <li class="{% block world %}{% endblock %}"><a href="{% url 'world' %}">{% trans "World eduroam" %}</a></li>
                           <li><a href="https://apps.getpebble.com/applications/5384b2119c84af48350000c7">{% trans "pebduroam" %}</a></li>
-                        <li class="{% block api %}{% endblock %}"><a href="{% url api %}">{% trans "Closest point api" %}</a>
+                        <li class="{% block api %}{% endblock %}"><a href="{% url 'api' %}">{% trans "Closest point api" %}</a>
                     </ul>
                 </li>
                 {% if request.user.is_authenticated %}
-                <li><a href="{% url logout %}">Logout</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
                 {% endif %}
               </ul>
             </div><!--/.nav-collapse -->
