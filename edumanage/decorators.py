@@ -13,7 +13,7 @@ def social_active_required(function):
     def wrap(request, *args, **kw):
         user = request.user
         try:
-            profile = request.user.get_profile()
+            profile = request.user.userprofile
             if profile.is_social_active is True:
                 return function(request, *args, **kw)
             else:

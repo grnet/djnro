@@ -41,7 +41,7 @@ class Command(BaseCommand):
             )
         data = [
             (
-                u.get_profile().institution.get_name('el'),
+                u.userprofile.institution.get_name('el'),
                 u.first_name + " " + u.last_name,
                 m
             ) for u in users if (

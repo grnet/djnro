@@ -200,8 +200,6 @@ INSTALLED_APPS = (
 # }
 
 
-AUTH_PROFILE_MODULE = 'accounts.UserProfile'
-
 LOGIN_URL = '/manage/login/'
 
 KML_FILE = os.path.join(PROJECT_DIR, 'all.kml')

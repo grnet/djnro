@@ -36,7 +36,7 @@ def activate(request, activation_key):
                 }
             )
         try:
-            user_profile = rp.user.get_profile()
+            user_profile = rp.user.userprofile
         except UserProfile.DoesNotExist:
             return render(
                 request,
@@ -66,7 +66,7 @@ def activate(request, activation_key):
         request_data = request.POST.copy()
         try:
             user = User.objects.get(pk=request_data['user'])
-            up = user.get_profile()
+            up = user.userprofile
             up.institution = Institution.objects.get(
                 pk=request_data['institution']
             )

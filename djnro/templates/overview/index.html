@@ -66,7 +66,7 @@
 	                						{% endif %}
 	                					{% else %}-{% endif %}
 	                				</td>
-	                				<td>{% if user.get_profile.institution %}{% tolocale user.get_profile.institution LANGUAGE_CODE %}{% endif %}</td>
+	                				<td>{% if user.userprofile.institution %}{% tolocale user.userprofile.institution LANGUAGE_CODE %}{% endif %}</td>
 	                			</tr>
 	              				{% endfor %}
 	              			</tbody>
