@@ -65,22 +65,23 @@ class InstServerForm(forms.ModelForm):
 
     def clean_ertype(self):
         ertype = self.cleaned_data['ertype']
-        institution = self.cleaned_data['instid']
-        inst_type = institution.ertype
-        type_list = [inst_type]
-        if inst_type == 3:
-            type_list = [1, 2, 3]
-        if ertype:
-            if ertype not in type_list:
-                raise forms.ValidationError('Server type cannot be different than institution type (%s)' %dict(self.fields['ertype'].choices)[inst_type])
-            return self.cleaned_data["ertype"]
-        else:
-            raise forms.ValidationError('This field is required.')
+	if not ertype:
+	    raise forms.ValidationError('This field is required.')
+        for institution in self.cleaned_data['instid']:
+	    inst_type = institution.ertype
+	    type_list = [inst_type]
+	    if inst_type == 3:
+		type_list = [1, 2, 3]
+		if ertype not in type_list:
+		    raise forms.ValidationError('Server type cannot be different than institution type (%s)' %dict(self.fields['ertype'].choices)[inst_type])
+	return self.cleaned_data["ertype"]
 
     def clean_auth_port(self):
         auth_port = self.cleaned_data['auth_port']
-        institution = self.cleaned_data['instid']
-        if institution.ertype in [1,3]:
+	if not 'ertype' in self.cleaned_data:
+                raise forms.ValidationError(_('The Type field is required to validate this field.'))
+        ertype = self.cleaned_data['ertype']
+        if ertype in [1,3]:
             if auth_port:
                 return self.cleaned_data["auth_port"]
             else:
@@ -88,8 +89,10 @@ class InstServerForm(forms.ModelForm):
 
     def clean_acct_port(self):
         acct_port = self.cleaned_data['acct_port']
-        institution = self.cleaned_data['instid']
-        if institution.ertype in [1,3]:
+	if not 'ertype' in self.cleaned_data:
+                raise forms.ValidationError(_('The Type field is required to validate this field.'))
+        ertype = self.cleaned_data['ertype']
+        if ertype in [1,3]:
             if acct_port:
                 return self.cleaned_data["acct_port"]
             else:
@@ -97,8 +100,10 @@ class InstServerForm(forms.ModelForm):
 
     def clean_rad_pkt_type(self):
         rad_pkt_type = self.cleaned_data['rad_pkt_type']
-        institution = self.cleaned_data['instid']
-        if institution.ertype in [1,3]:
+	if not 'ertype' in self.cleaned_data:
+                raise forms.ValidationError(_('The Type field is required to validate this field.'))
+        ertype = self.cleaned_data['ertype']
+        if ertype in [1,3]:
             if rad_pkt_type:
                 return self.cleaned_data["rad_pkt_type"]
             else:
