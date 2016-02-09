@@ -3,7 +3,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes import fields
 from django.utils.text import capfirst
 from django.core import exceptions
 from django.conf import settings
@@ -134,7 +134,7 @@ class Name_i18n(models.Model):
     lang = models.CharField(max_length=5, choices=settings.URL_NAME_LANGS)
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = fields.GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
         return self.name
@@ -187,7 +187,7 @@ class URL_i18n(models.Model):
     urltype = models.CharField(max_length=10, choices=URLTYPES, db_column='type')
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = fields.GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         verbose_name = "Url (i18n)"
@@ -404,7 +404,7 @@ class ServiceLoc(models.Model):
     longitude = models.DecimalField(max_digits=12, decimal_places=8)
     latitude = models.DecimalField(max_digits=12, decimal_places=8)
     # TODO: multiple names can be specified [...] name in English is required
-    loc_name = generic.GenericRelation(Name_i18n)
+    loc_name = fields.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact, blank=True, null=True)
@@ -417,7 +417,7 @@ class ServiceLoc(models.Model):
     AP_no = models.PositiveIntegerField(max_length=3)
     wired = models.BooleanField()
     # only urltype = 'info' should be accepted here
-    url = generic.GenericRelation(URL_i18n, blank=True, null=True)
+    url = fields.GenericRelation(URL_i18n, blank=True, null=True)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -451,7 +451,7 @@ class Institution(models.Model):
     '''
 
     realmid = models.ForeignKey("Realm")
-    org_name = generic.GenericRelation(Name_i18n)
+    org_name = fields.GenericRelation(Name_i18n)
     ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
 
     def __unicode__(self):
@@ -486,7 +486,7 @@ class InstitutionDetails(models.Model):
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact)
-    url = generic.GenericRelation(URL_i18n)
+    url = fields.GenericRelation(URL_i18n)
     # accept if ertype: 2 (sp) or 3 (idpsp) (Applies to the following field)
     oper_name = models.CharField(
         max_length=24,
@@ -523,11 +523,11 @@ class Realm(models.Model):
     country = models.CharField(max_length=5, choices=settings.REALM_COUNTRIES)
     stype = models.PositiveIntegerField(max_length=1, default=0, editable=False)
     # TODO: multiple names can be specified [...] name in English is required
-    org_name = generic.GenericRelation(Name_i18n)
+    org_name = fields.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=32)
     address_city = models.CharField(max_length=24)
     contact = models.ManyToManyField(Contact)
-    url = generic.GenericRelation(URL_i18n)
+    url = fields.GenericRelation(URL_i18n)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:

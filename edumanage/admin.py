@@ -18,14 +18,14 @@ from edumanage.models import (
     CatEnrollment
 )
 
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes import admin as contenttype_admin
 
 
-class NameInline(generic.GenericTabularInline):
+class NameInline(contenttype_admin.GenericTabularInline):
     model = Name_i18n
 
 
-class UrlInline(generic.GenericTabularInline):
+class UrlInline(contenttype_admin.GenericTabularInline):
     model = URL_i18n
 
 

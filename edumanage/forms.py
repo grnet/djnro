@@ -11,7 +11,7 @@ from edumanage.models import (
 )
 from accounts.models import UserProfile
 from edumanage.fields import MultipleEmailsField
-from django.contrib.contenttypes.generic import BaseGenericInlineFormSet
+from django.contrib.contenttypes.forms import BaseGenericInlineFormSet
 
 import ipaddr
 import re

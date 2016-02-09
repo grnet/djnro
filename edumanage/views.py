@@ -19,7 +19,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django import forms
-from django.contrib.contenttypes.generic import generic_inlineformset_factory
+from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.core.mail.message import EmailMessage
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
