@@ -219,7 +219,7 @@ class InstServer(models.Model):
     # instid = models.ForeignKey("Institution", null=True)
     # instid_m2m = models.ManyToManyField('Institution', related_name='servers_tmp', default = 'none')
     instid = models.ManyToManyField('Institution', related_name='servers', default = 'none')
-    ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
+    ertype = models.PositiveIntegerField(choices=ERTYPES, db_column='type')
     # ertype:
     # 1: accept if instid.ertype: 1 (idp) or 3 (idpsp)
     # 2: accept if instid.ertype: 2 (sp) or 3 (idpsp)
@@ -233,8 +233,8 @@ class InstServer(models.Model):
     #TODO: Add description field or label field
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
     rad_pkt_type = models.CharField(max_length=48, choices=RADTYPES, default='auth+acct', null=True, blank=True,)
-    auth_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
-    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
+    auth_port = models.PositiveIntegerField(null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
+    acct_port = models.PositiveIntegerField(null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
 
     secret = models.CharField(max_length=80)
@@ -402,14 +402,14 @@ class ServiceLoc(models.Model):
     loc_name = fields.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
-    contact = models.ManyToManyField(Contact, blank=True, null=True)
+    contact = models.ManyToManyField(Contact, blank=True)
     SSID = models.CharField(max_length=16)
     enc_level = MultiSelectField(max_length=64, choices=ENCTYPES, blank=True, null=True)
     port_restrict = models.BooleanField()
     transp_proxy = models.BooleanField()
     IPv6 = models.BooleanField()
     NAT = models.BooleanField()
-    AP_no = models.PositiveIntegerField(max_length=3)
+    AP_no = models.PositiveIntegerField()
     wired = models.BooleanField()
     # only urltype = 'info' should be accepted here
     url = fields.GenericRelation(URL_i18n, blank=True, null=True)
@@ -447,7 +447,7 @@ class Institution(models.Model):
 
     realmid = models.ForeignKey("Realm")
     org_name = fields.GenericRelation(Name_i18n)
-    ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
+    ertype = models.PositiveIntegerField(choices=ERTYPES, db_column='type')
 
     def __unicode__(self):
         return "%s" % ', '.join([i.name for i in self.org_name.all()])
@@ -490,8 +490,8 @@ class InstitutionDetails(models.Model):
         help_text=_('The primary, registered domain name for your institution, eg. example.com.<br>This is used to derive the Operator-Name attribute according to RFC5580, par.4.1, using the REALM namespace.')
     )
     # accept if ertype: 1 (idp) or 3 (idpsp) (Applies to the following field)
-    number_user = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
-    number_id = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of issued e-identities (credentials) that may be used for authentication in eduroam service"))
+    number_user = models.PositiveIntegerField(null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
+    number_id = models.PositiveIntegerField(null=True, blank=True, help_text=_("Number of issued e-identities (credentials) that may be used for authentication in eduroam service"))
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -516,7 +516,7 @@ class Realm(models.Model):
     '''
 
     country = models.CharField(max_length=5, choices=settings.REALM_COUNTRIES)
-    stype = models.PositiveIntegerField(max_length=1, default=0, editable=False)
+    stype = models.PositiveIntegerField(default=0, editable=False)
     # TODO: multiple names can be specified [...] name in English is required
     org_name = fields.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=32)
@@ -545,17 +545,17 @@ class RealmData(models.Model):
 
     realmid = models.OneToOneField(Realm)
     # db: select count(institution.id) as number_inst from institution, realm where institution.realmid == realm.realmid
-    number_inst = models.PositiveIntegerField(max_length=5, editable=False)
+    number_inst = models.PositiveIntegerField(editable=False)
     # db: select sum(institution.number_user) as number_user from institution, realm where institution.realmid == realm.realmid
-    number_user = models.PositiveIntegerField(max_length=9, editable=False)
+    number_user = models.PositiveIntegerField(editable=False)
     # db: select sum(institution.number_id) as number_id from institution, realm where institution.realmid == realm.realmid
-    number_id = models.PositiveIntegerField(max_length=9, editable=False)
+    number_id = models.PositiveIntegerField(editable=False)
     # db: select count(institution.id) as number_IdP from institution, realm where institution.realmid == realm.realmid and institution.type == 1
-    number_IdP = models.PositiveIntegerField(max_length=5, editable=False)
+    number_IdP = models.PositiveIntegerField(editable=False)
     # db: select count(institution.id) as number_SP from institution, realm where institution.realmid == realm.realmid and institution.type == 2
-    number_SP = models.PositiveIntegerField(max_length=5, editable=False)
+    number_SP = models.PositiveIntegerField(editable=False)
     # db: select count(institution.id) as number_IdPSP from institution, realm where institution.realmid == realm.realmid and institution.type == 3
-    number_IdPSP = models.PositiveIntegerField(max_length=5, editable=False)
+    number_IdPSP = models.PositiveIntegerField(editable=False)
     # db: select greatest(max(realm.ts), max(institution.ts)) as ts from institution, realm where institution.realmid == realm.realmid
     ts = models.DateTimeField(editable=False)
 
@@ -578,7 +578,7 @@ class CatEnrollment(models.Model):
 
     ACTIVE = u"ACTIVE"
 
-    cat_inst_id = models.PositiveIntegerField(max_length=10)
+    cat_inst_id = models.PositiveIntegerField()
     inst = models.ForeignKey(Institution)
     url = models.CharField(max_length=255, blank=True, null=True, help_text="Set to ACTIVE if institution has CAT profiles")
     cat_instance = models.CharField(max_length=50, choices=settings.CAT_INSTANCES)
