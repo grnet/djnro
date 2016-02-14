@@ -9,6 +9,7 @@ from django.core import exceptions
 from django.conf import settings
 from django.contrib.auth.models import User
 from django import forms
+from django.core.exceptions import ValidationError
 
 
 class MultiSelectFormField(forms.MultipleChoiceField):
@@ -260,6 +261,19 @@ class InstServer(models.Model):
         if self.name:
             return self.name
         return self.host
+
+    # If a server is a proxy for a realm, can not change type to SP
+    def clean(self):
+        if self.ertype == 2:
+            realms = InstRealm.objects.filter(proxyto=self)
+            if len(realms) > 0:
+                text = str()
+                for realm in realms:
+                    text = text + ' ' + realm.realm
+                raise ValidationError(
+                    'You cannot change this server to SP (it is used by realms %s)' %
+                    ', '.join([r.realm for r in realms])
+                    )
 
 
 class InstRealmMon(models.Model):
