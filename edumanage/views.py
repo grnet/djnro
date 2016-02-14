@@ -2216,7 +2216,7 @@ def servdata(request):
             inst_dict['id'] = inst.institutiondetails.oper_name
         inst_dict['type'] = inst.ertype
         if inst.ertype in (2, 3):
-            inst_clients = inst.instserver_set.filter(ertype__in=[2, 3])
+            inst_clients = inst.servers.filter(ertype__in=[2, 3])
             if inst_clients:
                 inst_dict['clients'] = [getSrvIdentifier(srv, "client_") for
                                         srv in inst_clients]
