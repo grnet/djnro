@@ -210,9 +210,6 @@ KML_FILE = os.path.join(PROJECT_DIR, 'all.kml')
 
 EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-# Check for headers indicating the request was received on a secure SSL connection
-SECURE_PROXY_SSL_HEADER = ('X-Forwarded-SSL', 'on')
-
 # Request session cookies to be marked as secure
 SESSION_COOKIE_SECURE = True
 

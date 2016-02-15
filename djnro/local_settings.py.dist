@@ -20,6 +20,11 @@ ALLOWED_HOSTS = []
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '<put something really random here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
 
+# Check for headers indicating the request was received on a secure SSL connection
+# Uncomment this if you are running DjNRO behind an HTTP proxy that sets this
+# header for SSL connections (and protects it for non-SSL connections).
+# SECURE_PROXY_SSL_HEADER = ('X-Forwarded-Protocol', 'https')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
