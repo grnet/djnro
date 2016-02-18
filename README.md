@@ -20,13 +20,12 @@ You can find more about Djnro or raise your issues at [GRNET Djnro
 repository](https://code.grnet.gr/djnro), [GRNET Djnro Github repository](https://github.com/grnet/djnro), [Djnro mailing list](https://lists.grnet.gr/wws/info/djnro) or [GRNET Djnro minisite](http://djnro.grnet.gr/).
 
 ## LICENCE
-Copyright © 2011-2015 Greek Research and Technology Network (GRNET S.A.)
+Copyright © 2011-2016 Greek Research and Technology Network (GRNET S.A.)
 
-Developed by Leonidas Poulopoulos (leopoul-at-noc-dot-grnet-dot-gr),
-Zenon Mousmoulas (zmousm-at-noc-dot-grnet-dot-gr) and Stavros Kroustouris
-(staurosk-at-noc-dot-grnet-dot-gr), GRNET NOC
+Developed by Leonidas Poulopoulos, Zenon Mousmoulas, Stavros
+Kroustouris, Sergios Aftsidis, GRNET NOC
 
-Contributions by Jamie Curtis, REANNZ
+Contributions by Jamie Curtis and Vladimir Mencl, REANNZ
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
