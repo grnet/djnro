@@ -225,6 +225,17 @@ We suggest using Apache and mod_wsgi. Below is an example configuration::
 		</Location>
 	</VirtualHost>
 
+Alternatively, it is possible to use Apache with mod_proxy_http to pass the requests to uwsgi.  In that case, the ````WSGIScriptAlias```` directive would be replaced with the following:
+
+                ProxyRequests off
+                ProxyPreserveHost on
+
+                ProxyPass / http://localhost:3031/
+                ProxyPassReverse / http://localhost:3031/
+
+                # tell DjNRO we have forwarded over SSL
+                RequestHeader set X-Forwarded-Protocol https
+
 *Info*: It is strongly recommended to allow access to `/(admin|overview|alt-login)` *ONLY* from trusted subnets.
 
 Once you are done, restart apache.

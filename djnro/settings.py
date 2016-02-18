@@ -210,7 +210,8 @@ KML_FILE = os.path.join(PROJECT_DIR, 'all.kml')
 
 EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-
+# Request session cookies to be marked as secure
+SESSION_COOKIE_SECURE = True
 
 TINYMCE_JS_URL = '/static/js/tinymce/tiny_mce.js'
 
