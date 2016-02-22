@@ -26,4 +26,9 @@ User authentication via social media is carried out by the [python-social-auth](
 
 
 ## Pip requirements.txt file
-DjNRO has also a requirements file which can be used with pip
+DjNRO has also a requirements file which can be used with pip.
+
+In addition to the core requirements in ````requirements.txt````, there are
+also optional packages, needed for additional functinonality like rendering
+data export templates (invoked separately outside of the Django application).
+These are listed in ````requirements-optional.txt````.
