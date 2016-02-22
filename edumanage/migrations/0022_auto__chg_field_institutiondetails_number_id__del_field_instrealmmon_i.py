@@ -30,7 +30,10 @@ class Migration(SchemaMigration):
         # * http://codeinthehole.com/writing/altering-postgres-table-columns-with-south/
         # * http://stackoverflow.com/questions/13170570/change-type-of-varchar-field-to-integer-cannot-be-cast-automatically-to-type-i
         if ( db._get_connection().vendor == "postgresql" ):
-            db.execute('ALTER TABLE "edumanage_instrealmmon" ALTER COLUMN "realm_id" TYPE integer USING (trim(realm_id)::integer), ALTER COLUMN "realm_id" SET NOT NULL, ALTER COLUMN "realm_id" DROP DEFAULT;')
+            db.execute('ALTER TABLE "edumanage_instrealmmon" ALTER COLUMN "realm_id" TYPE integer USING (trim(realm_id)::integer),'
+                    ' ALTER COLUMN "realm_id" SET NOT NULL,'
+                    ' ALTER COLUMN "realm_id" DROP DEFAULT,'
+                    ' ADD CONSTRAINT "edumanage_i_realm_id_24cc89d4be4145e5_fk_edumanage_instrealm_id" FOREIGN KEY (realm_id) REFERENCES edumanage_instrealm(id) DEFERRABLE INITIALLY DEFERRED;')
         else:
             db.alter_column('edumanage_instrealmmon', 'realm_id', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['edumanage.InstRealm']))
 
