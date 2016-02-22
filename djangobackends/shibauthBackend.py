@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 
-from django.contrib.auth.models import User, UserManager, Permission, Group
+from django.contrib.auth.models import UserManager, Permission, Group
+from accounts.models import User
 from django.conf import settings
 
 class shibauthBackend:

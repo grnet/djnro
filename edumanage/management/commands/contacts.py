@@ -12,7 +12,7 @@ sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
 
 from optparse import make_option
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
+from accounts.models import User
 
 
 class Command(BaseCommand):

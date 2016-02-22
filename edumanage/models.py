@@ -7,7 +7,6 @@ from django.contrib.contenttypes import fields
 from django.utils.text import capfirst
 from django.core import exceptions
 from django.conf import settings
-from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -582,7 +581,7 @@ class CatEnrollment(models.Model):
     inst = models.ForeignKey(Institution)
     url = models.CharField(max_length=255, blank=True, null=True, help_text="Set to ACTIVE if institution has CAT profiles")
     cat_instance = models.CharField(max_length=50, choices=settings.CAT_INSTANCES)
-    applier = models.ForeignKey(User)
+    applier = models.ForeignKey(settings.AUTH_USER_MODEL)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:

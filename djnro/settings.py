@@ -39,6 +39,9 @@ LANGUAGES = (
     ('en', _('English')),
 )
 
+# Use a custom user model (as replacement for longerusername)
+AUTH_USER_MODEL = 'accounts.User'
+
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en'
@@ -150,7 +153,6 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'longerusername',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',

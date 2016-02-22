@@ -6,7 +6,7 @@ from django.contrib.sites.models import Site
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
+from accounts.models import User
 from django.views.decorators.cache import never_cache
 from django import forms
 from registration.models import RegistrationProfile
