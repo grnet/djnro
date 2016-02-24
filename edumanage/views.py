@@ -562,10 +562,6 @@ def add_server(request, server_pk):
                     'You have no rights to edit this server'
                 )
                 return HttpResponseRedirect(reverse("servers"))
-        form.fields['instid'] = forms.ModelChoiceField(
-            queryset=Institution.objects.filter(pk=inst.pk),
-            empty_label=None
-        )
         if server:
             edit = True
 
@@ -582,8 +578,10 @@ def add_server(request, server_pk):
         try:
             server = InstServer.objects.get(instid=inst, pk=server_pk)
             form = InstServerForm(request_data, instance=server)
+            form.inst_list = server.instid.all()
         except InstServer.DoesNotExist:
             form = InstServerForm(request_data)
+            form.inst_list = [inst]
             if server_pk:
                 messages.add_message(
                     request,
@@ -594,12 +592,9 @@ def add_server(request, server_pk):
 
         if form.is_valid():
             form.save()
+            if not inst in form.instance.instid.all():
+                form.instance.instid.add(inst)
             return HttpResponseRedirect(reverse("servers"))
-        else:
-            form.fields['instid'] = forms.ModelChoiceField(
-                queryset=Institution.objects.filter(pk=inst.pk),
-                empty_label=None
-            )
         if server:
             edit = True
         return render_to_response(

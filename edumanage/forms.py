@@ -62,12 +62,13 @@ class InstServerForm(forms.ModelForm):
 
     class Meta:
         model = InstServer
+        exclude = ['instid']
 
     def clean_ertype(self):
         ertype = self.cleaned_data['ertype']
 	if not ertype:
 	    raise forms.ValidationError('This field is required.')
-        for institution in self.cleaned_data['instid']:
+        for institution in self.inst_list:
 	    inst_type = institution.ertype
 	    type_list = [inst_type]
 	    if inst_type == 3:
