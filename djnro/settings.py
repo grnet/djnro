@@ -179,9 +179,12 @@ INSTALLED_APPS = (
 
 # DEFAULT_LOGGING copied over from django/utils/log.py:
 
-# Default logging for Django. This sends an email to the site admins on every
-# HTTP 500 error. Depending on DEBUG, all other log records are either sent to
+# Mildly customized default logging for Django.
+# This sends an email to the site admins on every HTTP 500 error - but skips
+# for SuspiciousOperation of type DisallowedHost.
+# Depending on DEBUG, all other log records are either sent to
 # the console (DEBUG=True) or discarded by mean of the NullHandler (DEBUG=False).
+from utils.logging import skip_disallowed_host_suspicious_operations
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -192,6 +195,10 @@ LOGGING = {
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
         },
+	'skip_disallowed_host_suspicious_operations': {
+	    '()': 'django.utils.log.CallbackFilter',
+	    'callback': skip_disallowed_host_suspicious_operations,
+	},
     },
     'handlers': {
         'console': {
@@ -204,7 +211,7 @@ LOGGING = {
         },
         'mail_admins': {
             'level': 'ERROR',
-            'filters': ['require_debug_false'],
+            'filters': ['require_debug_false','skip_disallowed_host_suspicious_operations'],
             'class': 'django.utils.log.AdminEmailHandler'
         }
     },
