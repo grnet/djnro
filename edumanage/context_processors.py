@@ -17,3 +17,6 @@ def country_code(context):
 
 def cat_instances(context):
     return {'CAT_INSTANCES': settings.CAT_INSTANCES}
+
+def manage_login_methods(context):
+    return {'MANAGE_LOGIN_METHODS': settings.MANAGE_LOGIN_METHODS}
