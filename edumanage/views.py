@@ -1541,6 +1541,8 @@ def manage_login(request, backend):
     qs = '?%s' % qs if qs else ''
     if backend == 'shibboleth':
         return redirect(reverse('login') + qs)
+    if backend == 'locallogin':
+        return redirect(reverse('altlogin') + qs)
     return redirect(reverse('social:begin', args=[backend]) + qs)
 
 
