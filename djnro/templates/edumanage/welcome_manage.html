@@ -11,13 +11,13 @@
 				<div class="row-fluid">
 					<div class="span12">
 						{% with qs=request.GET.urlencode %}
-						<a class="btn btnlogin" href="{% url manage_login 'shibboleth' %}{% if qs %}?{{qs}}{% endif %}">
+						<a class="btn btnlogin" href="{% url 'manage_login' 'shibboleth' %}{% if qs %}?{{qs}}{% endif %}">
 							<img src="{% static 'img/image_shibboleth_logo_color.png' %}" style="padding: 0px;">
 							<br>Shibboleth</a>
-						<a class="btn btnlogin" href="{% url manage_login 'twitter' %}{% if qs %}?{{qs}}{% endif %}">
+						<a class="btn btnlogin" href="{% url 'manage_login' 'twitter' %}{% if qs %}?{{qs}}{% endif %}">
 							<i class="fa fa-twitter fa-2x"></i>
 							<br>Twitter</a>
-						<a class="btn btnlogin" href="{% url manage_login 'google-oauth2' %}{% if qs %}?{{qs}}{% endif %}">
+						<a class="btn btnlogin" href="{% url 'manage_login' 'google-oauth2' %}{% if qs %}?{{qs}}{% endif %}">
 							<i class="fa fa-google fa-2x"></i>
 							<br>Google</a>
 						{% endwith %}

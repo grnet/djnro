@@ -3,7 +3,8 @@
 
 import ldap
 
-from django.contrib.auth.models import User, UserManager, Permission, Group
+from django.contrib.auth.models import UserManager, Permission, Group
+from accounts.models import User
 from django.conf import settings
 
 class ldapBackend:

@@ -1,3 +1,4 @@
+# encoding=utf8
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 import warnings
@@ -6,13 +7,16 @@ import sys
 import locale
 import codecs
 # sort greek utf-8 properly
-locale.setlocale(locale.LC_COLLATE, ('el_GR', 'UTF8'))
-# https://wiki.python.org/moin/PrintFails
-sys.stdout = codecs.getwriter(locale.getpreferredencoding())(sys.stdout)
+locale.setlocale(locale.LC_COLLATE, ('el_GR', 'UTF-8'))
+# Printing unicode: WAS: https://wiki.python.org/moin/PrintFails
+# But now rather follow:
+#    https://docs.djangoproject.com/en/1.9/howto/custom-management-commands/#management-commands-and-locales
+# I.e., set leave_locale_alone and let the system locale handle things.
+# Django 1.8 now uses unicode by default - so all works well without modifying the codecs.
 
 from optparse import make_option
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
+from accounts.models import User
 
 
 class Command(BaseCommand):
@@ -28,6 +32,8 @@ class Command(BaseCommand):
     args = ''
     help = 'Prints institution contacts in CSV format'
 
+    leave_locale_alone = True
+
     def handle(self, *args, **options):
         users = User.objects.all()
         if not options['maillist']:
@@ -41,12 +47,12 @@ class Command(BaseCommand):
             )
         data = [
             (
-                u.get_profile().institution.get_name('el'),
+                u.userprofile.institution.get_name('el'),
                 u.first_name + " " + u.last_name,
                 m
             ) for u in users if (
-                len(u.registrationprofile_set.all()) > 0
-                and u.registrationprofile_set.all()[0].activation_key == "ALREADY_ACTIVATED"
+                u.registrationprofile
+                and u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
             ) for m in u.email.split(';')
         ]
         data.sort(key=lambda d: unicode(d[0]))

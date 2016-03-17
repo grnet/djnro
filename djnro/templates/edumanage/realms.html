@@ -31,14 +31,14 @@
   	<tr class="GradeC">
     	<td>{{realm.realm}}</td>
     	<td>{{realm.get_servers}}</td>
-    	<td style="text-align: center;"><a href="{% url edit-realms realm.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_realm_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
+    	<td style="text-align: center;"><a href="{% url 'edit-realms' realm.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_realm_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
     </tr>
   	{% endfor %}
   	</tbody>
   </table>
 
 {% endif %}
-<div>{% if institution.ertype == 1 or institution.ertype == 3 %}<a href="{% url edit-realms %}" class="btn btn-primary">{% trans "Add new realm" %}</a>{% endif %}</div>
+<div>{% if institution.ertype == 1 or institution.ertype == 3 %}<a href="{% url 'edit-realms' %}" class="btn btn-primary">{% trans "Add new realm" %}</a>{% endif %}</div>
 {% endif %}
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -121,7 +121,7 @@ $('[id^=del_realm_]').click(function(){
 
 $("#delrealmSubmit").click(function(){
 	$.ajax({
-		url:"{% url del-realm %}/?realm_pk="+realm_id,
+		url:"{% url 'del-realm' %}/?realm_pk="+realm_id,
 		type: "GET",
 		success: function(data){
 			if (data.error){

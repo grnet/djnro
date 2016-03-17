@@ -11,7 +11,7 @@
 <h1>{% trans "Eduroam Worldwide" %}</h1>
 <hr>
 
-<div id="map_canvas" data-center-lat="{{ MAP_CENTER.0 }}" data-url="{% url worldPoints %}" data-city="{% static 'img/city.png' %}" data-country="{% static 'img/country.png' %}" data-group="{% static 'img/edugroup.png' %}" data-pin="{% static 'img/edupin.png' %}" data-center-lng="{{ MAP_CENTER.1 }}" style="width:100%; height:600px; overflow: hidden;"></div>
+<div id="map_canvas" data-center-lat="{{ MAP_CENTER.0 }}" data-url="{% url 'worldPoints' %}" data-city="{% static 'img/city.png' %}" data-country="{% static 'img/country.png' %}" data-group="{% static 'img/edugroup.png' %}" data-pin="{% static 'img/edupin.png' %}" data-center-lng="{{ MAP_CENTER.1 }}" style="width:100%; height:600px; overflow: hidden;"></div>
 {% endblock %}
 
 

@@ -36,7 +36,7 @@
 {% endblock %}
 
 {% block content %}
-	<div id="map_canvas" data-center-lat="{{ MAP_CENTER.0 }}" data-closest="{% url closest %}"" data-center-lng="{{ MAP_CENTER.1 }}" data-pin="{% static 'img/edupin.png' %}" data-group="{% static 'img/edugroup.png' %}" style="width:100%"></div>
+	<div id="map_canvas" data-center-lat="{{ MAP_CENTER.0 }}" data-closest="{% url 'closest' %}"" data-center-lng="{{ MAP_CENTER.1 }}" data-pin="{% static 'img/edupin.png' %}" data-group="{% static 'img/edugroup.png' %}" style="width:100%"></div>
 {% endblock %}
 
 {% block extrajs %}

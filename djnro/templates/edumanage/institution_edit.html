@@ -141,7 +141,7 @@
 $(document).ready(function() {
 	$("#adduserSubmit").click(function(){
 		$.ajax({
-			url:"{% url adduser %}",
+			url:"{% url 'adduser' %}",
 			data:$("#add_user_form").serialize(),
 			type: "POST",
 			cache: false,
@@ -168,7 +168,7 @@ $(document).ready(function() {
 	$("#add_contact").click(function(){
 		$('#myModal').modal('show');
 		$.ajax({
-				url:"{% url adduser %}",
+				url:"{% url 'adduser' %}",
 				type: "GET",
 				success: function(data){
 					$('#mymodalbody').html(data);

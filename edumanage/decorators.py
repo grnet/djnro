@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.shortcuts import render
 from django.utils.translation import ugettext as _
-from django.contrib.auth.models import User
+from accounts.models import User
 from django import forms
 
 from accounts.models import UserProfile
@@ -13,7 +13,7 @@ def social_active_required(function):
     def wrap(request, *args, **kw):
         user = request.user
         try:
-            profile = request.user.get_profile()
+            profile = request.user.userprofile
             if profile.is_social_active is True:
                 return function(request, *args, **kw)
             else:

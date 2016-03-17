@@ -19,7 +19,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from django import forms
-from django.contrib.contenttypes.generic import generic_inlineformset_factory
+from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.core.mail.message import EmailMessage
 from django.contrib.sites.models import Site
 from django.template.loader import render_to_string
@@ -29,7 +29,7 @@ from django.db.models import Max
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
+from accounts.models import User
 from django.core.cache import cache
 from django.contrib.auth import REDIRECT_FIELD_NAME
 
@@ -79,7 +79,7 @@ def index(request):
 def manage_login_front(request):
     user = request.user
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
     except UserProfile.DoesNotExist:
         return render_to_response(
             'edumanage/welcome_manage.html',
@@ -109,7 +109,7 @@ def manage(request):
     servers_list = []
     user = request.user
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
     except UserProfile.DoesNotExist:
         return render_to_response(
@@ -138,7 +138,7 @@ def institutions(request):
     user = request.user
     dict = {}
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -162,7 +162,7 @@ def institutions(request):
 def add_institution_details(request, institution_pk):
     user = request.user
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -247,7 +247,7 @@ def add_institution_details(request, institution_pk):
 def services(request, service_pk):
     user = request.user
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -309,7 +309,7 @@ def add_services(request, service_pk):
     service = False
     edit = False
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -476,11 +476,11 @@ def del_service(request):
         service_pk = req_data['service_pk']
         resp = {}
         try:
-            profile = user.get_profile()
+            profile = user.userprofile
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete service. Not enough rights"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             service = ServiceLoc.objects.get(
                 institutionid=institution,
@@ -488,14 +488,14 @@ def del_service(request):
             )
         except ServiceLoc.DoesNotExist:
             resp['error'] = "Could not get service or you have no rights to delete"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             service.delete()
         except:
             resp['error'] = "Could not delete service"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         resp['success'] = "Service successfully deleted"
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
+        return HttpResponse(json.dumps(resp), content_type='application/json')
 
 
 @login_required
@@ -505,7 +505,7 @@ def servers(request, server_pk):
     user = request.user
     servers = False
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
     except UserProfile.DoesNotExist:
         inst = False
@@ -539,7 +539,7 @@ def add_server(request, server_pk):
     server = False
     edit = False
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -616,7 +616,7 @@ def cat_enroll(request):
     cat_url = None
     inst_uid = None
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -738,23 +738,23 @@ def del_server(request):
         server_pk = req_data['server_pk']
         resp = {}
         try:
-            profile = user.get_profile()
+            profile = user.userprofile
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete server. Not enough rights"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             server = InstServer.objects.get(instid=institution, pk=server_pk)
         except InstServer.DoesNotExist:
             resp['error'] = "Could not get server or you have no rights to delete"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             server.delete()
         except:
             resp['error'] = "Could not delete server"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         resp['success'] = "Server successfully deleted"
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
+        return HttpResponse(json.dumps(resp), content_type='application/json')
 
 
 @login_required
@@ -763,7 +763,7 @@ def del_server(request):
 def realms(request):
     user = request.user
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
@@ -790,7 +790,7 @@ def add_realm(request, realm_pk):
     realm = False
     edit = False
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -883,23 +883,23 @@ def del_realm(request):
         realm_pk = req_data['realm_pk']
         resp = {}
         try:
-            profile = user.get_profile()
+            profile = user.userprofile
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Not enough rights"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             realm = InstRealm.objects.get(instid=institution, pk=realm_pk)
         except InstRealm.DoesNotExist:
             resp['error'] = "Could not get realm or you have no rights to delete"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             realm.delete()
         except:
             resp['error'] = "Could not delete realm"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         resp['success'] = "Realm successfully deleted"
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
+        return HttpResponse(json.dumps(resp), content_type='application/json')
 
 
 @login_required
@@ -909,7 +909,7 @@ def contacts(request):
     user = request.user
     instcontacts = []
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -940,7 +940,7 @@ def add_contact(request, contact_pk):
     edit = False
     contact = False
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -1024,11 +1024,11 @@ def del_contact(request):
         contact_pk = req_data['contact_pk']
         resp = {}
         try:
-            profile = user.get_profile()
+            profile = user.userprofile
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete contact. Not enough rights"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             contactinst = InstitutionContactPool.objects.get(
                 institution=institution,
@@ -1037,7 +1037,7 @@ def del_contact(request):
             contact = contactinst.contact
         except InstitutionContactPool.DoesNotExist:
             resp['error'] = "Could not get contact or you have no rights to delete"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             for service in ServiceLoc.objects.filter(institutionid=institution):
                 if (
@@ -1050,7 +1050,7 @@ def del_contact(request):
                         service.get_name(lang="en")
                     return HttpResponse(
                         json.dumps(resp),
-                        mimetype='application/json'
+                        content_type='application/json'
                     )
             if (
                 contact in institution.institutiondetails.contact.all() and
@@ -1060,14 +1060,14 @@ def del_contact(request):
                     " only contact your institution.<br>Fix it and try again"
                 return HttpResponse(
                     json.dumps(resp),
-                    mimetype='application/json'
+                    content_type='application/json'
                 )
             contact.delete()
         except Exception:
             resp['error'] = "Could not delete contact"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         resp['success'] = "Contact successfully deleted"
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
+        return HttpResponse(json.dumps(resp), content_type='application/json')
 
 
 @login_required
@@ -1076,7 +1076,7 @@ def del_contact(request):
 def instrealmmon(request):
     user = request.user
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -1102,7 +1102,7 @@ def add_instrealmmon(request, instrealmmon_pk):
     instrealmmon = False
     edit = False
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -1186,11 +1186,11 @@ def del_instrealmmon(request):
         instrealmmon_pk = req_data['instrealmmon_pk']
         resp = {}
         try:
-            profile = user.get_profile()
+            profile = user.userprofile
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete monitored realm. Not enough rights"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             instrealmmon = InstRealmMon.objects.get(
                 pk=instrealmmon_pk,
@@ -1199,9 +1199,9 @@ def del_instrealmmon(request):
             instrealmmon.delete()
         except InstRealmMon.DoesNotExist:
             resp['error'] = "Could not get monitored realm or you have no rights to delete"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         resp['success'] = "Contact successfully deleted"
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
+        return HttpResponse(json.dumps(resp), content_type='application/json')
 
 
 @login_required
@@ -1212,7 +1212,7 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
     monlocauthpar = False
     edit = False
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -1316,11 +1316,11 @@ def del_monlocauthpar(request):
         monlocauthpar_pk = req_data['monlocauthpar_pk']
         resp = {}
         try:
-            profile = user.get_profile()
+            profile = user.userprofile
             institution = profile.institution
         except UserProfile.DoesNotExist:
             resp['error'] = "Could not delete realm monitoring parameters. Not enough rights"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
             monlocauthpar = MonLocalAuthnParam.objects.get(
                 pk=monlocauthpar_pk,
@@ -1329,9 +1329,9 @@ def del_monlocauthpar(request):
             monlocauthpar.delete()
         except MonLocalAuthnParam.DoesNotExist:
             resp['error'] = "Could not get realm monitoring parameters or you have no rights to delete"
-            return HttpResponse(json.dumps(resp), mimetype='application/json')
+            return HttpResponse(json.dumps(resp), content_type='application/json')
         resp['success'] = "Contact successfully deleted"
-        return HttpResponse(json.dumps(resp), mimetype='application/json')
+        return HttpResponse(json.dumps(resp), content_type='application/json')
 
 
 @login_required
@@ -1340,7 +1340,7 @@ def del_monlocauthpar(request):
 def adduser(request):
     user = request.user
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         inst = profile.institution
         inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
@@ -1368,7 +1368,7 @@ def adduser(request):
             response_data['text'] = "%s" % contact
             return HttpResponse(
                 json.dumps(response_data),
-                mimetype='application/json'
+                content_type='application/json'
             )
         else:
             return render_to_response(
@@ -1394,7 +1394,7 @@ def base_response(request):
     institution = False
     institution_exists = False
     try:
-        profile = user.get_profile()
+        profile = user.userprofile
         institution = profile.institution
         institution_exists = True
     except UserProfile.DoesNotExist:
@@ -1437,7 +1437,7 @@ def get_service_points(request):
     if request.method == "GET":
         user = request.user
         try:
-            profile = user.get_profile()
+            profile = user.userprofile
             inst = profile.institution
         except UserProfile.DoesNotExist:
             inst = False
@@ -1470,7 +1470,7 @@ def get_service_points(request):
             response_location['SSID'] = u"%s" % (sl.SSID)
             response_location['key'] = u"%s" % sl.pk
             locs.append(response_location)
-        return HttpResponse(json.dumps(locs), mimetype='application/json')
+        return HttpResponse(json.dumps(locs), content_type='application/json')
     else:
         return HttpResponseNotFound('<h1>Something went really wrong</h1>')
 
@@ -1531,7 +1531,7 @@ def get_all_services(request):
         response_location['SSID'] = u"%s" % (sl.SSID)
         response_location['key'] = u"%s" % sl.pk
         locs.append(response_location)
-    return HttpResponse(json.dumps(locs), mimetype='application/json')
+    return HttpResponse(json.dumps(locs), content_type='application/json')
 
 
 @never_cache
@@ -1591,7 +1591,7 @@ def user_login(request):
         user = authenticate(username=username, firstname=firstname, lastname=lastname, mail=mail, authsource='shibboleth')
         if user is not None:
             try:
-                profile = user.get_profile()
+                profile = user.userprofile
                 profile.institution
             except UserProfile.DoesNotExist:
                 form = UserProfileForm()
@@ -1790,7 +1790,7 @@ def closest(request):
             }
             return HttpResponse(
                 json.dumps(response),
-                mimetype='application/json'
+                content_type='application/json'
             )
         try:
             lat = float(request_data.get('lat'))
@@ -1827,20 +1827,20 @@ def closest(request):
                 }
         return HttpResponse(
             json.dumps(closestMarker),
-            mimetype='application/json'
+            content_type='application/json'
         )
     else:
         response = {
             "status": "Use a GET method for your request"
         }
-        return HttpResponse(json.dumps(response), mimetype='application/json')
+        return HttpResponse(json.dumps(response), content_type='application/json')
 
 
 @never_cache
 def worldPoints(request):
     if request.method == 'GET':
         points = getPoints()
-        return HttpResponse(json.dumps(points), mimetype='application/json')
+        return HttpResponse(json.dumps(points), content_type='application/json')
 
 
 @never_cache
@@ -2030,7 +2030,7 @@ def instxml(request):
             "xml": to_xml(root)
         },
         context_instance=RequestContext(request,),
-        mimetype="application/xml"
+        content_type="application/xml"
     )
 
 
@@ -2091,7 +2091,7 @@ def realmxml(request):
         "general/realm.xml",
         {"xml": to_xml(root)},
         context_instance=RequestContext(request,),
-        mimetype="application/xml"
+        content_type="application/xml"
     )
 
 
@@ -2160,7 +2160,7 @@ def realmdataxml(request):
         "general/realm_data.xml",
         {"xml": to_xml(root)},
         context_instance=RequestContext(request,),
-        mimetype="application/xml"
+        content_type="application/xml"
     )
 
 
@@ -2229,7 +2229,7 @@ def servdata(request):
 
     if 'HTTP_ACCEPT' in request.META:
         if request.META.get('HTTP_ACCEPT') == "application/json":
-            resp_mimetype = "application/json"
+            resp_content_type = "application/json"
             resp_body = json.dumps(root)
         elif request.META.get('HTTP_ACCEPT') in [
             "text/yaml",
@@ -2237,13 +2237,13 @@ def servdata(request):
             "application/yaml",
             "application/x-yaml"
         ]:
-            resp_mimetype = request.META.get('HTTP_ACCEPT')
+            resp_content_type = request.META.get('HTTP_ACCEPT')
     try:
-        resp_mimetype
+        resp_content_type
     except NameError:
-        resp_mimetype = "text/yaml"
+        resp_content_type = "text/yaml"
 
-    if resp_mimetype.find("yaml") != -1:
+    if resp_content_type.find("yaml") != -1:
         from yaml import dump
         try:
             from yaml import CSafeDumper as SafeDumper
@@ -2253,22 +2253,22 @@ def servdata(request):
                          Dumper=SafeDumper,
                          allow_unicode=True,
                          default_flow_style=False)
-        resp_mimetype += "; charset=utf-8"
+        resp_content_type += "; charset=utf-8"
 
     return HttpResponse(resp_body,
-                        mimetype=resp_mimetype)
+                        content_type=resp_content_type)
 
 
 @never_cache
 def adminlist(request):
     users = User.objects.all()
     data = [
-        (u.get_profile().institution.get_name('el'),
+        (u.userprofile.institution.get_name('el'),
          u.first_name + " " + u.last_name,
          m)
         for u in users if
-        len(u.registrationprofile_set.all()) > 0 and
-        u.registrationprofile_set.all()[0].activation_key == "ALREADY_ACTIVATED"
+        u.registrationprofile and
+        u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
         for m in u.email.split(';')
     ]
     data.sort(key=lambda d: unicode(d[0]))
@@ -2279,7 +2279,7 @@ def adminlist(request):
             onoma=onoma
         ) + "\n"
     return HttpResponse(resp_body,
-                        mimetype="text/plain; charset=utf-8")
+                        content_type="text/plain; charset=utf-8")
 
 
 def to_xml(ele, encoding="UTF-8"):

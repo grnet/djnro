@@ -48,7 +48,7 @@
 {% if cat_instances %}
 <div class="row">
 	<div class="col-md-6">
-		<form method="POST" class="" id="catenroll_form" action="{% url catenroll %}">
+		<form method="POST" class="" id="catenroll_form" action="{% url 'catenroll' %}">
 		{% csrf_token %}
 			<div class="form-group">
 				<label class="control-label" for="id_catinstance"><b>{% trans "CAT instance" %}</b></label>

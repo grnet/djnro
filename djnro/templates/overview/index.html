@@ -14,10 +14,10 @@
 			<div class="well sidebar-nav">
 				<ul class="nav nav-list">
 					<li {% block homeactive %}class="active"{% endblock %}>
-						<a href="{% url overview %}">{% trans "Overview" %}</a>
+						<a href="{% url 'overview' %}">{% trans "Overview" %}</a>
 					</li>
 					<li>
-						<a href="{% url logout %}">{% trans "Logout" %}</a>
+						<a href="{% url 'logout' %}">{% trans "Logout" %}</a>
 					</li>
 				</ul>
 			</div><!--/.well -->
@@ -58,15 +58,15 @@
 	                				<td>{{user.email}}</td>
 	                				<td>{{user.first_name}} {{user.last_name}}</td>
 	                				<td>
-	                					{% if user.registrationprofile_set.all %}
-	                						{% if user.registrationprofile_set.all.0.activation_key == "ALREADY_ACTIVATED" %}
+	                					{% if user.registrationprofile %}
+	                						{% if user.registrationprofile.activation_key == "ALREADY_ACTIVATED" %}
 	                							{% trans "Active" %}
 	                						{% else %}
 	                							{% trans "Inactive" %} or {% trans "Key Expired" %}
 	                						{% endif %}
 	                					{% else %}-{% endif %}
 	                				</td>
-	                				<td>{% if user.get_profile.institution %}{% tolocale user.get_profile.institution LANGUAGE_CODE %}{% endif %}</td>
+	                				<td>{% if user.userprofile.institution %}{% tolocale user.userprofile.institution LANGUAGE_CODE %}{% endif %}</td>
 	                			</tr>
 	              				{% endfor %}
 	              			</tbody>
