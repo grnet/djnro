@@ -119,6 +119,8 @@ NRO_COUNTRY_NAME = _('My Country')
 NRO_COUNTRY_CODE = 'tld'
 # main domain url used in right top icon, eg. http://www.grnet.gr
 NRO_DOMAIN_MAIN_URL = "http://www.example.com"
+# NRO federation name
+NRO_FEDERATION_NAME = "GRNET AAI federation"
 # developer info for footer
 NRO_PROV_BY_DICT = {"name": "GRNET NOC", "url": "//noc.grnet.gr"}
 #provider social media contact (Use: // to preserve https)

@@ -7,6 +7,7 @@ def country_code(context):
         'COUNTRY_NAME': settings.NRO_COUNTRY_NAME,
         'COUNTRY_CODE': settings.NRO_COUNTRY_CODE,
         'DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL,
+        'FEDERATION_NAME': settings.NRO_FEDERATION_NAME,
         'DOMAIN_HELPDESK_DICT': settings.NRO_DOMAIN_HELPDESK_DICT,
         'MAP_CENTER': settings.MAP_CENTER,
         'PROV_TEAM': settings.NRO_PROV_BY_DICT,
