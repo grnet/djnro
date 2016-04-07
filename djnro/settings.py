@@ -104,6 +104,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'edumanage.context_processors.country_code',
     'edumanage.context_processors.cat_instances',
+    'edumanage.context_processors.manage_login_methods',
     'social.apps.django_app.context_processors.backends',
     'social.apps.django_app.context_processors.login_redirect',
 )
@@ -124,13 +125,13 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'djangobackends.shibauthBackend.shibauthBackend',
+    # 'djangobackends.shibauthBackend.shibauthBackend',
     # 'django_auth_ldap.backend.LDAPBackend',
-    'social.backends.twitter.TwitterOAuth',
-    'social.backends.google.GoogleOpenIdConnect',
+    # 'social.backends.twitter.TwitterOAuth',
+    # 'social.backends.google.GoogleOpenIdConnect',
     # 'social.backends.facebook.FacebookOAuth2',
 
-    'social.backends.google.GoogleOAuth2',
+    # 'social.backends.google.GoogleOAuth2',
     # 'social.backends.google.GoogleOAuth',
     # 'social.backends.linkedin.LinkedinOAuth2',
     # 'social.backends.yahoo.YahooOpenId',
@@ -138,6 +139,16 @@ AUTHENTICATION_BACKENDS = (
 
     'django.contrib.auth.backends.ModelBackend',
 )
+
+# Include a minimal version (matching original hard-coded list in the welcome_manage.html template)
+# Override this in local_settings.py
+MANAGE_LOGIN_METHODS = (
+  { 'backend': 'shibboleth', 'enabled': True, 'class': 'djangobackends.shibauthBackend.shibauthBackend', 'name': 'Shibboleth', 'local_image': 'img/image_shibboleth_logo_color.png' },
+  { 'backend': 'google-oauth2', 'enabled': True, 'class': 'social.backends.google.GoogleOAuth2', 'name': 'Google', 'fa_style': 'fa fa-google fa-2x' },
+  { 'backend': 'twitter', 'enabled': True, 'class': 'social.backends.twitter.TwitterOAuth', 'name': 'Twitter', 'fa_style': 'fa fa-twitter fa-2x' },
+)
+# Note: we are not explicitly adding backends from this list - they're already
+# included in AUTHENTICATION_BACKENDS anyway.
 
 ROOT_URLCONF = 'djnro.urls'
 

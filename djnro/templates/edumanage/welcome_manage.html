@@ -10,17 +10,23 @@
 			<div class="well">
 				<div class="row-fluid">
 					<div class="span12">
-						{% with qs=request.GET.urlencode %}
-						<a class="btn btnlogin" href="{% url 'manage_login' 'shibboleth' %}{% if qs %}?{{qs}}{% endif %}">
-							<img src="{% static 'img/image_shibboleth_logo_color.png' %}" style="padding: 0px;">
-							<br>Shibboleth</a>
-						<a class="btn btnlogin" href="{% url 'manage_login' 'twitter' %}{% if qs %}?{{qs}}{% endif %}">
-							<i class="fa fa-twitter fa-2x"></i>
-							<br>Twitter</a>
-						<a class="btn btnlogin" href="{% url 'manage_login' 'google-oauth2' %}{% if qs %}?{{qs}}{% endif %}">
-							<i class="fa fa-google fa-2x"></i>
-							<br>Google</a>
-						{% endwith %}
+					    {% with qs=request.GET.urlencode %}
+					    {% for login_method in MANAGE_LOGIN_METHODS %}
+					      {% if login_method.enabled %}
+						<a class="btn btnlogin" href="{% url 'manage_login' login_method.backend %}{% if qs %}?{{qs}}{% endif %}">
+						{% if login_method.local_image %}
+							<img src="{% static login_method.local_image %}" style="padding: 0px;">
+					        {% endif %}
+						{% if login_method.image_url %}
+							<img src="{{ login_method.image_url }}" style="padding: 0px;">
+					        {% endif %}
+						{% if login_method.fa_style %}
+							<i class="fa {{ login_method.fa_style }} fa-2x"></i>
+						{% endif %}
+							<br>{{ login_method.name }}</a>
+					      {% endif %}
+					    {% endfor %}
+					    {% endwith %}
 					</div>
 				</div>
 			</div>

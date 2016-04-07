@@ -135,6 +135,43 @@ REALM_COUNTRIES = (
     ('country_2letters', 'Country' ),
 )
 
+# List the login methods to be offered to users here.
+# The fields to list for each method are:
+#   backend: backend name.  This has to match the backend name in the
+#            corresponding python-social-auth class, or be one of:
+#            'shibboleth', 'locallogin'
+#   enabled: True or False.  Should this login method be offered to users?
+#   class:   Backend class to load.  Gets added to
+#            settings.AUTHENTICATION_BACKENDS automatically for enabled login methods.
+#   name:    Human readable name of the authentiation method to present to users
+#
+#   local_image: Relative path of a local static image to use as logo for the login method.
+#   image_url:   Full URL of an image to use as logo for the login method.
+#   fa_style:    Font-Awesome style to use as logo for the login method.
+#
+# The first four elements (backend, enabled, class, name) are REQUIRED.
+# One of the logo elements (local_image, image_url, fa_style) SHOULD also be provided.
+MANAGE_LOGIN_METHODS = (
+  { 'backend': 'shibboleth', 'enabled': True, 'class': 'djangobackends.shibauthBackend.shibauthBackend', 'name': 'Shibboleth', 'local_image': 'img/image_shibboleth_logo_color.png' },
+  { 'backend': 'locallogin', 'enabled': False, 'class': None, 'name': 'Local login', 'local_image': 'img/right_logo_small.png' },
+  # ModelBackend class 'django.contrib.auth.backends.ModelBackend' intentionally omitted as it is always included in AUTHENTICATION_BACKENDS
+  { 'backend': 'google-oauth2', 'enabled': True, 'class': 'social.backends.google.GoogleOAuth2', 'name': 'Google', 'fa_style': 'fa fa-google fa-2x' },
+  { 'backend': 'yahoo', 'enabled': True, 'name': 'Yahoo', 'class': 'social.backends.yahoo.YahooOpenId', 'local_image': 'img/yahoo_img.png' },
+  { 'backend': 'amazon', 'enabled': False, 'class': 'social.backends.amazon.AmazonOAuth2', 'name': 'Amazon', 'fa_style': 'fa fa-amazon fa-2x' },
+  { 'backend': 'docker', 'enabled': False, 'class': 'social.backends.docker.DockerOAuth2', 'name': 'Docker', 'image_url': 'https://hub.docker.com/hub-static/img/nav/docker-logo-loggedin.png' },
+  { 'backend': 'dropbox-oauth2', 'enabled': False, 'class': 'social.backends.dropbox.DropboxOAuth2', 'name': 'Dropbox', 'fa_style': 'fa fa-dropbox fa-2x' },
+  { 'backend': 'facebook', 'enabled': False, 'class': 'social.backends.facebook.FacebookOAuth2', 'name': 'Facebook', 'fa_style': 'fa fa-facebook fa-2x' },
+  { 'backend': 'launchpad', 'enabled': False, 'class': 'social.backends.launchpad.LaunchpadOpenId', 'name': 'Launchpad', 'image_url': 'https://login.launchpad.net/assets/identityprovider/img/favicon.ico' },
+  { 'backend': 'linkedin-oauth2', 'enabled': False, 'class': 'social.backends.linkedin.LinkedinOAuth2', 'name': 'LinkedIn', 'fa_style': 'fa fa-linkedin fa-2x' },
+  { 'backend': 'meetup', 'enabled': False, 'name': 'MeetUp', 'class': 'social.backends.meetup.MeetupOAuth2', 'image_url': 'http://img1.meetupstatic.com/img/logo.svg' },
+  { 'backend': 'twitter', 'enabled': False, 'class': 'social.backends.twitter.TwitterOAuth', 'name': 'Twitter', 'fa_style': 'fa fa-twitter fa-2x' },
+  # add more here
+)
+
+# Add enabled backends to authentication backends
+EXTRA_AUTHENTICATION_BACKENDS += tuple([ m['class'] for m in  MANAGE_LOGIN_METHODS if m['enabled'] and m['class'] ])
+
+
 #Shibboleth attribute map
 SHIB_USERNAME = ['HTTP_EPPN']
 SHIB_MAIL = ['mail', 'HTTP_MAIL', 'HTTP_SHIB_INETORGPERSON_MAIL']
