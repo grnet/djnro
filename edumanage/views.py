@@ -1624,7 +1624,9 @@ def user_login(request):
                     " Administrators have been notified and will activate"
                     " this account within the next days. <br>If this account"
                     " has remained inactive for a long time contact your "
-                    "technical coordinator or GRNET Helpdesk") % user.username
+                    "technical coordinator or %s Helpdesk") % (user.username,
+                                                               get_nro_name(request.LANGUAGE_CODE))
+
                 return render_to_response(
                     'status.html',
                     {'status': status, 'inactive': True},
@@ -1724,7 +1726,8 @@ def selectinst(request):
                 " Administrators have been notified and will activate "
                 "this account within the next days. <br>If this account"
                 " has remained inactive for a long time contact your technical"
-                " coordinator or GRNET Helpdesk") % userprofile.user.username
+                " coordinator or %s Helpdesk") % (userprofile.user.username,
+                                                  get_nro_name(request.LANGUAGE_CODE))
             return render_to_response(
                 'status.html',
                 {'status': error, 'inactive': True},
@@ -2343,3 +2346,8 @@ def lookupShibAttr(attrmap, requestMeta):
             if len(requestMeta[attr]) > 0:
                 return requestMeta[attr]
     return ''
+
+def get_nro_name(lang):
+    return Realm.objects.\
+        get(country=settings.NRO_COUNTRY_CODE).\
+        get_name(lang=lang)

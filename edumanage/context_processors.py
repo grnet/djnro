@@ -1,11 +1,13 @@
 from django.conf import settings
+from edumanage.models import Realm
 
 
 def country_code(context):
     # return the value you want as a dictionnary. you may add multiple values in there.
     return {
-        'COUNTRY_NAME': settings.NRO_COUNTRY_NAME,
         'COUNTRY_CODE': settings.NRO_COUNTRY_CODE,
+        'COUNTRY_NAME': dict(settings.REALM_COUNTRIES)[settings.NRO_COUNTRY_CODE],
+        'NRO_REALM': Realm.objects.get(country=settings.NRO_COUNTRY_CODE),
         'DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL,
         'FEDERATION_NAME': settings.NRO_FEDERATION_NAME,
         'DOMAIN_HELPDESK_DICT': settings.NRO_DOMAIN_HELPDESK_DICT,

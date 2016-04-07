@@ -535,6 +535,17 @@ class Realm(models.Model):
             'country': self.country,
         }
 
+    def get_name(self, lang=None):
+        name = ', '.join([i.name for i in self.org_name.all()])
+        if not lang:
+            return name
+        else:
+            try:
+                name = self.org_name.get(lang=lang)
+                return name
+            except Exception:
+                return name
+
 
 # TODO: this represents a *database view* "realm_data", find a better way to write it
 class RealmData(models.Model):

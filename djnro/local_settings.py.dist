@@ -113,9 +113,7 @@ TIME_ZONE = 'Europe/Athens'
 # map center (lat, lng)
 MAP_CENTER = (36.97, 23.71)
 
-# Frontend country specific vars, eg. Greece
-NRO_COUNTRY_NAME = _('My Country')
-# Variable used by context_processor to display the "eduroam | <country_code>" in base.html
+# Variable used to determine the active Realm object (in views and context processor)
 NRO_COUNTRY_CODE = 'tld'
 # main domain url used in right top icon, eg. http://www.grnet.gr
 NRO_DOMAIN_MAIN_URL = "http://www.example.com"
