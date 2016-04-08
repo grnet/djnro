@@ -8,6 +8,9 @@ from accounts.models import UserProfile
 from edumanage.forms import UserProfileForm
 from edumanage.models import Institution
 
+# We only need get_nro_name from edumanage.views, but cannot import selectively
+# as that would fail as a circular dependency
+import edumanage.views
 
 def social_active_required(function):
     def wrap(request, *args, **kw):
@@ -17,7 +20,7 @@ def social_active_required(function):
             if profile.is_social_active is True:
                 return function(request, *args, **kw)
             else:
-                status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or GRNET Helpdesk") %user.username
+                status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or %s Helpdesk") % ( user.username, edumanage.views.get_nro_name(request.LANGUAGE_CODE))
                 return render(
                     request,
                     'status.html',
