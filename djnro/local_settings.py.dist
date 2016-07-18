@@ -116,6 +116,8 @@ MAP_CENTER = (36.97, 23.71)
 NRO_COUNTRY_NAME = _('My Country')
 # Variable used by context_processor to display the "eduroam | <country_code>" in base.html
 NRO_COUNTRY_CODE = 'tld'
+# Google Maps API key, see https://developers.google.com/maps/documentation/javascript/get-api-key#key
+
 # main domain url used in right top icon, eg. http://www.grnet.gr
 NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 # developer info for footer
