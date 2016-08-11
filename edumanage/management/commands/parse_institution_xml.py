@@ -19,6 +19,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 from edumanage.models import *
 from xml.etree import ElementTree
 import sys
@@ -48,7 +49,7 @@ class Command(BaseCommand):
 
     def parse_and_create(self, instxmlfile, write):
         doc = ElementTree.parse(instxmlfile)
-        realmid = Realm.objects.get(pk=1)
+        realmid = Realm.objects.get(country=settings.NRO_COUNTRY_CODE)
         root = doc.getroot()
         institutions = []
         institutions = root.getchildren()
