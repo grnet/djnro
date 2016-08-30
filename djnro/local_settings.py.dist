@@ -20,6 +20,9 @@ ALLOWED_HOSTS = []
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '<put something really random here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
 
+# Google Maps API key, see https://developers.google.com/maps/documentation/javascript/get-api-key#key
+GOOGLE_API_KEY = 'thisisthelongapikey'
+
 # Check for headers indicating the request was received on a secure SSL connection
 # Uncomment this if you are running DjNRO behind an HTTP proxy that sets this
 # header for SSL connections (and protects it for non-SSL connections).
@@ -116,9 +119,6 @@ MAP_CENTER = (36.97, 23.71)
 NRO_COUNTRY_NAME = _('My Country')
 # Variable used by context_processor to display the "eduroam | <country_code>" in base.html
 NRO_COUNTRY_CODE = 'tld'
-# Google Maps API key, see https://developers.google.com/maps/documentation/javascript/get-api-key#key
-GOOGLE_API_KEY = 'thisisthelongapikey'
-
 # main domain url used in right top icon, eg. http://www.grnet.gr
 NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 # "provided by" info for footer
