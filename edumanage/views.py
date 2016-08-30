@@ -1520,6 +1520,13 @@ def get_all_services(request):
             ).name
         except Name_i18n.DoesNotExist:
             try:
+                response_location['inst'] = sl.institutionid.org_name.get(lang='en').name
+            except Name_i18n.DoesNotExist:
+                response_location['inst'] = 'unknown'
+        try:
+            response_location['name'] = sl.loc_name.get(lang=lang).name
+        except Name_i18n.DoesNotExist:
+            try:
                 response_location['name'] = sl.loc_name.get(lang='en').name
             except Name_i18n.DoesNotExist:
                 response_location['name'] = 'unknown'
