@@ -40,6 +40,6 @@
 {% endblock %}
 
 {% block extrajs %}
-<script type="text/javascript" src="//maps.google.com/maps/api/js?key={{ API_KEY }}&v=3.exp&language=en&libraries=places"></script>
+<script type="text/javascript" src="//maps.google.com/maps/api/js?v=3.exp{% if API_KEY %}&key={{ API_KEY }}{% endif %}&language=en&libraries=places"></script>
 <script type="text/javascript" src="{% static 'js/geolocate.js' %}"></script>
 {% endblock %}

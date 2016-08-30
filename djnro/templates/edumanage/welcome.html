@@ -89,6 +89,6 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{% static 'js/markerclusterer.js' %}"></script>
-<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key={{ API_KEY }}"></script>
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?{% if API_KEY %}key={{ API_KEY }}{% endif %}"></script>
 <script type="text/javascript" src="{% static 'js/management-map.js' %}"></script>
 {% endblock %}

@@ -12,7 +12,7 @@ def country_code(context):
         'PROV_TEAM': settings.NRO_PROV_BY_DICT,
         'SOCIAL_MEDIA_LIST': settings.NRO_PROV_SOCIAL_MEDIA_CONTACT,
         'VERSION': settings.SW_VERSION,
-        'API_KEY': settings.GOOGLE_API_KEY
+        'API_KEY': settings.GOOGLE_API_KEY if hasattr(settings,"GOOGLE_API_KEY") else None,
     }
 
 
