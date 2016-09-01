@@ -1398,6 +1398,7 @@ def base_response(request):
     contacts = []
     institution = False
     institution_exists = False
+    institution_canhaveservicelocs = False
     try:
         profile = user.get_profile()
         institution = profile.institution
@@ -1422,6 +1423,10 @@ def base_response(request):
         instututiondetails = institution.institutiondetails
     except:
         instututiondetails = False
+    try:
+        institution_canhaveservicelocs = institution.ertype in [2, 3]
+    except:
+        pass
     return {
         'inst_num': len(inst),
         'servers_num': len(server),
@@ -1432,6 +1437,7 @@ def base_response(request):
         'institution': institution,
         'institutiondetails': instututiondetails,
         'institution_exists': institution_exists,
+        'institution_canhaveservicelocs': institution_canhaveservicelocs,
     }
 
 
