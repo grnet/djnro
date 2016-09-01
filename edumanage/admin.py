@@ -46,7 +46,7 @@ class InstitutionDetailsAdmin(admin.ModelAdmin):
 class ServiceLocAdmin(admin.ModelAdmin):
     list_display = ('get_name', 'institutionid')
     inlines = [
-        NameInline,
+        UrlInline, NameInline,
     ]
     list_filter = ('SSID', 'enc_level', 'port_restrict',
                    'transp_proxy', 'IPv6', 'NAT', 'wired')
