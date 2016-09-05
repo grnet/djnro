@@ -1,8 +1,8 @@
-# Installation/Configuration
+# Installation & Configuration
 First of all you have to install all the packages described in `requirements`
 section
 
-The software is published at [github](https://github.com/grnet/djnro) and can be downloaded using git:
+The project is published on [GitHub](https://github.com/grnet/djnro) and can be fetched using git:
 
 	git clone https://github.com/grnet/djnro
 
@@ -11,8 +11,8 @@ The software is published at [github](https://github.com/grnet/djnro) and can be
 
 **In version 0.9 settings were split in two parts: settings.py and local_settings.py**
 
-The file settings.py contains settings distributed by the project, which should normally not be necessary to modify.
-Options specific to the particular installation must be configured in local_settings.py. This file must be created by copying local_settings.py.dist:
+The file `settings.py` contains settings distributed by the project, which should normally not be necessary to modify.
+Options specific to the particular installation must be configured in `local_settings.py`. This file must be created by copying `local_settings.py.dist`:
 
     cd djnro
     cp djnro/local_settings.py.dist djnro/local_settings.py
@@ -20,7 +20,7 @@ Options specific to the particular installation must be configured in local_sett
 
 The following variables/settings need to be altered or set:
 
-Set Admin contacts::
+Set Admin contacts:
 
 	ADMINS = (
 	     ('Admin', 'admin@example.com'),
@@ -35,7 +35,7 @@ Set the database connection params:
 For a production instance and once DEBUG is set to False set the ALLOWED_HOSTS:
 
     ALLOWED_HOSTS = ['.example.com']
-    SECRET_KEY = '<put something really random here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
+    SECRET_KEY = '<put some random long string here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
 
 Django social auth needs changes in the Extra Authentication Backends depending on which social auth you want to enable:
 
@@ -47,26 +47,24 @@ Django social auth needs changes in the Extra Authentication Backends depending 
 
 **The default Authentication Backends are in settings.py**
 
-As the application includes a "Nearest eduroam" functionality, global eduroam service locations are harvested from the KML file published at eduroam.org::
+Since the front-end application includes a "nearest eduroam" function, global eduroam service locations are pulled from the KML file published on eduroam.org:
 
 	EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 
-
-Depending on your AAI policy set an appropriate authEntitlement::
+Depending on your AAI policy set an appropriate eduPerson entitlement:
 
 	SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
 
-Mail server parameters::
+Mail server parameters:
 
 	SERVER_EMAIL = "Example domain eduroam Service <noreply@example.com>"
 	EMAIL_SUBJECT_PREFIX = "[eduroam] "
 
-NRO contact mails::
+NRO recipients for notifications:
 
 	NOTIFY_ADMIN_MAILS = ["mail1@example.com", "mail2@example.com"]
 
-Set your cache backend (if you want to use one). For production instances you can go with memcached. For development you can keep the provided dummy instance::
-
+Set your cache backend (if you want to use one). For production instances you can go with memcached. For development you can keep the provided dummy instance:
 
     CACHES = {
         'default': {
@@ -75,28 +73,27 @@ Set your cache backend (if you want to use one). For production instances you ca
         }
     }
 
-NRO specific parameters. These affect HTML templates::
+NRO specific parameters. These affect HTML templates:
 
 	# Frontend country specific vars, eg. Greece
 	NRO_COUNTRY_NAME = _('My Country')
 	# Variable used by context_processor to display the "eduroam | <country_code>" in base.html
-	NRO_COUNTRY_CODE = 'gr'
+	NRO_COUNTRY_CODE = 'tld'
 	# main domain url used in right top icon, eg. http://www.grnet.gr
 	NRO_DOMAIN_MAIN_URL = "http://www.example.com"
-	# provider info for footer
-	NRO_PROV_BY_DICT = {"name": "EXAMPLE DEV TEAM", "url": "http://devteam.example.com"}
-	#NRO social media contact (Use: // to preserve https)
+	# "provided by" info for footer
+	NRO_PROV_BY_DICT = {"name": "EXAMPLE NRO TEAM", "url": "http://noc.example.com"}
+	# social media contact (Use: // to preserve https)
 	NRO_PROV_SOCIAL_MEDIA_CONTACT = [
 	                                {"url":"//soc.media.url", "icon":"icon.png", "name":"NAME1(eg. Facebook)"},
 	                                {"url":"//soc.media.url", "icon":"icon.png",  "name":"NAME2(eg. Twitter)"},
 	                                ]
 	# map center (lat, lng)
 	MAP_CENTER = (36.97, 23.71)
-	#Helpdesk, used in base.html:
+	# Helpdesk, used in base.html:
 	NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
-
-Set the Realm country for REALM model::
+Set the Realm country for REALM model:
 
 	#Countries for Realm model:
 	REALM_COUNTRIES = (
@@ -108,9 +105,9 @@ Set the Realm country for REALM model::
 If you need to present custom content in the footer at the bottom of the every page, you can add HTML/template code in `djnro/templates/partial/extra.footer.html`.
 
 
-Attribute map to match your AAI policy and SSO software (typically Shibboleth SP)::
+Attribute map to match your AAI policy and SSO software (typically Shibboleth SP):
 
-	#Shibboleth attribute map
+	# Shibboleth attribute map
 	SHIB_USERNAME = ['HTTP_EPPN']
 	SHIB_MAIL = ['mail', 'HTTP_MAIL', 'HTTP_SHIB_INETORGPERSON_MAIL']
 	SHIB_FIRSTNAME = ['HTTP_SHIB_INETORGPERSON_GIVENNAME']
@@ -139,57 +136,57 @@ You must also set the following parameters for each CAT instance in CAT_AUTH:
 
 * CAT_PROFILES_URL: Base URL for Intitution Download Area pages
 
-* CAT_FEDMGMT_URL: URL For Federation Overview page (currently not in use)
+* CAT_IDPMGMT_URL: URL For IdP Overview page
 
-::
+```
+CAT_INSTANCES = (
+    ('production', 'cat.eduroam.org'),
+    ('testing', 'cat-test.eduroam.org'),
+)
 
-    CAT_INSTANCES = (
-        ('production', 'cat.eduroam.org'),
-        ('testing', 'cat-test.eduroam.org'),
-    )
-
-    CAT_AUTH = {
-        'production': {
-            "CAT_API_KEY": "<provided API key>",
-            "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
-            "CAT_PROFILES_URL": "https://cat.eduroam.org/",
-            "CAT_FEDMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
-        },
-        'testing': {
-            "CAT_API_KEY": "<provided API key>",
-            "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
-            "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
-            "CAT_FEDMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_federation.php"
-        },
-    }
+CAT_AUTH = {
+    'production': {
+        "CAT_API_KEY": "<provided API key>",
+        "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
+        "CAT_PROFILES_URL": "https://cat.eduroam.org/",
+        "CAT_IDPMGMT_URL": "https://cat.eduroam.org/admin/overview_idp.php"
+    },
+    'testing': {
+        "CAT_API_KEY": "<provided API key>",
+        "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
+        "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
+        "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_idp.php"
+    },
+}
+```
 
 For more information about eduroam CAT, you may read: [A guide to eduroam CAT for federation administrators](https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators).
 
 ### Extra Apps
-In case one wants to extend some of the settings only for the local instance, they can prepend *EXTRA_* on the attribute they want to extend. For example:
+In case one wants to extend some of the default settings (configured in `settings.py`), one can prepend *EXTRA_* on the attribute to be amended. For example:
 
 	EXTRA_INSTALLED_APPS = (
 		'django_debug_toolbar',
 	)
 
 ## Database Sync
-Once you are done with local_settings.py run:
+Once you are done with `local_settings.py` run:
 
 	./manage.py syncdb
 
-Create a superuser, it comes in handy. And then run south migration to complete::
+Create a superuser, it comes in handy for access to Django admin. And then run south migration to complete:
 
 	./manage.py migrate
 
 Now you should have a clean database with all the tables created.
 
 ## Running the server
-
-
-We suggest using Apache and mod_wsgi. Below is an example configuration::
+We suggest using Apache and mod_wsgi. Below is an example configuration:
 
 	# Tune wsgi daemon as necessary: processes=x threads=y
 	WSGIDaemonProcess djnro display-name=%{GROUP} python-path=/path/to/djnro/
+	# If running in a virtualenv e.g. with python 2.7, append to python-path:
+	# :<virtualenv-path>/lib/python2.7/site-packages
 
 	<VirtualHost *:443>
 		ServerName		example.com
@@ -236,36 +233,38 @@ Alternatively, it is possible to use Apache with mod_proxy_http to pass the requ
                 # tell DjNRO we have forwarded over SSL
                 RequestHeader set X-Forwarded-Protocol https
 
-*Info*: It is strongly recommended to allow access to `/(admin|overview|alt-login)` *ONLY* from trusted subnets.
+**It is strongly recommended to allow access to `/(admin|overview|alt-login)` ONLY from trusted subnets.**
 
 Once you are done, restart apache.
 
 ## Fetch KML
-A Django management command, named fetch_kml, fetches the KML document and updates the cache with eduroam service locations. It is suggested to periodically run this command in a cron job in order to keep the map up to date::
+A Django management command, named fetch_kml, fetches service locations from the eduroam database and updates the cache. It is recommended to periodically run this command in a cron job in order to keep the map up to date.
 
-		./manage.py fetch_kml
+	./manage.py fetch_kml 
+
+*Tip: Run `manage.py` with `--verbosity=0` to disable informational output that may trigger unnecessary mail from a cron job.*
 
 ## Initial Data
 
 In order to start using DjNRO you need to create a Realm record for your NRO along with one or more contacts linked to it. You can visit the Django admin interface `https://<hostname>/admin` and add a Realm (remember to set REALM_COUNTRIES in local_settings.py).
-In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface. As an alternative, you can copy your existing `institution.xml` to `/path/to/djnro` and run the following to import institution data::
+In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model (table), again using the Django admin interface. As an alternative, you can parse your existing `institution.xml` and import institution data by running the following command:
 
-		./manage.py parse_instituion_xml
+	./manage.py parse_instituion_xml /path/to/institution.xml
 
 ## Exporting Data
 DjNRO can export data in formats suitable for use by other software.
 
-XML documents conforming to the [eduroam database](https://monitor.eduroam.org/database.php>) schemata are exported at the following URLs, as required for harvesting by eduroam.org:
+XML documents conforming to the [eduroam database](//monitor.eduroam.org/fact_eduroam_db.php) schemata are exported at the following URLs, as required for harvesting by eduroam.org:
 
-    /general/realm.xml
-    /general/institution.xml
-    /usage/realm_data.xml
+	/general/realm.xml
+	/general/institution.xml
+	/usage/realm_data.xml
 
-A list of institution administrators can be exported in CSV format or a plain format suitable for use by a mailing list (namely [Sympa](http://www.sympa.org/manual/parameters-data-sources#include_remote_file>). This data is available through:
+A list of institution administrators can be exported in CSV format or a plain format suitable for use by a mailing list (namely [Sympa](http://www.sympa.org/manual/parameters-data-sources#include_remote_file). This data is available through:
 
-* a management comand `./manage.py contacts`, which defaults to CSV output (currently with headers in Greek!) and can switch to plain output using `--mail-list`.
+* a management comand `./manage.py contacts`, which defaults to CSV output (*currently with headers in Greek!*) and can switch to plain output using `--mail-list`
 
-* a view (`adminlist`), which only supports output in the latter plain text format.
+* a view (`adminlist`), which only supports output in the latter plain text format
 
 Likewise, data that can be used as input for automatic configuration of `Federation Level RADIUS Servers (FLRS)` can be exported in YAML/JSON format, through:
 
@@ -289,12 +288,11 @@ We also provide a sample script for reading this data (`extras/servdata_consumer
 
 Take the time to read the default settings at the top of the script and run it with `--help`. The templates are based on assumptions that may not match your setup; they are mostly provided as a proof of concept.
 
-*attention*
-   **The `adminlist` and `servdata` views are commented out by default in `djnro/urls.py`. Make sure you protect them (SSL, ACL and/or authentication) at the HTTP server before you enable them, as they may expose private/sensitive data.**
+**The `adminlist` and `servdata` views are commented out by default in `djnro/urls.py`. Make sure you protect them (TLS, ACL and/or authentication) at the HTTP server before you enable them, as they may expose private/sensitive data.**
 
 ## Next Steps (Branding)
 
-The majority of branding is done via the NRO variables in local_settings.py. You might also want to change the logo of the application. Within the static/img/eduroam_branding folder you will find the XCF files logo_holder, logo_small.
+The majority of branding is done via the NRO variables in local_settings.py. You might also want to change the logo of the application. Within the `static/img/eduroam_branding` folder you will find the XCF files logo_holder, logo_small.
 
 ## Upgrade Instructions
 
@@ -324,13 +322,11 @@ The majority of branding is done via the NRO variables in local_settings.py. You
 
 * run `./manage.py migrate`
 
-*attention*
-
    **You had previously copied `urls.py.dist` to `urls.py`. This is no longer supported; we now use `djnro/urls.py`. URLs that provide sensitive data are disabled (commented out) by default. You may have to edit the file according to your needs.**
 
 ## LDAP Authentication
 
-If you want to use LDAP authentication, local_settings.py must be amended::
+If you want to use LDAP authentication, local_settings.py must be amended:
 
 	EXTRA_AUTHENTICATION_BACKENDS = (
 		...,
@@ -364,23 +360,21 @@ If you want to use LDAP authentication, local_settings.py must be amended::
 	}
 
 
-## Pebble Watch Application - pebduroam
-
+## Pebble Watch Application (pebduroam)
 
 The closest point API allows for development of location aware-applications.
-Pebduroam is a Pebble watch application that fetches the closest eduroam access point plus walking instructions on how to reach it.
+Pebduroam is a proof-of-concept Pebble watch application that fetches the closest eduroam service location and provides walking instructions on how to reach it.
 Installing the application on your Pebble watch can be done in 2 ways:
 
-* You can install the application via the Pebble App Store: [pebduroam](https://apps.getpebble.com/applications/5384b2119c84af48350000c7>)
+* You can install the application via the Pebble App Store: [pebduroam](https://apps.getpebble.com/applications/5384b2119c84af48350000c7)
 
-* You can install the application and contribute to its development via github: [pebduroam github repo](https://github.com/leopoul/pebduroam>).
+* You can get the application and contribute to its' development on [GitHub](https://github.com/leopoul/pebduroam).
 
   * You need to have a Cloudpebble account to accomplish this.
 
-  * Once logged-in you need to select Import - Import from github and paste the pebduroam github repo url in the corresponding text box.
+  * Once logged-in you need to select *Import - Import from github* and paste the pebduroam github repo url in the corresponding text box.
 
   * Having configured your Pebble watch in developer mode will allow you to build and install your cloned project source directly on your watch.
 
-**attention**
-   Currently pebduroam uses GRNET's djnro closest point API. To switch the Pebble app to your djnro installation you need to follow the second method of installation
+   **Attention: By default pebduroam uses GRNET servers for the closest point API. To switch the Pebble app to your djnro installation you need to follow the second method of installation.**
 
