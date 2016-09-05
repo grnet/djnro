@@ -118,15 +118,15 @@ NRO_COUNTRY_NAME = _('My Country')
 NRO_COUNTRY_CODE = 'tld'
 # main domain url used in right top icon, eg. http://www.grnet.gr
 NRO_DOMAIN_MAIN_URL = "http://www.example.com"
-# developer info for footer
-NRO_PROV_BY_DICT = {"name": "GRNET NOC", "url": "//noc.grnet.gr"}
-#provider social media contact (Use: // to preserve https)
+# "provided by" info for footer
+NRO_PROV_BY_DICT = {"name": "EXAMPLE NRO TEAM", "url": "http://noc.example.com"}
+# social media contact (Use: // to preserve https)
 NRO_PROV_SOCIAL_MEDIA_CONTACT = [
-    {"url": "//facebook.com/noc.grnet.gr", "icon":"/static/img/facebook_img.png", "name":"Facebook"},
-    {"url": "//twitter.com/grnetnoc", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
+    {"url": "//facebook.com/example.com", "icon":"/static/img/facebook_img.png", "name":"Facebook"},
+    {"url": "//twitter.com/example_com", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
 ]
 
-#Helpdesk, used in base.html:
+# Helpdesk, used in base.html:
 NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
 #Countries for Realm model:
@@ -134,7 +134,7 @@ REALM_COUNTRIES = (
     ('country_2letters', 'Country' ),
 )
 
-#Shibboleth attribute map
+# Shibboleth attribute map
 SHIB_USERNAME = ['HTTP_EPPN']
 SHIB_MAIL = ['mail', 'HTTP_MAIL', 'HTTP_SHIB_INETORGPERSON_MAIL']
 SHIB_FIRSTNAME = ['HTTP_SHIB_INETORGPERSON_GIVENNAME']
@@ -169,12 +169,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 #         "CAT_API_KEY": "<provided API key>",
 #         "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
 #         "CAT_PROFILES_URL": "https://cat.eduroam.org/",
-#         "CAT_IDPMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
+#         "CAT_IDPMGMT_URL": "https://cat.eduroam.org/admin/overview_idp.php"
 #     },
 #     'testing': {
 #         "CAT_API_KEY": "<provided API key>",
 #         "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
 #         "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
-#         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_federation.php"
+#         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_idp.php"
 #     },
 # }
