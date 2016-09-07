@@ -122,8 +122,8 @@ NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 NRO_PROV_BY_DICT = {"name": "EXAMPLE NRO TEAM", "url": "http://noc.example.com"}
 # social media contact (Use: // to preserve https)
 NRO_PROV_SOCIAL_MEDIA_CONTACT = [
-    {"url": "//facebook.com/example.com", "icon":"/static/img/facebook_img.png", "name":"Facebook"},
-    {"url": "//twitter.com/example_com", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
+    {"url": "//facebook.com/example.com", "fa_style":"fa-facebook", "name":"Facebook"},
+    {"url": "//twitter.com/example_com", "fa_style":"fa-twitter", "name":"Twitter"},
 ]
 
 # Helpdesk, used in base.html:
