@@ -266,7 +266,7 @@ class InstServer(models.Model):
             # If a server is a proxy for a realm, can not change type to SP
             if realms.count() > 0:
                 raise ValidationError(
-                    {'ertype':'You cannot change this server to %s (it is used by realms %s)' % (
+                    {'ertype':_('You cannot change this server to %s (it is used by realms %s)') % (
                             self.get_ertype_display(),
                             ', '.join([r.realm for r in realms])
                             )
@@ -283,7 +283,7 @@ class InstServer(models.Model):
                     else:
                         insts_id.append('(%s)' % i.pk)
                 raise ValidationError(
-                    {'ertype':'You cannot change this server to %s (it is associated to institutions %s)' % (
+                    {'ertype':_('You cannot change this server to %s (it is associated to institutions %s)') % (
                             self.get_ertype_display(),
                             ', '.join(insts_id)
                             )
