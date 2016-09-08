@@ -21,7 +21,7 @@ ALLOWED_HOSTS = []
 SECRET_KEY = '<put something really random here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
 
 # Google Maps API key, see https://developers.google.com/maps/documentation/javascript/get-api-key#key
-GOOGLE_API_KEY = 'thisisthelongapikey'
+GOOGLE_MAPS_API_KEY = 'thisisthelongapikey'
 
 # Check for headers indicating the request was received on a secure SSL connection
 # Uncomment this if you are running DjNRO behind an HTTP proxy that sets this
