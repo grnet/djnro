@@ -258,17 +258,36 @@ class InstServer(models.Model):
             return self.name
         return self.host
 
-    # If a server is a proxy for a realm, can not change type to SP
     def clean(self):
+        if not self.pk:
+            return
         if self.ertype == 2:
-            realms = InstRealm.objects.filter(proxyto=self)
-            if len(realms) > 0:
-                text = str()
-                for realm in realms:
-                    text = text + ' ' + realm.realm
+            realms = self.instrealm_set.all()
+            # If a server is a proxy for a realm, can not change type to SP
+            if realms.count() > 0:
                 raise ValidationError(
-                    'You cannot change this server to SP (it is used by realms %s)' %
-                    ', '.join([r.realm for r in realms])
+                    {'ertype':'You cannot change this server to %s (it is used by realms %s)' % (
+                            self.get_ertype_display(),
+                            ', '.join([r.realm for r in realms])
+                            )
+                     }
+                    )
+        if self.ertype == 1:
+            insts = self.instid.all()
+            # If a server is a client for an institution, can not change type to IdP
+            if insts.count() > 0:
+                insts_id = []
+                for i in insts:
+                    if i.institutiondetails and i.institutiondetails.oper_name:
+                        insts_id.append(i.institutiondetails.oper_name)
+                    else:
+                        insts_id.append('(%s)' % i.pk)
+                raise ValidationError(
+                    {'ertype':'You cannot change this server to %s (it is associated to institutions %s)' % (
+                            self.get_ertype_display(),
+                            ', '.join(insts_id)
+                            )
+                     }
                     )
 
 
