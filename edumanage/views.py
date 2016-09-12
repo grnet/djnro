@@ -629,7 +629,7 @@ def cat_enroll(request):
         messages.add_message(
             request,
             messages.ERROR,
-            'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP'
+            'Cannot add/edit Enrollments. Your institution should be either IdP or IdP/SP'
         )
         return render_to_response(
             'edumanage/catenroll.html',
