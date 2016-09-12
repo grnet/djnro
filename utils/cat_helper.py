@@ -1,6 +1,12 @@
 import requests
 from lxml import objectify
+import re
 
+# http://code.activestate.com/recipes/135435-sort-a-string-using-numeric-order/
+def string_split_by_numbers(x):
+    r = re.compile('(\d+)')
+    l = r.split(x)
+    return [int(y) if y.isdigit() else y for y in l]
 
 class CatQuery(object):
 
@@ -12,7 +18,17 @@ class CatQuery(object):
 
     def post_request(self, kwargs):
         kwargs['APIKEY'] = self.key
-        r = requests.post(self.url, data=kwargs)
+        data=[]
+        files=[]
+        # produce a seq. number sorted list of params for POST
+        # order is important for profile-api:eaptype
+        for k in sorted(kwargs, key=string_split_by_numbers):
+            # 'value[Sxx-2]' datatype: "file"
+            if (k.startswith('value[S') and k.endswith('-2]')):
+                files.append((k, kwargs[k]))
+            else:
+                data.append((k, kwargs[k]))
+        r = requests.post(self.url, data=data, files=files)
         return r.content
 
     @staticmethod
