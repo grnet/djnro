@@ -15,7 +15,8 @@ class CatQuery(object):
         r = requests.post(self.url, data=kwargs)
         return r.content
 
-    def curate_response(self, response):
+    @staticmethod
+    def curate_response(response):
         response = response.split('<CAT-API-Response>')[1]
         response = "<?xml version='1.0' ?><CAT-API-Response>"+response
         return response
