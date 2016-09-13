@@ -46,7 +46,7 @@ class CatQuery(object):
         response = self.post_request(kwargs)
         r = objectify.fromstring(response)
         try:
-            assert(r.success)
+            assert r.success is not None
             # Successfull response
             self.status = 'Success'
             self.response = {
@@ -68,7 +68,7 @@ class CatQuery(object):
         response = self.post_request(kwargs)
         r = objectify.fromstring(response)
         try:
-            assert(r.success)
+            assert r.success is not None
             # Successfull response
             self.status = 'Success'
             self.response = {"number_of_admins":r.success.number_of_admins}
