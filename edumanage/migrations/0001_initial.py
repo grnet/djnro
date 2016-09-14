@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('cat_inst_id', models.PositiveIntegerField()),
                 ('url', models.CharField(help_text=b'Set to ACTIVE if institution has CAT profiles', max_length=255, null=True, blank=True)),
-                ('cat_instance', models.CharField(max_length=50)),
+                ('cat_instance', models.CharField(max_length=50, choices=edumanage.models.get_choices_from_settings('CAT_INSTANCES'))),
                 ('ts', models.DateTimeField(auto_now=True)),
                 ('applier', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
@@ -158,7 +158,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=80)),
-                ('lang', models.CharField(max_length=5, choices=[(b'en', b'English'), (b'el', b'\xce\x95\xce\xbb\xce\xbb\xce\xb7\xce\xbd\xce\xb9\xce\xba\xce\xac')])),
+                ('lang', models.CharField(max_length=5, choices=edumanage.models.get_choices_from_settings('URL_NAME_LANGS'))),
                 ('object_id', models.PositiveIntegerField(null=True, blank=True)),
                 ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
             ],
@@ -171,7 +171,7 @@ class Migration(migrations.Migration):
             name='Realm',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('country', models.CharField(max_length=5, choices=[(b'NZ', b'New Zealand')])),
+                ('country', models.CharField(max_length=5, choices=edumanage.models.get_choices_from_settings('REALM_COUNTRIES'))),
                 ('stype', models.PositiveIntegerField(default=0, editable=False)),
                 ('address_street', models.CharField(max_length=32)),
                 ('address_city', models.CharField(max_length=24)),
@@ -227,7 +227,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('url', models.CharField(max_length=180, db_column=b'URL')),
-                ('lang', models.CharField(max_length=5, choices=[(b'en', b'English'), (b'el', b'\xce\x95\xce\xbb\xce\xbb\xce\xb7\xce\xbd\xce\xb9\xce\xba\xce\xac')])),
+                ('lang', models.CharField(max_length=5, choices=edumanage.models.get_choices_from_settings('URL_NAME_LANGS'))),
                 ('urltype', models.CharField(max_length=10, db_column=b'type', choices=[(b'info', b'Info'), (b'policy', b'Policy')])),
                 ('object_id', models.PositiveIntegerField(null=True, blank=True)),
                 ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),

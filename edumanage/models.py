@@ -11,6 +11,10 @@ from django import forms
 from django.core.exceptions import ValidationError
 
 
+def get_choices_from_settings(setting):
+    return getattr(settings, setting, tuple())
+
+
 class MultiSelectFormField(forms.MultipleChoiceField):
     widget = forms.CheckboxSelectMultiple
 
@@ -125,7 +129,7 @@ class Name_i18n(models.Model):
     '''
 
     name = models.CharField(max_length=80)
-    lang = models.CharField(max_length=5, choices=settings.URL_NAME_LANGS)
+    lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = fields.GenericForeignKey('content_type', 'object_id')
@@ -177,7 +181,7 @@ class URL_i18n(models.Model):
         ('policy', 'Policy'),
     )
     url = models.CharField(max_length=180, db_column='URL')
-    lang = models.CharField(max_length=5, choices=settings.URL_NAME_LANGS)
+    lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     urltype = models.CharField(max_length=10, choices=URLTYPES, db_column='type')
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
@@ -514,7 +518,7 @@ class Realm(models.Model):
     Realm
     '''
 
-    country = models.CharField(max_length=5, choices=settings.REALM_COUNTRIES)
+    country = models.CharField(max_length=5, choices=get_choices_from_settings('REALM_COUNTRIES'))
     stype = models.PositiveIntegerField(default=0, editable=False)
     # TODO: multiple names can be specified [...] name in English is required
     org_name = fields.GenericRelation(Name_i18n)
@@ -591,7 +595,7 @@ class CatEnrollment(models.Model):
     cat_inst_id = models.PositiveIntegerField()
     inst = models.ForeignKey(Institution)
     url = models.CharField(max_length=255, blank=True, null=True, help_text="Set to ACTIVE if institution has CAT profiles")
-    cat_instance = models.CharField(max_length=50, choices=settings.CAT_INSTANCES)
+    cat_instance = models.CharField(max_length=50, choices=get_choices_from_settings('CAT_INSTANCES'))
     applier = models.ForeignKey(settings.AUTH_USER_MODEL)
     ts = models.DateTimeField(auto_now=True)
 
