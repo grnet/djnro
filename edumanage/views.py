@@ -1469,10 +1469,7 @@ def get_service_points(request):
             else:
                 response_location['enc'] = u"-"
             response_location['AP_no'] = u"%s" % (sl.AP_no)
-            try:
-                response_location['name'] = sl.loc_name.get(lang='en').name
-            except Name_i18n.DoesNotExist:
-                response_location['name'] = 'unknown'
+            response_location['name'] = get_i18n_name(sl.loc_name, lang, 'en', 'uknown')
             response_location['port_restrict'] = u"%s" % (sl.port_restrict)
             response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
             response_location['IPv6'] = u"%s" % (sl.IPv6)
