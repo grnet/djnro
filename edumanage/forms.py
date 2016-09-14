@@ -78,8 +78,8 @@ class InstServerForm(forms.ModelForm):
 	    type_list = [inst_type]
 	    if inst_type == 3:
 		type_list = [1, 2, 3]
-		if ertype not in type_list:
-		    raise forms.ValidationError('Server type cannot be different than institution type (%s)' %dict(self.fields['ertype'].choices)[inst_type])
+            if ertype not in type_list:
+                raise forms.ValidationError('Server type cannot be different than institution type (%s)' %dict(self.fields['ertype'].choices)[inst_type])
 	return self.cleaned_data["ertype"]
 
     def clean_auth_port(self):
