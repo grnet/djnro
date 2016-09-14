@@ -629,7 +629,7 @@ def cat_enroll(request):
         messages.add_message(
             request,
             messages.ERROR,
-            'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP'
+            'Cannot add/edit Enrollments. Your institution should be either IdP or IdP/SP'
         )
         return render_to_response(
             'edumanage/catenroll.html',
@@ -691,10 +691,18 @@ def cat_enroll(request):
         enroll = CatQuery(cat_api_key, cat_api_url)
         params = {
             'NEWINST_PRIMARYADMIN': u"%s" % user.email,
-            'option[S1]': 'general:instname',
-            'value[S1-0]': u"%s" % inst.get_name('en'),
-            'value[S1-lang]': 'en'
-        }
+            }
+        cq_counter=1
+        for iname in inst.org_name.all():
+            params['option[S%d]' % cq_counter] = 'general:instname'
+            params['value[S%d-0]' % cq_counter] = iname.name
+            params['value[S%d-lang]' % cq_counter] = iname.lang
+            cq_counter += 1
+            if iname.lang == 'en':
+                params['option[S%d]' % cq_counter] = 'general:instname'
+                params['value[S%d-0]' % cq_counter] = iname.name
+                params['value[S%d-lang]' % cq_counter] = 'C'
+                cq_counter += 1
         newinst = enroll.newinst(params)
         cat_url = None
         inst_uid = None
