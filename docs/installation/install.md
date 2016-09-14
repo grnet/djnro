@@ -77,12 +77,12 @@ Set your cache backend (if you want to use one). For production instances you ca
 
 NRO specific parameters. These affect HTML templates::
 
-	# Frontend country specific vars, eg. Greece
-	NRO_COUNTRY_NAME = _('My Country')
-	# Variable used by context_processor to display the "eduroam | <country_code>" in base.html
+	# Variable used to determine the active Realm object (in views and context processor)
 	NRO_COUNTRY_CODE = 'gr'
 	# main domain url used in right top icon, eg. http://www.grnet.gr
 	NRO_DOMAIN_MAIN_URL = "http://www.example.com"
+	# NRO federation name
+	NRO_FEDERATION_NAME = "GRNET AAI federation"
 	# provider info for footer
 	NRO_PROV_BY_DICT = {"name": "EXAMPLE DEV TEAM", "url": "http://devteam.example.com"}
 	#NRO social media contact (Use: // to preserve https)
@@ -102,6 +102,19 @@ Set the Realm country for REALM model::
 	REALM_COUNTRIES = (
 	             ('country_2letters', 'Country' ),
 	            )
+
+Please note that `REALM_COUNTRIES` must contain an entry where the country code matches the value set in `NRO_COUNTRY_CODE`.  (And, `NRO_COUNTRY_CODE` must also match the `country` value in the `Realm` object created later).
+
+Optionally, configure also the login methods that should be available for institutional administrators to log in.
+
+These are configured in the `MANAGE_LOGIN_METHODS` tuple - which contains a dictionary for each login method.  The default value `local_settings.py.dist` comes prepopulated with a list of popular social login providers supported by `python-social-auth`, plus the `shibboleth` and `locallogin` backends.  For each login method, the following fields are available:
+* `backend`: the name of the backend in python-social-auth (or the special value of `shibboleth` or `locallogin`)
+* `enabled`: whether this login method is enabled
+* `class`: Backend class to load.  Gets added to `settings.AUTHENTICATION_BACKENDS` automatically for enabled login methods.
+* `name`: Human readable name of the authentiation method to present to users
+* `local_image`: Relative path of a local static image to use as logo for the login method.
+* `image_url`: Full URL of an image to use as logo for the login method.
+* `fa_style`: Font-Awesome style to use as logo for the login method.
 
 ### Custom content in footer
 
@@ -250,7 +263,7 @@ A Django management command, named fetch_kml, fetches the KML document and updat
 In order to start using DjNRO you need to create a Realm record for your NRO along with one or more contacts linked to it. You can visit the Django admin interface `https://<hostname>/admin` and add a Realm (remember to set REALM_COUNTRIES in local_settings.py).
 In DjNRO the NRO sets the environment for the institution eduroam admins. Therefore the NRO has to insert the initial data for his/her clients/institutions in the *Institutions* Model, again using the Django admin interface. As an alternative, you can copy your existing `institution.xml` to `/path/to/djnro` and run the following to import institution data::
 
-		./manage.py parse_instituion_xml
+		./manage.py parse_institution_xml
 
 ## Exporting Data
 DjNRO can export data in formats suitable for use by other software.
