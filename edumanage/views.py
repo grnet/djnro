@@ -1445,6 +1445,7 @@ def base_response(request):
 @social_active_required
 @never_cache
 def get_service_points(request):
+    lang = request.LANGUAGE_CODE
     if request.method == "GET":
         user = request.user
         try:
