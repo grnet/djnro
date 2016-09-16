@@ -69,7 +69,7 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{% static 'js/markerclusterer.js' %}"></script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&region={{COUNTRY_CODE}}"></script>
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3&amp;region={{COUNTRY_CODE}}{% if GOOGLE_MAPS_API_KEY %}&amp;key={{ GOOGLE_MAPS_API_KEY }}{% endif %}"></script>
 <script type="text/javascript" src="{% static 'js/jquery.adapt_height.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/mapescape.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/home-page-map.js' %}"></script>

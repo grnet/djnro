@@ -4,40 +4,36 @@ DjNRO = Django + NRO (Django National Roaming Operator or how to manage your edu
 In the [eduroam](http://www.eduroam.org) world, NRO stands for National Roaming Operator.
 Maintaining and managing a local eduroam database is quite an important responsibility of an eduroam NRO.
 eduroam.org periodically polls and gathers information from all participating domains.
-Information is provided upstream, in a structured way (XML format) and consists of participating institutions' data, location data along with monitoring data - though provisioning of monitoring data has been superseeded by the f-Ticks mechanism.
+Information is provided upstream, in a structured way (XML format) and consists of participating institutions' data, location data along with statistical data - though collection of statistical data has been superseeded by the F-Ticks mechanism.
 
-The source of information should be the local eduroam database. So, changes to the database should be reflected to the XML files.
-New eduroam locations, changes in contacts and information about each location should be up-to-date so as to ease the eduroam usage and assist eduroam users whenever they need support.
+The source of information should be the local eduroam database. Changes in the database should be reflected in the XML files.
+New eduroam locations, changes in contacts and information about each location should be up-to-date so as to ease discovery of information and assist eduroam users whenever they need support.
 
-DjNRO is a Django platform that eases the management process of a National Roaming Operator. DjNRO complies with the [eduroam database](http://monitor.eduroam.org/database.php) and the eduroam XSDs.
-Thus, apart from domain management, it can generate the necessary xml files for eduroam.org monitoring.
+DjNRO is a Django platform that eases the management process for a National Roaming Operator. DjNRO complies with the [eduroam database](http://monitor.eduroam.org/database.php) and the eduroam XML schema.
+Thus, apart from domain management, it can generate the necessary XML files for harvesting by eduroam.org.
 
 DjNRO is more than keeping eduroam.org updated with data.
 
-In essence it is a distributed management application. It is distributed in the sense that information about each institution locations and services is kept up-to-date by each local eduroam administrator. Keeping in pace with eduroam's federated nature, our implementation uses federated authentication/authorisation mechanisms, namely Shibboleth.
-In case Shibboleth is not an option for an institution, a social media auth mechanism comes in handy. The local institution eduroam administrators can become DjNRO admins. Local eduroam administrators register to the platform via Shibboleth or social media auth. The NRO's responsibility is to activate their accounts.
+In essence it is a distributed management application. It is distributed in the sense that information about each institution locations and services is kept up-to-date by each local eduroam administrator. Keeping in pace with eduroam's federated nature, our implementation uses federated authentication/authorisation mechanisms, namely SAML Web SSO.
+In case SAML is not an option for an institution, social authentication mechanisms come in handy. The local institution eduroam administrators can become DjNRO admins. Local eduroam administrators register in the platform through SAML or social auth. The NRO's responsibility is to activate their accounts.
 
-From then on they can manage their eduroam locations, contact points and institution information. The administrative interface especially the locations management part, is heavily implemented with Google Maps. This makes editing easier, faster and accurate.
+From then on they can manage their eduroam locations, contact points and institution information. The administrative interface and specifically service locations management makes heavy use of Google Maps. This makes editing easier, faster and more accurate.
 
 Installation and customization is fairly easy and is described in the following sections.
 
-Currently the source code is availiable at code.grnet.gr and github and can be cloned via git::
+The source code is available on and can be downloaded/fetched from GitHub::
 
-    git clone https://code.grnet.gr/git/djnro
     git clone https://github.com/grnet/djnro.git
 
-The Greek eduroam webpage is a living example of DjNRO: [eduroam|gr](http://www.eduroam.gr)
+The eduroam web site of GRNET (the eduroam NRO in Greece) is a living example of DjNRO: [eduroam|gr](http://www.eduroam.gr)
 
 ## Features
 
-* Allow your local eduroam admins to edit their local eduroam data (AP locations, server params, etc)
+* Allow your local eduroam admins to edit their institution eduroam data (AP locations, server params, etc)
 * Visualize the information via Google Maps
-* Eduroam world maps overview via daily update on eduroam.org KML file
-* Find your closest eduroam in the world
-* **New** Allow for eduroam CAT institution enrollments
-* **New** Extract contact info for mailing list creation
-* **New** Server monitoring data
-* **New** Pebble watch app with closest eduroam walking instrunctions
-
-Bootstrap 3 CSS framework with responsive design makes it work on every device
-
+* eduroam world maps overview via daily update on eduroam.org KML file
+* Find your closest eduroam location around the world
+* Allow for eduroam CAT institution enrollments
+* Extract contact info for mailing list creation
+* Server monitoring data
+* Pebble watch app with closest eduroam walking instructions

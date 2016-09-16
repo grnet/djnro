@@ -22,9 +22,11 @@
 				</li>
 				{% endif %}
 				{% if institutiondetails %}
+				{% if institution_canhaveservicelocs %}
 				<li {% block servicesactive %}{% endblock %}>
 					<a href="{% url 'services' %}">{% trans "Locations" %} ({{services_num}})</a>
 				</li>
+				{% endif %}
 				<li {% block serversactive %}{% endblock %}>
 					<a href="{% url 'servers' %}">{% trans "Servers" %} ({{servers_num}})</a>
 				</li>
@@ -56,17 +58,19 @@
 				    <tr class="error"><td>You are not associated with any institution. Please contact your administrator<td></tr>
 				</table>
 			{% else %}
-				<h4>{% trans "Home" %} - {% trans "Service Locations" %} </h4>
+				<h4>{% trans "Home" %}{% if institution_canhaveservicelocs %} - {% trans "Service Locations" %}{% endif %} </h4>
 	              		<hr>
 				{% if services %}
 					<div id="map_canvas" data-group="{% static 'img/edugroup.png' %}" data-pin="{% static 'img/edupin.png' %}" data-center-lat="{{MAP_CENTER.0}}" data-center-lng="{{MAP_CENTER.1}}" data-service="{% url 'get-service-points' %}" data-service-edit="{% url 'edit-services'  %}" style="width:100%; height:450px;"></div>
 				{% else %}
 					<div>
 						{% if institutiondetails %}
+						{% if institution_canhaveservicelocs %}
 							{% trans "No services defined yet"%}!
 							<a href="{% url 'edit-services' %}" class="btn btn-primary">
 								{% trans "Add new service" %}
 							</a>
+						{% endif %}
 						{% else %}
 							Specify your institution details to proceed <a class="btn btn-small btn-primary" href="{% url 'edit-institution' institution.pk %}">{% trans "Edit" %}</a>
 						{% endif %}
@@ -85,6 +89,6 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{% static 'js/markerclusterer.js' %}"></script>
-<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?{% if GOOGLE_MAPS_API_KEY %}key={{ GOOGLE_MAPS_API_KEY }}{% endif %}"></script>
 <script type="text/javascript" src="{% static 'js/management-map.js' %}"></script>
 {% endblock %}

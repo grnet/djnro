@@ -8,11 +8,14 @@ def country_code(context):
         'COUNTRY_NAME': dict(settings.REALM_COUNTRIES)[settings.NRO_COUNTRY_CODE],
         'DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL,
         'FEDERATION_NAME': settings.NRO_FEDERATION_NAME,
-        'DOMAIN_HELPDESK_DICT': settings.NRO_DOMAIN_HELPDESK_DICT,
+        'BRANDING': {
+            'helpdesk': settings.NRO_DOMAIN_HELPDESK_DICT,
+            'social_media': settings.NRO_PROV_SOCIAL_MEDIA_CONTACT,
+            'service_provider': settings.NRO_PROV_BY_DICT,
+        },
         'MAP_CENTER': settings.MAP_CENTER,
-        'PROV_TEAM': settings.NRO_PROV_BY_DICT,
-        'SOCIAL_MEDIA_LIST': settings.NRO_PROV_SOCIAL_MEDIA_CONTACT,
-        'VERSION': settings.SW_VERSION
+        'VERSION': settings.SW_VERSION,
+        'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY if hasattr(settings,"GOOGLE_MAPS_API_KEY") else None,
     }
 
 
