@@ -1679,12 +1679,11 @@ def api(request):
 
 @never_cache
 def participants(request):
-    institutions = Institution.objects.all().select_related('institutiondetails')
+    institutions = Institution.objects.filter(institutiondetails__isnull=False).\
+      select_related('institutiondetails')
     dets = []
     cat_exists = False
     for i in institutions:
-        if i.institutiondetails is None:
-            continue
         dets.append(i.institutiondetails)
         if i.get_active_cat_enrl():
             cat_exists = True
@@ -2274,13 +2273,13 @@ def servdata(request):
 
 @never_cache
 def adminlist(request):
-    users = User.objects.all()
+    users = User.objects.filter(userprofile__isnull=False,
+                                registrationprofile__isnull=False)
     data = [
         (u.userprofile.institution.get_name('el'),
          u.first_name + " " + u.last_name,
          m)
         for u in users if
-        u.registrationprofile and
         u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
         for m in u.email.split(';')
     ]
