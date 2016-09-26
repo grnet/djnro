@@ -128,7 +128,7 @@ class Name_i18n(models.Model):
     Name in a particular language
     '''
 
-    name = models.CharField(max_length=80)
+    name = models.CharField(max_length=255)
     lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
