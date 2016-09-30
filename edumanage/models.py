@@ -276,23 +276,6 @@ class InstServer(models.Model):
                             )
                      }
                     )
-        if self.ertype == 1:
-            insts = self.instid.all()
-            # If a server is a client for an institution, can not change type to IdP
-            if insts.count() > 0:
-                insts_id = []
-                for i in insts:
-                    if i.institutiondetails and i.institutiondetails.oper_name:
-                        insts_id.append(i.institutiondetails.oper_name)
-                    else:
-                        insts_id.append('(%s)' % i.pk)
-                raise ValidationError(
-                    {'ertype':_('You cannot change this server to %s (it is associated to institutions %s)') % (
-                            self.get_ertype_display(),
-                            ', '.join(insts_id)
-                            )
-                     }
-                    )
 
 
 class InstRealmMon(models.Model):
