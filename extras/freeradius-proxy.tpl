@@ -86,7 +86,7 @@ home_server_pool ${realm | realm_disarm}_auth {
     % if len(realm_servers['acct']) > 0:
 home_server_pool ${realm | realm_disarm}_acct {
         type = fail-over
-        % for srv in realm_servers['auth']:
+        % for srv in realm_servers['acct']:
         home_server = ${srv}
         % endfor
 }
