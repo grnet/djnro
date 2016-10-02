@@ -17,6 +17,9 @@ def wildcard_realm_least_precedence(a, b):
         return 1
     else:
         return 0
+def deduplicated_list(seq):
+    seen = set()
+    return [x for x in seq if not (x in seen or seen.add(x))]
 %>\
 % for inst in insts:
 % if inst['type'] in (1, 3) and 'realms' in inst:
@@ -24,13 +27,15 @@ def wildcard_realm_least_precedence(a, b):
 <%doc>
 The following one-liner does the equivalent of:
 
-inst_servers = set()
+inst_servers = []
 for r in inst['realms']:
     if 'proxy_to' in inst['realms'][r]:
-        inst_servers.update(inst['realms'][r]['proxy_to'])
+        inst_servers.append(inst['realms'][r]['proxy_to'])
+# deduplicate like set, but preserve order
+inst_servers = deduplicated_list(inst_servers)
 for srv in inst_servers:
 </%doc>\
-% for srv in set([s for r in inst['realms'] for s in inst['realms'][r]['proxy_to'] if 'proxy_to' in inst['realms'][r]]):
+% for srv in deduplicated_list([s for r in inst['realms'] for s in inst['realms'][r]['proxy_to'] if 'proxy_to' in inst['realms'][r]]):
 % if 'seen' in servers[srv]:
 # server ${srv} defined previously
 % else:
@@ -59,8 +64,8 @@ servers[srv]['seen'] = True
 <%
 realm_servers = {}
 for t in ['auth', 'acct', 'auth+acct']:
-    realm_servers[t] = set([s for s in inst['realms'][realm]['proxy_to']
-                            if servers[s]['rad_pkt_type'] == t])
+    realm_servers[t] = deduplicated_list([s for s in inst['realms'][realm]['proxy_to']
+                                          if servers[s]['rad_pkt_type'] == t])
 %>\
 % if len(realm_servers['auth+acct']) == len(inst['realms'][realm]['proxy_to']):
 home_server_pool ${realm | realm_disarm} {
