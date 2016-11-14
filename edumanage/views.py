@@ -1739,6 +1739,33 @@ def participants(request):
 
 
 @never_cache
+def connect(request):
+    institutions = Institution.objects.filter(institutiondetails__isnull=False).\
+      select_related('institutiondetails')
+    dets = []
+    cat_exists = False
+    for i in institutions:
+        dets.append(i.institutiondetails)
+        if i.get_active_cat_enrl():
+            cat_exists = True
+    try:
+        locale.setlocale(locale.LC_COLLATE, [request.LANGUAGE_CODE, 'UTF-8'])
+    except locale.Error:
+        pass
+    dets.sort(cmp=locale.strcoll,
+              key=lambda x: unicode(x.institution.
+                                    get_name(lang=request.LANGUAGE_CODE)))
+    return render_to_response(
+        'front/connect.html',
+        {
+            'institutions': dets,
+            'catexists': cat_exists
+        },
+        context_instance=RequestContext(request)
+    )
+
+
+@never_cache
 def selectinst(request):
     if request.method == 'POST':
         request_data = request.POST.copy()
@@ -2330,6 +2357,51 @@ def adminlist(request):
                         content_type="text/plain; charset=utf-8")
 
 
+@never_cache
+def cat_user_api_proxy(request, cat_instance):
+    if cat_instance is None:
+        cat_instance = 'production'
+    cat_instance = settings.CAT_AUTH.get(cat_instance, None)
+    if cat_instance is None:
+        return HttpResponseNotFound('<h1>CAT instance not found</h1>')
+    cat_api_url = cat_instance.get('CAT_USER_API_URL', None)
+    if cat_api_url is None:
+        return HttpResponseNotFound('<h1>CAT user API URL not found</h1>')
+    if request.method != 'GET':
+        return HttpResponseBadRequest()
+    qs = request.META['QUERY_STRING']
+    qs = '?%s' % qs if qs else ''
+    cat_api_url += qs
+    if request.GET.get('action', None) == 'downloadInstaller':
+        return HttpResponseRedirect(cat_api_url)
+    headers = {
+        'X-Forwarded-For': request.META['REMOTE_ADDR'],
+        'X-Forwarded-Host': request.META['HTTP_HOST'],
+        'X-Forwarded-Server': request.META['SERVER_NAME']
+        }
+    for h in ['CONTENT_TYPE', 'HTTP_ACCEPT', 'HTTP_ACCEPT_ENCODING',
+              'HTTP_REFERER', 'HTTP_USER_AGENT']:
+        if h in request.META:
+            hh = h.replace('HTTP_', '') if h.startswith('HTTP_') else h
+            hh = '-'.join([w.capitalize() for w in hh.split('_')])
+            headers[hh] = request.META[h]
+    import requests
+    r = requests.get(cat_api_url, stream=True, headers=headers)
+    ct = r.headers.get('content-type', 'text/plain; charset=utf-8')
+    cl = r.headers.get('content-length', None)
+    cd = r.headers.get('content-disposition', None)
+    if ct.startswith('text/html') and cl != '0' and r.content[0] in ['{', '[']:
+        ct = ct.replace('text/html', 'application/json')
+    resp = HttpResponse(r.iter_content(1024),
+                        content_type=ct)
+    resp.status_code = r.status_code
+    resp.reason_phrase = r.reason
+    resp.setdefault('Access-Control-Allow-Origin', '*')
+    resp.setdefault('Access-Control-Allow-Method', 'GET')
+    if cd is not None:
+        resp.setdefault('Content-Disposition', cd)
+    return resp
+    
 def to_xml(ele, encoding="UTF-8"):
     '''
     Convert and return the XML for an *ele*
