@@ -11,7 +11,7 @@
 {% load tolocale %}
 <h1>{% trans "Participating Institutions" %}</h1>
 <hr>
-<div>{% trans "In"%} {% trans COUNTRY_NAME %} {% trans "eduroam is provided by the following instituitons/organizations" %}</div>
+<div>{% trans "In"%} {% trans COUNTRY_NAME %} {% trans "eduroam is provided by the following institutions/organizations" %}</div>
 <br/>
 <div class="row">
 	{% for i in institutions %}
@@ -28,11 +28,11 @@
 					<a href="{{u.url}}">{{u.get_urltype_display}} ({{u.get_lang_display}})</a>
 				</dd>
 				{% endif %}{% endfor %}
-			{% with cats=i.institution.get_active_cat_enrl %}
+			{% with cats=i.institution.get_active_cat_ids %}
 				{% for cat in cats %}
-				<dd>
-					<a href="{{cat}}" target="_blank">eduroam CAT configuration profiles</a>
-					<span style="font-weight: bold; font-size:15px; color:red;">*</span>
+				<dd style="margin-top: 5px;">
+				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="catModal" data-catidp="{{cat}}">eduroam CAT
+				    <span class="badge hidden">N/A</span></button>
 				</dd>
 				{% endfor %}
 			{% endwith %}
@@ -44,10 +44,454 @@
 	{% endfor %}
 </div>
 {% if catexists %}
-<div class="row">
-	<div class="col-md-6"><span style="font-weight: bold; font-size:15px; color:red;">*</span> CAT profiles may have not been published yet</div>
-</div>
+<div class="modal fade" id="catModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="gridSystemModalLabel" data-catui="institution">eduroam CAT</h4>
+      </div><!-- /.modal-header -->
+      <div class="modal-body">
+	<div class="row" data-catui="container">
+	  <div class="col-xs-12 col-sm-push-4 col-sm-8 col-md-push-3 col-md-9" data-catui="container-right">
+	    <ul class="nav nav-tabs hidden" role="tablist" data-catui="profile-select-container">
+	      <li role="presentation" class="active"><a href="#dummy" data-catprof="dummy" aria-controls="home" role="tab" data-toggle="tab">dummy</a></li>
+	    </ul>
+	    <div class="tab-content" data-catui="profiles-container">
+
+
+	      <div role="tabpanel" class="tab-pane active" id="0_loadingplaceholder" data-catui="profile-loading-placeholder" data-catui-panelrole="placeholder_loading">
+		<div class="row">
+		  <div class="col-xs-12 col-sm-6 col-md-8 align" data-catui="device-container">
+		    <p class="lead text-center" style="margin-top: 20px;">
+		      <i class="fa fa-cog fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>
+		    </p>
+		  </div><!-- /[data-catui="device-container"] -->
+		  <div class="hidden-xs col-sm-6 col-md-4 align" data-catui="devicelist-container">
+		  </div><!-- /[data-catui="devicelist-container"] -->
+		</div><!-- /.row -->
+	      </div><!-- /[data-catui="profile-loading-placeholder"].tab-pane -->
+
+
+	      <div role="tabpanel" class="tab-pane" id="0_loaderror" data-catui="profile-load-error" data-catui-panelrole="load_error">
+		<div class="row">
+		  <div class="col-xs-12 col-sm-6 col-md-8 align" data-catui="device-container">
+		    <p class="lead text-center" style="margin-top: 20px;">
+		      <i class="fa fa-exclamation-triangle fa-3x"></i><span class="sr-only">Error</span><br>
+		      <a href="javascript:location.reload();">Request failed, please reload the page</a>
+		    </p>
+		  </div><!-- /[data-catui="device-container"] -->
+		  <div class="hidden-xs col-sm-6 col-md-4 align" data-catui="devicelist-container">
+		  </div><!-- /[data-catui="devicelist-container"] -->
+		</div><!-- /.row -->
+	      </div><!-- /[data-catui="profile-loading-container"].tab-pane -->
+
+
+	      <div role="tabpanel" class="tab-pane" id="0_profiletemplate" data-catui="profile-container-template" data-catui-panelrole="profile_template">
+		<div class="row">
+		  <div class="col-xs-12">
+		    <p class="lead" data-catui="profile-description"></p>
+		    </div>
+		</div><!-- /.row -->
+		<div class="row" data-catui="devicebox">
+		  <div class="col-xs-8 col-sm-12 col-md-8 active" data-catui="device-loading-placeholder">
+		    <p class="lead text-center" style="margin-top: 20px;">
+		      <i class="fa fa-cog fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>
+		    </p>
+		  </div><!-- /[data-catui="device-loading-placeholder"] -->
+		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-load-error">
+		    <p class="lead text-center" style="margin-top: 20px;">
+		      <i class="fa fa-exclamation-triangle fa-3x"></i><span class="sr-only">Error</span><br>
+		      <a href="javascript:location.reload();">Request failed, please reload the page</a>
+		    </p>
+		  </div><!-- /[data-catui="device-load-error"] -->
+		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-no-match">
+		    <h4 class="alert alert-warning center-block text-center" style="margin-top: 20px; max-width: 300px;">
+		      No match, please select a different platform
+		    </h4>
+		  </div><!-- /[data-catui="device-no-match"] -->
+		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-container">
+		    <h4 data-catui="device-display">platform placeholder</h4>
+		    <p data-catui="device-eapcustomtext">eapcustomtext placeholder</p>
+		    <div data-catui="device-message" class="well-sm alert-warning">
+		      <p role="message">message placeholder</p>
+		      <button class="btn btn-sm btn-primary">Continue</button>
+		    </div>
+		    <div data-catui="device-redirectmessage" class="well-sm alert-info">
+		      <p role="message">The institution administrator has
+		      specified this device should be configured
+		      with resources provided on a local page:
+		      <span><a class="alert-link strong" target="_blank" data-catui="device-redirecturl"></a></span>
+		      If you continue you will be redirected
+		      there.<!-- Ο διαχειριστής φορέα καθόρισε ότι αυτή
+		      η συσκευή πρέπει να ρυθμιστεί με πόρους που
+		      παρέχονται σε άλλη σελίδα. Αν συνεχίσετε θα ανακατευθυνθείτε
+		      εκεί.--></p>
+		      <button class="btn btn-sm btn-primary">Continue</button>
+		    </div>
+		    <div data-catui="device-download">
+		      <button class="btn btn-success btn-lg btn-block">
+			<span data-catui-dltxt="init">Download</span>
+			<span data-catui-dltxt="generate">Generating...</span>
+			<span data-catui-dltxt="download">Downloading</span>
+			<span data-catui-dltxt="fail">Failed</span>
+		      </button>
+		      <p style="line-height: 28px;">
+			<span class="pull-left" data-catui="device-signed"
+			      title="The downloaded profile will be cryptographically signed by GÉANT" data-toggle="tooltip" data-placement="bottom">
+			  <i class="fa fa-check-square-o" aria-hidden="true"></i> signed</span><!-- /.pull-left -->
+			<span class="pull-right" title="The downloaded profile will display messages in this language" data-toggle="tooltip" data-placement="bottom">
+			  <i class="fa fa-language" aria-hidden="true"></i> <span class="hidden" data-catui="device-language">language placeholder</span>
+			</span><!-- /.pull-right -->
+		      </p>
+		    </div><!-- /data-catui="device-download" -->
+		    <div class="well-sm alert-danger text-center" data-catui="device-downloadfailed-message">
+		      <a class="alert-link strong" href="javascript:location.reload();">Request failed, please reload the page</a>
+		    </div>
+		    <p data-catui="device-devicecustomtext">devicecustomtext placeholder</p>
+		    <p role="message" data-catui="device-defaulttext">Only install profiles that match your institution (and user
+		      group). When prompted for your username (inner identity) enter your fully qualified username@realm,
+		      unless specifically instructed by your institution.<!--Εγκαταστήστε μόνο προφίλ που ανήκει στο φορέα (και την ομάδα χρηστών) σας.
+		      Όταν ερωτηθείτε για το username (inner identity) συνήθως χρειάζεται να εισάγετε το πλήρες username@realm, εκτός αν παρέχονται ειδικές οδηγίες
+		      από το φορέα σας.--></p>
+		    <div class="panel-group" role="tablist" aria-multiselectable="false" data-catui="device-deviceinfo">
+		      <div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="heading_deviceinfo_Dummy">
+			  <h5 class="panel-title">
+			    <a role="button" class="collapsed" data-toggle="collapse-noanimation" data-target="#deviceinfo_Dummy" aria-expanded="false" aria-controls="deviceinfo_Dummy">
+			      Information &amp; Usage<span class="pull-right"><i class="fa fa-angle-double-down" aria-hidden="true"></i><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+			    </a>
+			  </h5><!-- /h5 -->
+			</div><!-- /.panel-heading -->
+			<div id="deviceinfo_Dummy" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_deviceinfo_Dummy">
+			  <div class="panel-body">deviceinfo placeholder</div>
+			</div><!-- /.panel-collapse -->
+		      </div><!-- /.panel -->
+		    </div><!-- /.panel-group -->
+		    <p role="message"
+		      data-catui="device-postinstall">Once the profile is installed and the target system is successfully configured,
+		      and after you enter your credentials (when prompted upon installation or first connection), the device will automatically connect
+		      whenever it is in the vicinity of an eduroam hotspot.<!--Αφού εγκατασταθεί το επιλεγμένο προφίλ και ολοκληρωθεί επιτυχώς η ρύθμιση
+		      του συστήματος, και αφού εισάγετε τα διαπιστευτήρια χρήστη (μόλις ζητηθούν κατά την εγκατάσταση ή την πρώτη σύνδεση), η συσκευή
+		      θα συνδέεται αυτόματα οποτεδήποτε βρίσκεται κοντά σε eduroam hotspot.--></p>
+		  </div><!-- /[data-catui="device-container"] -->
+		  <div class="col-xs-4 col-sm-7 col-md-4 active-exempt" data-catui="devicelist-container">
+		    <h4>Other platforms</h4>
+		    <div class="panel-group" role="tablist" aria-multiselectable="false">
+		      <div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="heading_devicegroup_Dummy">
+			  <a class="collapsed panel-title"
+			     role="button"
+			     data-toggle="collapse-noanimation"
+			     data-target="#devicegroup_Dummy"
+			     aria-expanded="false" aria-controls="devicegroup_Dummy">device group</a>
+			</div><!-- /.panel-heading -->
+			<div class="panel-collapse collapse" role="tabpanel" id="devicegroup_Dummy" aria-labelledby="heading_devicegroup_Dummy" aria-expanded="false">
+			  <ul class="list-group">
+			    <li class="list-group-item"><a data-catdev="dummy" href="#dummy">device</a></li>
+			  </ul><!-- /.list-group -->
+			</div><!-- /.panel-collapse.collapse -->
+		      </div><!-- /.panel.panel-default -->
+		    </div><!-- /.panel-group -->
+		  </div><!-- /[data-catui="devicelist-container"] -->
+		</div><!-- /.row -->
+	      </div><!-- /[data-catui="profile-container-template"].tab-pane -->
+
+
+	    </div><!-- /[data-catui="profiles-container"].tab-content -->
+	  </div><!-- /[data-catui="container-right"] -->
+
+	  <div class="col-xs-12 col-sm-pull-8 col-sm-4 col-md-pull-9 col-md-3" data-catui="container-left">
+	    <div class="row">
+	    <div class="col-xs-3 col-sm-12" data-catui="container-logo"></div><!-- /[data-catui="container-logo"] -->
+	    <div class="col-xs-9 col-sm-12" data-catui="container-support">
+	      <p data-catui="support-header" data-catui-support="yes">If you encounter problems, you can obtain direct assistance from your home organisation:</p>
+	      <p data-catui="support-header" data-catui-support="no">If you encounter problems you can ask for help at your home institution.</p>
+	      <address class="cat-support-contact"
+		       data-catui="support-contact-container">
+		<span><i class="fa"></i> <a href="#">placeholder</a></span>
+	      </address>
+	      <p data-catui="support-header">You may also report issues related to CAT by posting to the <a href="//cat.eduroam.org/">users mailing list</a>.</p>
+	    </div><!-- /[data-catui="container-support"] -->
+	    </div><!-- /.row -->
+	  </div><!-- /[data-catui="container-left"] -->
+
+	</div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer">
+	<small>
+	  <a href="//cat.eduroam.org/">eduroam <span data-toggle="tooltip" data-placement="top" title="Configuration Assistant Tool">CAT</span></a> is a service provided by
+	  <a href="//geant.org"><img data-catui="geant-logo" src="{% static 'js/geant.png' %}" title="GÉANT" alt="GÉANT"></a>
+	  <br class="vixible-xs hidden-md hidden-lg">
+	  This page provides access to CAT data with respect to the <a href="#" data-catui="cat-api-tou">CAT terms of use</a>.
+	</small>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 {% endif %}
 {% endblock %}
 
+{% block extrajs %}
+{% if catexists %}
+<script type="text/javascript" src="{% static 'js/jquery.hashhandle.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/jquery.base64.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/cat_embed.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/appear.js' %}"></script>
+<script type="text/javascript">
+    var catLang = "{{LANGUAGE_CODE}}",
+  catApi = new CAT({apiBase: "{% url 'cat-api' %}", lang: catLang}),
+  catDeviceGuess = CatDevice.guessDeviceID(navigator.userAgent);
+  // pre-fetching... ("optimization")
+  catApi.listAllIdentityProviders(catLang);
+  $(function () {
+      $('#catModal').tooltip({selector: '[data-toggle="tooltip"]'});
+  })
+</script>
+<script type="text/javascript" src="{% static 'js/cat_ui.js' %}"></script>
+{% endif %}
+{% endblock %}
 
+{% block extrahead %}
+<style type="text/css">
+/* centered text in modal footer */
+#catModal .modal-footer {
+    text-align: center;
+}
+/* GEANT logo h.align with text */
+img[data-catui="geant-logo"] {
+    vertical-align: baseline;
+    max-height: 20px;
+}
+/* inst logo max-width, height and centered
+   (emulating bootstrap .img-responsive.center-block) */
+div[data-catui="container-logo"] > * {
+    max-width: 100%;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    max-height: 10em;
+    margin-bottom: 10px;
+}
+/* under 350px container-left columns go full-width again (like
+   col-sm-12) */
+@media (max-width: 350px) {
+div[data-catui="container-left"] > .row > div {
+    width: 100%;
+}
+}
+/* under 768px container-left gets top border/padding/margin to
+   separate it from container-right stacked on top of it */
+@media (max-width: 767px) {
+[data-catui="container-left"].col-xs-12 {
+    border-top: 1px solid #e5e5e5;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+/* when the 1st col (container-logo) in container-left is hidden, the last col
+   (col-xs-9) should go full width */
+div[data-catui="container-left"] > .row > .hidden + div.col-xs-9:last-child {
+    width: 100%;
+}
+}
+/* no double-padding when two columns align: remove half the gutter so
+   that padding across the edges and between columns is the same (15px) */
+@media (min-width: 351px) and (max-width: 767px) {
+:not(.hidden) + [data-catui="container-support"]:not(align) {
+    padding-left: 0px;
+}
+}
+@media (min-width: 471px) and (max-width: 767px), (min-width: 992px) {
+[data-catui="devicelist-container"]:not(align) {
+    padding-left: 0px;
+}
+}
+@media (min-width: 768px) {
+[data-catui="container-right"]:not(align) {
+    padding-left: 0px;
+}
+}
+/* contacts container gets a bottom margin like a paragraph */
+address.cat-support-contact {
+    margin-bottom: 10px;
+}
+/* limit the screen space for contacts text
+   http://asdfasfd... */
+.cat-support-contact > span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* profile description looks like a lightweight h4, but
+   it is followed by h4 so no margin-bottom */
+[data-catui="profile-description"].lead {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    font-size: 18px;
+}
+/* device{,list}-container elements stacked and centered at
+   {xs,xxs}-width */
+@media (max-width: 470px) {
+.tab-pane.active [data-catui="devicebox"] > div[data-catui] {
+    width: 80%;
+    left: 10%;
+}
+}
+@media (max-width: 350px) {
+.tab-pane.active [data-catui="devicebox"] > div[data-catui] {
+    width: 100%;
+    left: 0%;
+}
+}
+/* devicelist collapsible list-group accordion's */
+/* reset font-size in .panel-title */
+[data-catui="devicelist-container"] .panel .panel-title {
+    font-size: inherit;
+    cursor: pointer;
+}
+/* devicelist group: use a cursor pointer since we'll be propagating clicks to child a[data-toggle="collapse-noanimation"] */
+[data-catui="devicelist-container"] .panel .panel-heading {
+    cursor: pointer;
+}
+/* devicelist group: propagate anchor style to container element */
+[data-catui="devicelist-container"] .panel .panel-heading:hover > a {
+    text-decoration: underline;
+    color: #23527c;
+}
+/* the following ensure that a sequence of .panel-heading, .panel-collapse
+   appear as a seamless accordion with a uniform 1px border */
+[data-catui="devicelist-container"] .panel-group .panel-heading {
+    border-bottom: 1px solid #ddd;
+}
+[data-catui="devicelist-container"] .panel-group .panel-heading+.panel-collapse>.list-group {
+    border-bottom: 1px solid #ddd;
+    border-top: 0;
+}
+/* devicelist device: use a cursor pointer since we'll be propagating clicks to child a[data-catdev] */
+[data-catui="devicelist-container"] .panel-group .panel-heading+.panel-collapse>.list-group>.list-group-item {
+    cursor: pointer;
+}
+/* devicelist device: propagate anchor style to container element */
+[data-catui="devicelist-container"] .panel-group .panel-heading+.panel-collapse>.list-group>.list-group-item:hover>a {
+    text-decoration: underline;
+    color: #23527c;
+}
+/* line break before custom device text in devicelist */
+[data-catui="devicelist-container"] .panel-group .panel-heading+.panel-collapse>.list-group>.list-group-item>a>small:before {
+    content: "\A";
+    white-space: pre;
+}
+[data-catui="devicelist-container"] .panel-group .panel.panel-default {
+    border-bottom: 0px;
+}
+/*
+[data-catui="devicelist-container"] .panel-group .panel-heading span.badge {
+    float: right;
+}
+*/
+/* emulate .tab-pane.active for toggling [catui="devicebox"] elements */
+[data-catui="devicebox"] > .active,
+[data-catui="devicebox"] > .active-exempt {
+    display: block;
+}
+[data-catui="devicebox"] > :not(.active):not(.active-exempt) {
+    display: none;
+}
+/* let div and p inside device-container have the same margin-bottom */
+[data-catui="device-container"] > * {
+    margin-bottom: 10px;
+}
+/* hyphenate word-wrap user content for better flow.. fails miserably */
+/*
+[data-catui="device-container"] > [data-catui="device-eapcustomtext"],
+[data-catui="device-container"] > [data-catui="device-devicecustomtext"],
+[data-catui="device-container"] > p {
+      -ms-word-break: break-word;
+      word-break: break-word;
+      -webkit-hyphens: auto;
+      -moz-hyphens: auto;
+      hyphens: auto;
+}
+*/
+/* pull right message buttons */
+[data-catui="device-container"] button.btn-sm {
+    display: block;
+    margin-left: auto;
+}
+/* limit the screen space for redirect url
+   http://asdfasfd... */
+[data-catui="device-redirectmessage"] span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* class equiv of the element strong/b */
+.strong {
+      font-weight: 700;
+}
+/* download button gets padding to stand out from surrounding elements
+   it also gets max-width so as not to grow too big */
+[data-catui="device-download"] {
+    padding: 20px;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media (max-width: 350px) {
+[data-catui="device-download"] {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+}
+/* downloadfailed message is hidden until download block is marked as failed */
+[data-catui="device-download"]:not(.download-failed) + [data-catui="device-downloadfailed-message"] {
+    display: none;
+}
+[data-catui="device-download"].download-failed + [data-catui="device-downloadfailed-message"] {
+    display: block;
+}
+/* download button gets hidden when redirect block is active */
+[data-catui="device-redirectmessage"]:not(.hidden) ~ [data-catui="device-download"] {
+    display: none;
+}
+/* download button gets hidden while device message is not hidden and not acknowledged */
+[data-catui="device-message"]:not(.hidden):not(.catui-message-acknowledged) ~ [data-catui="device-download"] {
+    display: none;
+}
+/* button inside device message hidden when clicked = device message acknowledged */
+[data-catui="device-message"].catui-message-acknowledged button {
+    display: none;
+}
+[data-catui="device-container"] > [data-catui="device-eapcustomtext"]:not(.hidden) ~ [data-catui="device-defaulttext"],
+[data-catui="device-container"] > [data-catui="device-devicecustomtext"]:not(.hidden) ~ [data-catui="device-defaulttext"],
+[data-catui="device-message"]:not(.hidden):not(.catui-message-acknowledged) ~ [data-catui="device-defaulttext"],
+[data-catui="device-redirectmessage"]:not(.hidden) ~ [data-catui="device-defaulttext"] {
+    display: none;
+}
+[data-catui="device-redirectmessage"]:not(.hidden) ~ [data-catui="device-postinstall"] {
+    display: none;
+}
+/* deviceinfo: use a cursor pointer since we'll be propagating clicks to child a[data-toggle="collapse-noanimation"] */
+[data-catui="device-deviceinfo"] .panel .panel-heading {
+    cursor: pointer;
+}
+/* deviceinfo: propagate anchor style to container element */
+[data-catui="device-deviceinfo"] .panel .panel-heading:hover a,
+[data-catui="device-deviceinfo"] .panel .panel-heading a:hover {
+    text-decoration: none;
+    /* color: #23527c; */
+}
+/* symbol like >>/<< that toggles together with deviceinfo panel */
+[data-catui="device-deviceinfo"] .panel-heading a.collapsed i.fa-angle-double-down,
+[data-catui="device-deviceinfo"] .panel-heading a:not(.collapsed) i.fa-angle-double-up {
+    display: block;
+}
+[data-catui="device-deviceinfo"] .panel-heading a.collapsed i.fa-angle-double-up,
+[data-catui="device-deviceinfo"] .panel-heading a:not(.collapsed) i.fa-angle-double-down {
+    display: none;
+}
+</style>
+{% endblock %}
