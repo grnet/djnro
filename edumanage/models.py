@@ -478,6 +478,13 @@ class Institution(models.Model):
                 urls.append(catenrl.cat_configuration_url)
         return urls
 
+    def get_active_cat_ids(self):
+        ids = []
+        active_cat_enrl = self.catenrollment_set.filter(url='ACTIVE', cat_instance='production')
+        for catenrl in active_cat_enrl:
+            ids.append(catenrl.cat_inst_id)
+        return ids
+
 
 class InstitutionDetails(models.Model):
     '''
