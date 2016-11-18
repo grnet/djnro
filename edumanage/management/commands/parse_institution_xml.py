@@ -86,7 +86,7 @@ class Command(BaseCommand):
         try:
             parameters = {
                 'lang': element.attrib['lang'],
-                'name': element.text
+                'name': element.text.strip()
                 }
         except:
             self.real_write('Skipping %s: invalid' % element.tag)
@@ -159,7 +159,10 @@ class Command(BaseCommand):
         parameters = {}
         for child_element in element.getchildren():
             if child_element.tag in ['name', 'email', 'phone']:
-                parameters[child_element.tag] = child_element.text
+                if child_element.tag == 'name':
+                    parameters[child_element.tag] = child_element.text.strip()
+                else:
+                    parameters[child_element.tag] = child_element.text
         if not 'name' in parameters and not parameters['name']:
             self.real_write('Skipping %s: invalid name' % element.tag)
             return None
@@ -214,11 +217,11 @@ class Command(BaseCommand):
                 for sub_element in child_element.getchildren():
                     if sub_element.tag in ['street', 'city']:
                         parameters['address_' + sub_element.tag] = \
-                          sub_element.text
+                          sub_element.text.strip()
                 continue
             if tag == 'enc_level':
                 parameters['enc_level'] = \
-                  re.split(r'\s*,\s*', child_element.text)
+                  re.split(r'\s*,\s*', child_element.text.strip())
                 continue
             if tag in ['port_restrict', 'transp_proxy',
                        'IPv6', 'NAT', 'wired']:
@@ -300,7 +303,7 @@ class Command(BaseCommand):
                 for sub_element in child_element.getchildren():
                     if sub_element.tag in ['street', 'city']:
                         parameters['address_' + sub_element.tag] = \
-                          sub_element.text
+                          sub_element.text.strip()
         self.real_write('Done walking %s' % element.tag)
 
         # abort if required data not present
