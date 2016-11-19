@@ -245,15 +245,42 @@ class Command(BaseCommand):
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
         parameters['institutionid'] = instobj
-        obj, obj_created = \
-          ServiceLoc.objects.\
-          get_or_create(**parameters)
+        # try to find "identical" ServiceLoc (lat, lon, address, ssid...)
+        existing_obj = ServiceLoc.objects.filter(**parameters).\
+          prefetch_related('loc_name')
+        # Prepare list of unique loc_name's for the location we are parsing.
+        # Don't use self.parse_and_create_name(ServiceLoc, name_element)
+        # as it may find existing Name_i18n objects by the same name, but
+        # unrelated to this location; also we'd rather not create Name_i18n
+        # objects that may go away after all
+        names_new = set([name_element.text.strip()
+                         for name_element in name_elements])
+        # No ServiceLoc objects matching these parameters
+        if not existing_obj.exists():
+            obj_created = True
+        else:
+            # Extend the comparison to the names (their set vs. our set)
+            # for each matched ServiceLoc
+            for obj in existing_obj:
+                names_old = set(obj.loc_name.all().\
+                                values_list('name', flat=True))
+                # If an exact match is found, stop here;
+                # obj is the existing ServiceLoc
+                if names_old == names_new:
+                    obj_created = False
+                    break
+            # Finally if no match, let's create a new ServiceLoc
+            else:
+                obj_created = True
+        if obj_created:
+            obj = ServiceLoc(**parameters)
+            obj.save()
+            for name_element in name_elements:
+                self.parse_and_create_name(obj, name_element)
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if obj_created else 'Found',
                                  type_str(obj),
                                 unicode(obj)))
-        for name_element in name_elements:
-            self.parse_and_create_name(obj, name_element)
         for url_element in url_elements:
             self.parse_and_create_url(obj, url_element)
         contacts_new = []
