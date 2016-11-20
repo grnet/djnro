@@ -100,15 +100,20 @@ class Command(BaseCommand):
             parameters['content_type'] = \
               ContentType.objects.get_for_model(type(relobj_or_model))
             parameters['object_id'] = relobj_or_model.pk
+            bound = True
         # (ModelClass) object has no attribute '_meta'
         except AttributeError:
             parameters['content_type'] = \
               ContentType.objects.get_for_model(relobj_or_model)
+            bound = False
         object_tuple = Name_i18n.objects.get_or_create(**parameters)
+        created_or_found = 'Created' if object_tuple[1] else 'Found'
+        if object_tuple[1] and not bound:
+            created_or_found += ' (preliminary)'
         self.real_write('%s %s: %s' %
-                        ('Created' if object_tuple[1] else 'Found',
-                             type_str(object_tuple[0]),
-                             unicode(object_tuple[0])))
+                        (created_or_found,
+                         type_str(object_tuple[0]),
+                         unicode(object_tuple[0])))
         return object_tuple
 
     def parse_and_create_url(self, relobj, element):
