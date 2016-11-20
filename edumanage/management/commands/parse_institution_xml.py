@@ -45,9 +45,9 @@ class Command(BaseCommand):
             raise CommandError('You must supply a file name')
 
         if int(options['verbosity']) > 0:
-            self.real_write = self.stdout.write
+            self.stdout.write_maybe = self.stdout.write
         else:
-            self.real_write = lambda *args: None
+            self.stdout.write_maybe = lambda *args: None
 
         self.parse_and_create(args[0])
 
@@ -75,26 +75,26 @@ class Command(BaseCommand):
         root = doc.getroot()
         institution_list = []
         institutions = root.getchildren()
-        self.real_write('Walking %s' % root.tag)
+        self.stdout.write_maybe('Walking %s' % root.tag)
         for institution in institutions:
             institution_obj = self.parse_and_create_institution(institution)
             institution_list.append(institution_obj)
         return True
 
     def parse_and_create_name(self, relobj_or_model, element):
-        self.real_write('Parsing %s' % element.tag)
+        self.stdout.write_maybe('Parsing %s' % element.tag)
         try:
             parameters = {
                 'lang': element.attrib['lang'],
                 'name': element.text.strip()
                 }
         except:
-            self.real_write('Skipping %s: invalid' % element.tag)
+            self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
             return (None, False)
         for key in parameters:
             if not parameters[key]:
-                self.real_write('Skipping %s: empty %s' %
-                                (element.tag, key))
+                self.stdout.write_maybe('Skipping %s: empty %s' %
+                                        (element.tag, key))
                 return (None, False)
         try:
             parameters['content_type'] = \
@@ -110,14 +110,14 @@ class Command(BaseCommand):
         created_or_found = 'Created' if object_tuple[1] else 'Found'
         if object_tuple[1] and not bound:
             created_or_found += ' (preliminary)'
-        self.real_write('%s %s: %s' %
-                        (created_or_found,
-                         type_str(object_tuple[0]),
-                         unicode(object_tuple[0])))
+        self.stdout.write_maybe('%s %s: %s' %
+                                (created_or_found,
+                                 type_str(object_tuple[0]),
+                                unicode(object_tuple[0])))
         return object_tuple
 
     def parse_and_create_url(self, relobj, element):
-        self.real_write('Parsing %s' % element.tag)
+        self.stdout.write_maybe('Parsing %s' % element.tag)
         try:
             parameters = {
                 'lang':    element.attrib['lang'],
@@ -125,42 +125,42 @@ class Command(BaseCommand):
                 'urltype': element.tag.replace('_URL', ''),
                 }
         except:
-            self.real_write('Skipping %s: invalid' % element.tag)
+            self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
             return (None, False)
         for key in parameters:
             if not parameters[key]:
-                self.real_write('Skipping %s: empty %s' %
-                                (element.tag, key))
+                self.stdout.write_maybe('Skipping %s: empty %s' %
+                                        (element.tag, key))
                 return (None, False)
         parameters.update({
             'object_id': relobj.pk,
             'content_type': ContentType.objects.get_for_model(type(relobj))
             })
         obj, obj_created = URL_i18n.objects.get_or_create(**parameters)
-        self.real_write('%s %s: %s' %
-                        ('Created' if obj_created else 'Found',
-                             type_str(obj),
-                             unicode(obj)))
+        self.stdout.write_maybe('%s %s: %s' %
+                                ('Created' if obj_created else 'Found',
+                                 type_str(obj),
+                                unicode(obj)))
         return obj
 
     def parse_and_create_instrealm(self, institution_obj, element):
-        self.real_write('Parsing %s' % element.tag)
+        self.stdout.write_maybe('Parsing %s' % element.tag)
         parameters = {
             'realm': element.text,
             'instid': institution_obj
             }
         if not parameters['realm']:
-            self.real_write('Skipping %s: invalid realm' % element.tag)
+            self.stdout.write_maybe('Skipping %s: invalid realm' % element.tag)
             return (None, False)
         object_tuple = InstRealm.objects.get_or_create(**parameters)
-        self.real_write('%s %s: %s' %
-                        ('Created' if object_tuple[1] else 'Found',
-                             type_str(object_tuple[0]),
-                             unicode(object_tuple[0])))
+        self.stdout.write_maybe('%s %s: %s' %
+                                ('Created' if object_tuple[1] else 'Found',
+                                 type_str(object_tuple[0]),
+                                unicode(object_tuple[0])))
         return object_tuple
 
     def parse_and_create_contact(self, relobj, element):
-        self.real_write('Parsing %s' % element.tag)
+        self.stdout.write_maybe('Parsing %s' % element.tag)
         parameters = {}
         for child_element in element.getchildren():
             if child_element.tag in ['name', 'email', 'phone']:
@@ -169,7 +169,7 @@ class Command(BaseCommand):
                 else:
                     parameters[child_element.tag] = child_element.text
         if not 'name' in parameters and not parameters['name']:
-            self.real_write('Skipping %s: invalid name' % element.tag)
+            self.stdout.write_maybe('Skipping %s: invalid name' % element.tag)
             return None
         if isinstance(relobj, Institution):
             #### revisit this vs. defaults=... +
@@ -178,9 +178,9 @@ class Command(BaseCommand):
             parameters['institutioncontactpool__institution'] = \
             relobj.institutionid
         else:
-            self.real_write('Skipping %s: invalid argument %s' %
-                            (element.tag,
-                             relobj))
+            self.stdout.write_maybe('Skipping %s: invalid argument %s' %
+                                    (element.tag,
+                                     relobj))
             return None
         instobj = parameters['institutioncontactpool__institution']
         obj, obj_created = \
@@ -190,14 +190,14 @@ class Command(BaseCommand):
             contactpool_obj, contactpool_obj_created = \
               InstitutionContactPool.objects.\
               get_or_create(contact=obj, institution=instobj)
-        self.real_write('%s %s: %s' %
-                        ('Created' if obj_created else 'Found',
-                             type_str(obj),
-                             unicode(obj)))
+        self.stdout.write_maybe('%s %s: %s' %
+                                ('Created' if obj_created else 'Found',
+                                 type_str(obj),
+                                unicode(obj)))
         return obj
 
     def parse_and_create_serviceloc(self, instobj, element):
-        self.real_write('Walking %s' % element.tag)
+        self.stdout.write_maybe('Walking %s' % element.tag)
         name_elements = []
         contact_elements = []
         url_elements = []
@@ -208,7 +208,7 @@ class Command(BaseCommand):
         parameters['AP_no'] = 0
         for child_element in element.getchildren():
             tag = child_element.tag
-            self.real_write('- %s' % tag)
+            self.stdout.write_maybe('- %s' % tag)
             if tag in ['longitude', 'latitude', 'SSID']:
                 parameters[tag] = child_element.text
                 continue
@@ -239,23 +239,23 @@ class Command(BaseCommand):
                 continue
             if tag == 'info_URL':
                 url_elements.append(child_element)
-        self.real_write('Done walking %s' % element.tag)
+        self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
         if False in [x in parameters
                      for x in ['longitude', 'latitude',
                                'address_street', 'address_city',
                                'SSID', 'enc_level']]:
-            self.real_write('Skipping %s: incomplete' % element.tag)
+            self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
         parameters['institutionid'] = instobj
         obj, obj_created = \
           ServiceLoc.objects.\
           get_or_create(**parameters)
-        self.real_write('%s %s: %s' %
-                        ('Created' if obj_created else 'Found',
-                         type_str(obj),
-                         unicode(obj)))
+        self.stdout.write_maybe('%s %s: %s' %
+                                ('Created' if obj_created else 'Found',
+                                 type_str(obj),
+                                unicode(obj)))
         for name_element in name_elements:
             self.parse_and_create_name(obj, name_element)
         for url_element in url_elements:
@@ -270,7 +270,7 @@ class Command(BaseCommand):
         for c in contacts_add:
             obj.contact.add(c)
         if len(contacts_add) > 0:
-            self.real_write('Linked %s contacts: %s' % (
+            self.stdout.write_maybe('Linked %s contacts: %s' % (
                 type_str(obj),
                 ' '.join([unicode(c) for c in contacts_add])
                 ))
@@ -279,19 +279,19 @@ class Command(BaseCommand):
             # c.delete()
             obj.contact.remove(c)
         if len(contacts_remove) > 0:
-            self.real_write('Removed %s contacts: %s' % (
+            self.stdout.write_maybe('Removed %s contacts: %s' % (
                 type_str(obj),
                 ' '.join([unicode(c) for c in contacts_remove])
                 ))
         return obj
 
     def parse_and_create_institution(self, element):
-        self.real_write('Walking %s' % element.tag)
+        self.stdout.write_maybe('Walking %s' % element.tag)
         parameters = {}
         # parameters['number_id'] = 1
         for child_element in element.getchildren():
             tag = child_element.tag
-            self.real_write('- %s' % tag)
+            self.stdout.write_maybe('- %s' % tag)
             # hardcode to self.nrorealm, ignore country
             if tag == 'country':
                 continue
@@ -309,7 +309,7 @@ class Command(BaseCommand):
                     if sub_element.tag in ['street', 'city']:
                         parameters['address_' + sub_element.tag] = \
                           sub_element.text.strip()
-        self.real_write('Done walking %s' % element.tag)
+        self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
         if False in \
@@ -317,22 +317,22 @@ class Command(BaseCommand):
            for x in ['type', 'org_name',
                      'address_street', 'address_city',
                      'info_URL']]:
-            self.real_write('Skipping %s: incomplete' % element.tag)
+            self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
         if parameters['type'] not in [1, 2, 3]:
-            self.real_write('Skipping %s: invalid type %d' %
-                            (element.tag,
-                             parameters['type']))
+            self.stdout.write_maybe('Skipping %s: invalid type %d' %
+                                    (element.tag,
+                                     parameters['type']))
             return None
         if parameters['type'] != 2 and 'inst_realm' not in parameters:
-            self.real_write('Skipping %s: type %d but no "inst_realm"' %
-                            (element.tag,
-                             parameters['type']))
+            self.stdout.write_maybe('Skipping %s: type %d but no "inst_realm"' %
+                                    (element.tag,
+                                     parameters['type']))
             return None
         if parameters['type'] != 1 and 'location' not in parameters:
-            self.real_write('Skipping %s: type %d but no "location"' %
-                            (element.tag,
-                             parameters['type']))
+            self.stdout.write_maybe('Skipping %s: type %d but no "location"' %
+                                    (element.tag,
+                                     parameters['type']))
             return None
 
         for idx, name_element in enumerate(parameters['org_name']):
@@ -346,10 +346,10 @@ class Command(BaseCommand):
             for name, created in parameters['org_name']:
                 name.content_object = institution_obj
                 name.save()
-            self.real_write('%s %s: %s' %
-                            ('Created',
-                             type_str(institution_obj),
-                             unicode(institution_obj)))
+            self.stdout.write_maybe('%s %s: %s' %
+                                    ('Created',
+                                     type_str(institution_obj),
+                                    unicode(institution_obj)))
         else:
             institution_obj = parameters['org_name'][0][0].content_object
             if institution_obj is None:
@@ -370,10 +370,10 @@ class Command(BaseCommand):
                     'before we can proceed.\n' +
                     '\n'.join([unicode(x[0]) for x in parameters['org_name']])
                     )
-            self.real_write('%s %s: %s' %
-                            ('Found',
-                             type_str(institution_obj),
-                             unicode(institution_obj)))
+            self.stdout.write_maybe('%s %s: %s' %
+                                    ('Found',
+                                     type_str(institution_obj),
+                                    unicode(institution_obj)))
 
         for idx, contact_element in enumerate(parameters['contact']):
             parameters['contact'][idx] = \
@@ -389,17 +389,17 @@ class Command(BaseCommand):
         if not instdetails_created:
             for attr in instdetails_defaults:
                 setattr(instdetails_obj, attr, instdetails_defaults[attr])
-        self.real_write('%s %s: %s' %
-                        ('Created' if instdetails_created else 'Found',
-                         type_str(instdetails_obj),
-                         unicode(instdetails_obj)))
+        self.stdout.write_maybe('%s %s: %s' %
+                                ('Created' if instdetails_created else 'Found',
+                                 type_str(instdetails_obj),
+                                unicode(instdetails_obj)))
 
         contacts_db = instdetails_obj.contact.all()
         contacts_add = set(parameters['contact']) - set(contacts_db)
         for c in contacts_add:
             instdetails_obj.contact.add(c)
         if len(contacts_add) > 0:
-            self.real_write('Linked %s contacts: %s' % (
+            self.stdout.write_maybe('Linked %s contacts: %s' % (
                 type_str(instdetails_obj),
                 ' '.join([unicode(c) for c in contacts_add])
                 ))
@@ -408,7 +408,7 @@ class Command(BaseCommand):
             # c.delete()
             instdetails_obj.contact.remove(c)
         if len(contacts_remove) > 0:
-            self.real_write('Removed %s contacts: %s' % (
+            self.stdout.write_maybe('Removed %s contacts: %s' % (
                 type_str(instdetails_obj),
                 ' '.join([unicode(c) for c in contacts_remove])
                 ))
