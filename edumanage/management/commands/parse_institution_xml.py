@@ -55,23 +55,19 @@ class Command(BaseCommand):
         try:
             doc = parse(instxmlfile)
         except:
-            self.stderr.\
-              write('ERROR: %s\n%s' % (
+            raise CommandError('%s\n%s' % (
                   '%s does not exist or it could not be read/parsed' %
                   instxmlfile,
                   traceback.format_exc()
                   ))
-            sys.exit(1)
         try:
             self.nrorealm = Realm.objects.get(country=settings.NRO_COUNTRY_CODE)
         except Realm.DoesNotExist, AttributeError:
-            self.stderr.\
-              write('ERROR: %s\n%s' % (
+            raise CommandError('%s\n%s' % (
                   'Failed to get the Realm object',
             '''Before running this command, the following prerequisites must be met:
 - NRO_COUNTRY_CODE and REALM_COUNTRIES must be configured in settings
 - a Realm object must be added, matching the NRO_COUNTRY_CODE'''))
-            sys.exit(1)
         root = doc.getroot()
         institution_list = []
         institutions = root.getchildren()
