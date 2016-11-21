@@ -7,7 +7,7 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
     (r'^accounts/', include('social.apps.django_app.urls', namespace='social')),
-    (r'^setlang/?$', 'django.views.i18n.set_language'),
+    (r'^setlang/?$', 'edumanage.views.set_language'),
     (r'^admin/', include(admin.site.urls)),
     url(r'^managelogin/(?P<backend>[^/]+)/$', 'edumanage.views.manage_login', name='manage_login'),
     url(r'^login/?', 'edumanage.views.user_login', name="login"),
