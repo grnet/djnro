@@ -128,7 +128,7 @@ class Name_i18n(models.Model):
     Name in a particular language
     '''
 
-    name = models.CharField(max_length=80)
+    name = models.CharField(max_length=255)
     lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
@@ -506,7 +506,7 @@ class InstitutionDetails(models.Model):
     url = fields.GenericRelation(URL_i18n)
     # accept if ertype: 2 (sp) or 3 (idpsp) (Applies to the following field)
     oper_name = models.CharField(
-        max_length=24,
+        max_length=252,
         null=True,
         blank=True,
         help_text=_('The primary, registered domain name for your institution, eg. example.com.<br>This is used to derive the Operator-Name attribute according to RFC5580, par.4.1, using the REALM namespace.')
