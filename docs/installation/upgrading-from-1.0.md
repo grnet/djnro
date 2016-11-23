@@ -17,20 +17,19 @@ an archive of your installation tree - to be able to revert if something goes
 wrong.
 
 
-## Update older DjNRO to latest 1.0
+## Update older DjNRO to last revision before Django 1.8
 
 There were some data changes introduced to the data model in the DjNRO code prior to the upgrade to Django 1.8 migration.
 
-Get the latest 1.0 DjNRO code:
+Get the last revision based on Django 1.4 and South:
 
-    # TODO: we need this tag in the repository
-    git checkout djnro-1.0.0
+    git checkout last-south-django1.4
 
 And run the database migrations:
 
     ./manage.py migrate
 
-## Install DjNro
+## Install DjNRO
 
 Install DjNRO >= v1.1 by following the installation instructions - configuring it to use the same database.
 
@@ -102,3 +101,4 @@ Now in the new installation:
  - run `./manage.py loaddata --settings='settings' /tmp/eduroam_1.0.ordered.json`
  - Continue with the `Migrate` step from above.
 
+The guide for [migration from 0.8 to 1.0](migrating-from-0.8-to-1.0.md) may also prove helpful for migrating from older versions of DjNRO to 1.1.
