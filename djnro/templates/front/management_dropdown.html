@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% if request.user.is_authenticated %}
-<li class="dropdown"><a href="{% url manage %}"> {% trans "Manage" %}</a></li>
+<li class="dropdown"><a href="{% url 'manage' %}"> {% trans "Manage" %}</a></li>
 {% else %}
 <li class="dropdown"><a id="drop2" class="dropdown-toggle"
 	data-toggle="dropdown" role="button" href="#"> {% trans "Manage" %}
@@ -9,25 +9,21 @@
 	</a>
 	<ul class="dropdown-menu loginoptions" role="menu"
 		aria-labelledby="drop2">
-		<li><a tabindex="-1" href="{% url manage_login 'shibboleth' %}">Shibboleth</a><img
-			class="hidden-phone"
-			src="{% static 'img/image_shibboleth_logo_color.png' %}"
-			style="padding: 0px;"></li>
-		<li><a tabindex="-1" href="{% url manage_login 'twitter' %}">Twitter</a><img
-			class="hidden-phone" src="{% static 'img/twitter_img.png' %}"
-			style="padding: 0px;"></li>
-		{% comment %}<li><a tabindex="-1" href="{% url manage_login 'facebook' %}">Facebook</a><img
-			class="hidden-phone" src="{% static 'img/facebook_img.png' %}"
-			style="padding: 0px;"></li>{% endcomment %}
-		<li><a tabindex="-1" href="{% url manage_login 'google' %}">Google</a><img
-			class="hidden-phone" src="{% static 'img/google_img.png' %}"
-			style="padding: 0px;"></li>
-		{% comment %}<li><a tabindex="-1" href="{% url socialauth_begin 'linkedin' %}">LinkedIn</a><img
-			class="hidden-phone" src="{% static 'img/linkedin_img.png' %}"
-			style="padding: 0px;"></li>
-		<li><a tabindex="-1" href="{% url socialauth_begin 'yahoo' %}">Yahoo</a><img
-			class="hidden-phone" src="{% static 'img/yahoo_img.png' %}"
-			style="padding: 0px;"></li>{% endcomment %}
+	    {% for login_method in MANAGE_LOGIN_METHODS %}
+	      {% if login_method.enabled %}
+		<li><a tabindex="-1" href="{% url 'manage_login' login_method.backend %}">{{ login_method.name }}
+		{% if login_method.local_image %}
+			<img class="hidden-phone" src="{% static login_method.local_image %}" style="padding: 0px;">
+		{% endif %}
+		{% if login_method.image_url %}
+			<img class="hidden-phone" src="{{ login_method.image_url }}" style="padding: 0px;">
+		{% endif %}
+		{% if login_method.fa_style %}
+			<i class="fa {{ login_method.fa_style }} fa-2x"></i>
+		{% endif %}
+			</a></li>
+	      {% endif %}
+	    {% endfor %}
 	</ul>
 </li>
 {% endif %}

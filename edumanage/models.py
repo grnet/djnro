@@ -3,13 +3,16 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes import fields
 from django.utils.text import capfirst
 from django.core import exceptions
 from django.conf import settings
-from django.contrib.auth.models import User
 from django import forms
 from django.core.exceptions import ValidationError
+
+
+def get_choices_from_settings(setting):
+    return getattr(settings, setting, tuple())
 
 
 class MultiSelectFormField(forms.MultipleChoiceField):
@@ -93,11 +96,6 @@ class MultiSelectField(models.Field):
         value = self._get_val_from_obj(obj)
         return self.get_db_prep_value(value)
 
-# needed for South compatibility
-
-from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], ["^edumanage\.models\.MultiSelectField"])
-
 ERTYPES = (
     (1, 'IdP only'),
     (2, 'SP only'),
@@ -130,11 +128,11 @@ class Name_i18n(models.Model):
     Name in a particular language
     '''
 
-    name = models.CharField(max_length=80)
-    lang = models.CharField(max_length=5, choices=settings.URL_NAME_LANGS)
+    name = models.CharField(max_length=255)
+    lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = fields.GenericForeignKey('content_type', 'object_id')
 
     def __unicode__(self):
         return self.name
@@ -183,11 +181,11 @@ class URL_i18n(models.Model):
         ('policy', 'Policy'),
     )
     url = models.CharField(max_length=180, db_column='URL')
-    lang = models.CharField(max_length=5, choices=settings.URL_NAME_LANGS)
+    lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     urltype = models.CharField(max_length=10, choices=URLTYPES, db_column='type')
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = fields.GenericForeignKey('content_type', 'object_id')
 
     class Meta:
         verbose_name = "Url (i18n)"
@@ -221,8 +219,10 @@ class InstServer(models.Model):
     '''
     Server of an Institution
     '''
-    instid = models.ForeignKey("Institution")
-    ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
+    # instid = models.ForeignKey("Institution", null=True)
+    # instid_m2m = models.ManyToManyField('Institution', related_name='servers_tmp', default = 'none')
+    instid = models.ManyToManyField('Institution', related_name='servers', blank=True)
+    ertype = models.PositiveIntegerField(choices=ERTYPES, db_column='type')
     # ertype:
     # 1: accept if instid.ertype: 1 (idp) or 3 (idpsp)
     # 2: accept if instid.ertype: 2 (sp) or 3 (idpsp)
@@ -236,8 +236,8 @@ class InstServer(models.Model):
     #TODO: Add description field or label field
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
     rad_pkt_type = models.CharField(max_length=48, choices=RADTYPES, default='auth+acct', null=True, blank=True,)
-    auth_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
-    acct_port = models.PositiveIntegerField(max_length=5, null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
+    auth_port = models.PositiveIntegerField(null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
+    acct_port = models.PositiveIntegerField(null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
 
     secret = models.CharField(max_length=80)
@@ -262,17 +262,36 @@ class InstServer(models.Model):
             return self.name
         return self.host
 
-    # If a server is a proxy for a realm, can not change type to SP
     def clean(self):
+        if not self.pk:
+            return
         if self.ertype == 2:
-            realms = InstRealm.objects.filter(proxyto=self)
-            if len(realms) > 0:
-                text = str()
-                for realm in realms:
-                    text = text + ' ' + realm.realm
+            realms = self.instrealm_set.all()
+            # If a server is a proxy for a realm, can not change type to SP
+            if realms.count() > 0:
                 raise ValidationError(
-                    'You cannot change this server to SP (it is used by realms %s)' %
-                    ', '.join([r.realm for r in realms])
+                    {'ertype':_('You cannot change this server to %s (it is used by realms %s)') % (
+                            self.get_ertype_display(),
+                            ', '.join([r.realm for r in realms])
+                            )
+                     }
+                    )
+        if self.ertype == 1:
+            insts = self.instid.all()
+            # If a server is a client for an institution, can not change type to IdP
+            if insts.count() > 0:
+                insts_id = []
+                for i in insts:
+                    if i.institutiondetails and i.institutiondetails.oper_name:
+                        insts_id.append(i.institutiondetails.oper_name)
+                    else:
+                        insts_id.append('(%s)' % i.pk)
+                raise ValidationError(
+                    {'ertype':_('You cannot change this server to %s (it is associated to institutions %s)') % (
+                            self.get_ertype_display(),
+                            ', '.join(insts_id)
+                            )
+                     }
                     )
 
 
@@ -402,20 +421,20 @@ class ServiceLoc(models.Model):
     longitude = models.DecimalField(max_digits=12, decimal_places=8)
     latitude = models.DecimalField(max_digits=12, decimal_places=8)
     # TODO: multiple names can be specified [...] name in English is required
-    loc_name = generic.GenericRelation(Name_i18n)
+    loc_name = fields.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
-    contact = models.ManyToManyField(Contact, blank=True, null=True)
+    contact = models.ManyToManyField(Contact, blank=True)
     SSID = models.CharField(max_length=16)
     enc_level = MultiSelectField(max_length=64, choices=ENCTYPES, blank=True, null=True)
     port_restrict = models.BooleanField()
     transp_proxy = models.BooleanField()
     IPv6 = models.BooleanField()
     NAT = models.BooleanField()
-    AP_no = models.PositiveIntegerField(max_length=3)
+    AP_no = models.PositiveIntegerField()
     wired = models.BooleanField()
     # only urltype = 'info' should be accepted here
-    url = generic.GenericRelation(URL_i18n, blank=True, null=True)
+    url = fields.GenericRelation(URL_i18n, blank=True, null=True)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -449,8 +468,8 @@ class Institution(models.Model):
     '''
 
     realmid = models.ForeignKey("Realm")
-    org_name = generic.GenericRelation(Name_i18n)
-    ertype = models.PositiveIntegerField(max_length=1, choices=ERTYPES, db_column='type')
+    org_name = fields.GenericRelation(Name_i18n)
+    ertype = models.PositiveIntegerField(choices=ERTYPES, db_column='type')
 
     def __unicode__(self):
         return "%s" % ', '.join([i.name for i in self.org_name.all()])
@@ -484,17 +503,17 @@ class InstitutionDetails(models.Model):
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
     contact = models.ManyToManyField(Contact)
-    url = generic.GenericRelation(URL_i18n)
+    url = fields.GenericRelation(URL_i18n)
     # accept if ertype: 2 (sp) or 3 (idpsp) (Applies to the following field)
     oper_name = models.CharField(
-        max_length=24,
+        max_length=252,
         null=True,
         blank=True,
         help_text=_('The primary, registered domain name for your institution, eg. example.com.<br>This is used to derive the Operator-Name attribute according to RFC5580, par.4.1, using the REALM namespace.')
     )
     # accept if ertype: 1 (idp) or 3 (idpsp) (Applies to the following field)
-    number_user = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
-    number_id = models.PositiveIntegerField(max_length=6, null=True, blank=True, help_text=_("Number of issued e-identities (credentials) that may be used for authentication in eduroam service"))
+    number_user = models.PositiveIntegerField(null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
+    number_id = models.PositiveIntegerField(null=True, blank=True, help_text=_("Number of issued e-identities (credentials) that may be used for authentication in eduroam service"))
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -518,14 +537,14 @@ class Realm(models.Model):
     Realm
     '''
 
-    country = models.CharField(max_length=5, choices=settings.REALM_COUNTRIES)
-    stype = models.PositiveIntegerField(max_length=1, default=0, editable=False)
+    country = models.CharField(max_length=5, choices=get_choices_from_settings('REALM_COUNTRIES'))
+    stype = models.PositiveIntegerField(default=0, editable=False)
     # TODO: multiple names can be specified [...] name in English is required
-    org_name = generic.GenericRelation(Name_i18n)
+    org_name = fields.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=32)
     address_city = models.CharField(max_length=24)
     contact = models.ManyToManyField(Contact)
-    url = generic.GenericRelation(URL_i18n)
+    url = fields.GenericRelation(URL_i18n)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -539,6 +558,17 @@ class Realm(models.Model):
             'country': self.country,
         }
 
+    def get_name(self, lang=None):
+        name = ', '.join([i.name for i in self.org_name.all()])
+        if not lang:
+            return name
+        else:
+            try:
+                name = self.org_name.get(lang=lang)
+                return name
+            except Exception:
+                return name
+
 
 # TODO: this represents a *database view* "realm_data", find a better way to write it
 class RealmData(models.Model):
@@ -548,17 +578,17 @@ class RealmData(models.Model):
 
     realmid = models.OneToOneField(Realm)
     # db: select count(institution.id) as number_inst from institution, realm where institution.realmid == realm.realmid
-    number_inst = models.PositiveIntegerField(max_length=5, editable=False)
+    number_inst = models.PositiveIntegerField(editable=False)
     # db: select sum(institution.number_user) as number_user from institution, realm where institution.realmid == realm.realmid
-    number_user = models.PositiveIntegerField(max_length=9, editable=False)
+    number_user = models.PositiveIntegerField(editable=False)
     # db: select sum(institution.number_id) as number_id from institution, realm where institution.realmid == realm.realmid
-    number_id = models.PositiveIntegerField(max_length=9, editable=False)
+    number_id = models.PositiveIntegerField(editable=False)
     # db: select count(institution.id) as number_IdP from institution, realm where institution.realmid == realm.realmid and institution.type == 1
-    number_IdP = models.PositiveIntegerField(max_length=5, editable=False)
+    number_IdP = models.PositiveIntegerField(editable=False)
     # db: select count(institution.id) as number_SP from institution, realm where institution.realmid == realm.realmid and institution.type == 2
-    number_SP = models.PositiveIntegerField(max_length=5, editable=False)
+    number_SP = models.PositiveIntegerField(editable=False)
     # db: select count(institution.id) as number_IdPSP from institution, realm where institution.realmid == realm.realmid and institution.type == 3
-    number_IdPSP = models.PositiveIntegerField(max_length=5, editable=False)
+    number_IdPSP = models.PositiveIntegerField(editable=False)
     # db: select greatest(max(realm.ts), max(institution.ts)) as ts from institution, realm where institution.realmid == realm.realmid
     ts = models.DateTimeField(editable=False)
 
@@ -581,11 +611,11 @@ class CatEnrollment(models.Model):
 
     ACTIVE = u"ACTIVE"
 
-    cat_inst_id = models.PositiveIntegerField(max_length=10)
+    cat_inst_id = models.PositiveIntegerField()
     inst = models.ForeignKey(Institution)
     url = models.CharField(max_length=255, blank=True, null=True, help_text="Set to ACTIVE if institution has CAT profiles")
-    cat_instance = models.CharField(max_length=50, choices=settings.CAT_INSTANCES)
-    applier = models.ForeignKey(User)
+    cat_instance = models.CharField(max_length=50, choices=get_choices_from_settings('CAT_INSTANCES'))
+    applier = models.ForeignKey(settings.AUTH_USER_MODEL)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:

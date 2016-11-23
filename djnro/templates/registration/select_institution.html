@@ -11,7 +11,7 @@
         Please do not continue if you are not the eduroam administrator for this institution.
         Any inappropriate requests will be reported directly to the institution, along with your name and email.
     </div>
-    <form method="POST" class="form-horizontal" action="{% url selectinst %}">
+    <form method="POST" class="form-horizontal" action="{% url 'selectinst' %}">
         {% csrf_token %}
         {% if form.non_field_errors %}
         <p class="error">

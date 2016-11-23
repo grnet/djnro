@@ -11,7 +11,7 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<form class="" method="post" action="{% url altlogin %}">
+						<form class="" method="post" action="{% url 'altlogin' %}">
 							{% if form.non_field_errors %} {% for err in form.non_field_errors %}
 							<div class="form-group error ">
 								<div class="controls error">
@@ -40,7 +40,7 @@
                                                                         {% if next %}
 									<input type="hidden" name="next" value="{{ next }}" />
                                                                         {% else %}
-									<input type="hidden" name="next" value="{% url overview %}" />
+									<input type="hidden" name="next" value="{% url 'overview' %}" />
                                                                         {% endif %}
 								</div>
 							</div>

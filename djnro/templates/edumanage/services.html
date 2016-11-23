@@ -36,12 +36,12 @@
 			<tbody>
 			{% for service in services %}
 		    	<tr class="GradeC">
-		        	<td><a href="{% url services service.pk %}">{% tolocale service LANGUAGE_CODE %}</a></td>
+		        	<td><a href="{% url 'services' service.pk %}">{% tolocale service LANGUAGE_CODE %}</a></td>
 		        	<td>{{service.address_street}}<br>{{service.address_city}}</td>
 		        	<td>{{service.SSID}}</td>
 		            <td>{% for enc in service.enc_level %}{% if enc == '' %}-{% else %}{{enc}}{% if not forloop.last%},{% endif %}{% endif %}{% endfor %}</td>
 		        	<td>{{service.AP_no}}</td>
-		        	<td style="text-align: center;"><a href="{% url edit-services service.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_service_{{service.pk}}" data-servicename="{% tolocale service LANGUAGE_CODE%}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
+		        	<td style="text-align: center;"><a href="{% url 'edit-services' service.pk %}" class="btn btn-small">{% trans "edit" %}</a> <a href="#" id="del_service_{{service.pk}}" data-servicename="{% tolocale service LANGUAGE_CODE%}" class="btn btn-small btn-warning">{% trans "delete" %}</a></td>
 		        </tr>
 			{% endfor %}
 			</tbody>
@@ -67,7 +67,7 @@
 </div>
 <div>
 	{% if institution.ertype == 2 or institution.ertype == 3 %}
-		<a href="{% url edit-services %}" class="btn btn-primary">
+		<a href="{% url 'edit-services' %}" class="btn btn-primary">
 			+ {% trans "Add a new location" %}
 		</a>
 	{% endif %}
@@ -164,7 +164,7 @@ $(document).ready(function(){
 
 	$("#delserviceSubmit").click(function(){
 		$.ajax({
-			url:"{% url del-service %}?service_pk="+server_id,
+			url:"{% url 'del-service' %}?service_pk="+server_id,
 			type: "GET",
 			success: function(data){
 				if (data.error){

@@ -86,12 +86,12 @@
 			<div class="row">
 				<div class="col-md-12" style="margin-top: 20px;">
 					<div class="col-md-12">
-						<a class="btn btn-primary" href="{% url edit-institution institution.pk %}">{% trans "Edit" %}</a>
+						<a class="btn btn-primary" href="{% url 'edit-institution' institution.pk %}">{% trans "Edit" %}</a>
 				    </div>
 			    </div>
 			</div>
   		{% else %}
-  			<div>{% trans "No institution details defined yet for" %} {% tolocale institution LANGUAGE_CODE%} <a href="{% url edit-institution institution.pk %}" class="btn btn-small btn-primary">{% trans "edit" %}</a></div>
+  			<div>{% trans "No institution details defined yet for" %} {% tolocale institution LANGUAGE_CODE%} <a href="{% url 'edit-institution' institution.pk %}" class="btn btn-small btn-primary">{% trans "edit" %}</a></div>
   		{% endif %}
 	{% else %}
     	<p>{% trans "No institution defined" %}</p>

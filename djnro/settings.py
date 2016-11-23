@@ -24,7 +24,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -38,6 +38,9 @@ LANGUAGES = (
     ('el', _('Greek')),
     ('en', _('English')),
 )
+
+# Use a custom user model (as replacement for longerusername)
+AUTH_USER_MODEL = 'accounts.User'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -70,7 +73,7 @@ MEDIA_URL = ''
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/media/'
 
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
@@ -101,6 +104,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'edumanage.context_processors.country_code',
     'edumanage.context_processors.cat_instances',
+    'edumanage.context_processors.manage_login_methods',
     'social.apps.django_app.context_processors.backends',
     'social.apps.django_app.context_processors.login_redirect',
 )
@@ -121,13 +125,13 @@ MIDDLEWARE_CLASSES = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'djangobackends.shibauthBackend.shibauthBackend',
+    # 'djangobackends.shibauthBackend.shibauthBackend',
     # 'django_auth_ldap.backend.LDAPBackend',
-    'social.backends.twitter.TwitterOAuth',
-    'social.backends.google.GoogleOpenIdConnect',
+    # 'social.backends.twitter.TwitterOAuth',
+    # 'social.backends.google.GoogleOpenIdConnect',
     # 'social.backends.facebook.FacebookOAuth2',
 
-    'social.backends.google.GoogleOAuth2',
+    # 'social.backends.google.GoogleOAuth2',
     # 'social.backends.google.GoogleOAuth',
     # 'social.backends.linkedin.LinkedinOAuth2',
     # 'social.backends.yahoo.YahooOpenId',
@@ -135,6 +139,16 @@ AUTHENTICATION_BACKENDS = (
 
     'django.contrib.auth.backends.ModelBackend',
 )
+
+# Include a minimal version (matching original hard-coded list in the welcome_manage.html template)
+# Override this in local_settings.py
+MANAGE_LOGIN_METHODS = (
+  { 'backend': 'shibboleth', 'enabled': True, 'class': 'djangobackends.shibauthBackend.shibauthBackend', 'name': 'Shibboleth', 'local_image': 'img/image_shibboleth_logo_color.png' },
+  { 'backend': 'google-oauth2', 'enabled': True, 'class': 'social.backends.google.GoogleOAuth2', 'name': 'Google', 'fa_style': 'fa fa-google fa-2x' },
+  { 'backend': 'twitter', 'enabled': True, 'class': 'social.backends.twitter.TwitterOAuth', 'name': 'Twitter', 'fa_style': 'fa fa-twitter fa-2x' },
+)
+# Note: we are not explicitly adding backends from this list - they're already
+# included in AUTHENTICATION_BACKENDS anyway.
 
 ROOT_URLCONF = 'djnro.urls'
 
@@ -150,7 +164,6 @@ TEMPLATE_DIRS = (
 )
 
 INSTALLED_APPS = (
-    'longerusername',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -158,14 +171,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.flatpages',
-    'django.contrib.markup',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'django.contrib.staticfiles',
     'social.apps.django_app.default',
     'edumanage',
     'accounts',
-    'south',
     'registration',
     'tinymce',
     'utils',
@@ -177,32 +187,65 @@ INSTALLED_APPS = (
 # the site admins on every HTTP 500 error when DEBUG=False.
 # See http://docs.djangoproject.com/en/dev/topics/logging for
 # more details on how to customize your logging configuration.
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'filters': {
-#         'require_debug_false': {
-#             '()': 'django.utils.log.RequireDebugFalse'
-#         }
-#     },
-#     'handlers': {
-#         'mail_admins': {
-#             'level': 'ERROR',
-#             'filters': ['require_debug_false'],
-#             'class': 'django.utils.log.AdminEmailHandler'
-#         }
-#     },
-#     'loggers': {
-#         'django.request': {
-#             'handlers': ['mail_admins'],
-#             'level': 'ERROR',
-#             'propagate': True,
-#         },
-#     }
-# }
 
+# DEFAULT_LOGGING copied over from django/utils/log.py:
 
-AUTH_PROFILE_MODULE = 'accounts.UserProfile'
+# Mildly customized default logging for Django.
+# This sends an email to the site admins on every HTTP 500 error - but skips
+# for SuspiciousOperation of type DisallowedHost.
+# Depending on DEBUG, all other log records are either sent to
+# the console (DEBUG=True) or discarded by mean of the NullHandler (DEBUG=False).
+from utils.logging import skip_disallowed_host_suspicious_operations
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+	'skip_disallowed_host_suspicious_operations': {
+	    '()': 'django.utils.log.CallbackFilter',
+	    'callback': skip_disallowed_host_suspicious_operations,
+	},
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+        },
+        'null': {
+            'class': 'logging.NullHandler',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false','skip_disallowed_host_suspicious_operations'],
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'py.warnings': {
+            'handlers': ['console'],
+        },
+    }
+}
+
 
 LOGIN_URL = '/manage/login/'
 

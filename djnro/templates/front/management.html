@@ -17,7 +17,7 @@
     <h5>AAI Federation</h5>
     <hr>
     <p>{% blocktrans %}Authentication and authorization are carried out through a{% endblocktrans %} <a href="http://shibboleth.net/products/service-provider.html">Shibboleth SP</a>.</p>
-    <p>{% blocktrans %}The following attributes are required for administrators and must be released by their home IdPs to the SP{% endblocktrans %} {% trans "according to the" %} <a href="http://aai.grnet.gr/documentation">{% trans "policy and procedures documentation" %}</a> {% trans "provided by the GRNET AAI federation" %}:
+    <p>{% blocktrans %}The following attributes are required for administrators and must be released by their home IdPs to the SP{% endblocktrans %} {% trans "according to the" %} <a href="http://aai.grnet.gr/documentation">{% trans "policy and procedures documentation" %}</a> {% trans "provided by the" %} {{ FEDERATION_NAME }}:
         <table class="table table-bordered">
             <thead><tr><th>{% trans "Attribute" %}</th><th>{% trans "Description" %}</th></tr></thead>
             <tbody>
@@ -35,6 +35,6 @@
         <p>{% blocktrans %}After the first login, administrators are asked to associate their account with the institution they want to manage. Their choice must then be ratified by the operators of their management application. Following that, they will be notified through e-mail and they will then be able to start using the management application.{% endblocktrans %}</p>
         <h5>Metadata</h5>
         <hr>
-        <p>{% blocktrans %}Among other things, the metadata provided by administrators through the management application are used to compile database data for the federation{% endblocktrans %}: <a href="{% url instxml %}">institution.xml</a>, <a href="{% url realmxml %}">realm.xml</a>, <a href="{% url realmdataxml %}">realm_data.xml</a></p>
+        <p>{% blocktrans %}Among other things, the metadata provided by administrators through the management application are used to compile database data for the federation{% endblocktrans %}: <a href="{% url 'instxml' %}">institution.xml</a>, <a href="{% url 'realmxml' %}">realm.xml</a>, <a href="{% url 'realmdataxml' %}">realm_data.xml</a></p>
 </div>
 {% endblock %}

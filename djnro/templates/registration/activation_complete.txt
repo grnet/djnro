@@ -1,4 +1,4 @@
 Your account with username “{{ user.username }}” has been activated.
 You may login to eduroam management using the following URL:
 
-    https://{{ site.domain }}{% url manage %}
+    https://{{ site.domain }}{% url 'manage' %}

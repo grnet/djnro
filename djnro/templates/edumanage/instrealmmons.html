@@ -42,7 +42,7 @@
         	</td>
         	<td style="text-align: center;">
 
-        		<a href="{% url edit-instrealmmon realm.pk %}" class="btn btn-small">{% trans "edit" %}</a>
+        		<a href="{% url 'edit-instrealmmon' realm.pk %}" class="btn btn-small">{% trans "edit" %}</a>
         		<a href="#" id="del_instrealmmon_{{realm.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
         	</td>
         		<td style="text-align: center;">
@@ -61,14 +61,14 @@
                     </dl>
                     </div>
 <div class="span6">
-                <a href="{% url edit-monlocauthpar realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini">{% trans "edit" %}</a>
+                <a href="{% url 'edit-monlocauthpar' realm.pk realm.monlocalauthnparam.pk %}" class="btn btn-mini">{% trans "edit" %}</a>
                 <a href="#" id="del_monlocauthpar_{{realm.monlocalauthnparam.pk}}" data-realmname="{{realm.realm}}" class="btn btn-small btn-warning">{% trans "delete" %}</a>
 
 </div>
 </div>
 
         		{% else %}
-        		{% if not realm.monlocalauthnparam %}<a href="{% url edit-monlocauthpar realm.pk %}" class="btn btn-mini btn-primary">{% trans "add" %}</a>{% endif %}
+        		{% if not realm.monlocalauthnparam %}<a href="{% url 'edit-monlocauthpar' realm.pk %}" class="btn btn-mini btn-primary">{% trans "add" %}</a>{% endif %}
         		{% endif %}
         		</td>
 
@@ -79,7 +79,7 @@
       	</tbody>
       </table>
       {% endif %}
-      <div><a href="{% url edit-instrealmmon %}" class="btn btn-primary">{% trans "Add monitored realm" %}</a></div>
+      <div><a href="{% url 'edit-instrealmmon' %}" class="btn btn-primary">{% trans "Add monitored realm" %}</a></div>
 
 <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -182,7 +182,7 @@ $('[id^=del_instrealmmon_]').click(function(){
 
 $("#delrealmSubmit").click(function(){
     $.ajax({
-        url:"{% url del-instrealmmon %}/?instrealmmon_pk="+instrealmmon_pk,
+        url:"{% url 'del-instrealmmon' %}/?instrealmmon_pk="+instrealmmon_pk,
         type: "GET",
         success: function(data){
             if (data.error){
@@ -212,7 +212,7 @@ $('[id^=del_monlocauthpar_]').click(function(){
 
 $("#delmonlocauthparSubmit").click(function(){
     $.ajax({
-        url:"{% url del-monlocauthpar %}/?monlocauthpar_pk="+monlocauthpar_pk,
+        url:"{% url 'del-monlocauthpar' %}/?monlocauthpar_pk="+monlocauthpar_pk,
         type: "GET",
         success: function(data){
             if (data.error){
