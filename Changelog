@@ -1,3 +1,11 @@
+Version 1.1
+==============
+
+	- Django 1.8
+	  (breaking changes, see the docs for upgrades/migrations)
+	- many-to-many relationships for servers
+	- lots of fixes
+
 Version 1
 ==============
 
