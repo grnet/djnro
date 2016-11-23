@@ -1022,7 +1022,7 @@ msgid "In"
 msgstr "Στην"
 
 #: djnro/templates/front/participants.html:20
-msgid "eduroam is provided by the following instituitons/organizations"
+msgid "eduroam is provided by the following institutions/organizations"
 msgstr "το eduroam παρέχεται από τους ακόλουθους φορείς/οργανισμούς"
 
 #: djnro/templates/front/world.html:284
