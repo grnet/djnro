@@ -2,6 +2,15 @@
 <%!
 import re
 %>\
+<%
+for inst in insts:
+    if inst['type'] in (2, 3) and 'clients' in inst:
+        for client in inst['clients']:
+            if 'usecount' in clients[client]:
+                clients[client]['usecount'] = clients[client]['usecount'] + 1
+            else:
+                clients[client]['usecount'] = 1
+%>\
 % for inst in insts:
 % if inst['type'] in (2, 3) and 'clients' in inst:
 #{{{${' ' + inst['id'] if 'id' in inst else ''}
@@ -19,7 +28,7 @@ ipaddr = re.split(r'/(?=[0-9]{1,2}$)', clients[client]['host'])
         netmask         = ${ipaddr[1]}
 % endif
         nastype         = other
-% if 'id' in inst:
+% if clients[client]['usecount'] == 1 and 'id' in inst:
         grnetopname     = 1${inst['id']}
 % endif
         eduroamspco     = GR

@@ -1,19 +1,29 @@
 {% load i18n %}
 {% load template_maybe %}
+{% load staticfiles %}
 
 <footer class="stickyfooter">
     <div>
         <div class="container">
             {% if user.is_authenticated %}
-                {% trans "If you have any questions or need help, contact" %} {{ BRANDING.helpdesk.name }} (<a href="{{ BRANDING.helpdesk.uri}}">{{BRANDING.helpdesk.uri}}</a>) - {{BRANDING.helpdesk.phone}}</br>
+                {% trans "If you have any questions or need help, contact" %} {{ BRANDING.helpdesk.name }} (<a href="{{ BRANDING.helpdesk.uri}}">{{BRANDING.helpdesk.uri}}</a>) - {{BRANDING.helpdesk.phone}}<br>
             {% endif %}
-            {% trans "This is a service provided by" %} <a href="{{ BRANDING.service_provided_by.url}}" target="_blank">{{BRANDING.service_provided_by.name}}</a>
+            {% trans "This is a service provided by" %} <a href="{{ BRANDING.service_provider.url}}" target="_blank">{{BRANDING.service_provider.name}}</a>
             {% for media in BRANDING.social_media %}
                 <a href="{{media.url}}" target="_blank">
-                    <i class="{{media.icon}}"></i>
+		{% if media.local_image %}
+                    <img src="{% static media.local_image %}" style="padding: 0px;">
+                {% comment "backwards compatibility: local_image == icon" %}{% endcomment %}
+                {% elif media.icon %}
+                    <img src="{% static media.icon %}" style="padding: 0px;">
+		{% elif media.image_url %}
+                    <img src="{{ media.image_url }}" style="padding: 0px;">
+		{% elif media.fa_style %}
+                    <i class="fa {{ media.fa_style }}"></i>
+		{% endif %}
                 </a>
             {% endfor %}
-            Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
+            <br>Powered by <a href="http://djnro.grnet.gr/" target="_blank">DjNRO</a> v{{VERSION}}
             {% if "partial/extra.footer.html"|template_exists %}
             <div class="">
                 {% include_maybe "partial/extra.footer.html" %}

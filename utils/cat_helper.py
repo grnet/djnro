@@ -66,6 +66,7 @@ class CatQuery(object):
         if not 'INST_IDENTIFIER' in kwargs.keys():
             raise Exception('INST_IDENTIFIER parameter is missing')
         response = self.post_request(kwargs)
+        response = self.curate_response(response)
         r = objectify.fromstring(response)
         try:
             assert r.success is not None

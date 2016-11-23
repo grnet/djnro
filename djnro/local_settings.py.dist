@@ -21,6 +21,9 @@ ALLOWED_HOSTS = ['*']
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '<put something really random here, eg. %$#%@#$^2312351345#$%3452345@#$%@#$234#@$hhzdavfsdcFDGVFSDGhn>'
 
+# Google Maps API key, see https://developers.google.com/maps/documentation/javascript/get-api-key#key
+GOOGLE_MAPS_API_KEY = 'thisisthelongapikey'
+
 # Check for headers indicating the request was received on a secure SSL connection
 # Uncomment this if you are running DjNRO behind an HTTP proxy that sets this
 # header for SSL connections (and protects it for non-SSL connections).
@@ -118,16 +121,16 @@ NRO_COUNTRY_CODE = 'tld'
 # main domain url used in right top icon, eg. http://www.grnet.gr
 NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 # NRO federation name
-NRO_FEDERATION_NAME = "GRNET AAI federation"
-# developer info for footer
-NRO_PROV_BY_DICT = {"name": "GRNET NOC", "url": "//noc.grnet.gr"}
-#provider social media contact (Use: // to preserve https)
+NRO_FEDERATION_NAME = "AAI federation"
+# "provided by" info for footer
+NRO_PROV_BY_DICT = {"name": "EXAMPLE NRO TEAM", "url": "http://noc.example.com"}
+# social media contact (Use: // to preserve https)
 NRO_PROV_SOCIAL_MEDIA_CONTACT = [
-    {"url": "//facebook.com/noc.grnet.gr", "icon":"/static/img/facebook_img.png", "name":"Facebook"},
-    {"url": "//twitter.com/grnetnoc", "icon":"/static/img/twitter_img.png", "name":"Twitter"},
+    {"url": "//facebook.com/example.com", "fa_style":"fa-facebook", "name":"Facebook"},
+    {"url": "//twitter.com/example_com", "fa_style":"fa-twitter", "name":"Twitter"},
 ]
 
-#Helpdesk, used in base.html:
+# Helpdesk, used in base.html:
 NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
 #Countries for Realm model:
@@ -172,7 +175,7 @@ MANAGE_LOGIN_METHODS = (
 EXTRA_AUTHENTICATION_BACKENDS += tuple([ m['class'] for m in  MANAGE_LOGIN_METHODS if m['enabled'] and m['class'] ])
 
 
-#Shibboleth attribute map
+# Shibboleth attribute map
 SHIB_USERNAME = ['HTTP_EPPN']
 SHIB_MAIL = ['mail', 'HTTP_MAIL', 'HTTP_SHIB_INETORGPERSON_MAIL']
 SHIB_FIRSTNAME = ['HTTP_SHIB_INETORGPERSON_GIVENNAME']
@@ -207,12 +210,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 #         "CAT_API_KEY": "<provided API key>",
 #         "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
 #         "CAT_PROFILES_URL": "https://cat.eduroam.org/",
-#         "CAT_IDPMGMT_URL": "https://cat.eduroam.org/admin/overview_federation.php"
+#         "CAT_IDPMGMT_URL": "https://cat.eduroam.org/admin/overview_idp.php"
 #     },
 #     'testing': {
 #         "CAT_API_KEY": "<provided API key>",
 #         "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
 #         "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
-#         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_federation.php"
+#         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_idp.php"
 #     },
 # }

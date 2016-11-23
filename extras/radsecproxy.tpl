@@ -18,6 +18,15 @@ def wildcard_realm_least_precedence(a, b):
     else:
         return 0
 %>\
+<%
+for inst in insts:
+    if inst['type'] in (2, 3) and 'clients' in inst:
+        for client in inst['clients']:
+            if 'usecount' in clients[client]:
+                clients[client]['usecount'] = clients[client]['usecount'] + 1
+            else:
+                clients[client]['usecount'] = 1
+%>\
 % for inst in insts:
 % if True in [c in inst for c in ['clients', 'realms']]:
 #{{{${' ' + inst['id'] if 'id' in inst else ''}
@@ -28,7 +37,7 @@ def wildcard_realm_least_precedence(a, b):
 % else:
 rewrite rewrite-${client}-sp {
         include /etc/radsecproxy.conf.d/rewrite-default-sp.conf
-% if 'id' in inst:
+% if clients[client]['usecount'] == 1 and 'id' in inst:
         addAttribute 126:1${inst['id']}
 % endif
 }
@@ -38,7 +47,7 @@ client ${client} {
         type udp
         secret ${clients[client]['secret'] | percent_escape}
         fticksVISCOUNTRY GR
-% if 'id' in inst:
+% if clients[client]['usecount'] == 1 and 'id' in inst:
         fticksVISINST 1${inst['id']}
 % endif
         rewriteIn rewrite-${client}-sp
