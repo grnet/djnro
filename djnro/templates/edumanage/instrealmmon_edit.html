@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block extrajs %}
-<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?{% if API_KEY %}key={{ API_KEY }}{% endif %}"></script>
 {% endblock %}
 
 {% block homeactive %}{% endblock %}

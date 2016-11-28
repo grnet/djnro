@@ -36,10 +36,10 @@
 {% endblock %}
 
 {% block content %}
-	<div id="map_canvas" data-center-lat="{{ MAP_CENTER.0 }}" data-closest="{% url 'closest' %}"" data-center-lng="{{ MAP_CENTER.1 }}" data-pin="{% static 'img/edupin.png' %}" data-group="{% static 'img/edugroup.png' %}" style="width:100%"></div>
+	<div id="map_canvas" data-center-lat="{{ MAP_CENTER.0 }}" data-closest="{% url 'closest' %}" data-center-lng="{{ MAP_CENTER.1 }}" data-pin="{% static 'img/edupin.png' %}" data-group="{% static 'img/edugroup.png' %}" style="width:100%"></div>
 {% endblock %}
 
 {% block extrajs %}
-<script type="text/javascript" src="//maps.google.com/maps/api/js?v=3.exp&language=en&libraries=places"></script>
+<script type="text/javascript" src="//maps.google.com/maps/api/js?v=3.exp{% if API_KEY %}&amp;key={{ API_KEY }}{% endif %}&amp;language=en&amp;libraries=places"></script>
 <script type="text/javascript" src="{% static 'js/geolocate.js' %}"></script>
 {% endblock %}
