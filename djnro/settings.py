@@ -75,7 +75,7 @@ ADMIN_MEDIA_PREFIX = '/media/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(PROJECT_DIR, 'static'),
 ]
 
 
@@ -256,7 +256,6 @@ EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 # Request session cookies to be marked as secure
 SESSION_COOKIE_SECURE = True
 
-TINYMCE_JS_URL = '/static/js/tinymce/tiny_mce.js'
 
 TINYMCE_DEFAULT_CONFIG = {
     'extended_valid_elements' :  'iframe[src|width|height|name|align]',
