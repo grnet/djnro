@@ -193,6 +193,33 @@ Create a superuser, it comes in handy for access to Django admin. And then run s
 
 Now you should have a clean database with all the tables created.
 
+## Collecting static files
+
+**Starting with version 1.1.1 the following process for provisioning
+  static files is introduced in order to align with the
+  Django-recommended practice and remove unrelated files from DjNRO.**
+
+You need to run the following command in order to *collect* static
+files from DjNRO and all other sources to the folder the HTTP server (such
+as Apache) will serve them from.
+
+This folder by default is `static` but this can be changed by setting
+`STATIC_ROOT` in `local_settings.py`. This folder is expected to be
+served under `/static` by default, but this can also be configured by
+setting `STATIC_URL` in `local_settings.py`. If the defaults are
+overridden, the HTTP server configuration should be updated accordingly.
+
+	./manage.py collectstatic
+
+Please note the directory `static` must be created manually before
+running this command.
+
+This step will have to be repeated whenever an existing installation
+is updated; at such time you should run the command with the
+`--clear` parameter, but you should be careful not to remove any file
+you manually copied to the `static` folder. Please run the command
+with `--help` to see an explanation of all available options.
+
 ## Running the server
 We suggest using Apache and mod_wsgi. Below is an example configuration:
 
