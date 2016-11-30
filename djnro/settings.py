@@ -256,11 +256,14 @@ EDUROAM_KML_URL = 'http://monitor.eduroam.org/kml/all.kml'
 # Request session cookies to be marked as secure
 SESSION_COOKIE_SECURE = True
 
+TINYMCE_COMPRESSOR = True
 
 TINYMCE_DEFAULT_CONFIG = {
     'extended_valid_elements' :  'iframe[src|width|height|name|align]',
-    'plugins': "table,spellchecker,paste,searchreplace",
+    'plugins': "table,paste,searchreplace",
     'theme': "advanced",
+    'entity_encoding': 'raw',
+    'entities': '160,nbsp,173,shy,8194,ensp,8195,emsp,8201,thinsp,8204,zwnj,8205,zwj,8206,lrm,8207,rlm',
 }
 
 
