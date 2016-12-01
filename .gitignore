@@ -3,7 +3,8 @@ djnro/local_settings.py
 *.pyc
 *.db
 all.kml
-static/img/logo_holder.png
-static/img/logo_small.png
-static/img/right_logo_small.png
+djnro/static/img/logo_holder.png
+djnro/static/img/logo_small.png
+djnro/static/img/right_logo_small.png
 djnro/templates/partial/extra.footer.html
+/static/
