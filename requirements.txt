@@ -1,7 +1,7 @@
 Django>=1.8.11,<1.9a
 argparse>=1.2.1
 django-registration==2.0.4
-django-tinymce==1.5.3
+django-tinymce>=2.3.0,<3.0a
 ipaddr==2.1.11
 python-social-auth==0.2.14
 requests==2.7.0
