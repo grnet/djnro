@@ -106,6 +106,12 @@ CACHES = {
 #     }
 # }
 
+#### SITES FRAMEWORK ####
+# You must configure (e.g. via Django admin) your canonical public
+# hostname for the site object that matches the SITE_ID configured in
+# settings.py or you can add a different object and override it here:
+# SITE_ID = 1
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.

@@ -193,6 +193,17 @@ Create a superuser, it comes in handy for access to Django admin. And then run s
 
 Now you should have a clean database with all the tables created.
 
+## Setting up the canonical hostname
+
+You must configure the canonical public hostname of your site for the
+Django Sites Framework to work properly. This is used for example when
+a stable, fully qualified URL must be produced (irrespective of the
+HTTP host). You can use the Django admin interface (see the section
+about *Initial Data*) and browse to
+`https://<hostname>/admin/sites/site/1/` to modify the domain name for
+the default object that was created upon installation, or you can
+create another object and update `SITE_ID` in settings.
+
 ## Collecting static files
 
 **Starting with version 1.1.1 the following process for provisioning
