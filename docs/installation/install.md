@@ -214,6 +214,11 @@ overridden, the HTTP server configuration should be updated accordingly.
 Please note the directory `static` must be created manually before
 running this command.
 
+**If you are upgrading from a version prior to 1.1.1, make sure you
+  backup any files you may have manually dropped into `static` before
+  you run this command! If you want such files to be preserved and
+  deployed by `collectstatic`, you can move them to `djnro/static`.**
+
 This step will have to be repeated whenever an existing installation
 is updated; at such time you should run the command with the
 `--clear` parameter, but you should be careful not to remove any file

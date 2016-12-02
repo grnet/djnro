@@ -1,9 +1,17 @@
+Version 1.1.1
+==============
+
+	- Static files are now handled via django.contrib.staticfiles
+	Read the relevant section in the install doc and make sure to
+	backup any files dropped into static/ before running collectstatic
+
 Version 1.1
 ==============
 
 	- Django 1.8
 	  (breaking changes, see the docs for upgrades/migrations)
 	- many-to-many relationships for servers
+	- configurable login methods
 	- lots of fixes
 
 Version 1
