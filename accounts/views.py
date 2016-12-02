@@ -2,7 +2,7 @@ import logging
 
 from django.conf import settings
 from django.core.mail import send_mail
-from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
@@ -98,7 +98,7 @@ def activate(request, activation_key):
             email = render_to_string(
                 'registration/activation_complete.txt',
                 {
-                    'site': Site.objects.get_current(),
+                    'site': get_current_site(request),
                     'user': account
                 }
             )

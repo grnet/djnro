@@ -46,6 +46,8 @@ AUTH_USER_MODEL = 'accounts.User'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en'
 
+# The canonical public hostname should be configured for the domain
+# attribute of the site object that matches SITE_ID
 SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not

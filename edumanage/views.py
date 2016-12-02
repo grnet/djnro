@@ -21,7 +21,7 @@ from django.contrib.auth import logout
 from django import forms
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.core.mail.message import EmailMessage
-from django.contrib.sites.models import Site
+from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib import messages
@@ -1701,7 +1701,7 @@ def geolocate(request):
 
 @never_cache
 def api(request):
-    current_site = Site.objects.get_current()
+    current_site = get_current_site(request)
     return render_to_response(
         'front/api.html',
         {'site': current_site},
@@ -1759,7 +1759,7 @@ def selectinst(request):
             useradded = userprofile.user
             useradded.email = mailField
             useradded.save()
-            user_activation_notify(userprofile)
+            user_activation_notify(request, userprofile)
             error = _(
                 "User account <strong>%s</strong> is pending activation."
                 " Administrators have been notified and will activate "
@@ -1795,8 +1795,8 @@ def selectinst(request):
             )
 
 
-def user_activation_notify(userprofile):
-    current_site = Site.objects.get_current()
+def user_activation_notify(request, userprofile):
+    current_site = get_current_site(request)
     subject = render_to_string(
         'registration/activation_email_subject.txt',
         {'site': current_site}
