@@ -185,13 +185,14 @@ In case one wants to extend some of the default settings (configured in `setting
 ## Database Sync
 Once you are done with `local_settings.py` run:
 
-	./manage.py syncdb
-
-Create a superuser, it comes in handy for access to Django admin. And then run south migration to complete:
-
 	./manage.py migrate
 
-Now you should have a clean database with all the tables created.
+Create a supe-ruser, it comes in handy for access to Django admin.
+
+	./manage.py createsuperuser
+
+Now you should have a clean database with all the tables created (and a
+single super-user).
 
 ## Setting up the canonical hostname
 
