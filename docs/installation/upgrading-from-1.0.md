@@ -71,6 +71,13 @@ The following sequence does the right thing:
 ./manage.py migrate --fake-initial
 ````
 
+## Static files
+
+Starting with version 1.1.1 it is necessary to *collect* static files
+from DjNRO and other sources to the folder the HTTP server will serve
+them from. See the particular section in the chapter
+[Installing DjNRO](install.md).
+
 ## Fix up database
 
 There are two minor differences that your migrated database may have compared to a newly generated one:
