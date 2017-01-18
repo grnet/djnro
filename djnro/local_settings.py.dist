@@ -225,3 +225,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 #         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_idp.php"
 #     },
 # }
+
+SENTRY = {
+    'activate': False,
+    'sentry_dsn': ''
+}

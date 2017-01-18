@@ -291,6 +291,8 @@ LINKEDIN_EXTRA_DATA = [('id', 'id'),
 
 CAT_INSTANCES = ()
 
+SENTRY = dict()
+
 import _version
 SW_VERSION = _version.VERSION
 
@@ -309,3 +311,20 @@ for var, val in [i for i in locals().items() if i[0].startswith('EXTRA_')]:
         locals()[name] += val  # append list
     except TypeError:
         locals()[name] = _dictmerge(locals()[name], val)  # merge dict
+
+if SENTRY.get('activate'):
+    import raven
+    sentry_dsn = os.getenv("SENTRY_DSN") or SENTRY['sentry_dsn']
+    if not sentry_dsn:
+        raise RuntimeError("Sentry dsn not configured neither as environmental"
+                           " variable nor in the settings.py file")
+
+    RAVEN_CONFIG = {
+        'dsn': sentry_dsn,
+        'release': raven.fetch_git_sha(BASE_DIR)
+    }
+    INSTALLED_APPS += ('raven.contrib.django.raven_compat',)
+    LOGGING['handlers']['sentry'] = {
+        'class': 'raven.contrib.django.handlers.SentryHandler'
+    }
+    LOGGING['loggers']['django.request']['handlers'] = ['sentry']
