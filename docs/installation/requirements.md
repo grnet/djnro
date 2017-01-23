@@ -20,7 +20,7 @@ DjNRO heavily depends on the following:
 * apache2 (We suggest apache with mod_rewrite enabled - use your preferred server in case you dont want to use shibboleth)
 * gettext: only if one will be editing and compiling translations
 * python-django-auth-ldap: if ldap authentication backend will be used.
-* sentry for error logging and aggregation through the use of raven library
+* raven: for error logging and aggregation to a Sentry instance
 
 ## Django Social Auth
 User authentication via social media is carried out by the [python-social-auth](http://http://django-social-auth.readthedocs.org/en/latest/index.html) package.
