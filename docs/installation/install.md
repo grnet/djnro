@@ -182,6 +182,19 @@ In case one wants to extend some of the default settings (configured in `setting
 		'django_debug_toolbar',
 	)
 
+#### Sentry integration
+In case you want to use the [sentry client](https://sentry.io/for/django/) 
+for error logging, the following steps are required
+
+1. Set up your [sentry project](https://docs.sentry.io/)
+2. Install raven library which is also defined in `requirements-optional.txt`
+3. Update your `local_settings.py` so that it contains the `SENTRY` variable as defined in `local_settings.py.dist`
+4. Update your `local_settings.py` with the correct configuration for sentry
+    - Set in your `local_settings.py` under the `SENTRY` variable the `activate` field to `True`
+    - Either add your DSN under the `SENTRY` variable in the `sentry_dsn` field **OR**
+    setup up in your environment the `SENTRY_DSN` environmental variable with your DSN as value
+    - In case you setup **both** DSN options (file variable and environmental variable), the environmental DSN will used
+
 ## Database Sync
 Once you are done with `local_settings.py` run:
 
