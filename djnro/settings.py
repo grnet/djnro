@@ -37,6 +37,7 @@ LOCALE_PATHS = (
 LANGUAGES = (
     ('el', _('Greek')),
     ('en', _('English')),
+    ('hu', _('Hungarian')),
 )
 
 # Use a custom user model (as replacement for longerusername)
@@ -261,6 +262,7 @@ TINYMCE_DEFAULT_CONFIG = {
 URL_NAME_LANGS = (
     ('en', 'English' ),
     ('el', 'Ελληνικά'),
+    ('hu', 'Magyar'),
 )
 
 SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
