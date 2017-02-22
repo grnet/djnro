@@ -38,6 +38,7 @@ LOCALE_PATHS = (
 LANGUAGES = (
     ('el', _('Greek')),
     ('en', _('English')),
+    ('es', _('Spanish')),
     ('hu', _('Hungarian')),
 )
 
@@ -263,6 +264,7 @@ TINYMCE_DEFAULT_CONFIG = {
 URL_NAME_LANGS = (
     ('en', 'English' ),
     ('el', 'Ελληνικά'),
+    ('es', 'Español'),
     ('hu', 'Magyar'),
 )
 
