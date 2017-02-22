@@ -40,6 +40,7 @@ LANGUAGES = (
     ('en', _('English')),
     ('es', _('Spanish')),
     ('hu', _('Hungarian')),
+    ('ro', _('Romanian')),
 )
 
 # Use a custom user model (as replacement for longerusername)
@@ -266,6 +267,7 @@ URL_NAME_LANGS = (
     ('el', 'Ελληνικά'),
     ('es', 'Español'),
     ('hu', 'Magyar'),
+    ('ro', 'Română'),
 )
 
 SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
