@@ -590,7 +590,7 @@ class RealmData(models.Model):
 
 
 class CatEnrollment(models.Model):
-    ''' Eduroam CAT enrollment '''
+    ''' eduroam CAT enrollment '''
 
     ACTIVE = u"ACTIVE"
 

@@ -857,7 +857,7 @@ msgid "transp_proxy"
 msgstr ""
 
 #: djnro/templates/front/index.html:371
-msgid "Eduroam in"
+msgid "eduroam in"
 msgstr ""
 
 #: djnro/templates/front/management.html:13
@@ -974,7 +974,7 @@ msgid "eduroam is provided by the following instituitons/organizations"
 msgstr ""
 
 #: djnro/templates/front/world.html:284
-msgid "Eduroam Worldwide"
+msgid "eduroam Worldwide"
 msgstr ""
 
 #: djnro/templates/overview/index.html:42
