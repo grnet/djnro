@@ -81,6 +81,7 @@ EXTRA_AUTHENTICATION_BACKENDS = (
 
 
 SHIB_AUTH_ENTITLEMENT = 'urn:mace:example.com:pki:user'
+SHIB_DOCUMENTATION_URL = 'https://yourfederation.example.com/documentation'
 SHIB_LOGOUT_URL = 'https://example.com/Shibboleth.sso/Logout'
 
 SERVER_EMAIL = "Example domain eduroam Service <noreply@example.com>"

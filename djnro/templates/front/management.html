@@ -17,12 +17,14 @@
     <h5>AAI Federation</h5>
     <hr>
     <p>{% blocktrans %}Authentication and authorization are carried out through a{% endblocktrans %} <a href="http://shibboleth.net/products/service-provider.html">Shibboleth SP</a>.</p>
-    <p>{% blocktrans %}The following attributes are required for administrators and must be released by their home IdPs to the SP{% endblocktrans %} {% trans "according to the" %} <a href="http://aai.grnet.gr/documentation">{% trans "policy and procedures documentation" %}</a> {% trans "provided by the" %} {{ FEDERATION_NAME }}:
+    <p>{% blocktrans %}The following attributes are required for administrators and must be released by their home IdPs to the SP{% endblocktrans %} {% trans "according to the" %} <a href="{{ SHIB_DOCUMENTATION_URL }}">{% trans "policy and procedures documentation" %}</a> {% trans "provided by the" %} {{ FEDERATION_NAME }}:
         <table class="table table-bordered">
             <thead><tr><th>{% trans "Attribute" %}</th><th>{% trans "Description" %}</th></tr></thead>
             <tbody>
             <tr class="success"><td>eduPersonPrincipalName</td><td>{% trans "Provides a string that uniquely identifies an administrator in the management application." %}</td></tr>
-            <tr class="success"><td>eduPersonEntitlement</td><td>{% trans "A specific URN value must be provided to authorize an administrator:" %} <strong>urn:mace:grnet.gr:eduroam:admin</strong></td></tr>
+            {% if SHIB_AUTH_ENTITLEMENT %}
+            <tr class="success"><td>eduPersonEntitlement</td><td>{% trans "A specific URN value must be provided to authorize an administrator:" %} <strong>{{ SHIB_AUTH_ENTITLEMENT }}</strong></td></tr>
+            {% endif %}
             <tr class="success"><td>mail</td><td>{% trans "The e-mail address (one or more) of the administrator. It is used for notifications from the management application. It may also be used for further communication, with prior consent." %}</td></tr>
             <tr class="info"><td>givenName (optional)</td><td>{% trans "The person's first name." %}</td></tr>
             <tr class="info"><td>sn (optional)</td><td>{% trans "The person's last name." %}</td></tr>
