@@ -292,3 +292,15 @@ SENTRY = {
 #         'cache_prefix':       '',
 #     }
 # }
+
+# Override the template for /connect in order to customize (among other
+# things) references specific to cat.eduroam.org for a different CAT
+# (production) instance: cat_mailing_list, cat_attribution,
+# cat_signed_by etc.
+# If this template is stored in djnro/templates/front/cat_connect it
+# will already be git-ignored.
+# Such a template needs to extend 'front/connect.html' and define blocks
+# to be overridden.
+# CAT_CONNECT_TEMPLATE = {
+#     'production': 'front/cat_connect/connect2.html',
+# }

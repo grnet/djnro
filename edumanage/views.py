@@ -1764,8 +1764,9 @@ def connect(request):
         dets.sort(cmp=locale.strcoll,
                   key=lambda x: unicode(x.institution.
                                         get_name(lang=request.LANGUAGE_CODE)))
+    template = settings_dict_get('CAT_CONNECT_TEMPLATE', cat_instance)
     return render_to_response(
-        'front/connect.html',
+        template or 'front/connect.html',
         {
             'institutions': dets,
             'institutions_cat': dets_cat,
