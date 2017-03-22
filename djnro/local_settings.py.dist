@@ -214,8 +214,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 # corresponding description in CAT_INSTANCES. Beware that pages accessible by end users
 # currently only show CAT information for the instance named 'production'.
 # You must also set the following parameters for each CAT instance in CAT_AUTH:
-# CAT_API_KEY: API key for authentication to CAT
-# CAT_API_URL: API endpoint URL
+# CAT_API_KEY: Admin API key for authentication to CAT
+# CAT_API_URL: Admin API endpoint URL
 # CAT_USER_API_URL: User API endpoint URL
 # CAT_PROFILES_URL: Base URL for Intitution Download Area pages
 # CAT_IDPMGMT_URL: URL For IdP Overview page
@@ -246,3 +246,49 @@ SENTRY = {
     'activate': False,
     'sentry_dsn': ''
 }
+
+# CAT User API proxy can optionally cache responses using a Django
+# cache backend. By default only expensive API actions (where responses
+# are not expected to change frequently) are cached for 10 minutes,
+# but a precise cache timeout (in seconds) can be configured for each
+# API action, through CAT_USER_API_CACHE_TIMEOUT, per CAT instance.
+# Note: For any API call to be cached, if the API response specifies a
+# non-zero expiry time, it will be honored by the proxy instead of the
+# configured timeout.
+# _5m = 5 * 60
+# _15m = 15 * 60
+# CAT_USER_API_CACHE_TIMEOUT = {
+#     'production': {
+#         'listAllIdentityProviders': _15m,
+#         'listIdentityProviders':    _15m,
+#         'orderIdentityProviders':   _15m,
+#         'listLanguages':            _15m,
+#         'listCountries':            _15m,
+#         'listProfiles':              _5m,
+#         'listDevices':               _5m,
+#         'generateInstaller':        _15m,
+#         'profileAttributes':         _5m,
+#         'sendLogo':                 _15m,
+#         'deviceInfo':                _5m,
+#     }
+# }
+
+# Parameters for CAT User API proxy, per instance:
+# redirect_downloads: Whether download requests should be redirected
+#   (this is the default) or proxied to CAT
+# allow_cross_origin: Whether CORS headers should be added to
+#   responses, so the API proxy may be used by other sites (not by
+#   default); can be set to True/False or 'origin'; this setting
+#   affects caching, so the cache should be flushed if it is changed
+# cache: A specific cache to use (a key from the CACHES setting)
+#   rather than the default; set to None to disable caching
+# cache_prefix: The key_prefix (see Django @cache_page) that will be
+#   used for deriving the cache key (no prefix by default)
+# CAT_USER_API_PROXY_OPTIONS = {
+#     'production': {
+#         'redirect_downloads': True,
+#         'allow_cross_origin': False,
+#         'cache':              'default',
+#         'cache_prefix':       '',
+#     }
+# }
