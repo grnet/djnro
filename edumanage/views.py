@@ -2473,3 +2473,11 @@ def get_nro_name(lang):
     return Realm.objects.\
         get(country=settings.NRO_COUNTRY_CODE).\
         get_name(lang=lang)
+
+def settings_dict_get(setting, *keys, **opts):
+    dct = getattr(settings, setting, {})
+    for k in keys:
+        dct = dct.get(k, {})
+    if dct == {}:
+        dct = opts.get('default', None)
+    return dct
