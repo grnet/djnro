@@ -68,7 +68,7 @@ from registration.models import RegistrationProfile
 from edumanage.decorators import (social_active_required,
                                   cache_page_ifreq)
 from django.utils.cache import (
-    patch_vary_headers
+    get_max_age, patch_response_headers, patch_vary_headers
 )
 from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
@@ -2463,6 +2463,11 @@ def cat_user_api_proxy(request, cat_instance):
         resp.setdefault('Access-Control-Allow-Method', 'GET')
     if cd is not None:
         resp.setdefault('Content-Disposition', cd)
+    resp.setdefault('Cache-Control', cc)
+    max_age = get_max_age(resp) or 0
+    del resp['Cache-Control']
+    if max_age > 0:
+        patch_response_headers(resp, max_age)
     return resp
     
 def to_xml(ele, encoding="UTF-8"):
