@@ -7,6 +7,7 @@ import datetime
 from xml.etree import ElementTree
 import locale
 from localectxmgr import setlocale
+import requests
 
 from django.shortcuts import render_to_response, redirect, render
 from django.http import (
@@ -65,6 +66,9 @@ from edumanage.forms import (
 )
 from registration.models import RegistrationProfile
 from edumanage.decorators import social_active_required
+from django.utils.cache import (
+    patch_vary_headers
+)
 from utils.cat_helper import CatQuery
 
 
@@ -2365,43 +2369,57 @@ def adminlist(request):
 def cat_user_api_proxy(request, cat_instance):
     if cat_instance is None:
         cat_instance = 'production'
-    cat_instance = settings.CAT_AUTH.get(cat_instance, None)
+    cat_instance_name = cat_instance
+    cat_instance = settings_dict_get('CAT_AUTH', cat_instance)
     if cat_instance is None:
         return HttpResponseNotFound('<h1>CAT instance not found</h1>')
     cat_api_url = cat_instance.get('CAT_USER_API_URL', None)
     if cat_api_url is None:
         return HttpResponseNotFound('<h1>CAT user API URL not found</h1>')
     if request.method != 'GET':
-        return HttpResponseBadRequest()
+        return HttpResponseBadRequest('<h1>Only GET requests are allowed</h1>')
     qs = request.META['QUERY_STRING']
     qs = '?%s' % qs if qs else ''
     cat_api_url += qs
-    if request.GET.get('action', None) == 'downloadInstaller':
+    cat_api_action = request.GET.get('action', None)
+    if not cat_api_action:
+        return HttpResponseBadRequest('<h1>Invalid or no action specified</h1>')
+    if cat_api_action == 'downloadInstaller' and \
+      settings_dict_get('CAT_USER_API_PROXY_OPTIONS',
+                        cat_instance_name, 'redirect_downloads',
+                        default=True):
         return HttpResponseRedirect(cat_api_url)
     headers = {
         'X-Forwarded-For': request.META['REMOTE_ADDR'],
         'X-Forwarded-Host': request.META['HTTP_HOST'],
         'X-Forwarded-Server': request.META['SERVER_NAME']
         }
-    for h in ['CONTENT_TYPE', 'HTTP_ACCEPT', 'HTTP_ACCEPT_ENCODING',
+    for h in ['CONTENT_TYPE', 'HTTP_ACCEPT', 'HTTP_X_REQUESTED_WITH',
               'HTTP_REFERER', 'HTTP_USER_AGENT']:
         if h in request.META:
             hh = h.replace('HTTP_', '') if h.startswith('HTTP_') else h
             hh = '-'.join([w.capitalize() for w in hh.split('_')])
             headers[hh] = request.META[h]
-    import requests
-    r = requests.get(cat_api_url, stream=True, headers=headers)
-    ct = r.headers.get('content-type', 'text/plain; charset=utf-8')
+    r = requests.get(cat_api_url, headers=headers)
+    cc = r.headers.get('cache-control', '')
+    ct = r.headers.get('content-type', 'text/plain')
     cl = r.headers.get('content-length', None)
     cd = r.headers.get('content-disposition', None)
     if ct.startswith('text/html') and cl != '0' and r.content[0] in ['{', '[']:
         ct = ct.replace('text/html', 'application/json')
-    resp = HttpResponse(r.iter_content(1024),
-                        content_type=ct)
+    resp = HttpResponse(r.content, content_type=ct)
     resp.status_code = r.status_code
     resp.reason_phrase = r.reason
-    resp.setdefault('Access-Control-Allow-Origin', '*')
-    resp.setdefault('Access-Control-Allow-Method', 'GET')
+    allow_cors = settings_dict_get('CAT_USER_API_PROXY_OPTIONS',
+                                   cat_instance_name, 'allow_cross_origin',
+                                   default=False)
+    if allow_cors:
+        origin = '*'
+        if allow_cors is 'origin' and 'HTTP_ORIGIN' in request.META:
+            origin = request.META['HTTP_ORIGIN']
+            patch_vary_headers(resp, ['Origin'])
+        resp.setdefault('Access-Control-Allow-Origin', origin)
+        resp.setdefault('Access-Control-Allow-Method', 'GET')
     if cd is not None:
         resp.setdefault('Content-Disposition', cd)
     return resp
