@@ -1739,15 +1739,21 @@ def participants(request):
 
 @never_cache
 def connect(request):
-    institutions = Institution.objects.filter(institutiondetails__isnull=False).\
-      select_related('institutiondetails')
+    institutions = Institution.objects.filter(ertype__in=[1,3],
+                                              institutiondetails__isnull=False).\
+        select_related('institutiondetails')
     cat_instance = 'production'
     dets = []
+    dets_cat = {}
     cat_exists = False
     for i in institutions:
         dets.append(i.institutiondetails)
         catids = i.get_active_cat_ids(cat_instance)
+        if len(catids):
             cat_exists = True
+            # only use first inst+CAT binding (per CAT instance), even if there
+            # may be more
+            dets_cat[i.pk] = catids[0]
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
         dets.sort(cmp=locale.strcoll,
                   key=lambda x: unicode(x.institution.
@@ -1756,6 +1762,7 @@ def connect(request):
         'front/connect.html',
         {
             'institutions': dets,
+            'institutions_cat': dets_cat,
             'catexists': cat_exists
         },
         context_instance=RequestContext(request)
