@@ -4,6 +4,10 @@ from django.utils.translation import ugettext as _
 from accounts.models import User
 from django import forms
 
+from functools import wraps
+from django.utils.decorators import available_attrs
+from django.views.decorators.cache import (never_cache, cache_page)
+
 from accounts.models import UserProfile
 from edumanage.forms import UserProfileForm
 from edumanage.models import Institution
@@ -13,6 +17,7 @@ from edumanage.models import Institution
 import edumanage.views
 
 def social_active_required(function):
+    @wraps(function, assigned=available_attrs(function))
     def wrap(request, *args, **kw):
         user = request.user
         try:
@@ -61,3 +66,18 @@ def social_active_required(function):
                 }
             )
     return wrap
+
+def cache_page_ifreq(req_cache_func):
+    def view_decorator(view_func):
+        @wraps(view_func, assigned=available_attrs(view_func))
+        def wrapped_view_func(request, *args, **kwargs):
+            try:
+                (cache_timeout, cache_kwargs) = req_cache_func(request,
+                                                               *args,
+                                                               **kwargs)
+                ret = cache_page(cache_timeout, **cache_kwargs)(view_func)
+            except TypeError:
+                ret = never_cache(view_func)
+            return ret(request, *args, **kwargs)
+        return wrapped_view_func
+    return view_decorator
