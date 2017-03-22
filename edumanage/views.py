@@ -6,6 +6,7 @@ import math
 import datetime
 from xml.etree import ElementTree
 import locale
+from localectxmgr import setlocale
 
 from django.shortcuts import render_to_response, redirect, render
 from django.http import (
@@ -1722,13 +1723,10 @@ def participants(request):
         dets.append(i.institutiondetails)
         if i.get_active_cat_enrl(cat_instance):
             cat_exists = True
-    try:
-        locale.setlocale(locale.LC_COLLATE, [request.LANGUAGE_CODE, 'UTF-8'])
-    except locale.Error:
-        pass
-    dets.sort(cmp=locale.strcoll,
-              key=lambda x: unicode(x.institution.
-                                    get_name(lang=request.LANGUAGE_CODE)))
+    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+        dets.sort(cmp=locale.strcoll,
+                  key=lambda x: unicode(x.institution.
+                                        get_name(lang=request.LANGUAGE_CODE)))
     return render_to_response(
         'front/participants.html',
         {
@@ -1750,13 +1748,10 @@ def connect(request):
         dets.append(i.institutiondetails)
         catids = i.get_active_cat_ids(cat_instance)
             cat_exists = True
-    try:
-        locale.setlocale(locale.LC_COLLATE, [request.LANGUAGE_CODE, 'UTF-8'])
-    except locale.Error:
-        pass
-    dets.sort(cmp=locale.strcoll,
-              key=lambda x: unicode(x.institution.
-                                    get_name(lang=request.LANGUAGE_CODE)))
+    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+        dets.sort(cmp=locale.strcoll,
+                  key=lambda x: unicode(x.institution.
+                                        get_name(lang=request.LANGUAGE_CODE)))
     return render_to_response(
         'front/connect.html',
         {
