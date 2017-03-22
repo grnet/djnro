@@ -65,10 +65,12 @@ from edumanage.forms import (
     InstServerForm
 )
 from registration.models import RegistrationProfile
-from edumanage.decorators import social_active_required
+from edumanage.decorators import (social_active_required,
+                                  cache_page_ifreq)
 from django.utils.cache import (
     patch_vary_headers
 )
+from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
 
 
@@ -2365,7 +2367,46 @@ def adminlist(request):
                         content_type="text/plain; charset=utf-8")
 
 
-@never_cache
+def _cat_api_cache_action(request, cat_instance):
+    if cat_instance is None:
+        cat_instance = 'production'
+    action = request.GET.get('action', None)
+    if not action:
+        return None
+    # by default we only cache large/expensive API calls for 10 mins
+    timeouts_default = {
+        'listAllIdentityProviders': 600,
+        'listIdentityProviders':    600,
+        'orderIdentityProviders':   600,
+        'listCountries':            600,
+        'sendLogo':                 600,
+        }
+    timeouts_settings = getattr(settings, 'CAT_USER_API_CACHE_TIMEOUT', {})
+    timeouts = timeouts_settings.get(cat_instance, timeouts_default)
+    try:
+        timeout = timeouts[action]
+    # no-cache if action not found in timeout settings
+    except KeyError:
+        return None
+    cache_kwargs = {}
+    # no cache key prefix by default
+    cache_prefix = settings_dict_get('CAT_USER_API_PROXY_OPTIONS',
+                                     cat_instance, 'cache_prefix',
+                                     default='')
+    if cache_prefix:
+        cache_kwargs['key_prefix'] = cache_prefix
+    # cache alias: True means use default, None means no-cache
+    cache_alias = settings_dict_get('CAT_USER_API_PROXY_OPTIONS',
+                                    cat_instance, 'cache',
+                                    default=True)
+    if cache_alias is None:
+        return None
+    if cache_alias is not True:
+        cache_kwargs['cache'] = cache_alias
+    return (timeout, cache_kwargs)
+
+@cache_page_ifreq(_cat_api_cache_action)
+@dont_vary_on('Cookie')
 def cat_user_api_proxy(request, cat_instance):
     if cat_instance is None:
         cat_instance = 'production'
