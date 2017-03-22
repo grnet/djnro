@@ -1715,11 +1715,12 @@ def api(request):
 def participants(request):
     institutions = Institution.objects.filter(institutiondetails__isnull=False).\
       select_related('institutiondetails')
+    cat_instance = 'production'
     dets = []
     cat_exists = False
     for i in institutions:
         dets.append(i.institutiondetails)
-        if i.get_active_cat_enrl():
+        if i.get_active_cat_enrl(cat_instance):
             cat_exists = True
     try:
         locale.setlocale(locale.LC_COLLATE, [request.LANGUAGE_CODE, 'UTF-8'])
@@ -1742,11 +1743,12 @@ def participants(request):
 def connect(request):
     institutions = Institution.objects.filter(institutiondetails__isnull=False).\
       select_related('institutiondetails')
+    cat_instance = 'production'
     dets = []
     cat_exists = False
     for i in institutions:
         dets.append(i.institutiondetails)
-        if i.get_active_cat_enrl():
+        catids = i.get_active_cat_ids(cat_instance)
             cat_exists = True
     try:
         locale.setlocale(locale.LC_COLLATE, [request.LANGUAGE_CODE, 'UTF-8'])
