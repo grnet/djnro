@@ -67,11 +67,11 @@ $(document).ready(function() {
     var catIdp, catProf, _catProfO = {}, _catProf = [], catDev, _catDev;
 
     var ourevt = 'onpopstate' in window ? 'popstate' : 'hashchange';
-    console.log('ourevt is '+ ourevt);
-    if (ourevt == 'popstate') {
-	console.log('pushState in history '+ ('pushState' in history) +' '+
-		    'replaceState in history '+ ('replaceState' in history));
-    }
+    //console.log('ourevt is '+ ourevt);
+    // if (ourevt == 'popstate') {
+    // 	console.log('pushState in history '+ ('pushState' in history) +' '+
+    // 		    'replaceState in history '+ ('replaceState' in history));
+    // }
     $(window).on(ourevt, function (evt) {
 	// console.log('ourevt:', evt);
 	// return true;
@@ -83,15 +83,15 @@ $(document).ready(function() {
 	    }
 	// console.log('ourevt objects:', catIdp, catProf, catDev,
 	// 	    'state', state);
-	console.log('ourevt objects: '+
-		    typeof catIdp +' '+ (!!catIdp && catIdp.id)
-		    +' '+
-		    typeof catProf +' '+ (!!catProf && catProf.id)
-		    +' '+
-		    typeof catDev +' '+ (!!catDev && catDev.id)
-		    +' '+
-		    'state: '+
-		    JSON.stringify(state));
+	// console.log('ourevt objects: '+
+	// 	    typeof catIdp +' '+ (!!catIdp && catIdp.id)
+	// 	    +' '+
+	// 	    typeof catProf +' '+ (!!catProf && catProf.id)
+	// 	    +' '+
+	// 	    typeof catDev +' '+ (!!catDev && catDev.id)
+	// 	    +' '+
+	// 	    'state: '+
+	// 	    JSON.stringify(state));
 
 	for (var key in pairs) {
 	    var stateChange = 0;
@@ -104,8 +104,8 @@ $(document).ready(function() {
 		     (state[key] != pairs[key].obj.id)) {
 		// console.log('in '  + key + '=' +  state[key] + ', stateChange = 1, obj:',
 		// 	    pairs[key].obj); 
-		console.log('in '  + key + '=' +  state[key] + ', stateChange = 1, obj: '+
-			    typeof pairs[key].obj +' '+ (!!pairs[key].obj && pairs[key].obj.id));
+		// console.log('in '  + key + '=' +  state[key] + ', stateChange = 1, obj: '+
+		// 	    typeof pairs[key].obj +' '+ (!!pairs[key].obj && pairs[key].obj.id));
 		stateChange = 1;
 	    }
 	    // console.log(key, 'stateChange:', stateChange);
@@ -181,7 +181,13 @@ $(document).ready(function() {
     });
 
     setTimeout(function() {
-	$(window).trigger(ourevt);
+	var wlh = window.location.hash;
+	if (wlh.search(/#cat[-=]/) == 0) {
+	    var dec_wlh = selector_decode(wlh.substr(5));
+	    $.fn.HashHandle('_goHard', dec_wlh);
+	} else {
+	    $(window).trigger(ourevt);
+	}
     });
 
     function hashAct(key, val, hard) {
@@ -189,14 +195,14 @@ $(document).ready(function() {
 	    hard = !!hard && 'Hard' || '';
 	if (key in state) {
 	    if (state[key] == val || typeof val === 'undefined') {
-		console.log('hashAct', 'remove' + hard, key);
+		// console.log('hashAct', 'remove' + hard, key);
 		$.fn.HashHandle('remove' + hard, key);
 	    } else {
-		console.log('hashAct', 'add' + hard, key, val);
+		// console.log('hashAct', 'add' + hard, key, val);
 		$.fn.HashHandle('add' + hard, key, val);
 	    }
-	} else {
-	    console.log('hashAct', 'add' + hard, key, val);
+	} else if (typeof val !== 'undefined') {
+	    // console.log('hashAct', 'add' + hard, key, val);
 	    $.fn.HashHandle('add' + hard, key, val);
 	}
     }
@@ -210,9 +216,64 @@ $(document).ready(function() {
 	    $(this).removeClass('hidden');
 	    return this;
 	});
+
+    // buttons move around as they grow bigger in focus state
+    // click may fire on a different element or not at all
+    // thus we trigger a "composite click" on the element where mousedown fired
+    // implicitly this means releasing mouse outside the original button (but still inside
+    // ul.insts) will still fire click -- which is what we usually want
+    // this seems to work fine with touch clicks, but needs more testing
+    // ref:
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=326851
+    $('ul.insts')
+    	.on('mouseup mousedown focusin', function (evt) {
+	    // only react on "left-click"
+	    if (evt.type != 'focusin' && evt.which != 1) {
+		return this;
+	    }
+	    var buttonPressed = evt.type == 'mouseup' ? $(this).data('_buttonpressed') :
+		$(evt.target).closest('[data-toggle="modal"][data-catidp]');
+	    switch (evt.type) {
+	    case 'mouseup':
+		if (buttonPressed instanceof $) {
+		    buttonPressed.trigger('compositeClick');
+		    $(this).removeData('_buttonpressed');
+		}
+		break;
+	    case 'mousedown':
+		if (buttonPressed.length == 1) {
+		    $(this).data('_buttonpressed', buttonPressed);
+		}
+		// fall-through
+	    case 'focusin':
+		if (buttonPressed.length == 1) {
+    		    var cidp = parseInt(buttonPressed.data('catidp'));
+    		    if (!!cidp) {
+    			// optimization: pre-fetching on mousedown/focus
+    			catApi.listProfiles(cidp);
+    		    }
+		}
+    		break;
+	    }
+	});
+
+    $('.modal#catModal').on('hidden.bs.modal', function(evt) {
+	var state = $.fn.HashHandle('hash'),
+	    cidp;
+	if ('cidp' in state) {
+	    cidp = state.cidp;
+	    // hashHandle remove cidp
+	    hashAct('cidp');
+	}
+	if (typeof(cidp) !== 'undefined') {
+	    $('[data-toggle="modal"][data-catidp="' + cidp + '"]').focus();
+	}
+	return this;
+    });
+
     $('[data-toggle="modal"][data-catidp]')
-	.on('click', function (evt) {
-	    evt.preventDefault();
+	.on('compositeClick', function (evt) {
+	    // evt.preventDefault();
 	    var key = 'cidp',
 		val = $(this).attr('data-catidp');
 	    // console.log($(this), key, val);
@@ -221,23 +282,27 @@ $(document).ready(function() {
 	})
 	.on('disableNoProfiles', function (evt) {
 	    evt.preventDefault();
+	    // $(this)
+	    // 	.attr('disabled', 'disabled')
+	    // 	.children('.badge').removeClass('hidden');
+	    var href = $(this).data('idu');
 	    $(this)
-		.attr('disabled', 'disabled')
-		.children('.badge').removeClass('hidden');
+		.attr({
+		    'data-target': null,
+		    'data-toggle': null,
+		    'href': href,
+		    'data-idu': null,
+		    'data-catidp': null
+		})
+		.removeData('target toggle catidp idu').off('compositeClick');
+		// .children('i').show();
+	    // console.log('disableNoProfiles', $(this));
 	    return this;
 	})
 	.on('catIdpChange', function (evt) {
 	    // console.log('catIdpChange:', this, arguments);
 	    var button = this,
 		$modal = $('.modal#' + $(button).data('target'));
-	    $modal.on('hidden.bs.modal', function(evt) {
-		var state = $.fn.HashHandle('hash');
-		if ('cidp' in state) {
-		    // hashHandle remove cidp
-		    hashAct('cidp');
-		}
-		return this;
-	    });
 	    $('[data-catui="container-logo"],[data-catui="container-support"]')
 		.triggerHandler('hide.logosup.cat');
 	    catIdp = $(button).data('_catidp');
@@ -259,6 +324,9 @@ $(document).ready(function() {
 		    // hashhandle removeHard cidp
 		    hashAct('cidp', catIdp.id, true);
 		    // hashAct('cidp', undefined, true);
+		    if (!!NProgress) {
+			NProgress.done();
+		    }
 		    return this;
 		}
 		var $profsel_container = $modal
@@ -321,8 +389,19 @@ $(document).ready(function() {
 			hashAct('cprof', profiles[0].getProfileID(), true);
 		    }
 		}
+		if (!!!title) {
+		    title = $(button).find('.title').text();
+		}
 		if (!!title) {
-		    $modal.find('[data-catui="institution"]').text(title);
+		    if ($(button).data('idu')) {
+			var title_a = $('<a>');
+			title_a.attr('href', $(button).data('idu'))
+			    .text(title)
+			    .append($(button).children('i').clone());
+			$modal.find('[data-catui="institution"]').html(title_a);
+		    } else {
+			$modal.find('[data-catui="institution"]').text(title);
+		    }
 		    if ($icon instanceof $) {
 			$icon.attr({title: title, alt: title});
 		    }
@@ -335,8 +414,14 @@ $(document).ready(function() {
 			$icon !== null ? 'show.logosup.cat' : 'hide.logosup.cat'
 		    );
 
+		if (!!NProgress) {
+		    NProgress.done();
+		}
 		$modal.modal('show');
 		return this;
+	    }
+	    if (!!NProgress) {
+		NProgress.start();
 	    }
 	    return $.when(
 		catIdp.getDisplay(),
@@ -541,11 +626,12 @@ $(document).ready(function() {
 		if (!!description) {
 		    $description_element.text(description);
 		} else {
-		    $description_element.html('&nbsp;');
+		    $description_element.html('');
 		}
 		// if profiles <= 1 or profile title == description, hide description
 		if ($('[data-catui="profile-select-container"]').children().length <= 1 ||
-		    $(button).text() == description) {
+		    $(button).text() == description ||
+		    !!!description) {
 		    $description_element.addClass('hidden');
 		} else {
 		    $description_element.removeClass('hidden');
@@ -595,7 +681,7 @@ $(document).ready(function() {
 				'data-toggle': 'collapse-noanimation',
 				'aria-controls': devgroup_id_to + '_' + $profpane.attr('id') })
 			.text(devgroup);
-		    $devgroup = $devicegroup_template.clone(true);
+		    var $devgroup = $devicegroup_template.clone(true);
 		    $devgroup
 			.attr('id', devgroup_id_to + '_' + $profpane.attr('id'))
 			.attr('aria-labelledby', function(idx, cur) {
@@ -612,7 +698,8 @@ $(document).ready(function() {
 				  '#cat-' + selector_encode({cidp: catProf.getIdpID(),
 							     cprof: catProf.getProfileID(),
 							     cdev: device_id}))
-			    .attr('data-catdev', device_id);
+			    .attr({'data-catdev': device_id,
+				   'data-catprof': catProf.getProfileID()});
 			$.when(
 			    grouped_devices[devgroup][devidx].getDisplay(),
 			    grouped_devices[devgroup][devidx].getDeviceCustomText()
@@ -1033,7 +1120,7 @@ $(document).ready(function() {
 	    if ($that.length > 0 &&
 		evt.target !== $that.get(0) &&
 		href) {
-		console.log('simulating clicking!', $that);
+		// console.log('simulating clicking!', $that);
 		if (target == '_blank') {
 		    window.open(href);
 		} else {
@@ -1066,7 +1153,7 @@ $(document).ready(function() {
 	init: function() {
 	    // this.listProfilesQueue = new BufferedQueue();
 	    this.listProfilesQueue = [];
-	    this.queueInterval = 200;
+	    this.queueInterval = 100;
 	    this.getQueueDelay = function(queueLength) {
 		return (queueLength * this.queueInterval) - this.queueInterval;
 		// if (!!!this.queueDelay) {
@@ -1092,14 +1179,14 @@ $(document).ready(function() {
 	    if (!!!catIdpID) {
 		return undefined;
 	    }
-	    if (!($el.data('_catidp') instanceof CatIdentityProvider)) {
-		$el.data('_catidp', new CatIdentityProvider(catApi,
-							    catIdpID,
-							    catLang)
-			);
-	    }
+	    // if (!($el.data('_catidp') instanceof CatIdentityProvider)) {
+	    // 	$el.data('_catidp', new CatIdentityProvider(catApi,
+	    // 						    catIdpID,
+	    // 						    catLang)
+	    // 		);
+	    // }
 	    // checking = $el.parents('address').children('strong').text();
-    	    var cb = function(ret) {
+    	    var cb2 = function(ret) {
     	    	if (!(ret instanceof Array) ||
     	    	    ret.length == 0) {
     	    	    // console.log('disabling button for:',
@@ -1108,16 +1195,24 @@ $(document).ready(function() {
     	    	    $el.triggerHandler('disableNoProfiles');
     	    	}
     	    }
+	    var cb = function(ret) {
+		if (!(ret instanceof Object) ||
+		    !(catIdpID in ret)) {
+		    $.when(
+			catApi.listProfiles(catIdpID, catLang)
+		    ).then(cb2, cb2);
+		}
+	    }
     	    // this.listProfilesQueue.addFirst(function() {
     	    this.listProfilesQueue.unshift(function() {
     		$.when(
-    		    catApi.listProfiles(catIdpID, catLang)
+    		    catApi.listAllIdentityProvidersByID(catLang)
     		).then(cb, cb);
 	    });
 	    var listProfilesQueue = this.listProfilesQueue,
 		// qcbDelay = this.getQueueDelay(listProfilesQueue.queue.length);
 		qcbDelay = this.getQueueDelay(listProfilesQueue.length);
-	    console.log('qcbDelay', qcbDelay);
+	    // console.log('qcbDelay', qcbDelay);
 	    setTimeout(function() {
 		// listProfilesQueue.getFirst(function(qcb) {
 		//     qcb();
