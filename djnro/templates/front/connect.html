@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load staticfiles %}
-{% block currentpagetitle %}{% trans "Participants" %}{% endblock %}
+{% block currentpagetitle %}{% trans "Connect to eduroam" %}{% endblock %}
 {% block homepage %}{% endblock %}
 {% block hometop %}{% endblock %}
 {% block participants %}active{% endblock %}
@@ -9,40 +9,59 @@
 
 {% block subcontent %}
 {% load tolocale %}
-<h1>{% trans "Participating Institutions" %}</h1>
-<hr>
-<div>{% trans "In"%} {% trans COUNTRY_NAME %} {% trans "eduroam is provided by the following institutions/organizations" %}</div>
-<br/>
+{% load dict_lookup %}
 <div class="row">
+<div class="institution-search col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<h1 class="h2">{% trans "Connect to eduroam" %}</h1>
+<hr style="margin-top:0px;margin-bottom:10px;">
+<p>{% trans "Find instructions, contacts and tools to help you securely connect to eduroam" %}</p>
+<div class="form-group has-feedback has-clear" style="margin-bottom:10px;">
+    <i class="form-control-clear fa fa-remove form-control-feedback hidden"></i>
+    <!--<span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>-->
+    <input type="search" class="form-control" name="inst_search" id="inst-search-input"
+placeholder="{% blocktrans %}Search for your institution in {{ COUNTRY_NAME }}{% endblocktrans %}"
+autofocus autocomplete="off">
+    </div>
+</div><!-- /.institution-search -->
+</div><!-- /.row -->
+<div class="row">
+<div class="search-actions col-xs-12 col-sm-12 col-md-12 col-lg-12">
+  <ul class="inst-action" style="text-align: right">
+    <li class="pull-left trigger-geolocate">
+      <i class="fa fa-map-marker text-muted"></i>
+      <a role="button" href="javascript:geolocate();">
+        <span class="gl-show">{% trans 'Show' %}</span><span class="gl-showing">{% trans 'Showing' %}</span> {% trans 'nearest' %} <span class="hidden-xs">{% trans 'institutions' %}</span>
+      </a>
+    </li>
+    <li class="pull-right">
+      <i class="fa fa-globe text-muted"></i>
+      <a href="//cat.eduroam.org/">{% trans 'Find' %} <span class="hidden-xs">{% trans 'institutions' %}</span> {% trans 'worldwide' %}</a>
+    </li>
+  </ul><!-- /.inst-action -->
+</div><!-- /.search-actions -->
+</div><!-- /.row -->
+<div class="row">
+<div class="col-sm-12 col-md-12 col-lg-12 institution-list">
+	<ul class="insts">
 	{% for i in institutions %}
-	<div class="col-md-6">
-		<address>
-			<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br/>
-			{{i.address_street}}<br>
-			{{i.address_city}}
-			{% if i.url.all|length > 0 or catexists %}
-		    <dl style="margin-top: 10px;">
-				<dt style="font-weight: normal;">URLs:</dt>
-				{% for u in i.url.all %}{% if u %}
-				<dd>
-					<a href="{{u.url}}">{{u.get_urltype_display}} ({{u.get_lang_display}})</a>
-				</dd>
-				{% endif %}{% endfor %}
-			{% with cats=i.institution.get_active_cat_ids %}
-				{% for cat in cats %}
-				<dd style="margin-top: 5px;">
-				  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="catModal" data-catidp="{{cat}}">eduroam CAT
-				    <span class="badge hidden">N/A</span></button>
-				</dd>
-				{% endfor %}
-			{% endwith %}
-			</dl>
-			{% endif %}
-		</address>
-	</div>
-	{% cycle "" '<div class="clearfix visible-md visible-lg"></div>' %}
+	{% with catidp=institutions_cat|dict_lookup:i.institution.pk %}
+	<li>
+	  {% if catidp %}
+	  <a class="btn" data-toggle="modal" data-target="catModal"
+	     data-idu="{% url 'participants' %}#!id={{ i.institution.pk }}"
+	     data-iid="{{ i.institution.pk }}" data-catidp="{{catidp}}" tabindex="0">
+	  {% else %}
+	  <a class="btn" data-iid="{{ i.institution.pk }}"
+	     href="{% url 'participants' %}#!id={{ i.institution.pk }}" tabindex="0">
+	  {% endif %}
+	  <span class="title" {% if i.oper_name %}data-on="{{i.oper_name}}"{% endif %}>{% tolocale i.institution LANGUAGE_CODE %}</span><span class="small-small hidden">&nbsp;<span class="distance">xxx</span>&nbsp;Km</span>&nbsp;<i title="{% trans 'See info (instructions, contacts) for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-arrow-circle-right text-muted"></i>
+	  </a>
+	</li>
+	{% endwith %}
 	{% endfor %}
-</div>
+	</ul>
+</div><!-- /.institution-list -->
+</div><!-- /.row -->
 {% if catexists %}
 <div class="modal fade" id="catModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
   <div class="modal-dialog modal-lg" role="document">
@@ -138,8 +157,8 @@
 		      </button>
 		      <p style="line-height: 28px;">
 			<span class="pull-left" data-catui="device-signed"
-			      title="The downloaded profile will be cryptographically signed by GÉANT" data-toggle="tooltip" data-placement="bottom">
-			  <i class="fa fa-check-square-o" aria-hidden="true"></i> signed</span><!-- /.pull-left -->
+			      title="{% block cat_signed_by %}{% trans 'The downloaded profile will be digitally signed by GÉANT Association' %}{% endblock %}" data-toggle="tooltip" data-placement="bottom">
+			  <i class="fa fa-check-square-o" aria-hidden="true"></i> Signed</span><!-- /.pull-left -->
 			<span class="pull-right" title="The downloaded profile will display messages in this language" data-toggle="tooltip" data-placement="bottom">
 			  <i class="fa fa-language" aria-hidden="true"></i> <span class="hidden" data-catui="device-language">language placeholder</span>
 			</span><!-- /.pull-right -->
@@ -211,7 +230,9 @@
 		       data-catui="support-contact-container">
 		<span><i class="fa"></i> <a href="#">placeholder</a></span>
 	      </address>
-	      <p data-catui="support-header">You may also report issues related to CAT by posting to the <a href="//cat.eduroam.org/">users mailing list</a>.</p>
+            {% block cat_mailing_list %}
+	      <p data-catui="support-header">You may also report or discuss issues related to CAT by posting to the <a href="//lists.geant.org/sympa/info/cat-users">users mailing list</a>.</p>
+	    {% endblock %}
 	    </div><!-- /[data-catui="container-support"] -->
 	    </div><!-- /.row -->
 	  </div><!-- /[data-catui="container-left"] -->
@@ -220,10 +241,12 @@
       </div><!-- /.modal-body -->
       <div class="modal-footer">
 	<small>
+	  {% block cat_attribution %}
 	  <a href="//cat.eduroam.org/">eduroam <span data-toggle="tooltip" data-placement="top" title="Configuration Assistant Tool">CAT</span></a> is a service provided by
 	  <a href="//geant.org"><img data-catui="geant-logo" src="{% static 'js/geant.png' %}" title="GÉANT" alt="GÉANT"></a>
 	  <br class="vixible-xs hidden-md hidden-lg">
 	  This page provides access to CAT data with respect to the <a href="#" data-catui="cat-api-tou">CAT terms of use</a>.
+	  {% endblock %}
 	</small>
       </div><!-- /.modal-footer -->
     </div><!-- /.modal-content -->
@@ -238,21 +261,110 @@
 <script type="text/javascript" src="{% static 'js/jquery.base64.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/cat_embed.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/appear.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/nprogress.js' %}"></script>
 <script type="text/javascript">
     var catLang = "{{LANGUAGE_CODE}}",
   catApi = new CAT({apiBase: "{% url 'cat-api' %}", lang: catLang}),
   catDeviceGuess = CatDevice.guessDeviceID(navigator.userAgent);
   // pre-fetching... ("optimization")
-  catApi.listAllIdentityProviders(catLang);
+  // catApi.listAllIdentityProviders(catLang);
+  NProgress.configure({ showSpinner: false });
   $(function () {
-      $('#catModal').tooltip({selector: '[data-toggle="tooltip"]'});
-  })
+
+      $('.has-clear input[type="search"]').on('input propertychange', function() {
+	  var $this = $(this);
+	  var visible = Boolean($this.val());
+	  $this.siblings('.form-control-clear').toggleClass('hidden', !visible);
+      }).trigger('propertychange');
+      $('.form-control-clear').click(function() {
+	  $(this).siblings('input[type="search"]').val('')
+	      .trigger('propertychange').trigger('change').focus();
+      });
+
+      $('#catModal,.institution-list').tooltip({selector: '[data-toggle="tooltip"]'});
+
+      var coords_cb = function() {
+	  var _this = this[1],
+	      _args = arguments[1],
+	      ret_slocs = _args[0],
+	      geo = {};
+
+	  if (!!_args[1] &&
+	      _args[1] == 'success' &&
+	      !!_this.dataType &&
+	      _this.dataType == 'json' &&
+	      ret_slocs instanceof Array) {
+
+	      ret_slocs.forEach(function(cur, idx) {
+		  var inst_key = cur.inst_key;
+		  var coords = {
+		      lat: parseFloat(cur.lat),
+		      lon: parseFloat(cur.lng)
+		  }
+		  if (!(inst_key in geo)) {
+		      geo[inst_key] = [coords];
+		  } else if (geo[inst_key].find(function(cur) {
+		      return (JSON.stringify(cur) === JSON.stringify(coords));
+		  }) === undefined) {
+		      geo[inst_key].push(coords);
+		  }
+	      });
+	  }
+
+	  $('ul.insts li a').each(function() {
+	      var catid = parseInt($(this).data('catidp'));
+	      if (!!catid &&
+		  !($(this).data('_catidp') instanceof CatIdentityProvider)) {
+		  $(this).data('_catidp', new CatIdentityProvider(catApi,
+								  catid,
+								  catLang)
+			      );
+	      }
+	      var that = this,
+		  iid = $(that).data('iid');
+	      if (!!iid &&
+		  (iid in geo)) {
+		  var getGeo = function() {
+		      return new $.Deferred()
+			  .resolve(geo[iid]);
+		  }
+	      } else {
+		  return this;
+	      }
+	      if ($(this).data('_catidp') instanceof CatIdentityProvider) {
+		  var getgeo_cb = function(ret) {
+		      if (ret instanceof Array) {
+			  $(that).data('_coords', ret);
+			  return ret;
+		      }
+		      $(that).data('sloc_coords', geo[iid]);
+		      $(that).data('_catidp').getGeo = getGeo;
+		  }
+		  $.when(
+		      $(this).data('_catidp').getGeo()
+		  ).then(getgeo_cb, getgeo_cb);
+	      } else {
+		  $(that).data('_catidp', {
+		      getGeo: getGeo,
+		      getDistanceFrom: CatIdentityProvider.prototype.getDistanceFrom
+		  });
+	      }
+	  });
+      }
+      $.when(
+	  catApi.listAllIdentityProviders(catLang),
+	  $.getJSON("{% url 'get-all-services' %}")
+      ).then(coords_cb, coords_cb);
+
+  });
 </script>
 <script type="text/javascript" src="{% static 'js/cat_ui.js' %}"></script>
 {% endif %}
+<script type="text/javascript" src="{% static 'js/connect.js' %}"></script>
 {% endblock %}
 
 {% block extrahead %}
+<link rel='stylesheet' href="{% static 'css/nprogress.css' %}">
 <style type="text/css">
 /* centered text in modal footer */
 #catModal .modal-footer {
@@ -274,9 +386,9 @@ div[data-catui="container-logo"] > * {
     max-height: 10em;
     margin-bottom: 10px;
 }
-/* under 350px container-left columns go full-width again (like
+/* under 470px container-left columns go full-width again (like
    col-sm-12) */
-@media (max-width: 350px) {
+@media (max-width: 470px) {
 div[data-catui="container-left"] > .row > div {
     width: 100%;
 }
@@ -297,7 +409,7 @@ div[data-catui="container-left"] > .row > .hidden + div.col-xs-9:last-child {
 }
 /* no double-padding when two columns align: remove half the gutter so
    that padding across the edges and between columns is the same (15px) */
-@media (min-width: 351px) and (max-width: 767px) {
+@media (min-width: 471px) and (max-width: 767px) {
 :not(.hidden) + [data-catui="container-support"]:not(align) {
     padding-left: 0px;
 }
@@ -331,6 +443,7 @@ address.cat-support-contact {
     margin-bottom: 0px;
     font-size: 18px;
 }
+/* xxxxxxxxxxxxxxxxxxxxxxxxxx */
 /* device{,list}-container elements stacked and centered at
    {xs,xxs}-width */
 @media (max-width: 470px) {
@@ -491,6 +604,180 @@ address.cat-support-contact {
 }
 [data-catui="device-deviceinfo"] .panel-heading a.collapsed i.fa-angle-double-up,
 [data-catui="device-deviceinfo"] .panel-heading a:not(.collapsed) i.fa-angle-double-down {
+    display: none;
+}
+
+
+/* xxxxxxxxxxxxxxxxxxxxxxxxxx */
+ul.insts li a {
+	/* ensure long institution names don't wrap */
+	/* text-overflow: ellipsis; */
+	white-space: normal;
+	/* overflow-x: hidden; */
+	/* overflow-y: hidden; */
+	width: 100%;
+}
+
+.institution-list {
+	/* Add spacing between search bar and institutions on desktop */
+	margin: 1em 0 0 0;
+	/* On mobile, center institution names */
+	text-align: center;
+}
+
+ul.insts {
+	/* Vertical spacing between institutions on desktop */
+	line-height: 4em;
+}
+ul.insts .small-small {
+	opacity: .75;
+}
+
+ul.insts, ul.inst-action {
+	/* Remove padding in inline lists */
+	padding: 0;
+	list-style: none;
+}
+ul.insts li {
+	/* Show inline lists as inline */
+	display: inline-block;
+}
+
+ul.insts.filtered li {
+	/* One inst per line, separate with hairlines */
+	width: 100%;
+	border-top: 1px solid #eee;
+	padding: 1em;
+}
+ul.insts.filtered a {
+	font-size: 120%;
+}
+ul.insts.filtered {
+	/* Less vertical spacing between insts */
+	line-height: 2em;
+	/* One inst per line, separate with hairlines */
+	border-bottom: 1px solid #eee;
+}
+
+/* ul.insts li a:hover, */
+/* ul.insts li a:active, */
+ul.insts.match li a,
+ul.insts li a:focus {
+	/* When a match is found, make it bigger and green */
+	font-size: 140%;
+	color: #0a6;
+}
+/* ul.insts li a:hover:after, */
+/* ul.insts li a:active:after, */
+ul.insts.match li a:after,
+ul.insts li a:focus:after {
+	/* When a match is found, show a <return> key icon */
+	content: "\21B5";
+	border: .1rem solid gray;
+	background: #eee;
+	color: black;
+	border-radius: .5rem;
+	padding: .2em .25em 0;
+	margin-left: 1em;
+	display: inline-block;
+	text-decoration: none;
+}
+/* ul.insts.match li a:hover:after, */
+/* ul.insts.match li a:after, */
+/* ul.insts.match li a:focus:after { */
+/*     text-decoration: none; */
+/*     display: inline-block; */
+/* } */
+
+ul.insts.match li:not(.match),
+ul.insts.filtered li:not(.match) {
+    display: none;
+}
+
+@media screen and (max-width: 767px) {
+	/* Changes for mobile version */
+	ul.insts li {
+		/* One inst per line, separate with hairlines */
+		width: 100%;
+		border-top: 1px solid #eee;
+	}
+	ul.insts {
+		/* Less vertical spacing between insts */
+		line-height: 2em;
+		/* One inst per line, separate with hairlines */
+		border-bottom: 1px solid #eee;
+	}
+	/* .institution-list { */
+		/* Less spacing between search and insts */
+	/* 	margin: 0; */
+	/* } */
+}
+
+ul.insts a[data-target="catModal"] i {
+    display: none;
+}
+ul.insts a i {
+    display: inline;
+}
+.small-small {
+    font-size: 72.25%;
+}
+/* simulate .input-lg for > 470px */
+@media (min-width: 471px) {
+.institution-search input {
+    height: 46px;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+}
+.institution-search .form-group .form-control-feedback {
+    width: 46px;
+    height: 46px;
+    line-height: 46px;
+    font-size: 150%;
+}
+}
+
+::-ms-clear {
+  display: none;
+}
+.form-control-clear {
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
+}
+/* reset bootstrap input padding if .form-control-clear hidden */
+.has-feedback .form-control-clear.hidden ~ .form-control {
+    padding-right: 12px;
+}
+
+[data-catui="institution"] a {
+    text-decoration: none;
+}
+[data-catui="institution"] i {
+    margin-left: 5px;
+    display: inline;
+}
+.modal-header .close {
+    font-size: 24px;
+    margin-left: 5px;
+}
+.trigger-geolocate[disabled] {
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: .65;
+}
+.trigger-geolocate[disabled] a {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+}
+.trigger-geolocate[disabled] span.gl-show {
+    display: none;
+}
+.trigger-geolocate:not([disabled]) span.gl-showing {
     display: none;
 }
 </style>
