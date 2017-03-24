@@ -100,16 +100,12 @@
 	    change_cdev: 'catDevChange',
 	}
 
-    // var catIdp,
-    // 	catProf, _catProf = [], _catProfO = {},
-    // 	catDev, _catDev;
-
     $(window).on(events.history_change, function (evt) {
 	var state = $.fn.HashHandle("hash"),
 	    pairs = {
-		cidp:  { evt: events.change_cidp,  obj: test2_change_cidp.cidp  },
-		cprof: { evt: events.change_cprof, obj: test2_change_cprof.cprof },
-		cdev:  { evt: events.change_cdev,  obj: test2_change_cdev.cdev  }
+		cidp:  { evt: events.change_cidp,  obj: views.cidp.obj  },
+		cprof: { evt: events.change_cprof, obj: views.cprof.obj },
+		cdev:  { evt: events.change_cdev,  obj: views.cdev.obj  }
 	    }
 	for (var key in pairs) {
 	    var stateChange = 0;
@@ -129,7 +125,7 @@
 	    switch (key) {
 	    case 'cidp':
 		if (stateChange === 2) {
-		    test2_change_cidp.cidp = undefined;
+		    views.cidp.obj = undefined;
 		    $('{0}.in'.naive_format(selectors.cat_modal)).modal('hide');
 		} else {
 		    return $(selectors.toggles_modal_with_cidp_id
@@ -143,18 +139,18 @@
 			// don't blindly set _catProf (last catProf), but push
 			// catProf.id in front of _catProf and add catProf to
 			// _catProfO
-			if (!!test2_change_cprof.cprof) {
+			if (!!views.cprof.obj) {
 			    var idx;
-			    if ((idx = test2_change_cprof.prev_stack.indexOf(test2_change_cprof.cprof.id)) != -1) {
-				test2_change_cprof.prev_stack.splice(idx, 1);
+			    if ((idx = views.cprof.prev_stack.indexOf(views.cprof.obj.id)) != -1) {
+				views.cprof.prev_stack.splice(idx, 1);
 			    } else {
-				test2_change_cprof.prev_obj[test2_change_cprof.cprof.id] = test2_change_cprof.cprof;
+				views.cprof.prev_obj[views.cprof.obj.id] = views.cprof.obj;
 			    }
-			    test2_change_cprof.prev_stack.unshift(test2_change_cprof.cprof.id);
+			    views.cprof.prev_stack.unshift(views.cprof.obj.id);
 			}
 			hashAct('cprof', undefined, true);
 		    }
-		    test2_change_cprof.cprof = undefined;
+		    views.cprof.obj = undefined;
 		} else {
 		    return $(selectors.toggles_tab_with_cprof_id
 			     .naive_format({cprof: state[key]}))
@@ -164,10 +160,10 @@
 	    case 'cdev':
 		if (stateChange === 2) {
 		    if (key != 'cdev') {
-			test2_change_cdev.prev_obj = !!test2_change_cdev.cdev && test2_change_cdev.cdev || test2_change_cdev.prev_obj;
+			views.cdev.prev_obj = !!views.cdev.obj && views.cdev.obj || views.cdev.prev_obj;
 			hashAct('cdev', undefined, true);
 		    }
-		    test2_change_cdev.cdev = undefined;
+		    views.cdev.obj = undefined;
 		} else {
 		    if (!('cprof' in state)) {
 			console.log('have cdev but no cprof!!');
@@ -328,32 +324,11 @@
 	return this;
     });
 
-    // $(selectors.toggles_modal_has_cidp_id)
-    // 	.on(events.click_composite, function (evt) {
-    // 	    // evt.preventDefault();
-    // 	    var key = 'cidp',
-    // 		val = $(this).attr('data-catidp');
-    // 	    hashAct(key, val);
-    // 	    return this;
-    // 	})
-    // 	.on(events.disable_noprofiles, function (evt) {
-    // 	    evt.preventDefault();
-    // 	    var href = $(this).data('idu');
-    // 	    $(this)
-    // 		.attr({
-    // 		    'data-target': null,
-    // 		    'data-toggle': null,
-    // 		    'href': href,
-    // 		    'data-idu': null,
-    // 		    'data-catidp': null
-    // 		})
-    // 		.removeData('target toggle catidp idu').off(events.click_composite);
-    // 	    return this;
-    // 	});
+    var views = {};
 
-    var test2_change_cidp = {
+    views.cidp = {
 	handle: function(evt) {
-	    var self = test2_change_cidp;
+	    var self = views.cidp;
 	    switch (evt.type) {
 	    case events.click_composite:
 		// evt.preventDefault();
@@ -383,7 +358,7 @@
 	    }
 	    return this; // jQuery chaining
 	},
-	cidp: undefined,
+	obj: undefined,
 	progress: 'NProgress' in window ?
 	    NProgress :
 	    {
@@ -393,30 +368,30 @@
 	main: function() {
 	    var self = this;
 	    var cidp = $(self.element).data('_catidp');
-	    self.cidp = (cidp instanceof CAT.IdentityProvider().constructor) ?
+	    self.obj = (cidp instanceof CAT.IdentityProvider().constructor) ?
 		cidp :
 		CAT.IdentityProvider(parseInt($(self.element).data('catidp')));
 	    $(self.element).data('_catidp',
-				 self.cidp);
+				 self.obj);
 	    self.progress.start();
 	    return $.when(
-		self.cidp.getDisplay(),
-		self.cidp.getIcon(),
-		self.cidp.getProfiles(true)
+		self.obj.getDisplay(),
+		self.obj.getIcon(),
+		self.obj.getProfiles(true)
 	    ).then(self.main_cb, self.main_cb);
 	},
 	main_cb: function(title, $icon, profiles) {
-	    var self = test2_change_cidp;
-	    if (!!!self.cidp) {
+	    var self = views.cidp;
+	    if (!!!self.obj) {
 		return null;
 	    }
 	    if (profiles === null ||
 		!(profiles instanceof Array) ||
 		profiles.length == 0) {
 		$(self.element).triggerHandler(events.disable_noprofiles);
-		// avoid async self.cidp.getEntityID() for now
+		// avoid async self.obj.getEntityID() for now
 		// hashhandle removeHard cidp
-		hashAct('cidp', self.cidp.id, true);
+		hashAct('cidp', self.obj.id, true);
 		// hashAct('cidp', undefined, true);
 		self.progress.done();
 		return false;
@@ -454,7 +429,7 @@
 		});
 		$profsel_el.removeClass('active');
 		$profsel_a.attr({'data-catprof': profiles[idx].getProfileID(),
-				 'data-catidp': self.cidp.id})
+				 'data-catidp': self.obj.id})
 		    .data('_catprof', profiles[idx])
 		    .attr('data-target',
 			  selectors.target_catprofpane_with_cprof_id
@@ -486,21 +461,21 @@
 	    // } else if (!!_catProf && (_catProf.id in profiles_byid)) {
 	    } else {
 		for (var _idx = 0;
-		     _idx < test2_change_cprof.prev_stack.length &&
-		     !(test2_change_cprof.prev_stack[_idx] in profiles_byid);
+		     _idx < views.cprof.prev_stack.length &&
+		     !(views.cprof.prev_stack[_idx] in profiles_byid);
 		     _idx++); // empty statement
-		if (_idx < test2_change_cprof.prev_stack.length) {
+		if (_idx < views.cprof.prev_stack.length) {
 		    self.$profsel_container
 			.find(
 			    selectors.toggles_tab_with_cprof_id
 				.naive_format(
-				    {cprof: test2_change_cprof.prev_stack[_idx]}
+				    {cprof: views.cprof.prev_stack[_idx]}
 				)
 			    )
 		    	.data('_catprof',
-			      test2_change_cprof
-			      .prev_obj[test2_change_cprof.prev_stack[_idx]]);
-		    hashAct('cprof', test2_change_cprof.prev_stack[_idx], true);
+			      views.cprof
+			      .prev_obj[views.cprof.prev_stack[_idx]]);
+		    hashAct('cprof', views.cprof.prev_stack[_idx], true);
 		} else {
 		    hashAct('cprof', profiles[0].getProfileID(), true);
 		}
@@ -543,25 +518,13 @@
     }
 		
     $(selectors.toggles_modal_has_cidp_id)
-	.on(events.click_composite, test2_change_cidp.handle)
-	.on(events.disable_noprofiles, test2_change_cidp.handle)
-	.on(events.change_cidp, test2_change_cidp.handle);
+	.on(events.click_composite, views.cidp.handle)
+	.on(events.disable_noprofiles, views.cidp.handle)
+	.on(events.change_cidp, views.cidp.handle);
 
-    // $(selectors.toggles_tab_has_catprof_id)
-    // 	.on('click', function (evt) {
-    // 	    evt.preventDefault();
-    // 	    if ($(this).parent().hasClass('active')) {
-    // 		return this;
-    // 	    }
-    // 	    var key = 'cprof',
-    // 		val = $(this).attr('data-catprof');
-    // 	    hashAct(key, val);
-    // 	    return this;
-    // 	});
-
-    var test2_change_cprof = {
+    views.cprof = {
 	handle: function(evt) {
-	    var self = test2_change_cprof;
+	    var self = views.cprof;
 	    switch (evt.type) {
 	    case 'click':
 		evt.preventDefault();
@@ -580,15 +543,15 @@
 	    }
 	    return this; // jQuery chaining
 	},
-	cprof: undefined,
+	obj: undefined,
 	prev_stack: [],
 	prev_obj: {},
 	main: function() {
 	    var self = this;
 	    var cprof = $(self.element).data('_catprof');
-	    self.cprof = (cprof instanceof CAT.Profile().constructor) ?
+	    self.obj = (cprof instanceof CAT.Profile().constructor) ?
 		cprof :
-		CAT.Profile(test2_change_catidp.cidp.id,
+		CAT.Profile(views.cidp.obj.id,
 			    parseInt($(self.element).data('catprof')));
 
 	    $(self.element).parent('li')
@@ -618,17 +581,17 @@
 	    $(selectors.catui_container_support)
 		.triggerHandler(events.logosup_hide);
 	    $.when(
-		self.cprof.getLocalUrl(),
-		self.cprof.getLocalEmail(),
-		self.cprof.getLocalPhone()
+		self.obj.getLocalUrl(),
+		self.obj.getLocalEmail(),
+		self.obj.getLocalPhone()
 	    ).then(self.setup_support_cb, self.setup_support_cb);
 	},
 	setup_support_cb: function(local_url, local_email, local_phone) {
-	    var self = test2_change_cprof,
+	    var self = views.cprof,
 		$support_container = $(selectors.catui_container_support_contact),
 		$supportel_template = $support_container.find('> span:first-child'),
 		$supportels = [];
-	    if (!!!self.cprof) {
+	    if (!!!self.obj) {
 		return null;
 	    }
 	    if (!!!local_url &&
@@ -700,7 +663,7 @@
 
 	    var $profpane = $profpane_container
 		.find(selectors.catui_profile_container_with_catprofpane_id
-		      .naive_format({cprof: self.cprof.getProfileID()}));
+		      .naive_format({cprof: self.obj.getProfileID()}));
 	    if ($profpane.length == 1) {
 		self.$profpane = $profpane;
 		self.activate_profpane();
@@ -709,21 +672,21 @@
 
 	    $profpane = $profpane_template.clone(true);
 	    $profpane
-		.attr({'id': selector_encode({cidp: self.cprof.getIdpID(),
-					      cprof: self.cprof.getProfileID()}),
+		.attr({'id': selector_encode({cidp: self.obj.getIdpID(),
+					      cprof: self.obj.getProfileID()}),
 		       'data-catui': 'profile-container',
-		       'data-catprofpane': self.cprof.getProfileID()});
+		       'data-catprofpane': self.obj.getProfileID()});
 	    self.$profpane = $profpane;
 
 	    deferreds.push(
 		$.when(
-		    self.cprof.getDescription()
+		    self.obj.getDescription()
 		).then(self.setup_description_cb, self.setup_description_cb)
 	    );
 
 	    deferreds.push(
 		$.when(
-		    self.cprof.getDevices()
+		    self.obj.getDevices()
 		).then(self.setup_devicelist_cb, self.setup_devicelist_cb)
 		    .then(self.setup_devicelist_cb2, self.setup_devicelist_cb2)
 	    );
@@ -744,11 +707,11 @@
 		);
 	},
 	setup_description_cb: function(description) {
-	    var self = test2_change_cprof,
+	    var self = views.cprof,
 		$description_element = self.$profpane
 		.find(selectors.catui_profile_description);
 
-	    if (!!!self.cprof) {
+	    if (!!!self.obj) {
 		// return null;
 		return $.Deferred().reject(description);
 	    }
@@ -768,9 +731,9 @@
 	    }
 	},
 	setup_devicelist_cb: function(devices) {
-	    var self = test2_change_cprof;
+	    var self = views.cprof;
 
-	    if (!!!self.cprof) {
+	    if (!!!self.obj) {
 		// return null;
 		return $.Deferred().reject(devices);
 	    }
@@ -782,9 +745,9 @@
 	    }
 	},
 	setup_devicelist_cb2: function(grouped_devices) {
-	    var self = test2_change_cprof;
+	    var self = views.cprof;
 
-	    if (!!!self.cprof) {
+	    if (!!!self.obj) {
 		//return null;
 		return $.Deferred().reject(grouped_devices);
 	    }
@@ -843,12 +806,12 @@
 			.data('_catdev', grouped_devices[devgroup][devidx])
 			.attr('href',
 			      '#cat-{0}'.naive_format(
-				  selector_encode({cidp: self.cprof.getIdpID(),
-						   cprof: self.cprof.getProfileID(),
+				  selector_encode({cidp: self.obj.getIdpID(),
+						   cprof: self.obj.getProfileID(),
 						   cdev: device_id}))
 			     )
 			.attr({'data-catdev': device_id,
-			       'data-catprof': self.cprof.getProfileID()});
+			       'data-catprof': self.obj.getProfileID()});
 		    $.when(
 			grouped_devices[devgroup][devidx].getDisplay(),
 			grouped_devices[devgroup][devidx].getDeviceCustomText()
@@ -911,9 +874,9 @@
 		    .find(selectors.changes_cdev_with_cdev_id
 			  .naive_format({cdev: state.cdev}))
 		    .triggerHandler(events.change_cdev);
-	    } else if (!!test2_change_cdev.prev_obj &&
-		       self.search_cdev(test2_change_cdev.prev_obj.id).length == 1) {
-		hashAct('cdev', test2_change_cdev.prev_obj.id, true);
+	    } else if (!!views.cdev.prev_obj &&
+		       self.search_cdev(views.cdev.prev_obj.id).length == 1) {
+		hashAct('cdev', views.cdev.prev_obj.id, true);
 	    } else if (self.search_cdev(catDeviceGuess).length == 1) {
 		hashAct('cdev', catDeviceGuess, true);
 	    } else {
@@ -927,24 +890,12 @@
     }
 
     $(selectors.toggles_tab_has_catprof_id)
-	.on('click', test2_change_cprof.handle)
-	.on(events.change_cprof, test2_change_cprof.handle);
+	.on('click', views.cprof.handle)
+	.on(events.change_cprof, views.cprof.handle);
 
-    // $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
-    // 	.on('click', function (evt) {
-    // 	    evt.preventDefault();
-    // 	    var state = $.fn.HashHandle("hash"),
-    // 		key = 'cdev',
-    // 		val = $(this).attr('data-catdev');
-    // 	    if (!(key in state) || state[key] !== val) {
-    // 		hashAct(key, val);
-    // 	    }
-    // 	    return this;
-    // 	});
-
-    var test2_change_cdev = {
+    views.cdev = {
 	handle: function(evt) {
-	    var self = test2_change_cdev;
+	    var self = views.cdev;
 	    switch (evt.type) {
 	    case 'click':
 		evt.preventDefault();
@@ -962,13 +913,14 @@
 	    }
 	    return this; // jQuery chaining
 	},
+	obj: undefined,
 	prev_obj: undefined,
 	main: function() {
 	    var self = this;
 	    var cdev = $(self.element).data('_catdev');
-	    self.cdev = (cdev instanceof CAT.Device().constructor) ?
+	    self.obj = (cdev instanceof CAT.Device().constructor) ?
 		cdev :
-		CAT.Device(test2_change_catidp.cidp.id,
+		CAT.Device(views.cidp.obj.id,
 			   parseInt($(self.element).data('catprof')),
 			   parseInt($(self.element).data('catdev')));
 
@@ -988,16 +940,16 @@
 	    self.$device_container.closest(selectors.cat_modal).scrollTop(0);
 
 	    $.when(
-		self.cdev.getDeviceID(),
-		self.cdev.getDisplay(),
-		self.cdev.getStatus(),
-		self.cdev.getEapCustomText(),
-		self.cdev.getDeviceCustomText(),
-		self.cdev.getMessage(),
-		self.cdev.isRedirect(),
-		self.cdev.isSigned(),
-		self.cdev.getRedirect(),
-		self.cdev.cat.getLanguageDisplay(self.cdev.lang)
+		self.obj.getDeviceID(),
+		self.obj.getDisplay(),
+		self.obj.getStatus(),
+		self.obj.getEapCustomText(),
+		self.obj.getDeviceCustomText(),
+		self.obj.getMessage(),
+		self.obj.isRedirect(),
+		self.obj.isSigned(),
+		self.obj.getRedirect(),
+		self.obj.cat.getLanguageDisplay(self.obj.lang)
 	    ).then(self.setup_device_cb, self.setup_device_cb)
 		.then(
 		    function() {
@@ -1044,9 +996,9 @@
 				  device_issigned,
 				  device_redirect,
 				  device_lang_display) {
-	    var self = test2_change_cdev;
+	    var self = views.cdev;
 
-	    if (!!!self.cdev) {
+	    if (!!!self.obj) {
 		// return null;
 		return $.Deferred().reject(null);
 	    }
@@ -1065,7 +1017,7 @@
 					      if (href_slash_idx <= 0 &&
 						  href.search('//') != 0) {
 						  $(this).attr('href',
-							       self.cdev.cat.localDownloadBase() +
+							       self.obj.cat.localDownloadBase() +
 							       href.substr(href_slash_idx + 1));
 					      }
 					      return this;
@@ -1127,20 +1079,20 @@
 					      .find('button')
 					      .removeClass('btn-danger')
 					      .addClass('btn-success')
-					      .data('_catdev', self.cdev)
+					      .data('_catdev', self.obj)
 					      .find(selectors.catui_dltxt_init)
 					      .removeClass('hidden')
 					      .siblings().addClass('hidden');
 				      });
 	    }
 	    $.when(
-		self.cdev.getDeviceInfo()
+		self.obj.getDeviceInfo()
 	    ).then(self.setup_deviceinfo_cb, self.setup_deviceinfo_cb);
 	},
 	setup_deviceinfo_cb: function(device_deviceinfo) {
-	    var self = test2_change_cdev;
+	    var self = views.cdev;
 
-	    if (!!!self.cdev) {
+	    if (!!!self.obj) {
 		// return null;
 		return $.Deferred().reject(device_deviceinfo);
 	    }
@@ -1160,7 +1112,7 @@
 			$(this)
 			    .closest(selectors.catui_profile_container)
 			    .attr('id'),
-			self.cdev.id);
+			self.obj.id);
 		$(this)
 		    .removeClass('hidden')
 		    .find('.panel-heading')
@@ -1190,8 +1142,8 @@
     }
 
     $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
-	.on('click', test2_change_cdev.handle)
-	.on(events.change_cdev, test2_change_cdev.handle);
+	.on('click', views.cdev.handle)
+	.on(events.change_cdev, views.cdev.handle);
 
     $('{0} button'.naive_format(selectors.catui_device_download))
 	.on('click', function (evt) {
