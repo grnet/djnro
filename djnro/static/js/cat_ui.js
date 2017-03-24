@@ -1,59 +1,27 @@
 ;
 
-/*
-function BufferedQueue() {
-  this.listeners = [];
-  this.queue = [];
-}
+(function($){
 
-BufferedQueue.prototype = {
-  getLast: function(cb) {
-    this.queue.length > 0 ? cb(this.queue.shift()) : this.listeners.push(cb);
-  },
-  getFirst: function(cb) {
-    this.queue.length > 0 ? cb(this.queue.shift()) : this.listeners.unshift(cb);
-  },
-  addLast: function(value) {
-    if (this.listeners.length > 0) {
-      this.listeners.shift()(value);
-      return;
+    if (!String.prototype.naive_format) {
+	String.prototype.naive_format = function() {
+	    var args = Array.from_arguments.apply(null, arguments),
+		kwargs = {};
+	    if (args[0] instanceof Object) {
+		kwargs = args.shift();
+	    }
+	    return this.replace(/{(\w+)}/g, function(match, number_or_name) {
+		if (number_or_name in kwargs) {
+		    return kwargs[number_or_name];
+		}
+		else if (number_or_name in args) {
+		    return args[number_or_name];
+		}
+		else {
+		    return match;
+		}
+	    });
+	}
     }
-
-    this.queue.push(value);
-  },
-  addFirst: function(value) {
-    if (this.listeners.length > 0) {
-      this.listeners.shift()(value);
-      return;
-    }
-
-    this.queue.unshift(value);
-  }
-}
-*/
-
-$(document).ready(function() {
-
-    /*
-  $('#catModal').on('show.bs.modal', function(e) {
-      var catIdp = new CatIdentityProvider(catApi,
-                                           parseInt($(e.relatedTarget).data('catinstid')),
-                                           catLang),
-      modal = this;
-      // e.preventDefault();
-      console.log('catidp', catIdp);
-      $.when(
-          catIdp.getDisplay(),
-          catIdp.getIcon(),
-          catIdp.getProfiles()
-      ).then(function(title, $icon, profiles) {
-          console.log('show.bs.modal args', arguments);
-          $(modal).find('[data-catui="institution"]').text(title);
-          $(modal).find('[data-catui="container-logo"]').html($icon);
-          // $(modal).modal('show');
-      });
-  });
-    */
 
     var btoa = window.btoa || $.base64.btoa,
 	atob = window.atob || $.base64.atob;
@@ -64,35 +32,85 @@ $(document).ready(function() {
 	return JSON.parse(atob(hash.replace(/_/g, '=')));
     }
 
-    var catIdp, catProf, _catProfO = {}, _catProf = [], catDev, _catDev;
+    function hashAct(key, val, hard) {
+	var state = $.fn.HashHandle('hash'),
+	    hard = !!hard && 'Hard' || '';
+	if (key in state) {
+	    if (state[key] == val || typeof val === 'undefined') {
+		$.fn.HashHandle('remove' + hard, key);
+	    } else {
+		$.fn.HashHandle('add' + hard, key, val);
+	    }
+	} else if (typeof val !== 'undefined') {
+	    $.fn.HashHandle('add' + hard, key, val);
+	}
+    }
 
-    var ourevt = 'onpopstate' in window ? 'popstate' : 'hashchange';
-    //console.log('ourevt is '+ ourevt);
-    // if (ourevt == 'popstate') {
-    // 	console.log('pushState in history '+ ('pushState' in history) +' '+
-    // 		    'replaceState in history '+ ('replaceState' in history));
-    // }
-    $(window).on(ourevt, function (evt) {
-	// console.log('ourevt:', evt);
-	// return true;
+    var selectors = {
+	toggles_modal_has_cidp_id: '[data-toggle="modal"][data-catidp]',
+	toggles_modal_with_cidp_id: '[data-toggle="modal"][data-catidp="{cidp}"]',
+	toggles_tab_with_cprof_id: '[data-toggle="tab"][data-catprof="{cprof}"]',
+	changes_cdev_with_cprof_cdev_ids_ctx_catprofpane: '[data-catprofpane="{cprof}"] [data-catdev="{cdev}"]',
+	changes_cdev_nomatch_with_cprof_id: '[data-catprofpane="{cprof}"] [data-catui="device-no-match"]',
+	catui_container_logo: '[data-catui="container-logo"]',
+	catui_container_support: '[data-catui="container-support"]',
+	inst_list_ul: 'ul.insts',
+	cat_modal: '.modal#catModal',
+	catui_profile_select_container: '[data-catui="profile-select-container"]',
+	toggles_tab_has_catprof_id: '[data-toggle="tab"][data-catprof]',
+	target_catprofpane_with_cprof_id: '[data-catprofpane="{cprof}"]',
+	catui_institution: '[data-catui="institution"]',
+	catui_container_support_contact: '[data-catui="support-contact-container"]',
+	catui_profiles_container: '[data-catui="profiles-container"]',
+	catui_profile_container_template: '[data-catui="profile-container-template"]',
+	catui_profile_loading_placeholder: '[data-catui="profile-loading-placeholder"]',
+	catui_profile_load_error: '[data-catui="profile-load-error"]',
+	catui_profile_description: '[data-catui="profile-description"]',
+	catui_profile_container_with_catprofpane_id: '[data-catui="profile-container"][data-catprofpane="{cprof}"]',
+	catui_device_container: '[data-catui="device-container"]',
+	catui_device_loading_placeholder: '[data-catui="device-loading-placeholder"]',
+	changes_cdev_has_cdev_id_ctx_devicelist_container: '[data-catui="devicelist-container"] [data-catdev]',
+	changes_cdev_with_cdev_id: '[data-catdev="{cdev}"]',
+	changes_cdev_has_cdev_id: '[data-catdev]',
+	changes_cdev_nomatch: '[data-catui="device-no-match"]',
+	catui_device_no_match: '[data-catui="device-no-match"]',
+	catui_devicelist_container: '[data-catui="devicelist-container"]',
+	toggles_collapse_noanimation: '[data-toggle="collapse-noanimation"]',
+	catui_device_deviceinfo: '[data-catui="device-deviceinfo"]',
+	catui_profile_container: '[data-catui="profile-container"]',
+	catui_device_redirecturl: '[data-catui="device-redirecturl"]',
+	catui_dltxt_init: '[data-catui-dltxt="init"]',
+	catui_device_download: '[data-catui="device-download"]',
+	catui_device_redirectmessage: '[data-catui="device-redirectmessage"]',
+	catui_device_message: '[data-catui="device-message"]',
+	catui_cat_api_tou: '[data-catui="cat-api-tou"]',
+	catui_dltxt_generate: '[data-catui-dltxt="generate"]',
+	catui_dltxt_download: '[data-catui-dltxt="download"]',
+	catui_dltxt_fail: '[data-catui-dltxt="fail"]',
+	catui_device_load_error: '[data-catui="device-load-error"]'
+    },
+	events = {
+	    history_change: 'onpopstate' in window ? 'popstate' : 'hashchange',
+	    logosup_hide: 'hide.logosup.cat',
+	    logosup_show: 'show.logosup.cat',
+	    click_composite: 'compositeClick',
+	    disable_noprofiles: 'disableNoProfiles',
+	    change_cidp: 'catIdpChange',
+	    change_cprof: 'catProfChange',
+	    change_cdev: 'catDevChange',
+	}
+
+    var catIdp,
+	catProf, _catProf = [], _catProfO = {},
+	catDev, _catDev;
+
+    $(window).on(events.history_change, function (evt) {
 	var state = $.fn.HashHandle("hash"),
 	    pairs = {
-		cidp:  { evt: 'catIdpChange',  obj: catIdp  },
-		cprof: { evt: 'catProfChange', obj: catProf },
-		cdev:  { evt: 'catDevChange',  obj: catDev  }
+		cidp:  { evt: events.change_cidp,  obj: catIdp  },
+		cprof: { evt: events.change_cprof, obj: catProf },
+		cdev:  { evt: events.change_cdev,  obj: catDev  }
 	    }
-	// console.log('ourevt objects:', catIdp, catProf, catDev,
-	// 	    'state', state);
-	// console.log('ourevt objects: '+
-	// 	    typeof catIdp +' '+ (!!catIdp && catIdp.id)
-	// 	    +' '+
-	// 	    typeof catProf +' '+ (!!catProf && catProf.id)
-	// 	    +' '+
-	// 	    typeof catDev +' '+ (!!catDev && catDev.id)
-	// 	    +' '+
-	// 	    'state: '+
-	// 	    JSON.stringify(state));
-
 	for (var key in pairs) {
 	    var stateChange = 0;
 	    if (!(key in state)) {
@@ -102,14 +120,9 @@ $(document).ready(function() {
 	    }
 	    else if (typeof pairs[key].obj === "undefined" ||
 		     (state[key] != pairs[key].obj.id)) {
-		// console.log('in '  + key + '=' +  state[key] + ', stateChange = 1, obj:',
-		// 	    pairs[key].obj); 
-		// console.log('in '  + key + '=' +  state[key] + ', stateChange = 1, obj: '+
-		// 	    typeof pairs[key].obj +' '+ (!!pairs[key].obj && pairs[key].obj.id));
 		stateChange = 1;
 	    }
-	    // console.log(key, 'stateChange:', stateChange);
-	    console.log(key +' stateChange: '+ stateChange);
+	    // console.log(key +' stateChange: '+ stateChange);
 	    if (stateChange === 0) {
 		continue;
 	    }
@@ -117,16 +130,19 @@ $(document).ready(function() {
 	    case 'cidp':
 		if (stateChange === 2) {
 		    catIdp = undefined;
-		    $('.modal.in').modal('hide');
+		    $('{0}.in'.naive_format(selectors.cat_modal)).modal('hide');
 		} else {
-		    return $('[data-toggle="modal"][data-catidp=' + state[key] + ']')
+		    return $(selectors.toggles_modal_with_cidp_id
+			     .naive_format({cidp: state[key]}))
 			.triggerHandler(pairs[key].evt);
 		}
 		// fallthrough if stateChange === 2
 	    case 'cprof':
 		if (stateChange === 2) {
 		    if (key != 'cprof') {
-			// _catProf = !!catProf && catProf || _catProf;
+			// don't blindly set _catProf (last catProf), but push
+			// catProf.id in front of _catProf and add catProf to
+			// _catProfO
 			if (!!catProf) {
 			    var idx;
 			    if ((idx = _catProf.indexOf(catProf.id)) != -1) {
@@ -136,20 +152,20 @@ $(document).ready(function() {
 			    }
 			    _catProf.unshift(catProf.id);
 			}
-			$.fn.HashHandle('removeHard', 'cprof');
+			hashAct('cprof', undefined, true);
 		    }
 		    catProf = undefined;
 		} else {
-		    return $('[data-toggle="tab"][data-catprof=' + state[key] + ']')
+		    return $(selectors.toggles_tab_with_cprof_id
+			     .naive_format({cprof: state[key]}))
 			.triggerHandler(pairs[key].evt);
 		}
 		// fallthrough if stateChange === 2
 	    case 'cdev':
 		if (stateChange === 2) {
 		    if (key != 'cdev') {
-			// console.log('_catDev = catDev', _catDev, catDev);
 			_catDev = !!catDev && catDev || _catDev;
-			$.fn.HashHandle('removeHard', 'cdev');
+			hashAct('cdev', undefined, true);
 		    }
 		    catDev = undefined;
 		} else {
@@ -157,18 +173,15 @@ $(document).ready(function() {
 			console.log('have cdev but no cprof!!');
 			break;
 		    }
-		    // console.log('triggering catDevChange');
 		    var $catdev_trigger_el =
-			$('[data-catprofpane="' +
-			  state.cprof +
-			  '"] [data-catdev="' +
-			  state[key] + '"]');
+			$(selectors.changes_cdev_with_cprof_cdev_ids_ctx_catprofpane
+			  .naive_format({cprof: state.cprof,
+					 cdev: state[key]}));
 		    if ($catdev_trigger_el.length == 1) {
 		    	$catdev_trigger_el.triggerHandler(pairs[key].evt);
 		    } else {
-			$('[data-catprofpane="' +
-			  state.cprof +
-			  '"] [data-catui="device-no-match"]')
+			$(selectors.changes_cdev_nomatch_with_cprof_id
+			  .naive_format({cprof: state.cprof}))
 			    .addClass('active')
 			    .siblings()
 			    .removeClass('active');
@@ -186,33 +199,75 @@ $(document).ready(function() {
 	    var dec_wlh = selector_decode(wlh.substr(5));
 	    $.fn.HashHandle('_goHard', dec_wlh);
 	} else {
-	    $(window).trigger(ourevt);
+	    $(window).trigger(events.history_change);
 	}
     });
 
-    function hashAct(key, val, hard) {
-	var state = $.fn.HashHandle('hash'),
-	    hard = !!hard && 'Hard' || '';
-	if (key in state) {
-	    if (state[key] == val || typeof val === 'undefined') {
-		// console.log('hashAct', 'remove' + hard, key);
-		$.fn.HashHandle('remove' + hard, key);
-	    } else {
-		// console.log('hashAct', 'add' + hard, key, val);
-		$.fn.HashHandle('add' + hard, key, val);
-	    }
-	} else if (typeof val !== 'undefined') {
-	    // console.log('hashAct', 'add' + hard, key, val);
-	    $.fn.HashHandle('add' + hard, key, val);
-	}
-    }
+    // light-weight bootstrap collapsible without animation
+    $(document)
+	.on('click',
+	    selectors.toggles_collapse_noanimation,
+	    function(evt) {
+		evt.preventDefault();
+		var id = $(this).attr('data-target'),
+		    collapsed_init = $(this).hasClass('collapsed'),
+		    aria_expanded = collapsed_init ? 'true' : 'false';
+		$(this).toggleClass('collapsed')
+		    .attr('aria-expanded', aria_expanded)
+		    .closest('.panel-heading')
+		    .siblings(id)
+		    .toggleClass('in')
+		    .attr('aria-expanded', aria_expanded);
+		return this;
+	    });	    
+    // usability enhancement for accordion collapsibles (without animation)
+    // propagate clicks to the device group/device info headings, device selectors
+    // from their container elements
+    $(document)
+	.on('click',
+	    '{0}, {1}, {2}'.naive_format(
+		'{0} .panel-heading'.naive_format(selectors.catui_devicelist_container),
+		'{0} .panel-heading'.naive_format(selectors.catui_device_deviceinfo),
+		'{0} .list-group-item'.naive_format(selectors.catui_devicelist_container)
+	    ),
+	    function (evt) {
+		var $that = $(this)
+		    .find('{0},{1}'.naive_format(
+			selectors.toggles_collapse_noanimation,
+			selectors.changes_cdev_has_cdev_id)
+			 );
+		if ($that.length > 0 &&
+		    evt.target !== $that.get(0) &&
+		    $that.find(evt.target).length == 0) {
+		    return $that.trigger('click');
+		}
+		return this;
+	    });
+    // hiding other device groups upon device group selection
+    // workaround for collapse data-parent not working
+    $(document)
+	.on('click',
+	    '{0} {1}'.naive_format(
+		selectors.catui_devicelist_container,
+		selectors.toggles_collapse_noanimation
+	    ),
+	    function (evt) {
+	    $(this)
+		.parent('.panel-heading')
+		.siblings($(this).data('target'))
+		.siblings('.panel-collapse.in')
+		.removeClass('in');
+	    return this;
+	});
 
-    $('[data-catui="container-logo"],[data-catui="container-support"]')
-	.on('hide.logosup.cat', function (evt) {
+
+    $('{0},{1}'.naive_format(selectors.catui_container_logo,
+			     selectors.catui_container_support))
+	.on(events.logosup_hide, function (evt) {
 	    $(this).addClass('hidden');
 	    return this;
 	})
-	.on('show.logosup.cat', function (evt) {
+	.on(events.logosup_show, function (evt) {
 	    $(this).removeClass('hidden');
 	    return this;
 	});
@@ -225,18 +280,18 @@ $(document).ready(function() {
     // this seems to work fine with touch clicks, but needs more testing
     // ref:
     // https://bugzilla.mozilla.org/show_bug.cgi?id=326851
-    $('ul.insts')
+    $(selectors.inst_list_ul)
     	.on('mouseup mousedown focusin', function (evt) {
 	    // only react on "left-click"
 	    if (evt.type != 'focusin' && evt.which != 1) {
 		return this;
 	    }
 	    var buttonPressed = evt.type == 'mouseup' ? $(this).data('_buttonpressed') :
-		$(evt.target).closest('[data-toggle="modal"][data-catidp]');
+		$(evt.target).closest(selectors.toggles_modal_has_cidp_id);
 	    switch (evt.type) {
 	    case 'mouseup':
 		if (buttonPressed instanceof $) {
-		    buttonPressed.trigger('compositeClick');
+		    buttonPressed.trigger(events.click_composite);
 		    $(this).removeData('_buttonpressed');
 		}
 		break;
@@ -250,14 +305,14 @@ $(document).ready(function() {
     		    var cidp = parseInt(buttonPressed.data('catidp'));
     		    if (!!cidp) {
     			// optimization: pre-fetching on mousedown/focus
-    			catApi.listProfiles(cidp);
+    			CAT.API.listProfiles(cidp);
     		    }
 		}
     		break;
 	    }
 	});
 
-    $('.modal#catModal').on('hidden.bs.modal', function(evt) {
+    $(selectors.cat_modal).on('hidden.bs.modal', function(evt) {
 	var state = $.fn.HashHandle('hash'),
 	    cidp;
 	if ('cidp' in state) {
@@ -266,25 +321,23 @@ $(document).ready(function() {
 	    hashAct('cidp');
 	}
 	if (typeof(cidp) !== 'undefined') {
-	    $('[data-toggle="modal"][data-catidp="' + cidp + '"]').focus();
+	    $(selectors.toggles_modal_with_cidp_id
+	      .naive_format({cidp: cidp}))
+		.focus();
 	}
 	return this;
     });
 
-    $('[data-toggle="modal"][data-catidp]')
-	.on('compositeClick', function (evt) {
+    $(selectors.toggles_modal_has_cidp_id)
+	.on(events.click_composite, function (evt) {
 	    // evt.preventDefault();
 	    var key = 'cidp',
 		val = $(this).attr('data-catidp');
-	    // console.log($(this), key, val);
 	    hashAct(key, val);
 	    return this;
 	})
-	.on('disableNoProfiles', function (evt) {
+	.on(events.disable_noprofiles, function (evt) {
 	    evt.preventDefault();
-	    // $(this)
-	    // 	.attr('disabled', 'disabled')
-	    // 	.children('.badge').removeClass('hidden');
 	    var href = $(this).data('idu');
 	    $(this)
 		.attr({
@@ -294,32 +347,28 @@ $(document).ready(function() {
 		    'data-idu': null,
 		    'data-catidp': null
 		})
-		.removeData('target toggle catidp idu').off('compositeClick');
-		// .children('i').show();
-	    // console.log('disableNoProfiles', $(this));
+		.removeData('target toggle catidp idu').off(events.click_composite);
 	    return this;
 	})
-	.on('catIdpChange', function (evt) {
-	    // console.log('catIdpChange:', this, arguments);
-	    var button = this,
-		$modal = $('.modal#' + $(button).data('target'));
-	    $('[data-catui="container-logo"],[data-catui="container-support"]')
-		.triggerHandler('hide.logosup.cat');
+	.on(events.change_cidp, test_change_cidp);
+
+    function test_change_cidp(evt) {
+	    var button = this;
+	    $('{0},{1}'.naive_format(selectors.catui_container_logo,
+				     selectors.catui_container_support))
+		.triggerHandler(events.logosup_hide);
 	    catIdp = $(button).data('_catidp');
-	    if (!(catIdp instanceof CatIdentityProvider)) {
-		catIdp = new CatIdentityProvider(catApi,
-						 parseInt($(button).data('catidp')),
-						 catLang);
+	    if (!(catIdp instanceof CAT.IdentityProvider().constructor)) {
+		catIdp = CAT.IdentityProvider(parseInt($(button).data('catidp')));
 		$(button).data('_catidp', catIdp);
 	    }
 	    // var cb_profiles = function(profiles)
 	    var cb = function(title, $icon, profiles) {
-		console.log('catIdpChange cb:', arguments);
-		var args = Array.prototype.slice.call(arguments);
+		// console.log('catIdpChange cb:', arguments);
 		if (profiles === null ||
 		    !(profiles instanceof Array) ||
 		    profiles.length == 0) {
-		    $(button).triggerHandler('disableNoProfiles');
+		    $(button).triggerHandler(events.disable_noprofiles);
 		    // avoid async catIdp.getEntityID() for now
 		    // hashhandle removeHard cidp
 		    hashAct('cidp', catIdp.id, true);
@@ -329,8 +378,8 @@ $(document).ready(function() {
 		    }
 		    return this;
 		}
-		var $profsel_container = $modal
-		    .find('[data-catui="profile-select-container"]'),
+		var $profsel_container = $(selectors.cat_modal)
+		    .find(selectors.catui_profile_select_container),
 		    $profsel_template = $profsel_container.find('> :first-child');
 		var $profsels = [];
 		var profiles_byid = {};
@@ -339,7 +388,8 @@ $(document).ready(function() {
 		    // console.log("profile:", idx, profiles[idx]);
 		    // also clone bound events!!!!
 		    var $profsel_el = $profsel_template.clone(true),
-			$profsel_a = $profsel_el.find('> [data-catprof]');
+			$profsel_a = $profsel_el.find('> {0}'.naive_format(
+			    selectors.toggles_tab_has_catprof_id));
 		    // $profsel_el[(idx == 0) ? 'addClass' : 'removeClass']('active');
 		    $.when(
 			profiles[idx].getDisplay()
@@ -354,26 +404,29 @@ $(document).ready(function() {
 		    $profsel_a.attr('data-catprof', profiles[idx].getProfileID())
 			.data('_catprof', profiles[idx])
 			.attr('data-target',
-			      '[data-catprofpane="' +
-			      profiles[idx].getProfileID() +
-			      '"]')
+			      selectors.target_catprofpane_with_cprof_id
+			      .naive_format({cprof: profiles[idx].getProfileID()})
+			     )
 			.attr('href',
-			      '#cat-' + selector_encode({cidp: profiles[idx].getIdpID(),
-							 cprof: profiles[idx].getProfileID()}));
-		    // '#cidp-' + profiles[idx].getIdpID() +
-		    // ',cprof-' + profiles[idx].getProfileID()); // jQuery limitation
+			      '#cat-{0}'.naive_format(
+				  selector_encode({cidp: profiles[idx].getIdpID(),
+						   cprof: profiles[idx].getProfileID()})
+			      )
+			     );
 		    $profsels.push($profsel_el);
 		}
 		$profsel_container
 		    .html($profsels)
 		    .addClass('hidden');
-		//[($profsels.length == 1) ? 'addClass' : 'removeClass']('hidden');
 
 		var state = $.fn.HashHandle("hash");
 		if (('cprof' in state) && (state.cprof in profiles_byid)) {
 		    $profsel_container
-			.find('[data-catprof="' + state.cprof + '"]')
-			.triggerHandler('catProfChange');
+			.find(
+			    selectors.toggles_tab_with_cprof_id
+				.naive_format({cprof: state.cprof})
+			)
+			.triggerHandler(events.change_cprof);
 		// } else if (!!_catProf && (_catProf.id in profiles_byid)) {
 		} else {
 		    for (var _idx = 0;
@@ -381,14 +434,17 @@ $(document).ready(function() {
 			 _idx++); // empty statement
 		    if (_idx < _catProf.length) {
 			$profsel_container
-		    	    .find('[data-catprof="' + _catProf[_idx] + '"]')
+			    .find(
+				selectors.toggles_tab_with_cprof_id
+				    .naive_format({cprof: _catProf[_idx]})
+			    )
 		    	    .data('_catprof', _catProfO[_catProf[_idx]]);
-			    // .triggerHandler('catProfChange');
 			hashAct('cprof', _catProf[_idx], true);
 		    } else {
 			hashAct('cprof', profiles[0].getProfileID(), true);
 		    }
 		}
+
 		if (!!!title) {
 		    title = $(button).find('.title').text();
 		}
@@ -398,28 +454,40 @@ $(document).ready(function() {
 			title_a.attr('href', $(button).data('idu'))
 			    .text(title)
 			    .append($(button).children('i').clone());
-			$modal.find('[data-catui="institution"]').html(title_a);
+			$(selectors.cat_modal)
+			    .find(selectors.catui_institution)
+			    .html(title_a);
 		    } else {
-			$modal.find('[data-catui="institution"]').text(title);
+			$(selectors.cat_modal)
+			    .find(selectors.catui_institution)
+			    .text(title);
 		    }
 		    if ($icon instanceof $) {
 			$icon.attr({title: title, alt: title});
 		    }
 		} else {
-		    $modal.find('[data-catui="institution"]').html('&nbsp;');
+		    $(selectors.cat_modal)
+			.find(selectors.catui_institution)
+			.html('&nbsp;');
 		}
-		$modal.find('[data-catui="container-logo"]')
+
+		$(selectors.cat_modal)
+		    .find(selectors.catui_container_logo)
 		    .html($icon)
 		    .triggerHandler(
-			$icon !== null ? 'show.logosup.cat' : 'hide.logosup.cat'
+			$icon !== null ? events.logosup_show : events.logosup_hide
 		    );
 
 		if (!!NProgress) {
 		    NProgress.done();
 		}
-		$modal.modal('show');
+
+		$(selectors.cat_modal)
+		    .modal('show');
+
 		return this;
 	    }
+
 	    if (!!NProgress) {
 		NProgress.start();
 	    }
@@ -428,69 +496,59 @@ $(document).ready(function() {
 		catIdp.getIcon(),
 		catIdp.getProfiles(true)
 	    ).then(cb, cb);	    
-	});
-    $('[data-toggle="tab"][data-catprof]')
+    }
+
+
+    $(selectors.toggles_tab_has_catprof_id)
 	.on('click', function (evt) {
 	    evt.preventDefault();
 	    if ($(this).parent().hasClass('active')) {
 		return this;
 	    }
-	    // console.log('data-toggle=tab click fired');
 	    var key = 'cprof',
 		val = $(this).attr('data-catprof');
-	    // console.log($(this), key, val);
 	    hashAct(key, val);
 	    return this;
 	})
-	.on('catProfChange', function (evt) {
-	    console.log('catProfChange fired', this, arguments);
+	.on(events.change_cprof, test_change_cprof);
+
+    function test_change_cprof(evt) {
  	    var button = this,
 		profile = $(button).data('_catprof');
-	    catProf = (profile instanceof CatProfile) ?
-		profile : new CatProfile(catApi,
-	    				 catIdp.id,
-	    				 parseInt($(button).data('catprof')),
-	    				 catLang);
+	    catProf = (profile instanceof CAT.Profile().constructor) ?
+		profile : CAT.Profile(catIdp.id,
+	    			      parseInt($(button).data('catprof')));
 	    var deferreds_catprofchange = [];
 
 	    $(button).parent('li')
 	    	.addClass('active')
 	    	.siblings().removeClass('active');
 
-	    $('[data-catui="container-support"]')
-		.triggerHandler('hide.logosup.cat');
-	    var $support_container = $('[data-catui="support-contact-container"]'),
+	    $(selectors.catui_container_support)
+		.triggerHandler(events.logosup_hide);
+	    var $support_container = $(selectors.catui_container_support_contact),
 		$supportel_template = $support_container.find('> span:first-child');
 	    var cb_support = function(local_url, local_email, local_phone) {
 		function toggleSupportElements($supcon, hasSupport) {
 		    var answer =     !!hasSupport ? 'yes' : 'no',
 			answer_inv = !!hasSupport ? 'no' : 'yes',
 			toggle =     { yes: 'addClass', no: 'removeClass' };
-		    // console.log('toggleSupportElements',
-		    // 		'answer', answer,
-		    // 		'answer_inv', answer_inv);
-		    // console.log($supcon.get(), toggle[answer_inv], 'hidden');
 		    $supcon[toggle[answer_inv]]('hidden')
 			.siblings().each(function() {
 			    if ($(this).data('catui-support') === answer) {
-				// console.log('1:', this,
-				// 	    toggle[!!hasSupport ? answer_inv : answer], 'hidden');
 				$(this)[toggle[!!hasSupport ? answer_inv : answer]]('hidden');
 			    }
 			    if ($(this).data('catui-support') === answer_inv) {
-				// console.log('2:', this,
-				// 	    toggle[!!hasSupport ? answer : answer_inv], 'hidden');
 				$(this)[toggle[!!hasSupport ? answer : answer_inv]]('hidden');
 			    }
 			});
-		    // return this;
 		}
 		if (!!!local_url &&
 		    !!!local_email &&
 		    !!!local_phone) {
 		    toggleSupportElements($support_container, false);
-		    $('[data-catui="container-support"]')
-			.triggerHandler('show.logosup.cat');
+		    $(selectors.catui_container_support)
+			.triggerHandler(events.logosup_show);
 		    return this;
 		} else {
 		    $supportels = [];
@@ -534,44 +592,44 @@ $(document).ready(function() {
 		    }
 		    $support_container.html($supportels);
 		    toggleSupportElements($support_container, true);
-		    $('[data-catui="container-support"]')
-			.triggerHandler('show.logosup.cat');
+		    $(selectors.catui_container_support)
+			.triggerHandler(events.logosup_show);
 		    return this;
 		}
 	    }
-	    // deferreds_catprofchange.push(
-		$.when(
-		    catProf.getLocalUrl(),
-		    catProf.getLocalEmail(),
-		    catProf.getLocalPhone()
-		).then(cb_support, cb_support);
-	    // );
+	    $.when(
+		catProf.getLocalUrl(),
+		catProf.getLocalEmail(),
+		catProf.getLocalPhone()
+	    ).then(cb_support, cb_support);
 
-	    var $profpane_container = $(button).parents('.modal')
-		.find('[data-catui="profiles-container"]'),
-		$profpane_template = $profpane_container.find('[data-catui="profile-container-template"]'),
-		$profpane_loading = $profpane_container.find('[data-catui="profile-loading-placeholder"]'),
-		$profpane_error = $profpane_container.find('[data-catui="profile-load-error"]');
+	    var $profpane_container = $(selectors.cat_modal)
+		.find(selectors.catui_profiles_container),
+		$profpane_template = $profpane_container
+		.find(selectors.catui_profile_container_template),
+		$profpane_loading = $profpane_container
+		.find(selectors.catui_profile_loading_placeholder),
+		$profpane_error = $profpane_container
+		.find(selectors.catui_profile_load_error);
 
 	    $profpane_loading
 	    	.addClass('active')
 	    	.siblings().removeClass('active');
 
 	    var $profpane = $profpane_container
-		.find('[data-catui="profile-container"][data-catprofpane="' +
-		      catProf.getProfileID() +
-		     '"]');
+		.find(selectors.catui_profile_container_with_catprofpane_id
+		      .naive_format({cprof: catProf.getProfileID()}));
 	    if ($profpane.length == 1) {
-		console.log('found profpane!');
-		// $(button).tab('show');
+		// console.log('found profpane!');
 		$profpane
 	    	    .addClass('active')
 	    	    .siblings().removeClass('active');
-		$('[data-catui="profile-select-container"]')
+		$(selectors.catui_profile_select_container)
 		    .children()
 		    .each(function(idx, el) {
-			// console.log('each', idx, el);
+			// by default hide profpane selector container
 		    	$(this).parent().addClass('hidden');
+			// but if there is more than one selector, show it and break
 		    	if (idx > 0) {
 		    	    $(this).parent().removeClass('hidden');
 		    	    return false;
@@ -579,34 +637,28 @@ $(document).ready(function() {
 			return this;
 		    });
 
-		$profpane.find('[data-catui="device-container"]')
-		    .siblings('[data-catui="device-loading-placeholder"]').addClass('active')
+		$profpane.find(selectors.catui_device_container)
+		    .siblings(selectors.catui_device_loading_placeholder).addClass('active')
 		    .siblings(':not(.active-exempt)').removeClass('active');
 
 		var state = $.fn.HashHandle("hash"),
 		    cdev_search = function(cdevid) {
 			return $profpane
-			    .find('[data-catui="devicelist-container"] [data-catdev]')
+			    .find(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
 			    .filter(function() { return $(this).data('catdev') == cdevid; });
 		    }
 		if (('cdev' in state) && cdev_search(state.cdev).length == 1) {
-		    console.log('found profpane, cdev in state');
 		    $profpane
-			.find('[data-catdev="' + state.cdev + '"]')
-			.triggerHandler('catDevChange');
+			.find(selectors.changes_cdev_with_cdev_id
+			      .naive_format({cdev: state.cdev}))
+			.triggerHandler(events.change_cdev);
 		} else if (!!_catDev && cdev_search(_catDev.id).length == 1) {
-		    console.log('found profpane, _catDev:', _catDev);
-		    // $profpane
-		    // 	.find('[data-catdev="' + _catDev.id + '"]')
-		    // 	.data('_catdev', _catDev);
-			// .triggerHandler('catDevChange');
 		    hashAct('cdev', _catDev.id, true);
 		} else if (cdev_search(catDeviceGuess).length == 1) {
-		    console.log('found profpane, cdev = catDeviceGuess');
 		    hashAct('cdev', catDeviceGuess, true);
 		} else {
 		    $profpane
-			.find('[data-catui="device-no-match"]')
+			.find(selectors.catui_device_no_match)
 			.addClass('active')
 			.siblings()
 			.removeClass('active');
@@ -622,14 +674,15 @@ $(document).ready(function() {
 		       'data-catprofpane': catProf.getProfileID()});
 
 	    var cb_description = function(description) {
-		var $description_element = $profpane.find('[data-catui="profile-description"]');
+		var $description_element = $profpane
+		    .find(selectors.catui_profile_description);
 		if (!!description) {
 		    $description_element.text(description);
 		} else {
 		    $description_element.html('');
 		}
 		// if profiles <= 1 or profile title == description, hide description
-		if ($('[data-catui="profile-select-container"]').children().length <= 1 ||
+		if ($(selectors.catui_profile_select_container).children().length <= 1 ||
 		    $(button).text() == description ||
 		    !!!description) {
 		    $description_element.addClass('hidden');
@@ -645,7 +698,7 @@ $(document).ready(function() {
 
 	    var cb_devicelist = function(devices) {
 		if (!!devices) {
-		    return CatDevice.groupDevices(devices);
+		    return CAT.Device().constructor.groupDevices(devices);
 		} else {
 		    return null;
 		}
@@ -658,34 +711,39 @@ $(document).ready(function() {
 		    d.reject(grouped_devices);
 		    return d.promise();
 		}
-		var $devicelist_container = $profpane.find('[data-catui="devicelist-container"]'),
+		var $devicelist_container = $profpane.find(selectors.catui_devicelist_container),
 		    $devicegroup_heading_template = $devicelist_container.find('.panel-heading'),
 		    $devicegroup_template = $devicegroup_heading_template.next(),
 		    $device_template = $devicegroup_template.find('.list-group-item').first();
-		// console.log('cb2 devicelist:', $devicelist_container, $devicegroup_heading_template, $devicegroup_template);
-		// $devicelist_container
-		//     .find('.panel-group')
-		//     .attr('id', $profpane.attr('id'));
 		var devgroups = [],
 		    devgroup_id_from = $devicegroup_template.attr('id'),
 		    ungrouped_devices = {};
 		for (var devgroup in grouped_devices) {
 		    var $devgroup_heading = $devicegroup_heading_template.clone(true);
-		    var devgroup_id_to = devgroup_id_from.replace('_Dummy', '_' + devgroup);
+		    var devgroup_id_to = devgroup_id_from
+			.naive_format({cdev_group: devgroup});
 		    $devgroup_heading
 			.attr('id', function(idx, cur) {
-			    return cur.replace(devgroup_id_from, devgroup_id_to);
+			    return cur.naive_format({cdev_group: devgroup});
+			    // return cur.replace(devgroup_id_from, devgroup_id_to);
 			})
 			.find('a')
-			.attr({ 'data-target': '#' + devgroup_id_to + '_' + $profpane.attr('id'),
+			.attr({ 'data-target': '#{0}_{1}'.naive_format(devgroup_id_to,
+								       $profpane.attr('id')),
 				'data-toggle': 'collapse-noanimation',
-				'aria-controls': devgroup_id_to + '_' + $profpane.attr('id') })
+				'aria-controls': '#{0}_{1}'.naive_format(devgroup_id_to,
+									 $profpane.attr('id'))})
 			.text(devgroup);
 		    var $devgroup = $devicegroup_template.clone(true);
 		    $devgroup
-			.attr('id', devgroup_id_to + '_' + $profpane.attr('id'))
+			.attr('id', '{0}_{1}'.naive_format(devgroup_id_to,
+							   $profpane.attr('id')))
 			.attr('aria-labelledby', function(idx, cur) {
-			    return cur.replace(devgroup_id_from, devgroup_id_to + '_' + $profpane.attr('id'));
+			    return cur.replace(devgroup_id_from,
+					       '{0}_{1}'.naive_format(
+						   devgroup_id_to,
+						   $profpane.attr('id'))
+					      );
 			});
 		    var devs = [];
 		    for (var devidx = 0; devidx < grouped_devices[devgroup].length; devidx++) {
@@ -695,9 +753,11 @@ $(document).ready(function() {
 			$device.children('a')
 			    .data('_catdev', grouped_devices[devgroup][devidx])
 			    .attr('href',
-				  '#cat-' + selector_encode({cidp: catProf.getIdpID(),
-							     cprof: catProf.getProfileID(),
-							     cdev: device_id}))
+				  '#cat-{0}'.naive_format(
+				      selector_encode({cidp: catProf.getIdpID(),
+						       cprof: catProf.getProfileID(),
+						       cdev: device_id}))
+				 )
 			    .attr({'data-catdev': device_id,
 				   'data-catprof': catProf.getProfileID()});
 			$.when(
@@ -715,14 +775,11 @@ $(document).ready(function() {
 		    $devgroup
 			.children('ul')
 			.html(devs);
-		    // console.log(devgroup + ': ', $devgroup);
 		    devgroups.push($devgroup_heading, $devgroup);
 		}
 		$devicelist_container
 		    .find('.panel')
 		    .html(devgroups);
-		// $devicelist_container
-		//     .find('.collapse').collapse({toggle: false});
 	    }
 	    deferreds_catprofchange.push(
 		$.when(
@@ -733,16 +790,12 @@ $(document).ready(function() {
 
 	    $.when.apply($, deferreds_catprofchange)
 		.then(function() {
-		    console.log('appending profpane -> container', $profpane, $profpane_container);
+		    // console.log('appending profpane -> container', $profpane, $profpane_container);
 		    $profpane_container
-			// .find('[data-catui="profile-container"]')
-			//   .remove()
-			// .end()
 			.append($profpane);
-		    // $(button).tab('show');
 
-		    $profpane.find('[data-catui="device-container"]')
-			.siblings('[data-catui="device-loading-placeholder"]')
+		    $profpane.find(selectors.catui_device_container)
+			.siblings(selectors.catui_device_loading_placeholder)
 			.addClass('active')
 			.siblings(':not(.active-exempt)')
 			.removeClass('active');
@@ -750,27 +803,21 @@ $(document).ready(function() {
 		    var state = $.fn.HashHandle("hash"),
 			cdev_search = function(cdevid) {
 			    return $profpane
-				.find('[data-catui="devicelist-container"] [data-catdev]')
+				.find(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
 				.filter(function() { return $(this).data('catdev') == cdevid; });
 			}
 		    if (('cdev' in state) && cdev_search(state.cdev).length == 1) {
-			console.log('kokolala1');
 			$profpane
-			    .find('[data-catdev="' + state.cdev + '"]')
-			    .triggerHandler('catDevChange');
+			    .find(selectors.changes_cdev_with_cdev_id
+				  .naive_format({cdev: state.cdev}))
+			    .triggerHandler(events.change_cdev);
 		    } else if (!!_catDev && cdev_search(_catDev.id).length == 1) {
-			console.log('kokolala2');
-			// $profpane
-			//     .find('[data-catdev="' + _catDev.id + '"]')
-			//     .data('_catdev', _catDev);
-			// .triggerHandler('catDevChange');
 			hashAct('cdev', _catDev.id, true);
 		    } else if (cdev_search(catDeviceGuess).length == 1) {
-			console.log('kokolala3');
 			hashAct('cdev', catDeviceGuess, true);
 		    } else {
 			$profpane
-			    .find('[data-catui="device-no-match"]')
+			    .find(selectors.catui_device_no_match)
 			    .addClass('active')
 			    .siblings()
 			    .removeClass('active');
@@ -780,75 +827,29 @@ $(document).ready(function() {
 	    		.addClass('active')
 	    		.siblings().removeClass('active');
 
-		    $('[data-catui="profile-select-container"]')
+		    $(selectors.catui_profile_select_container)
 		    	.children()
 		    	.each(function(idx, el) {
-			    // console.log('each', idx, el);
+			    // by default hide profpane selector container
 		    	    $(this).parent().addClass('hidden');
+			    // but if there is more than one selector, show it and break
 		    	    if (idx > 0) {
 		    		$(this).parent().removeClass('hidden');
 		    		return false;
 		    	    }
 			    return this;
 		    	});
-		    // return this;
+
 		}, function() { // on fail:
 		    $profpane_error
 	    		.addClass('active')
 	    		.siblings().removeClass('active');
 		});
-	});
-    $(document)
-	.on('click',
-	    '[data-toggle="collapse-noanimation"]',
-	    function(evt) {
-		// console.log('evt: ', evt);
-		evt.preventDefault();
-		var id = $(this).attr('data-target'),
-		    collapsed_init = $(this).hasClass('collapsed'),
-		    aria_expanded = collapsed_init ? 'true' : 'false';
-		$(this).toggleClass('collapsed')
-		    .attr('aria-expanded', aria_expanded)
-		    .closest('.panel-heading')
-		    .siblings(id)
-		    .toggleClass('in')
-		    .attr('aria-expanded', aria_expanded);
-		return this;
-	    });	    
-    // usability enhancement for accordion collapsibles (without animation)
-    // propagate clicks to the device group/device info headings, device selectors from their container elements
-    $(document)
-	.on('click',
-	    '[data-catui="devicelist-container"] .panel-heading, [data-catui="device-deviceinfo"] .panel-heading, [data-catui="devicelist-container"] .list-group-item',
-	    function (evt) {
-		var $that = $(this).find('[data-toggle="collapse-noanimation"],[data-catdev]');
-		if ($that.length > 0 &&
-		    evt.target !== $that.get(0) &&
-		    $that.find(evt.target).length == 0) {
-		    // console.log('clicking!', this, $that.get(0));
-		    return $that.trigger('click');
-		}
-		return this;
-	    });
-    // hiding other device groups upon device group selection
-    // workaround for collapse data-parent not working
-    $(document)
-	.on('click', '[data-catui="devicelist-container"] [data-toggle="collapse-noanimation"]', function (evt) {
-	    // console.log('devgroup click:', this, evt);
-	    $(this)
-		.parent('.panel-heading')
-		.siblings($(this).data('target'))
-		.siblings('.panel-collapse.in')
-		.removeClass('in');
-		// .each(function() {
-		//     $(this).collapse('toggle');
-		// });
-	    return this;
-	});
-    $('[data-catui="devicelist-container"] [data-catdev]')
+    }
+
+    $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
 	.on('click', function (evt) {
 	    evt.preventDefault();
-	    // console.log('[data-catdev] click:', $(this));
 	    var state = $.fn.HashHandle("hash"),
 		key = 'cdev',
 		val = $(this).attr('data-catdev');
@@ -857,24 +858,22 @@ $(document).ready(function() {
 	    }
 	    return this;
 	})
-	.on('catDevChange', function (evt) {
-	    console.log('catDevChange fired', this, arguments);
+	.on(events.change_cdev, test_change_cdev);
+
+    function test_change_cdev(evt) {
 	    var button = this,
 		device = $(button).data('_catdev');
-	    catDev = (device instanceof CatDevice) ?
-		device : new CatDevice(catApi,
-	    			       catIdp.id,
-	    			       $(button).data('catdev'),
-	    			       catLang);
-	    // console.log('catDev is now', catDev);
+	    catDev = (device instanceof CAT.Device().constructor) ?
+		device : CAT.Device(catIdp.id,
+				    $(button).data('catprof'),
+	    			    $(button).data('catdev'));
 	    var deferreds_catdevchange = [];
 	    var $device_container = $(button)
-		.parents('[data-catui="profile-container"]')
-		.find('[data-catui="device-container"]');
-	    // console.log('device container', $device_container);
+		.parents(selectors.catui_profile_container)
+		.find(selectors.catui_device_container);
 
 	    $device_container
-		.siblings('[data-catui="device-loading-placeholder"]').addClass('active')
+		.siblings(selectors.catui_device_loading_placeholder).addClass('active')
 		.siblings(':not(.active-exempt)').removeClass('active');
 	    // HACK!
 	    $device_container.closest('.modal').scrollTop(0);
@@ -890,21 +889,20 @@ $(document).ready(function() {
 				     device_redirect,
 				     device_lang_display) {
 
-		// return $.Deferred().reject('kokolala').promise();
-
 		function setDeviceField(data_catui_val, text) {
 		    var $el = $device_container
-			.find('[data-catui="' + data_catui_val + '"]');
+			.find('[data-catui="{0}"]'
+			      .naive_format(data_catui_val));
 		    if (!!text) {
 			if (typeof text === 'string') {
-			    console.log('setting text', $el, text);
+			    // console.log('setting text', $el, text);
 			    $el.removeClass('hidden').text(text);
 			} else if (typeof text === 'function') {
-			    console.log('callback', $el, text);
+			    // console.log('callback', $el, text);
 			    $el.removeClass('hidden').each(text);
 			}
 		    } else {
-			console.log('hiding', $el);
+			// console.log('hiding', $el);
 			$el.addClass('hidden').empty();
 		    }
 		    return $el;
@@ -923,26 +921,17 @@ $(document).ready(function() {
 					   if (href_slash_idx <= 0 &&
 					       href.search('//') != 0) {
 					       $(this).attr('href',
-							    catApi.localDownloadBase() +
+							    CAT.API.localDownloadBase() +
 							    href.substr(href_slash_idx + 1));
 					   }
 					   return this;
 				       });
 				   $(this)
-				       // .find('button[disabled]')
-				       //   .removeAttr('disabled')
-				       //   .end()
-				       // .siblings('[data-catui="device-download"]')
-				       // .find('button')
-				       // .attr('disabled', 'disabled');
 				       .removeClass('catui-message-acknowledged');
+				   return this;
 			       } :
 			       function() {
-				   $(this).addClass('hidden');
-				   $(this)
-				   //     .siblings('[data-catui="device-download"]')
-				   //     .find('button')
-				   //     .removeAttr('disabled');
+				   $(this).addClass('hidden')
 				       .removeClass('catui-message-acknowledged');
 				   return this;
 			       });
@@ -952,15 +941,22 @@ $(document).ready(function() {
 				   var device_redirect_url =
 				       (device_redirect.search(/(https?:)?\/\//) == 0) ?
 				       device_redirect : '//' + device_redirect;
-				   $(this).find('a[data-catui="device-redirecturl"]')
+				   $(this)
+				       .find(
+					   'a{0}'.naive_format(
+					       selectors.catui_device_redirecturl)
+				       )
 				       .attr('href', device_redirect_url)
 				       .text(device_redirect);
 				   return this;
 			       } :
 			       function() {
-				   $(this).
-				       addClass('hidden')
-				       .find('a[data-catui="device-redirecturl"]')
+				   $(this)
+				       .addClass('hidden')
+				       .find(
+					   'a{0}'.naive_format(
+					       selectors.catui_device_redirecturl)
+				       )
 				       .removeAttr('href')
 				       .text(null);
 				   return this;
@@ -988,7 +984,7 @@ $(document).ready(function() {
 					   .removeClass('btn-danger')
 					   .addClass('btn-success')
 					   .data('_catdev', catDev)
-					   .find('[data-catui-dltxt="init"]')
+					   .find(selectors.catui_dltxt_init)
 					   .removeClass('hidden')
 					   .siblings().addClass('hidden');
 				   });
@@ -1004,18 +1000,19 @@ $(document).ready(function() {
 			return null;
 		    }
 		    var sdf_deviceinfo = function() {
-			var devinfo_id = 'deviceinfo_' +
-			    $(this)
-			    .closest('[data-catui="profile-container"]')
-			    .attr('id') +
-			    '_' + device_id;
+			var devinfo_id = 'deviceinfo_{0}_{1}'
+			    .naive_format(
+				$(this)
+				    .closest(selectors.catui_profile_container)
+				    .attr('id'),
+				device_id);
 			$(this)
 			    .removeClass('hidden')
 			    .find('.panel-heading')
 			      .attr('id', 'heading_' + devinfo_id)
 			      .find('a')
-			        .attr({ 'data-target': '#' + devinfo_id,
-					'aria-controls': devinfo_id})
+			        .attr({'data-target': '#' + devinfo_id,
+				       'aria-controls': devinfo_id})
 			        .end()
 			      .end()
 			    .find('[role="tabpanel"]')
@@ -1062,65 +1059,63 @@ $(document).ready(function() {
 			.siblings(':not(.active-exempt)')
 			.removeClass('active');
 		}, function() {
-		    console.log('catdevchange master promise failed!', this, arguments);
+		    // console.log('catdevchange master promise failed!', this, arguments);
 		    $device_container
-			.siblings('[data-catui="device-load-error"]')
+			.siblings(selectors.catui_device_load_error)
 			.addClass('active')
 			.siblings(':not(.active-exempt)')
 			.removeClass('active');
 		});
 
 	    return this;
-	});
-    $('[data-catui="device-download"] button')
+    }
+
+    $('{0} button'.naive_format(selectors.catui_device_download))
 	.on('click', function (evt) {
-	    console.log('click.catDownload fired', this, arguments);
 	    // evt.preventDefault();
 	    var button = this,
 		device = $(button).data('_catdev');
-	    if (!(device instanceof CatDevice)) {
-		console.log('aborting! device is not a CatDevice', device);
+	    if (!(device instanceof CAT.Device().constructor)) {
+		console.log('aborting! device is not a CAT.Device', device);
 		return false;
 	    }
 	    $(button)
-		.find('[data-catui-dltxt="generate"]')
+		.find(selectors.catui_dltxt_generate)
 		.removeClass('hidden')
 		.siblings().addClass('hidden');
 	    var cb_dl = function(dlurl) {
 		if (dlurl !== null) {
 		    $(button)
-			.find('[data-catui-dltxt="download"]')
+			.find(selectors.catui_dltxt_download)
 			.removeClass('hidden')
 			.siblings().addClass('hidden');
-		    // console.log('downloading has begun:', dlurl);
 		} else {
 		    $(button)
 			.removeClass('btn-success').addClass('btn-danger')
-			.find('[data-catui-dltxt="fail"]')
+			.find(selectors.catui_dltxt_fail)
 			  .removeClass('hidden')
 			  .siblings().addClass('hidden')
 			.end()
-			.closest('[data-catui="device-download"]')
+			.closest(selectors.catui_device_download)
 			.addClass('download-failed');
-		    // console.log('downloading has failed!', dlurl);
 		}
 	    }
 	    device.getDownload().then(cb_dl, cb_dl);
 	    return this;
 	});
-    $('[data-catui="device-redirectmessage"] button')
+
+    $('{0} button'.naive_format(selectors.catui_device_redirectmessage))
 	.on('click', function (evt) {
 	    // evt.preventDefault();
 	    var button = this,
 		$that = $(button)
-		.closest('[data-catui="device-redirectmessage"]')
-		.find('[data-catui="device-redirecturl"]'),
+		.closest(selectors.catui_device_redirectmessage)
+		.find(selectors.catui_device_redirecturl),
 		href = $that.attr('href'),
 		target = $that.attr('target');
 	    if ($that.length > 0 &&
 		evt.target !== $that.get(0) &&
 		href) {
-		// console.log('simulating clicking!', $that);
 		if (target == '_blank') {
 		    window.open(href);
 		} else {
@@ -1129,48 +1124,25 @@ $(document).ready(function() {
 	    }
 	    return this;
 	});
-    $('[data-catui="device-message"] button')
+
+    $('{0} button'.naive_format(selectors.catui_device_message))
 	.on('click', function (evt) {
-	    // evt.preventDefault();
-	    // var button = this;
-	    // 	$that = $(button)
-	    // 	.closest('[data-catui="device-message"]')
-	    // 	.siblings('[data-catui="device-download"]')
-	    // 	.find('button[disabled]');
-	    // if ($that.length > 0 &&
-	    // 	evt.target !== $that.get(0)) {
-	    // 	console.log('enabling download!', $that);
-	    // 	$(button).attr('disabled', 'disabled');
-	    // 	$that.removeAttr('disabled');
-	    // }
 	    $(this)
-	    	.closest('[data-catui="device-message"]')
+	    	.closest(selectors.catui_device_message)
 		.addClass('catui-message-acknowledged');
 	    return this;
 	});
 
     var ap = appear({
 	init: function() {
-	    // this.listProfilesQueue = new BufferedQueue();
 	    this.listProfilesQueue = [];
 	    this.queueInterval = 100;
 	    this.getQueueDelay = function(queueLength) {
 		return (queueLength * this.queueInterval) - this.queueInterval;
-		// if (!!!this.queueDelay) {
-		//     this.queueDelay = this.queueInterval;
-		// }
-		// this.queueDelay =
-		//     Math.min(12000,
-		// 	     Math.max(300,
-		// 		      this.queueDelay +
-		// 		      ((Math.pow(2, queueLength) - 2) * -300)
-		// 		     )
-		// 	    );
-		// return this.queueDelay;
 	    }
 	},
 	elements: function() {
-	    return $('[data-toggle="modal"][data-catidp]:not([disabled])')
+	    return $(selectors.toggles_modal_has_cidp_id)
 		.get();
 	},
 	appear: function(el) {
@@ -1179,44 +1151,28 @@ $(document).ready(function() {
 	    if (!!!catIdpID) {
 		return undefined;
 	    }
-	    // if (!($el.data('_catidp') instanceof CatIdentityProvider)) {
-	    // 	$el.data('_catidp', new CatIdentityProvider(catApi,
-	    // 						    catIdpID,
-	    // 						    catLang)
-	    // 		);
-	    // }
-	    // checking = $el.parents('address').children('strong').text();
     	    var cb2 = function(ret) {
     	    	if (!(ret instanceof Array) ||
     	    	    ret.length == 0) {
-    	    	    // console.log('disabling button for:',
-    	    	    // 		catIdpID,
-    	    	    // 		$el.parents('address').children('strong').text());
-    	    	    $el.triggerHandler('disableNoProfiles');
+    	    	    $el.triggerHandler(events.disable_noprofiles);
     	    	}
     	    }
 	    var cb = function(ret) {
 		if (!(ret instanceof Object) ||
 		    !(catIdpID in ret)) {
 		    $.when(
-			catApi.listProfiles(catIdpID, catLang)
+			CAT.API.listProfiles(catIdpID)
 		    ).then(cb2, cb2);
 		}
 	    }
-    	    // this.listProfilesQueue.addFirst(function() {
     	    this.listProfilesQueue.unshift(function() {
     		$.when(
-    		    catApi.listAllIdentityProvidersByID(catLang)
+    		    CAT.API.listAllIdentityProvidersByID()
     		).then(cb, cb);
 	    });
 	    var listProfilesQueue = this.listProfilesQueue,
-		// qcbDelay = this.getQueueDelay(listProfilesQueue.queue.length);
 		qcbDelay = this.getQueueDelay(listProfilesQueue.length);
-	    // console.log('qcbDelay', qcbDelay);
 	    setTimeout(function() {
-		// listProfilesQueue.getFirst(function(qcb) {
-		//     qcb();
-		// });
 		var qcb = listProfilesQueue.shift();
 		if (typeof qcb === 'function') {
 		    qcb();
@@ -1226,10 +1182,11 @@ $(document).ready(function() {
 	}
     });
 
-    catApi.touCallBack(function(tou) {
+    CAT.API.touCallBack(function(tou) {
 	var tou_url_start;
 	if (!!tou && (tou_url_start = tou.search(/(https?:)?\/\//)) != -1) {
-	    $('[data-catui="cat-api-tou"]').attr('href', tou.substr(tou_url_start));
+	    $(selectors.catui_cat_api_tou).attr('href', tou.substr(tou_url_start));
 	}
     });
-});
+
+})(jQuery);
