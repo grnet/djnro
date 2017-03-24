@@ -39,9 +39,11 @@
     function selector_encode(obj) {
 	return btoa(JSON.stringify(obj)).replace(/=/g, '_');
     }
+    $.selector_encode = selector_encode;
     function selector_decode(hash) {
 	return JSON.parse(atob(hash.replace(/_/g, '=')));
     }
+    $.selector_decode = selector_decode;
 
     function hashAct(key, val, hard, obj, trhsevt) {
 	var state = $.fn.HashHandle('hash'),
@@ -50,24 +52,21 @@
 	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
 	if (key in state) {
 	    if (state[key] == val || typeof val === 'undefined') {
-		console.log('hashAct', 1, 'remove' + hard, key, obj, trhsevt);
+		// console.log('hashAct', 1, 'remove' + hard, key, obj, trhsevt);
 		$.fn.HashHandle('remove' + hard, key, obj, trhsevt);
 	    } else {
-		console.log('hashAct', 1, 'add' + hard, key, val, obj, trhsevt);
+		// console.log('hashAct', 1, 'add' + hard, key, val, obj, trhsevt);
 		$.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
 	    }
 	} else if (typeof val !== 'undefined') {
-	    console.log('hashAct', 2, 'add' + hard, key, val, obj, trhsevt);
+	    // console.log('hashAct', 2, 'add' + hard, key, val, obj, trhsevt);
 	    $.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
 	}
     }
 
-    function hashAct_subscriber(evt, state, $el) {
-	console.log('hashAct_sub arguments', arguments);
-	var trigger_popstate = [evt.type, evt.namespace].join('.').indexOf('.cat2') != -1;
-	console.log([evt.type, evt.namespace].join('.'),
-		    'trigger_popstate',
-		    trigger_popstate);
+    function controller_tostate(evt, state, $el) {
+	// console.log('controller_tostate arguments', arguments);
+	var trigger_popstate = true;
 	var hard;
 	if (typeof state === 'undefined') {
 	    state = {};
@@ -76,32 +75,23 @@
 	    hard = state._act == 'replace';
 	    delete state._act;
 	}
-	var ordered_keys = ['cidp', 'cprof', 'cdev'];
 	var implied_act = evt.type.split('_', 2);
-	if (implied_act.length > 1 && implied_act[0] == 'remove' && (implied_act[1] in state)) {
-	    console.log('hashAct_sub', evt.type, 3, 'key', implied_act[1], 'val', undefined, 'hard', hard, {$el: $el}, 'trhsevt', trigger_popstate);
-	    hashAct(implied_act[1], undefined, hard, {$el, $el}, trigger_popstate);
-	    // for (var _i=0; _i < ordered_keys.length && implied_act[1] != ordered_keys[_i];
-	    // 	 _i++); // empty statement
-	    // if (++_i < ordered_keys.length) {
-	    // 	for (var i=_i; i < ordered_keys.length; i++) {
-	    // 	    console.log('hashAct_sub', evt.type, 4, 'key', ordered_keys[i], 'val', undefined, 'hard', true, {$el: $el}, 'trhsevt', trigger_popstate);
-	    // 	    hashAct(ordered_keys[i], undefined, true, {$el, $el}, trigger_popstate);
-	    // 	}
-	    // }
+	if (implied_act.length > 1 && implied_act[1] == 'remove' && (implied_act[0] in state)) {
+	    // console.log('controller_tostate', evt.type, 3, 'key', implied_act[0], 'val', undefined, 'hard', hard, $el);
+	    hashAct(implied_act[0], undefined, hard, $el);
 	} else {
 	    var prev_state = $.fn.HashHandle('hash');
-	    console.log('hashAct_sub', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, {$el: $el}, 'trigger_popstate', trigger_popstate, 'implied_act', implied_act);
+	    // console.log('controller_tostate', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, $el);
 	    for (var k in state) {
 		if (!(k in prev_state) || prev_state[k] != state[k]) {
-		    console.log('hashAct_sub', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, {$el: $el}, 'trhsevt', trigger_popstate);
-		    hashAct(k, state[k], hard, {$el: $el}, trigger_popstate);
+		    // console.log('controller_tostate', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, $el);
+		    hashAct(k, state[k], hard, $el);
 		}
 	    }
 	    for (var _k in prev_state) {
 		if (!(_k in state)) {
-		    console.log('hashAct_sub', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, {$el: $el}, 'trhsevt', trigger_popstate);
-		    hashAct(_k, undefined, hard, {$el: $el}, trigger_popstate);
+		    // console.log('controller_tostate', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, $el);
+		    hashAct(_k, undefined, hard, $el);
 		}
 	    }
 	}
@@ -154,146 +144,60 @@
 	    history_change: 'onpopstate' in window ? 'popstate' : 'hashchange',
 	    logosup_hide: 'hide.logosup.cat',
 	    logosup_show: 'show.logosup.cat',
-	    click_composite: 'compositeClick',
 	    disable_noprofiles: 'disableNoProfiles',
 	    change_cidp: 'catIdpChange',
 	    change_cprof: 'catProfChange',
 	    change_cdev: 'catDevChange',
+	    click: 'click.cat_ui'
 	},
-	pubsubs = {
-	    change_cidp1: 'change_cidp.catui.cat1',
-	    remove_cidp1: 'remove_cidp.catui.cat1',
-	    change_cprof1: 'change_cprof.catui.cat1',
-	    remove_cprof1: 'remove_cprof.catui.cat1',
-	    change_cdev1: 'change_cdev.catui.cat1',
-	    remove_cdev1: 'remove_cdev.catui.cat1',
-	    change_cidp2: 'change_cidp.catui.cat2',
-	    remove_cidp2: 'remove_cidp.catui.cat2',
-	    change_cprof2: 'change_cprof.catui.cat2',
-	    remove_cprof2: 'remove_cprof.catui.cat2',
-	    change_cdev2: 'change_cdev.catui.cat2',
-	    remove_cdev2: 'remove_cdev.catui.cat2'
-	}
-
-    for (var ___ps in pubsubs) {
-	$.subscribe(pubsubs[___ps], hashAct_subscriber);
-    }
-
-    $(window).on(events.history_change, popstate_handler_pub);
-
-    function popstate_handler(evt, param1) {
-	console.log('evt.originalEvent', evt.originalEvent, 'arguments', arguments, 'param1', param1);
-	var state = $.fn.HashHandle("hash"),
-	    pairs = {
-		cidp:  { evt: events.change_cidp,  obj: views.cidp.obj  },
-		cprof: { evt: events.change_cprof, obj: views.cprof.obj },
-		cdev:  { evt: events.change_cdev,  obj: views.cdev.obj  }
-	    }
-	for (var key in pairs) {
-	    var stateChange = 0;
-	    if (!(key in state)) {
-		if (typeof pairs[key].obj !== "undefined") {
-		    stateChange = 2;
-		}
-	    }
-	    else if (typeof pairs[key].obj === "undefined" ||
-		     (state[key] != pairs[key].obj.id)) {
-		stateChange = 1;
-	    }
-	    console.log(key +' stateChange: '+ stateChange);
-	    if (stateChange === 0) {
-		continue;
-	    }
-	    switch (key) {
-	    case 'cidp':
-		if (stateChange === 2) {
-		    views.cidp.obj = undefined;
-		    $('{0}.in'.naive_format(selectors.cat_modal)).modal('hide');
-		} else {
-		    return $(selectors.toggles_modal_with_cidp_id
-			     .naive_format({cidp: state[key]}))
-			// .each(function() {
-			//     console.log('on popstate triggered {0} on'
-			// 		.naive_format(events.change_cidp),
-			// 		this);
-			// })
-			.triggerHandler(pairs[key].evt);
-		}
-		// fallthrough if stateChange === 2
-	    case 'cprof':
-		if (stateChange === 2) {
-		    if (key != 'cprof') {
-			// don't blindly set _catProf (last catProf), but push
-			// catProf.id in front of _catProf and add catProf to
-			// _catProfO
-			if (!!views.cprof.obj) {
-			    var idx;
-			    if ((idx = views.cprof.prev_stack.indexOf(views.cprof.obj.id)) != -1) {
-				views.cprof.prev_stack.splice(idx, 1);
-			    } else {
-				views.cprof.prev_obj[views.cprof.obj.id] = views.cprof.obj;
-			    }
-			    views.cprof.prev_stack.unshift(views.cprof.obj.id);
+	strip_namespace = function(id) {
+	    return id.split('.')[0];
+	},
+	pubsub_cats_ordered = ['cidp', 'cprof', 'cdev'],
+	pubsubs = function() {
+	    var ret = {},
+		directions = ['fromstate', 'tostate'],
+		triggers = ['change', 'remove'];
+	    for (var i_ps=0; i_ps < arguments.length; i_ps++) {
+		ret[arguments[i_ps]] = {}
+		for (var i_t=0; i_t < triggers.length; i_t++) {
+		    ret[arguments[i_ps]][triggers[i_t]] = {};
+		    for (var i_d=0; i_d < directions.length; i_d++) {
+			ret[arguments[i_ps]][triggers[i_t]][directions[i_d]] =
+			    '{0}_{1}.cat_ui.{2}'
+			    .naive_format(arguments[i_ps],
+					  triggers[i_t],
+					  directions[i_d]);
+			switch (directions[i_d]) {
+			    // case 'fromstate':
+			    // $.subscribe(ret[arguments[i_ps]][triggers[i_t]][directions[i_d]],
+			    // 		controller_fromstate);
+			    // break;
+			    case 'tostate':
+			    $.subscribe(ret[arguments[i_ps]][triggers[i_t]][directions[i_d]],
+			    		controller_tostate);
+			    break;
 			}
-			hashAct('cprof', undefined, true);
-		    }
-		    views.cprof.obj = undefined;
-		} else {
-		    return $(selectors.toggles_tab_with_cprof_id
-			     .naive_format({cprof: state[key]}))
-			// .each(function() {
-			//     console.log('on popstate triggered {0} on'
-			// 		.naive_format(events.change_cprof),
-			// 		this);
-			// })
-			.triggerHandler(pairs[key].evt);
-		}
-		// fallthrough if stateChange === 2
-	    case 'cdev':
-		if (stateChange === 2) {
-		    if (key != 'cdev') {
-			views.cdev.prev_obj = !!views.cdev.obj && views.cdev.obj || views.cdev.prev_obj;
-			hashAct('cdev', undefined, true);
-		    }
-		    views.cdev.obj = undefined;
-		} else {
-		    if (!('cprof' in state)) {
-			console.log('have cdev but no cprof!!');
-			break;
-		    }
-		    var $catdev_trigger_el =
-			$(selectors.changes_cdev_with_cprof_cdev_ids_ctx_catprofpane
-			  .naive_format({cprof: state.cprof,
-					 cdev: state[key]}));
-		    if ($catdev_trigger_el.length == 1) {
-		    	$catdev_trigger_el
-			    // .each(function() {
-			    // 	console.log('on popstate triggered {0} on'
-			    // 		    .naive_format(events.change_cprof),
-			    // 		    this);
-			    // })
-			    .triggerHandler(pairs[key].evt);
-		    } else {
-			$(selectors.changes_cdev_nomatch_with_cprof_id
-			  .naive_format({cprof: state.cprof}))
-			    .addClass('active')
-			    .siblings()
-			    .removeClass('active');
 		    }
 		}
-		break;
 	    }
-	}
-	return this;
-    }
-    function popstate_handler_pub(evt, param1) {
-	console.log('popstate.pubsub', 'evt.originalEvent', evt.originalEvent, 'arguments', arguments, 'param1', param1);
+	    return ret;
+	}.apply(null, pubsub_cats_ordered);
+    pubsubs.cidp.disable_noprofiles = 'cidp_disable_noprofiles.cat_ui';
+
+
+    $(window).on(events.history_change, controller_fromstate);
+
+    function controller_fromstate(evt, $el) {
 	var state = $.fn.HashHandle("hash"),
 	    pairs = {
-		cidp:  { evt: events.change_cidp,  obj: views.cidp.obj  },
-		cprof: { evt: events.change_cprof, obj: views.cprof.obj },
-		cdev:  { evt: events.change_cdev,  obj: views.cdev.obj  }
+		cidp:  { obj: views.cidp.obj  },
+		cprof: { obj: views.cprof.obj },
+		cdev:  { obj: views.cdev.obj  }
 	    }
+	console.log('controller_fromstate init',
+		    'state', state, 'pairs', pairs,
+		    'evt.originalEvent', evt.originalEvent, '$el', $el);
 	for (var key in pairs) {
 	    var stateChange = 0;
 	    if (!(key in state)) {
@@ -305,7 +209,14 @@
 		     (state[key] != pairs[key].obj.id)) {
 		stateChange = 1;
 	    }
-	    console.log('popstate.pubsub', key +' stateChange: '+ stateChange);
+	    // special case: device id (cdev) may be common across objects
+	    // else if (key == 'cdev' && (pairs[key].obj instanceof CAT.Device().constructor)) {
+	    // 	if (('cprof' in state) &&
+	    // 	    state.cprof != pairs[key].obj.getProfileID()) {
+	    // 	    stateChange = 1;
+	    // 	}
+	    // }		     
+	    console.log('controller_fromstate', key +' stateChange: '+ stateChange);
 	    if (stateChange === 0) {
 		continue;
 	    }
@@ -313,91 +224,68 @@
 	    case 'cidp':
 		if (stateChange === 2) {
 		    views.cidp.obj = undefined;
-		    // $('{0}.in'.naive_format(selectors.cat_modal)).modal('hide');
 		    // delete state.cidp;
-		    $.publish(pubsubs.remove_cidp1, [state]);
+		    $.publish(pubsubs.cidp.remove.fromstate, [state, $el]);
+		    // console.log('got here', 1);
 		} else {
-		    // return $(selectors.toggles_modal_with_cidp_id
-		    // 	     .naive_format({cidp: state[key]}))
-		    // 	// .each(function() {
-		    // 	//     console.log('on popstate triggered {0} on'
-		    // 	// 		.naive_format(events.change_cidp),
-		    // 	// 		this);
-		    // 	// })
-		    // 	.triggerHandler(pairs[key].evt);
-		    return $.publish(pubsubs.change_cidp1, [state]);
+		    return $.publish(pubsubs.cidp.change.fromstate, [state, $el]);
 		}
 		// fallthrough if stateChange === 2
 	    case 'cprof':
 		if (stateChange === 2) {
+		    // console.log('got here', 2, 1);
 		    if (key != 'cprof') {
+			// console.log('got here', 2, 2);
 			// don't blindly set _catProf (last catProf), but push
 			// catProf.id in front of _catProf and add catProf to
 			// _catProfO
 			if (!!views.cprof.obj) {
+			    // console.log('got here', 2, 3);
 			    var idx;
 			    if ((idx = views.cprof.prev_stack.indexOf(views.cprof.obj.id)) != -1) {
+				// console.log('got here', 2, 3, 1);
 				views.cprof.prev_stack.splice(idx, 1);
 			    } else {
+				// console.log('got here', 2, 3, 2);
 				views.cprof.prev_obj[views.cprof.obj.id] = views.cprof.obj;
 			    }
 			    views.cprof.prev_stack.unshift(views.cprof.obj.id);
 			}
 			// hashAct('cprof', undefined, true);
 			// delete state.cprof;
-			$.publish(pubsubs.remove_cprof1,
-				  [$.extend({}, state, {_act: 'replace'})]);
+			state._act = 'replace';
+			$.publish(pubsubs.cprof.remove.tostate, [state, $el]);
 		    }
 		    views.cprof.obj = undefined;
 		} else {
-		    // return $(selectors.toggles_tab_with_cprof_id
-		    // 	     .naive_format({cprof: state[key]}))
-		    // 	// .each(function() {
-		    // 	//     console.log('on popstate triggered {0} on'
-		    // 	// 		.naive_format(events.change_cprof),
-		    // 	// 		this);
-		    // 	// })
-		    // 	.triggerHandler(pairs[key].evt);
-		    return $.publish(pubsubs.change_cprof1,
-				     [$.extend({}, state, {_act: 'replace'})]);
+		    if (!('cidp' in state)) {
+		    	console.log('have cprof but no cidp!!');
+			state._act = 'replace';
+		    	return $.publish(pubsubs.cprof.remove.tostate, [state, $el]);
+		    }
+		    return $.publish(pubsubs.cprof.change.fromstate, [state, $el]);
 		}
 		// fallthrough if stateChange === 2
 	    case 'cdev':
 		if (stateChange === 2) {
+		    // console.log('got here', 3, 1);
 		    if (key != 'cdev') {
-			views.cdev.prev_obj = !!views.cdev.obj && views.cdev.obj || views.cdev.prev_obj;
+			// console.log('got here', 3, 2);
+			views.cdev.prev_obj = !!views.cdev.obj &&
+			    views.cdev.obj || views.cdev.prev_obj;
 			// hashAct('cdev', undefined, true);
 			// delete state.cdev;
-			$.publish(pubsubs.remove_cdev1,
-				  [$.extend({}, state, {_act: 'replace'})]);
+			state._act = 'replace';
+			$.publish(pubsubs.cdev.remove.tostate, [state, $el]);
 		    }
 		    views.cdev.obj = undefined;
 		} else {
 		    if (!('cprof' in state)) {
 			console.log('have cdev but no cprof!!');
-			break;
+			state._act = 'replace';
+			return $.publish(pubsubs.cdev.remove.tostate, [state, $el]);
 		    }
-		    // var $catdev_trigger_el =
-		    // 	$(selectors.changes_cdev_with_cprof_cdev_ids_ctx_catprofpane
-		    // 	  .naive_format({cprof: state.cprof,
-		    // 			 cdev: state[key]}));
-		    // if ($catdev_trigger_el.length == 1) {
-		    // 	$catdev_trigger_el
-		    // 	    // .each(function() {
-		    // 	    // 	console.log('on popstate triggered {0} on'
-		    // 	    // 		    .naive_format(events.change_cprof),
-		    // 	    // 		    this);
-		    // 	    // })
-		    // 	    .triggerHandler(pairs[key].evt);
-		    // } else {
-		    // 	$(selectors.changes_cdev_nomatch_with_cprof_id
-		    // 	  .naive_format({cprof: state.cprof}))
-		    // 	    .addClass('active')
-		    // 	    .siblings()
-		    // 	    .removeClass('active');
-		    // }
-		    return $.publish(pubsubs.change_cdev1,
-				     [$.extend({}, state, {_act: 'replace'})]);
+		    return $.publish(pubsubs.cdev.change.fromstate, [state, $el]);
 		}
 		break;
 	    }
@@ -417,7 +305,7 @@
 
     // light-weight bootstrap collapsible without animation
     $(document)
-	.on('click',
+	.on(events.click,
 	    selectors.toggles_collapse_noanimation,
 	    function(evt) {
 		evt.preventDefault();
@@ -436,7 +324,7 @@
     // propagate clicks to the device group/device info headings, device selectors
     // from their container elements
     $(document)
-	.on('click',
+	.on(events.click,
 	    '{0}, {1}, {2}'.naive_format(
 		'{0} .panel-heading'.naive_format(selectors.catui_devicelist_container),
 		'{0} .panel-heading'.naive_format(selectors.catui_device_deviceinfo),
@@ -451,14 +339,14 @@
 		if ($that.length > 0 &&
 		    evt.target !== $that.get(0) &&
 		    $that.find(evt.target).length == 0) {
-		    return $that.trigger('click');
+		    return $that.trigger(events.click);
 		}
 		return this;
 	    });
     // hiding other device groups upon device group selection
-    // workaround for collapse data-parent not working
+    // workaround for bootstrap collapse data-parent not working
     $(document)
-	.on('click',
+	.on(events.click,
 	    '{0} {1}'.naive_format(
 		selectors.catui_devicelist_container,
 		selectors.toggles_collapse_noanimation
@@ -472,17 +360,16 @@
 	    return this;
 	});
 
-
-    $('{0},{1}'.naive_format(selectors.catui_container_logo,
-			     selectors.catui_container_support))
-	.on(events.logosup_hide, function (evt) {
-	    $(this).addClass('hidden');
-	    return this;
-	})
-	.on(events.logosup_show, function (evt) {
-	    $(this).removeClass('hidden');
-	    return this;
-	});
+    // $('{0},{1}'.naive_format(selectors.catui_container_logo,
+    // 			     selectors.catui_container_support))
+    // 	.on(events.logosup_hide, function (evt) {
+    // 	    $(this).addClass('hidden');
+    // 	    return this;
+    // 	})
+    // 	.on(events.logosup_show, function (evt) {
+    // 	    $(this).removeClass('hidden');
+    // 	    return this;
+    // 	});
 
     // buttons move around as they grow bigger in focus state
     // click may fire on a different element or not at all
@@ -503,7 +390,7 @@
 	    switch (evt.type) {
 	    case 'mouseup':
 		if (buttonPressed instanceof $) {
-		    buttonPressed.trigger(events.click_composite);
+		    buttonPressed.trigger(events.click);
 		    $(this).removeData('_buttonpressed');
 		}
 		break;
@@ -526,27 +413,13 @@
 
     $(selectors.cat_modal).on('hidden.bs.modal', function(evt) {
 	var state = $.fn.HashHandle("hash");
-	// delete state.cidp;
-	if ($(this).data('_pubsub') == pubsubs.remove_cidp1) {
-	    console.log('hidden.bs.modal removing _pubsub');
-	    $(this).removeData('_pubsub');
-	} else {
-	    $.publish(pubsubs.remove_cidp2, [state]);
+	$.publish(pubsubs.cidp.remove.tostate, [state]);
+	// bootstrap transitions (.modal.fade) use timers (conditionally) which
+	// may clash with rapid state transitions
+	// workaround: ensure any orphan backdrops are removed after modal is hidden
+	if ($(this).hasClass('fade')) {
+	    $('body > .modal-backdrop.fade').remove();
 	}
-		  // [$.extend({}, $.fn.HashHandle("hash"),
-		  // 	    {cidp: undefined})]);
-    // 	var state = $.fn.HashHandle('hash'),
-    // 	    cidp;
-    // 	if ('cidp' in state) {
-    // 	    cidp = state.cidp;
-    // 	    // hashHandle remove cidp
-    // 	    hashAct('cidp');
-    // 	}
-    // 	if (typeof(cidp) !== 'undefined') {
-    // 	    $(selectors.toggles_modal_with_cidp_id
-    // 	      .naive_format({cidp: cidp}))
-    // 		.focus();
-    // 	}
     	return this;
     });
 
@@ -557,98 +430,99 @@
 	    console.log('views.cidp.handle called!', evt.type, this);
 	    var self = views.cidp;
 	    switch (evt.type) {
-	    // case events.click_composite:
+	    // case strip_namespace(events.click):
 	    // 	// evt.preventDefault();
 	    // 	var key = 'cidp',
 	    // 	val = $(this).attr('data-catidp');
 	    // 	hashAct(key, val);
 	    // 	break;
-	    case events.click_composite:
-		// evt.preventDefault();
+	    case strip_namespace(events.click):
+		evt.preventDefault();
 		var state = $.fn.HashHandle("hash"),
 		key = 'cidp',
 		val = $(this).attr('data-catidp');
 		state[key] = val;
-		state._act = 'push';
-		return $.publish(pubsubs.change_cidp1,
-				 [state,
-				  $(this)]);
+		// state._act = 'push';
+		return $.publish(pubsubs.cidp.change.tostate,
+				 [state, $(this)]);
 		break;
-	    case events.disable_noprofiles:
-		evt.preventDefault();
-		var href = $(this).data('idu');
-		$(this)
-		    .attr({
-			'data-target': null,
-			'data-toggle': null,
-			'href': href,
-			'data-idu': null,
-			'data-catidp': null
-		    })
-		    .removeData('target toggle catidp idu')
-		    .off(events.click_composite);
-		break;
-	    case events.change_cidp:
-		self.element = this;
-		self.event = evt;
-		self.main();
-		break;
+	    // case strip_namespace(events.disable_noprofiles):
+	    // 	evt.preventDefault();
+	    // 	var href = $(this).data('idu');
+	    // 	$(this)
+	    // 	    .attr({
+	    // 		'data-target': null,
+	    // 		'data-toggle': null,
+	    // 		'href': href,
+	    // 		'data-idu': null,
+	    // 		'data-catidp': null
+	    // 	    })
+	    // 	    .removeData('target toggle catidp idu')
+	    // 	    .off(events.click);
+	    // 	break;
+	    // case events.change_cidp:
+	    // 	self.element = this;
+	    // 	self.event = evt;
+	    // 	self.main();
+	    // 	break;
 	    }
 	    return this; // jQuery chaining
 	},
 	subscriber: function(evt, state, $el) {
 	    var self = views.cidp;
-	    if (evt.type == pubsubs.remove_cidp1.split('.')[0]) {
-		// var $modal = $('{0}.in'.naive_format(selectors.cat_modal));
-		// console.log('kokolalalalalalalalalala:');
-		// if ($modal.length == 1) {
-		//     console.log('hiding modal', $modal);
-		//     $modal.modal('hide');
-		// } else {
-		    // SUPER HAAAACK!
-		    // var transition_duration = $(selectors.cat_modal).css('transition-duration')
-		    // 	.replace(/[^0-9\.]/g, '') * 1000; // seconds -> ms
-		    // var transition_duration = 300;
-		    // setTimeout(function() {
-		    // 	console.log('hiding modal on timeout', transition_duration);
-		    // 	$($modal.selector).hide();
-		    // }, transition_duration);
-		    // $(selectors.cat_modal).one('bsTransitionEnd', function() {
-		    // 	console.log('hiding modal on bsTransitionEnd', $(this));
-		    // 	$(this).hide();
-		    // });
-		    // 	console.log('hiding modal on bsTransitionEnd', $(this));
-		$(selectors.cat_modal).data('_pubsub', pubsubs.remove_cidp1).modal('hide');
-		// }
-		$el = $(self.element);
+	    switch (evt.type) {
+	    case strip_namespace(pubsubs.cidp.remove.fromstate):
+		$(selectors.cat_modal).modal('hide');
 		if ($el instanceof $ && $el.length == 1) {
 		    $el.focus();
+		} else if ('element' in self && $(self.element) instanceof $) {
+		    $(self.element).focus();
 		}
-		return this;
-	    }
-	    if (!(state instanceof Object)) {
-		return false;
-	    }
-	    if ($el instanceof $) {
-		self.element = $el.get(0);
-	    } else {
-		$el = $(selectors.toggles_modal_with_cidp_id.naive_format(state));
-		if ($el.length != 1) {
+		break;
+	    case strip_namespace(pubsubs.cidp.disable_noprofiles):
+		evt.preventDefault();
+		if (!($el instanceof $) || $el.length != 1) {
+		    // if ('element' in self && ($(self.element) instanceof $)) {
+		    // 	$el = $(self.element);
+		    // } else {
+		    return false;
+		    // }
+		}
+		var href = $el.data('idu');
+		$el.attr({'data-target': null,
+			  'data-toggle': null,
+			  'href': href,
+			  'data-idu': null,
+			  'data-catidp': null})
+		    .removeData('target toggle catidp idu')
+		    .off(events.click);
+		break;
+	    case strip_namespace(pubsubs.cidp.change.fromstate):
+		if (!(state instanceof Object)) {
 		    return false;
 		}
-		self.element = $el.get(0);
+		if ($el instanceof $) {
+		    self.element = $el.get(0);
+		} else {
+		    $el = $(selectors.toggles_modal_with_cidp_id.naive_format(state));
+		    if ($el.length != 1) {
+			return false;
+		    }
+		    self.element = $el.get(0);
+		}
+		console.log('cidp subscriber', 'evt', evt, '$el', $el, 'self', self);
+		// self.evt = evt;
+		self.main();
+		break;
 	    }
-	    console.log('cidp subscriber', 'evt', evt, 'self', self);
-	    self.evt = evt;
-	    self.main();
 	    return this;
 	},
 	obj: undefined,
 	progress: 'NProgress' in window ?
 	    NProgress :
 	    {
-		start: function() {return undefined;},
-		done: function() {return undefined;}
+		start: $.noop,
+		done: $.noop
 	    },
 	main: function() {
 	    var self = this;
@@ -673,13 +547,14 @@
 	    if (profiles === null ||
 		!(profiles instanceof Array) ||
 		profiles.length == 0) {
-		$(self.element).triggerHandler(events.disable_noprofiles);
+		// $(self.element).triggerHandler(events.disable_noprofiles);
+		$.publish(pubsubs.cidp.disable_noprofiles, [undefined, $(self.element)]);
 		// avoid async self.obj.getEntityID() for now
 		// hashhandle removeHard cidp
 		// hashAct('cidp', self.obj.id, true);
-		$.publish(pubsubs.remove_cidp1,
+		$.publish(pubsubs.cidp.remove.tostate,
 			  [$.extend({}, $.fn.HashHandle("hash"),
-				    {cidp: undefined, _act: 'replace'})]);
+				    {_act: 'replace'})]);
 		// hashAct('cidp', undefined, true);
 		self.progress.done();
 		return false;
@@ -689,7 +564,6 @@
 	    self.setup_title_icon(title, $icon);
 	    self.progress.done();
 	    $(selectors.cat_modal)
-		.each(function() { console.log('MODAL', $(this), $(this).data()); })
 		.modal('show');
 	},
 	setup_profile_selectors: function(profiles) {
@@ -741,16 +615,17 @@
 	    var self = this;
 	    var state = $.fn.HashHandle("hash");
 	    if (('cprof' in state) && (state.cprof in profiles_byid)) {
-		self.$profsel_container
-		    .find(
-			selectors.toggles_tab_with_cprof_id
-			    .naive_format({cprof: state.cprof})
-		    )
-		    .each(function() {
-			console.log('{0} triggered on'.naive_format(events.change_cprof),
-				    this);
-		    })
-		    .triggerHandler(events.change_cprof);
+		// self.$profsel_container
+		//     .find(
+		// 	selectors.toggles_tab_with_cprof_id
+		// 	    .naive_format({cprof: state.cprof})
+		//     )
+		//     .each(function() {
+		// 	console.log('{0} triggered on'.naive_format(events.change_cprof),
+		// 		    this);
+		//     })
+		//     .triggerHandler(events.change_cprof);
+		$.publish(pubsubs.cprof.change.fromstate, [state]);
 	    // } else if (!!_catProf && (_catProf.id in profiles_byid)) {
 	    } else {
 		for (var _idx = 0;
@@ -769,14 +644,14 @@
 		    // 	      views.cprof
 		    // 	      .prev_obj[views.cprof.prev_stack[_idx]]);
 		    // hashAct('cprof', views.cprof.prev_stack[_idx], true);
-		    $.publish(pubsubs.change_cprof1,
+		    $.publish(pubsubs.cprof.change.tostate,
 			      [$.extend({}, state,
 					{cprof: views.cprof.prev_stack[_idx],
 					 _act: 'replace'})]);
 
 		} else {
 		    // hashAct('cprof', profiles[0].getProfileID(), true);
-		    $.publish(pubsubs.change_cprof1,
+		    $.publish(pubsubs.cprof.change.tostate,
 			      [$.extend({}, state,
 					{cprof: profiles[0].getProfileID(),
 					 _act: 'replace'})]);
@@ -813,28 +688,70 @@
 	    $(selectors.cat_modal)
 		.find(selectors.catui_container_logo)
 		.html($icon)
-		.triggerHandler(
-		    $icon !== null ? events.logosup_show : events.logosup_hide
-		);
+	    [$icon === null ? 'addClass' : 'removeClass']('hidden');
+		// .triggerHandler(
+		//     $icon !== null ? events.logosup_show : events.logosup_hide
+		// );
+	},
+	appear_elements: function() {
+	    return $(selectors.toggles_modal_has_cidp_id)
+		.get();
+	},
+	handle_appear: function(el) {
+	    var self = views.cidp;
+	    console.log('handle_appear', this, arguments);
+    	    var $el = $(el),
+    		catIdpID = parseInt($el.data('catidp'));
+	    if (!!!catIdpID) {
+		return undefined;
+	    }
+    	    var cb2 = function(ret) {
+		console.log('cb2', this, arguments);
+    	    	if (!(ret instanceof Array) ||
+    	    	    ret.length == 0) {
+    	    	    // $el.triggerHandler(events.disable_noprofiles);
+		    $.publish(pubsubs.cidp.disable_noprofiles, [undefined, $el]);
+    	    	}
+    	    }
+	    var cb = function(ret) {
+		console.log('cb1', this, arguments);
+		if (!(ret instanceof Object) ||
+		    !(catIdpID in ret)) {
+		    $.when(
+			CAT.API.listProfiles(catIdpID)
+		    ).then(cb2, cb2);
+		}
+	    }
+    	    this.listProfilesQueue.unshift(function() {
+    		$.when(
+    		    CAT.API.listAllIdentityProvidersByID()
+    		).then(cb, cb);
+	    });
+	    var listProfilesQueue = this.listProfilesQueue;
+	    setTimeout(function() {
+		var qcb = listProfilesQueue.shift();
+		if (typeof qcb === 'function') {
+		    qcb();
+		}
+	    }, this.getQueueDelay(listProfilesQueue.length));
+	    return this;
 	}
     }
 		
     $(selectors.toggles_modal_has_cidp_id)
-	.on(events.click_composite, views.cidp.handle)
-	.on(events.disable_noprofiles, views.cidp.handle)
-	.on(events.change_cidp, views.cidp.handle);
+	.on(events.click, views.cidp.handle);
+	// .on(events.disable_noprofiles, views.cidp.handle); // make subscriber?
 
-    $.subscribe(pubsubs.change_cidp1, views.cidp.subscriber);
-    $.subscribe(pubsubs.remove_cidp1, views.cidp.subscriber);
-    $.subscribe(pubsubs.change_cidp2, views.cidp.subscriber);
-    $.subscribe(pubsubs.remove_cidp2, views.cidp.subscriber);
+    $.subscribe(pubsubs.cidp.change.fromstate, views.cidp.subscriber);
+    $.subscribe(pubsubs.cidp.remove.fromstate, views.cidp.subscriber);
+    $.subscribe(pubsubs.cidp.disable_noprofiles, views.cidp.subscriber);
 
     views.cprof = {
 	handle: function(evt) {
 	    console.log('views.cprof.handle called!', evt.type, this);
 	    var self = views.cprof;
 	    switch (evt.type) {
-	    // case 'click':
+	    // case strip_namespace(events.click):
 	    // 	evt.preventDefault();
 	    // 	if ($(this).parent().hasClass('active')) {
 	    // 	    return this;
@@ -843,7 +760,7 @@
 	    // 	    val = $(this).attr('data-catprof');
 	    // 	hashAct(key, val);
 	    // 	break;
-	    case 'click':
+	    case strip_namespace(events.click):
 		evt.preventDefault();
 		if ($(this).parent().hasClass('active')) {
 		    return this;
@@ -851,39 +768,44 @@
 		var state = $.fn.HashHandle("hash"),
 		    key = 'cprof',
 		    val = $(this).attr('data-catprof');
-		state[key] = val;
-		return $.publish(pubsubs.change_cprof1,
-				 [state,
-				  $(this)]);
+		if (!(key in state) || state[key] !== val) {
+		    state[key] = val;
+		    return $.publish(pubsubs.cprof.change.tostate,
+				     [state,
+				      $(this)]);
+		}
 		break;
-	    case events.change_cprof:
-		self.element = this;
-		self.event = evt;
-		self.main();
-		break;
+	    // case strip_namespace(events.change_cprof):
+	    // 	self.element = this;
+	    // 	self.event = evt;
+	    // 	self.main();
+	    // 	break;
 	    }
 	    return this; // jQuery chaining
 	},
 	subscriber: function(evt, state, $el) {
 	    var self = views.cprof;
-	    // if (evt.type == pubsubs.remove_cprof1.split('.')[0]) {
-	    // 	return this;
-	    // }
-	    if (!(state instanceof Object)) {
-		return false;
-	    }
-	    if ($el instanceof $) {
-		self.element = $el.get(0);
-	    } else {
-		$el = $(selectors.toggles_tab_with_cprof_id.naive_format(state));
-		if ($el.length != 1) {
+	    switch (evt.type) {
+	    case strip_namespace(pubsubs.cprof.remove.fromstate):
+		break;
+	    case strip_namespace(pubsubs.cprof.change.fromstate):
+		if (!(state instanceof Object)) {
 		    return false;
 		}
-		self.element = $el.get(0);
+		if ($el instanceof $) {
+		    self.element = $el.get(0);
+		} else {
+		    $el = $(selectors.toggles_tab_with_cprof_id.naive_format(state));
+		    if ($el.length != 1) {
+			return false;
+		    }
+		    self.element = $el.get(0);
+		}
+		console.log('cprof subscriber', 'evt.type', evt.type, '$el', $el, 'self', self);
+		// self.evt = evt;
+		self.main();
+		break;
 	    }
-	    console.log('cprof subscriber', 'evt.type', evt.type, 'self', self);
-	    self.evt = evt;
-	    self.main();
 	    return this;
 	},
 	obj: undefined,
@@ -922,8 +844,9 @@
 	setup_support: function() {
 	    var self = this;
 	    $(selectors.catui_container_support)
-		.triggerHandler(events.logosup_hide);
-	    $.when(
+		.addClass('hidden');
+		// .triggerHandler(events.logosup_hide);
+	    return $.when(
 		self.obj.getLocalUrl(),
 		self.obj.getLocalEmail(),
 		self.obj.getLocalPhone()
@@ -984,7 +907,8 @@
 		self.toggle_support_elements($support_container, true);
 	    }
 	    $(selectors.catui_container_support)
-		.triggerHandler(events.logosup_show);
+		.removeClass('hidden');
+		// .triggerHandler(events.logosup_show);
 	    return this;
 	},
 	setup_profpanes: function() {
@@ -1018,6 +942,7 @@
 		.attr({'id': selector_encode({cidp: self.obj.getIdpID(),
 					      cprof: self.obj.getProfileID()}),
 		       'data-catui': 'profile-container',
+		       'data-catui-panelrole': null,
 		       'data-catprofpane': self.obj.getProfileID()});
 	    self.$profpane = $profpane;
 
@@ -1034,18 +959,21 @@
 		    .then(self.setup_devicelist_cb2, self.setup_devicelist_cb2)
 	    );
 
-	    $.when.apply($, deferreds)
+	    return $.when.apply($, deferreds)
 		.then(
 		    function() {
 			$profpane_container
 			    .append(self.$profpane);
-			self.activate_profpane();
+			// console.log('SUCCESS setup_profpanes');
+			return self.activate_profpane();
 		    },
 		    function() {
 			self.$profpane.remove();
 			$profpane_error
 	    		    .addClass('active')
 	    		    .siblings().removeClass('active');
+			// console.log('FAIL setup_profpanes');
+			return null;
 		    }
 		);
 	},
@@ -1072,6 +1000,7 @@
 	    } else {
 		$description_element.removeClass('hidden');
 	    }
+	    return this;
 	},
 	setup_devicelist_cb: function(devices) {
 	    var self = views.cprof;
@@ -1096,17 +1025,18 @@
 	    }
 
 	    // console.log('cb2:', grouped_devices);
-	    // console.log('cb2 $profpane.selector:', $profpane);
+	    // console.log('cb2 $profpane.selector:', self.$profpane);
 	    if (!!!grouped_devices) {
 		// var d = new $.Deferred();
 		// d.reject(grouped_devices);
 		// return d.promise();
+		// console.log('!!!!rejecting grouped_devices!');
 		return $.Deferred().reject(grouped_devices);
 	    }
 	    var $devicelist_container = self.$profpane
 		.find(selectors.catui_devicelist_container),
 		$devicegroup_heading_template = $devicelist_container
-		.find('.panel-heading'),
+		.find('.panel-heading').first(),
 		$devicegroup_template = $devicegroup_heading_template.next(),
 		$device_template = $devicegroup_template
 		.find('.list-group-item').first();
@@ -1117,10 +1047,15 @@
 		var $devgroup_heading = $devicegroup_heading_template.clone(true);
 		var devgroup_id_to = devgroup_id_from
 		    .naive_format({cdev_group: devgroup});
+		// console.log('devgroup_id_from -> devgroup_id_to', devgroup_id_from, devgroup_id_to);
 		$devgroup_heading
 		    .attr('id', function(idx, cur) {
-			return cur.naive_format({cdev_group: devgroup});
+			// return cur.naive_format({cdev_group: devgroup});
 			// return cur.replace(devgroup_id_from, devgroup_id_to);
+			return '{0}_{1}'.naive_format(
+			    cur.replace(devgroup_id_from, devgroup_id_to),
+			    self.$profpane.attr('id')
+			);
 		    })
 		    .find('a')
 		    .attr({ 'data-target': '#{0}_{1}'.naive_format(devgroup_id_to,
@@ -1160,21 +1095,28 @@
 			grouped_devices[devgroup][devidx].getDeviceCustomText()
 		    ).then(function(display, custom_text) {
 			var $a = $device.children('a');
+			// console.log('device in list display, customtext', display, custom_text, device_id);
 			$a.text(display || device_id);
 			if (!!custom_text) {
 			    $a.append($('<small>').text(custom_text));
 			}
 		    });
+		    // console.log('adding device element to group', $device);
 		    devs.push($device);
 		}
 		$devgroup
-		    .children('ul')
+		    .children('ul.list-group')
+		    .empty()
 		    .html(devs);
+		// console.log('adding device group to list', $devgroup_heading, $devgroup);
 		devgroups.push($devgroup_heading, $devgroup);
 	    }
+	    // console.log('adding devicelist to container', devgroups);
 	    $devicelist_container
 		.find('.panel')
+		.empty()
 		.html(devgroups);
+	    return this;
 	},
 	activate_profpane: function() {
 	    var self = this;
@@ -1199,7 +1141,7 @@
 		.siblings(selectors.catui_device_loading_placeholder).addClass('active')
 		.siblings(':not(.active-exempt)').removeClass('active');
 
-	    self.select_cdev();
+	    return self.select_cdev();
 	},
 	search_cdev: function(cdevid) {
 	    var self = this;
@@ -1213,25 +1155,26 @@
 	    var self = this;
 	    var state = $.fn.HashHandle("hash");
 	    if (('cdev' in state) && self.search_cdev(state.cdev).length == 1) {
-		self.$profpane
-		    .find(selectors.changes_cdev_with_cdev_id
-			  .naive_format({cdev: state.cdev}))
-		    .each(function() {
-			console.log('{0} triggered on'.naive_format(events.change_cdev),
-				    this);
-		    })
-		    .triggerHandler(events.change_cdev);
+		// self.$profpane
+		//     .find(selectors.changes_cdev_with_cdev_id
+		// 	  .naive_format({cdev: state.cdev}))
+		//     .each(function() {
+		// 	console.log('{0} triggered on'.naive_format(events.change_cdev),
+		// 		    this);
+		//     })
+		//     .triggerHandler(events.change_cdev);
+		$.publish(pubsubs.cdev.change.fromstate, [state]);
 	    } else if (!!views.cdev.prev_obj &&
 		       self.search_cdev(views.cdev.prev_obj.id).length == 1) {
 		// hashAct('cdev', views.cdev.prev_obj.id, true);
-		$.publish(pubsubs.change_cdev1,
+		$.publish(pubsubs.cdev.change.tostate,
 			  [$.extend({}, state,
 				    {cdev: views.cdev.prev_obj.id,
 				     _act: 'replace'}),
 			  self.search_cdev(views.cdev.prev_obj.id)]);
 	    } else if (self.search_cdev(catDeviceGuess).length == 1) {
 		// hashAct('cdev', catDeviceGuess, true);
-		$.publish(pubsubs.change_cdev1,
+		$.publish(pubsubs.cdev.change.tostate,
 			  [$.extend({}, state,
 				    {cdev: catDeviceGuess,
 				     _act: 'replace'}),
@@ -1242,25 +1185,24 @@
 		    .addClass('active')
 		    .siblings()
 		    .removeClass('active');
+		return false;
 	    }
+	    return true;
 	}
     }
 
     $(selectors.toggles_tab_has_catprof_id)
-	.on('click', views.cprof.handle)
-	.on(events.change_cprof, views.cprof.handle);
+	.on(events.click, views.cprof.handle);
 
-    $.subscribe(pubsubs.change_cprof1, views.cprof.subscriber);
-    $.subscribe(pubsubs.remove_cprof1, views.cprof.subscriber);
-    $.subscribe(pubsubs.change_cprof2, views.cprof.subscriber);
-    $.subscribe(pubsubs.remove_cprof2, views.cprof.subscriber);
+    $.subscribe(pubsubs.cprof.change.fromstate, views.cprof.subscriber);
+    $.subscribe(pubsubs.cprof.remove.fromstate, views.cprof.subscriber);
 
     views.cdev = {
 	handle: function(evt) {
 	    console.log('views.cdev.handle called!', evt.type, this);
 	    var self = views.cdev;
 	    switch (evt.type) {
-	    // case 'click':
+	    // case strip_namespace(events.click):
 	    // 	evt.preventDefault();
 	    // 	var state = $.fn.HashHandle("hash"),
 	    // 	    key = 'cdev',
@@ -1268,52 +1210,55 @@
 	    // 	if (!(key in state) || state[key] !== val) {
 	    // 	    hashAct(key, val);
 	    // 	}
-	    case 'click':
+	    case strip_namespace(events.click):
 		evt.preventDefault();
 		var state = $.fn.HashHandle("hash"),
 		    key = 'cdev',
 		    val = $(this).attr('data-catdev');
 		if (!(key in state) || state[key] !== val) {
 		    state[key] = val;
-		    return $.publish(pubsubs.change_cdev1,
+		    return $.publish(pubsubs.cdev.change.tostate,
 				     [state,
 				      $(this)]);
 		}
 		break;
-	    case events.change_cdev:
-		self.element = this;
-		self.event = evt;
-		self.main();
-		break;
+	    // case strip_namespace(events.change_cdev):
+	    // 	self.element = this;
+	    // 	self.event = evt;
+	    // 	self.main();
+	    // 	break;
 	    }
 	    return this; // jQuery chaining
 	},
 	subscriber: function(evt, state, $el) {
 	    var self = views.cdev;
-	    // if (evt.type == pubsubs.remove_cdev1.split('.')[0]) {
-	    // 	return this;
-	    // }
-	    if (!(state instanceof Object)) {
-		return false;
-	    }
-	    if ($el instanceof $) {
-		self.element = $el.get(0);
-	    } else {
-		$el = $(selectors.changes_cdev_with_cprof_cdev_ids_ctx_catprofpane
-			    .naive_format(state));
-		if ($el.length != 1) {
-		    $(selectors.changes_cdev_nomatch_with_cprof_id
-		      .naive_format({cprof: state.cprof}))
-		    	.addClass('active')
-		    	.siblings()
-		    	.removeClass('active');
+	    switch (evt.type) {
+	    case strip_namespace(pubsubs.cdev.remove.fromstate):
+		break;
+	    case strip_namespace(pubsubs.cdev.change.fromstate):
+		if (!(state instanceof Object)) {
 		    return false;
 		}
-		self.element = $el.get(0);
+		if ($el instanceof $) {
+		    self.element = $el.get(0);
+		} else {
+		    $el = $(selectors.changes_cdev_with_cprof_cdev_ids_ctx_catprofpane
+			    .naive_format(state));
+		    if ($el.length != 1) {
+			$(selectors.changes_cdev_nomatch_with_cprof_id
+			  .naive_format({cprof: state.cprof}))
+		    	    .addClass('active')
+		    	    .siblings()
+		    	    .removeClass('active');
+			return false;
+		    }
+		    self.element = $el.get(0);
+		}
+		console.log('cdev subscriber', 'evt.type', evt.type, '$el', $el, 'self', self);
+		// self.evt = evt;
+		self.main();
+		break;
 	    }
-	    console.log('cdev subscriber', 'evt.type', evt.type, 'self', self);
-	    self.evt = evt;
-	    self.main();
 	    return this;
 	},
 	obj: undefined,
@@ -1331,7 +1276,7 @@
 		.parents(selectors.catui_profile_container)
 		.find(selectors.catui_device_container);
 
-	    self.setup_device();
+	    return self.setup_device();
 	},
 	setup_device: function() {
 	    var self = this;
@@ -1342,7 +1287,7 @@
 	    // HACK!
 	    self.$device_container.closest(selectors.cat_modal).scrollTop(0);
 
-	    $.when(
+	    return $.when(
 		self.obj.getDeviceID(),
 		self.obj.getDisplay(),
 		self.obj.getStatus(),
@@ -1360,14 +1305,16 @@
 			    .addClass('active')
 			    .siblings(':not(.active-exempt)')
 			    .removeClass('active');
+			return true;
 		    },
 		    function() {
-			// console.log('catdevchange master promise failed!', this, arguments);
+			console.log('catdevchange master promise failed!', this, arguments);
 			self.$device_container
 			    .siblings(selectors.catui_device_load_error)
 			    .addClass('active')
 			    .siblings(':not(.active-exempt)')
 			    .removeClass('active');
+			return false;
 		    });
 	},
 	set_device_field: function(data_catui_val, text) {
@@ -1456,7 +1403,7 @@
 					      'a{0}'.naive_format(
 						  selectors.catui_device_redirecturl)
 					  )
-					  .removeAttr('href')
+					  .attr('href', null)
 					  .text(null);
 				      return this;
 				  });
@@ -1488,7 +1435,7 @@
 					      .siblings().addClass('hidden');
 				      });
 	    }
-	    $.when(
+	    return $.when(
 		self.obj.getDeviceInfo()
 	    ).then(self.setup_deviceinfo_cb, self.setup_deviceinfo_cb);
 	},
@@ -1507,7 +1454,9 @@
 			.find('.panel-body')
 			.empty();
 		});
-		return null;
+		// don't reject as e.g. redirect devices will not have deviceinfo
+		// return $.Deferred().reject(null);
+		return false;
 	    }
 	    self.set_device_field('device-deviceinfo', function() {
 		var devinfo_id = 'deviceinfo_{0}_{1}'
@@ -1542,81 +1491,148 @@
 	    });
 	    return device_deviceinfo;
 	},
-    }
-
-    $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
-	.on('click', views.cdev.handle)
-	.on(events.change_cdev, views.cdev.handle);
-
-    $.subscribe(pubsubs.change_cdev1, views.cdev.subscriber);
-    $.subscribe(pubsubs.remove_cdev1, views.cdev.subscriber);
-    $.subscribe(pubsubs.change_cdev2, views.cdev.subscriber);
-    $.subscribe(pubsubs.remove_cdev2, views.cdev.subscriber);
-
-    $('{0} button'.naive_format(selectors.catui_device_download))
-	.on('click', function (evt) {
-	    // evt.preventDefault();
-	    var button = this,
-		device = $(button).data('_catdev');
+	// click handler, may also be called with button as 1st arg or without args
+	handle_download: function(evt) {
+	    var self = views.cdev,
+		$el = evt,
+		clickhandler = false;
+	    if ((evt instanceof $.Event)
+		&& evt.type == strip_namespace(events.click)) {
+		evt.preventDefault();
+		self.$download_button = $(this);
+		clickhandler = true;
+	    } else if (($el instanceof $) && $el.length == 1) {
+		self.$download_button = $el;
+	    } else {
+		self.$download_button = self.$device_container
+		    .find(selectors.catui_device_download);
+	    }
+	    if (self.$download_button.length != 1) {
+		return false;
+	    }
+	    var device = self.$download_button.data('_catdev') || self.obj;
 	    if (!(device instanceof CAT.Device().constructor)) {
 		console.log('aborting! device is not a CAT.Device', device);
 		return false;
 	    }
-	    $(button)
+	    self.$download_button
 		.find(selectors.catui_dltxt_generate)
 		.removeClass('hidden')
 		.siblings().addClass('hidden');
-	    var cb_dl = function(dlurl) {
-		if (dlurl !== null) {
-		    $(button)
-			.find(selectors.catui_dltxt_download)
-			.removeClass('hidden')
-			.siblings().addClass('hidden');
-		} else {
-		    $(button)
-			.removeClass('btn-success').addClass('btn-danger')
-			.find(selectors.catui_dltxt_fail)
-			  .removeClass('hidden')
-			  .siblings().addClass('hidden')
-			.end()
-			.closest(selectors.catui_device_download)
-			.addClass('download-failed');
-		}
+	    device.getDownload()
+		.then(self.handle_download_cb,
+		      self.handle_download_cb);
+	    if (clickhandler) {
+		return this;
 	    }
-	    device.getDownload().then(cb_dl, cb_dl);
-	    return this;
-	});
+	},
+	handle_download_cb: function(dlurl) {
+	    var self = views.cdev;
+	    if (dlurl !== null) {
+		self.$download_button
+		    .find(selectors.catui_dltxt_download)
+		    .removeClass('hidden')
+		    .siblings().addClass('hidden');
+	    } else {
+		self.$download_button
+		    .removeClass('btn-success').addClass('btn-danger')
+		    .find(selectors.catui_dltxt_fail)
+		      .removeClass('hidden')
+		      .siblings().addClass('hidden')
+		    .end()
+		    .closest(selectors.catui_device_download)
+		    .addClass('download-failed');
+		return $.Deferred().reject(dlurl);
+	    }
+	    return dlurl;
+	},
+	// click handler, may also be called with button as 1st arg or without args
+	continue_redirect: function(evt) {
+	    var self = views.cdev,
+		$el = evt,
+		$target,
+		clickhandler = false;
+	    if ((evt instanceof $.Event)
+		&& evt.type == strip_namespace(events.click)) {
+		evt.preventDefault();
+		$target = $(this)
+		    .closest(selectors.catui_device_redirectmessage)
+		    .find(selectors.catui_device_redirecturl);
+		clickhandler = true;
+	    } else if (($el instanceof $) && $el.length == 1) {
+		$target = $el
+		    .closest(selectors.catui_device_redirectmessage)
+		    .find(selectors.catui_device_redirecturl);
+	    } else {
+		$target = self.$device_container
+		    .find(selectors.catui_device_redirectmessage)
+		    .find(selectors.catui_device_redirecturl);
+	    }
+	    if ($target.length == 1 &&
+		(clickhandler ? evt.target !== $target.get(0) : true)) {
+		var href = $target.attr('href'),
+		    target = $target.attr('target');
+		if (href) {
+		    if (target == '_blank') {
+			window.open(href);
+		    } else {
+			window.location.href = href;
+		    }
+		    if (clickhandler) {
+			return this;
+		    }
+		} else {
+		    return false;
+		}
+	    } else {
+		return false;
+	    }
+	},
+	// click handler, may also be called with button as 1st arg or without args
+	ack_device_msg: function(evt) {
+	    var self = views.cdev,
+		$el = evt,
+		$target,
+		clickhandler = false;
+	    if ((evt instanceof $.Event)
+		&& evt.type == strip_namespace(events.click)) {
+		evt.preventDefault();
+		$target = $(this).closest(selectors.catui_device_message);
+		clickhandler = true;
+	    } else if (($el instanceof $) && $el.length == 1) {
+		$target = $el.closest(selectors.catui_device_message);
+	    } else {
+		$target = self.$device_container
+		    .find(selectors.catui_device_message);
+	    }
+	    if ($target.length == 1) {
+		$target.addClass('catui-message-acknowledged');
+		if (clickhandler) {
+		    return this;
+		}
+	    } else {
+		return false;
+	    }
+	}
+    }
+
+    $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
+	.on(events.click, views.cdev.handle);
+	// .on(events.change_cdev, views.cdev.handle);
+
+    $.subscribe(pubsubs.cdev.change.fromstate, views.cdev.subscriber);
+    $.subscribe(pubsubs.cdev.remove.fromstate, views.cdev.subscriber);
+
+    $('{0} button'.naive_format(selectors.catui_device_download))
+	.on(events.click, views.cdev.handle_download);
 
     $('{0} button'.naive_format(selectors.catui_device_redirectmessage))
-	.on('click', function (evt) {
-	    // evt.preventDefault();
-	    var button = this,
-		$that = $(button)
-		.closest(selectors.catui_device_redirectmessage)
-		.find(selectors.catui_device_redirecturl),
-		href = $that.attr('href'),
-		target = $that.attr('target');
-	    if ($that.length > 0 &&
-		evt.target !== $that.get(0) &&
-		href) {
-		if (target == '_blank') {
-		    window.open(href);
-		} else {
-		    window.location.href = href;
-		}
-	    }
-	    return this;
-	});
+	.on(events.click, views.cdev.continue_redirect);
 
     $('{0} button'.naive_format(selectors.catui_device_message))
-	.on('click', function (evt) {
-	    $(this)
-	    	.closest(selectors.catui_device_message)
-		.addClass('catui-message-acknowledged');
-	    return this;
-	});
+    	.on(events.click, views.cdev.ack_device_msg);
 
-    var ap = appear({
+    var appear_params = {
 	init: function() {
 	    this.listProfilesQueue = [];
 	    this.queueInterval = 100;
@@ -1624,46 +1640,10 @@
 		return (queueLength * this.queueInterval) - this.queueInterval;
 	    }
 	},
-	elements: function() {
-	    return $(selectors.toggles_modal_has_cidp_id)
-		.get();
-	},
-	appear: function(el) {
-    	    var $el = $(el),
-    		catIdpID = parseInt($el.data('catidp'));
-	    if (!!!catIdpID) {
-		return undefined;
-	    }
-    	    var cb2 = function(ret) {
-    	    	if (!(ret instanceof Array) ||
-    	    	    ret.length == 0) {
-    	    	    $el.triggerHandler(events.disable_noprofiles);
-    	    	}
-    	    }
-	    var cb = function(ret) {
-		if (!(ret instanceof Object) ||
-		    !(catIdpID in ret)) {
-		    $.when(
-			CAT.API.listProfiles(catIdpID)
-		    ).then(cb2, cb2);
-		}
-	    }
-    	    this.listProfilesQueue.unshift(function() {
-    		$.when(
-    		    CAT.API.listAllIdentityProvidersByID()
-    		).then(cb, cb);
-	    });
-	    var listProfilesQueue = this.listProfilesQueue,
-		qcbDelay = this.getQueueDelay(listProfilesQueue.length);
-	    setTimeout(function() {
-		var qcb = listProfilesQueue.shift();
-		if (typeof qcb === 'function') {
-		    qcb();
-		}
-	    }, qcbDelay);
-	    return this;
-	}
-    });
+	elements: views.cidp.appear_elements,
+	appear: views.cidp.handle_appear
+    };
+    var ap = appear(appear_params);
 
     CAT.API.touCallBack(function(tou) {
 	var tou_url_start;
