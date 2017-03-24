@@ -1569,6 +1569,7 @@ def get_all_services(request):
             response_location['enc'] = u"-"
         response_location['AP_no'] = u"%s" % (sl.AP_no)
         response_location['inst'] = get_i18n_name(sl.institutionid.org_name, lang, 'en', 'unknown')
+        response_location['inst_key'] = u"%s" % sl.institutionid.pk
         response_location['name'] = get_i18n_name(sl.loc_name, lang, 'en', 'unknown')
         response_location['port_restrict'] = u"%s" % (sl.port_restrict)
         response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
