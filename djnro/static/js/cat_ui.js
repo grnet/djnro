@@ -1,6 +1,17 @@
 ;
 
 (function($){
+    // pub/sub
+    var o = $({});
+    $.subscribe = function() {
+	o.on.apply(o, arguments);
+    }
+    $.unsubscribe = function() {
+	o.off.apply(o, arguments);
+  }
+    $.publish = function() {
+	o.trigger.apply(o, arguments);
+    }
 
     if (!String.prototype.naive_format) {
 	String.prototype.naive_format = function() {
@@ -32,17 +43,67 @@
 	return JSON.parse(atob(hash.replace(/_/g, '=')));
     }
 
-    function hashAct(key, val, hard) {
+    function hashAct(key, val, hard, obj, trhsevt) {
 	var state = $.fn.HashHandle('hash'),
 	    hard = !!hard && 'Hard' || '';
+	obj = !!obj && obj || {};
+	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
 	if (key in state) {
 	    if (state[key] == val || typeof val === 'undefined') {
-		$.fn.HashHandle('remove' + hard, key);
+		console.log('hashAct', 1, 'remove' + hard, key, obj, trhsevt);
+		$.fn.HashHandle('remove' + hard, key, obj, trhsevt);
 	    } else {
-		$.fn.HashHandle('add' + hard, key, val);
+		console.log('hashAct', 1, 'add' + hard, key, val, obj, trhsevt);
+		$.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
 	    }
 	} else if (typeof val !== 'undefined') {
-	    $.fn.HashHandle('add' + hard, key, val);
+	    console.log('hashAct', 2, 'add' + hard, key, val, obj, trhsevt);
+	    $.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
+	}
+    }
+
+    function hashAct_subscriber(evt, state, $el) {
+	console.log('hashAct_sub arguments', arguments);
+	var trigger_popstate = [evt.type, evt.namespace].join('.').indexOf('.cat2') != -1;
+	console.log([evt.type, evt.namespace].join('.'),
+		    'trigger_popstate',
+		    trigger_popstate);
+	var hard;
+	if (typeof state === 'undefined') {
+	    state = {};
+	}
+	if ('_act' in state) {
+	    hard = state._act == 'replace';
+	    delete state._act;
+	}
+	var ordered_keys = ['cidp', 'cprof', 'cdev'];
+	var implied_act = evt.type.split('_', 2);
+	if (implied_act.length > 1 && implied_act[0] == 'remove' && (implied_act[1] in state)) {
+	    console.log('hashAct_sub', evt.type, 3, 'key', implied_act[1], 'val', undefined, 'hard', hard, {$el: $el}, 'trhsevt', trigger_popstate);
+	    hashAct(implied_act[1], undefined, hard, {$el, $el}, trigger_popstate);
+	    // for (var _i=0; _i < ordered_keys.length && implied_act[1] != ordered_keys[_i];
+	    // 	 _i++); // empty statement
+	    // if (++_i < ordered_keys.length) {
+	    // 	for (var i=_i; i < ordered_keys.length; i++) {
+	    // 	    console.log('hashAct_sub', evt.type, 4, 'key', ordered_keys[i], 'val', undefined, 'hard', true, {$el: $el}, 'trhsevt', trigger_popstate);
+	    // 	    hashAct(ordered_keys[i], undefined, true, {$el, $el}, trigger_popstate);
+	    // 	}
+	    // }
+	} else {
+	    var prev_state = $.fn.HashHandle('hash');
+	    console.log('hashAct_sub', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, {$el: $el}, 'trigger_popstate', trigger_popstate, 'implied_act', implied_act);
+	    for (var k in state) {
+		if (!(k in prev_state) || prev_state[k] != state[k]) {
+		    console.log('hashAct_sub', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, {$el: $el}, 'trhsevt', trigger_popstate);
+		    hashAct(k, state[k], hard, {$el: $el}, trigger_popstate);
+		}
+	    }
+	    for (var _k in prev_state) {
+		if (!(_k in state)) {
+		    console.log('hashAct_sub', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, {$el: $el}, 'trhsevt', trigger_popstate);
+		    hashAct(_k, undefined, hard, {$el: $el}, trigger_popstate);
+		}
+	    }
 	}
     }
 
@@ -98,9 +159,30 @@
 	    change_cidp: 'catIdpChange',
 	    change_cprof: 'catProfChange',
 	    change_cdev: 'catDevChange',
+	},
+	pubsubs = {
+	    change_cidp1: 'change_cidp.catui.cat1',
+	    remove_cidp1: 'remove_cidp.catui.cat1',
+	    change_cprof1: 'change_cprof.catui.cat1',
+	    remove_cprof1: 'remove_cprof.catui.cat1',
+	    change_cdev1: 'change_cdev.catui.cat1',
+	    remove_cdev1: 'remove_cdev.catui.cat1',
+	    change_cidp2: 'change_cidp.catui.cat2',
+	    remove_cidp2: 'remove_cidp.catui.cat2',
+	    change_cprof2: 'change_cprof.catui.cat2',
+	    remove_cprof2: 'remove_cprof.catui.cat2',
+	    change_cdev2: 'change_cdev.catui.cat2',
+	    remove_cdev2: 'remove_cdev.catui.cat2'
 	}
 
-    $(window).on(events.history_change, function (evt) {
+    for (var ___ps in pubsubs) {
+	$.subscribe(pubsubs[___ps], hashAct_subscriber);
+    }
+
+    $(window).on(events.history_change, popstate_handler_pub);
+
+    function popstate_handler(evt, param1) {
+	console.log('evt.originalEvent', evt.originalEvent, 'arguments', arguments, 'param1', param1);
 	var state = $.fn.HashHandle("hash"),
 	    pairs = {
 		cidp:  { evt: events.change_cidp,  obj: views.cidp.obj  },
@@ -118,7 +200,7 @@
 		     (state[key] != pairs[key].obj.id)) {
 		stateChange = 1;
 	    }
-	    // console.log(key +' stateChange: '+ stateChange);
+	    console.log(key +' stateChange: '+ stateChange);
 	    if (stateChange === 0) {
 		continue;
 	    }
@@ -130,6 +212,11 @@
 		} else {
 		    return $(selectors.toggles_modal_with_cidp_id
 			     .naive_format({cidp: state[key]}))
+			// .each(function() {
+			//     console.log('on popstate triggered {0} on'
+			// 		.naive_format(events.change_cidp),
+			// 		this);
+			// })
 			.triggerHandler(pairs[key].evt);
 		}
 		// fallthrough if stateChange === 2
@@ -154,6 +241,11 @@
 		} else {
 		    return $(selectors.toggles_tab_with_cprof_id
 			     .naive_format({cprof: state[key]}))
+			// .each(function() {
+			//     console.log('on popstate triggered {0} on'
+			// 		.naive_format(events.change_cprof),
+			// 		this);
+			// })
 			.triggerHandler(pairs[key].evt);
 		}
 		// fallthrough if stateChange === 2
@@ -174,7 +266,13 @@
 			  .naive_format({cprof: state.cprof,
 					 cdev: state[key]}));
 		    if ($catdev_trigger_el.length == 1) {
-		    	$catdev_trigger_el.triggerHandler(pairs[key].evt);
+		    	$catdev_trigger_el
+			    // .each(function() {
+			    // 	console.log('on popstate triggered {0} on'
+			    // 		    .naive_format(events.change_cprof),
+			    // 		    this);
+			    // })
+			    .triggerHandler(pairs[key].evt);
 		    } else {
 			$(selectors.changes_cdev_nomatch_with_cprof_id
 			  .naive_format({cprof: state.cprof}))
@@ -187,7 +285,125 @@
 	    }
 	}
 	return this;
-    });
+    }
+    function popstate_handler_pub(evt, param1) {
+	console.log('popstate.pubsub', 'evt.originalEvent', evt.originalEvent, 'arguments', arguments, 'param1', param1);
+	var state = $.fn.HashHandle("hash"),
+	    pairs = {
+		cidp:  { evt: events.change_cidp,  obj: views.cidp.obj  },
+		cprof: { evt: events.change_cprof, obj: views.cprof.obj },
+		cdev:  { evt: events.change_cdev,  obj: views.cdev.obj  }
+	    }
+	for (var key in pairs) {
+	    var stateChange = 0;
+	    if (!(key in state)) {
+		if (typeof pairs[key].obj !== "undefined") {
+		    stateChange = 2;
+		}
+	    }
+	    else if (typeof pairs[key].obj === "undefined" ||
+		     (state[key] != pairs[key].obj.id)) {
+		stateChange = 1;
+	    }
+	    console.log('popstate.pubsub', key +' stateChange: '+ stateChange);
+	    if (stateChange === 0) {
+		continue;
+	    }
+	    switch (key) {
+	    case 'cidp':
+		if (stateChange === 2) {
+		    views.cidp.obj = undefined;
+		    // $('{0}.in'.naive_format(selectors.cat_modal)).modal('hide');
+		    // delete state.cidp;
+		    $.publish(pubsubs.remove_cidp1, [state]);
+		} else {
+		    // return $(selectors.toggles_modal_with_cidp_id
+		    // 	     .naive_format({cidp: state[key]}))
+		    // 	// .each(function() {
+		    // 	//     console.log('on popstate triggered {0} on'
+		    // 	// 		.naive_format(events.change_cidp),
+		    // 	// 		this);
+		    // 	// })
+		    // 	.triggerHandler(pairs[key].evt);
+		    return $.publish(pubsubs.change_cidp1, [state]);
+		}
+		// fallthrough if stateChange === 2
+	    case 'cprof':
+		if (stateChange === 2) {
+		    if (key != 'cprof') {
+			// don't blindly set _catProf (last catProf), but push
+			// catProf.id in front of _catProf and add catProf to
+			// _catProfO
+			if (!!views.cprof.obj) {
+			    var idx;
+			    if ((idx = views.cprof.prev_stack.indexOf(views.cprof.obj.id)) != -1) {
+				views.cprof.prev_stack.splice(idx, 1);
+			    } else {
+				views.cprof.prev_obj[views.cprof.obj.id] = views.cprof.obj;
+			    }
+			    views.cprof.prev_stack.unshift(views.cprof.obj.id);
+			}
+			// hashAct('cprof', undefined, true);
+			// delete state.cprof;
+			$.publish(pubsubs.remove_cprof1,
+				  [$.extend({}, state, {_act: 'replace'})]);
+		    }
+		    views.cprof.obj = undefined;
+		} else {
+		    // return $(selectors.toggles_tab_with_cprof_id
+		    // 	     .naive_format({cprof: state[key]}))
+		    // 	// .each(function() {
+		    // 	//     console.log('on popstate triggered {0} on'
+		    // 	// 		.naive_format(events.change_cprof),
+		    // 	// 		this);
+		    // 	// })
+		    // 	.triggerHandler(pairs[key].evt);
+		    return $.publish(pubsubs.change_cprof1,
+				     [$.extend({}, state, {_act: 'replace'})]);
+		}
+		// fallthrough if stateChange === 2
+	    case 'cdev':
+		if (stateChange === 2) {
+		    if (key != 'cdev') {
+			views.cdev.prev_obj = !!views.cdev.obj && views.cdev.obj || views.cdev.prev_obj;
+			// hashAct('cdev', undefined, true);
+			// delete state.cdev;
+			$.publish(pubsubs.remove_cdev1,
+				  [$.extend({}, state, {_act: 'replace'})]);
+		    }
+		    views.cdev.obj = undefined;
+		} else {
+		    if (!('cprof' in state)) {
+			console.log('have cdev but no cprof!!');
+			break;
+		    }
+		    // var $catdev_trigger_el =
+		    // 	$(selectors.changes_cdev_with_cprof_cdev_ids_ctx_catprofpane
+		    // 	  .naive_format({cprof: state.cprof,
+		    // 			 cdev: state[key]}));
+		    // if ($catdev_trigger_el.length == 1) {
+		    // 	$catdev_trigger_el
+		    // 	    // .each(function() {
+		    // 	    // 	console.log('on popstate triggered {0} on'
+		    // 	    // 		    .naive_format(events.change_cprof),
+		    // 	    // 		    this);
+		    // 	    // })
+		    // 	    .triggerHandler(pairs[key].evt);
+		    // } else {
+		    // 	$(selectors.changes_cdev_nomatch_with_cprof_id
+		    // 	  .naive_format({cprof: state.cprof}))
+		    // 	    .addClass('active')
+		    // 	    .siblings()
+		    // 	    .removeClass('active');
+		    // }
+		    return $.publish(pubsubs.change_cdev1,
+				     [$.extend({}, state, {_act: 'replace'})]);
+		}
+		break;
+	    }
+	}
+	return this;
+    }
 
     setTimeout(function() {
 	var wlh = window.location.hash;
@@ -309,32 +525,54 @@
 	});
 
     $(selectors.cat_modal).on('hidden.bs.modal', function(evt) {
-	var state = $.fn.HashHandle('hash'),
-	    cidp;
-	if ('cidp' in state) {
-	    cidp = state.cidp;
-	    // hashHandle remove cidp
-	    hashAct('cidp');
+	var state = $.fn.HashHandle("hash");
+	// delete state.cidp;
+	if ($(this).data('_pubsub') == pubsubs.remove_cidp1) {
+	    console.log('hidden.bs.modal removing _pubsub');
+	    $(this).removeData('_pubsub');
+	} else {
+	    $.publish(pubsubs.remove_cidp2, [state]);
 	}
-	if (typeof(cidp) !== 'undefined') {
-	    $(selectors.toggles_modal_with_cidp_id
-	      .naive_format({cidp: cidp}))
-		.focus();
-	}
-	return this;
+		  // [$.extend({}, $.fn.HashHandle("hash"),
+		  // 	    {cidp: undefined})]);
+    // 	var state = $.fn.HashHandle('hash'),
+    // 	    cidp;
+    // 	if ('cidp' in state) {
+    // 	    cidp = state.cidp;
+    // 	    // hashHandle remove cidp
+    // 	    hashAct('cidp');
+    // 	}
+    // 	if (typeof(cidp) !== 'undefined') {
+    // 	    $(selectors.toggles_modal_with_cidp_id
+    // 	      .naive_format({cidp: cidp}))
+    // 		.focus();
+    // 	}
+    	return this;
     });
 
     var views = {};
 
     views.cidp = {
 	handle: function(evt) {
+	    console.log('views.cidp.handle called!', evt.type, this);
 	    var self = views.cidp;
 	    switch (evt.type) {
+	    // case events.click_composite:
+	    // 	// evt.preventDefault();
+	    // 	var key = 'cidp',
+	    // 	val = $(this).attr('data-catidp');
+	    // 	hashAct(key, val);
+	    // 	break;
 	    case events.click_composite:
 		// evt.preventDefault();
-		var key = 'cidp',
+		var state = $.fn.HashHandle("hash"),
+		key = 'cidp',
 		val = $(this).attr('data-catidp');
-		hashAct(key, val);
+		state[key] = val;
+		state._act = 'push';
+		return $.publish(pubsubs.change_cidp1,
+				 [state,
+				  $(this)]);
 		break;
 	    case events.disable_noprofiles:
 		evt.preventDefault();
@@ -357,6 +595,53 @@
 		break;
 	    }
 	    return this; // jQuery chaining
+	},
+	subscriber: function(evt, state, $el) {
+	    var self = views.cidp;
+	    if (evt.type == pubsubs.remove_cidp1.split('.')[0]) {
+		// var $modal = $('{0}.in'.naive_format(selectors.cat_modal));
+		// console.log('kokolalalalalalalalalala:');
+		// if ($modal.length == 1) {
+		//     console.log('hiding modal', $modal);
+		//     $modal.modal('hide');
+		// } else {
+		    // SUPER HAAAACK!
+		    // var transition_duration = $(selectors.cat_modal).css('transition-duration')
+		    // 	.replace(/[^0-9\.]/g, '') * 1000; // seconds -> ms
+		    // var transition_duration = 300;
+		    // setTimeout(function() {
+		    // 	console.log('hiding modal on timeout', transition_duration);
+		    // 	$($modal.selector).hide();
+		    // }, transition_duration);
+		    // $(selectors.cat_modal).one('bsTransitionEnd', function() {
+		    // 	console.log('hiding modal on bsTransitionEnd', $(this));
+		    // 	$(this).hide();
+		    // });
+		    // 	console.log('hiding modal on bsTransitionEnd', $(this));
+		$(selectors.cat_modal).data('_pubsub', pubsubs.remove_cidp1).modal('hide');
+		// }
+		$el = $(self.element);
+		if ($el instanceof $ && $el.length == 1) {
+		    $el.focus();
+		}
+		return this;
+	    }
+	    if (!(state instanceof Object)) {
+		return false;
+	    }
+	    if ($el instanceof $) {
+		self.element = $el.get(0);
+	    } else {
+		$el = $(selectors.toggles_modal_with_cidp_id.naive_format(state));
+		if ($el.length != 1) {
+		    return false;
+		}
+		self.element = $el.get(0);
+	    }
+	    console.log('cidp subscriber', 'evt', evt, 'self', self);
+	    self.evt = evt;
+	    self.main();
+	    return this;
 	},
 	obj: undefined,
 	progress: 'NProgress' in window ?
@@ -391,7 +676,10 @@
 		$(self.element).triggerHandler(events.disable_noprofiles);
 		// avoid async self.obj.getEntityID() for now
 		// hashhandle removeHard cidp
-		hashAct('cidp', self.obj.id, true);
+		// hashAct('cidp', self.obj.id, true);
+		$.publish(pubsubs.remove_cidp1,
+			  [$.extend({}, $.fn.HashHandle("hash"),
+				    {cidp: undefined, _act: 'replace'})]);
 		// hashAct('cidp', undefined, true);
 		self.progress.done();
 		return false;
@@ -401,6 +689,7 @@
 	    self.setup_title_icon(title, $icon);
 	    self.progress.done();
 	    $(selectors.cat_modal)
+		.each(function() { console.log('MODAL', $(this), $(this).data()); })
 		.modal('show');
 	},
 	setup_profile_selectors: function(profiles) {
@@ -457,6 +746,10 @@
 			selectors.toggles_tab_with_cprof_id
 			    .naive_format({cprof: state.cprof})
 		    )
+		    .each(function() {
+			console.log('{0} triggered on'.naive_format(events.change_cprof),
+				    this);
+		    })
 		    .triggerHandler(events.change_cprof);
 	    // } else if (!!_catProf && (_catProf.id in profiles_byid)) {
 	    } else {
@@ -465,19 +758,28 @@
 		     !(views.cprof.prev_stack[_idx] in profiles_byid);
 		     _idx++); // empty statement
 		if (_idx < views.cprof.prev_stack.length) {
-		    self.$profsel_container
-			.find(
-			    selectors.toggles_tab_with_cprof_id
-				.naive_format(
-				    {cprof: views.cprof.prev_stack[_idx]}
-				)
-			    )
-		    	.data('_catprof',
-			      views.cprof
-			      .prev_obj[views.cprof.prev_stack[_idx]]);
-		    hashAct('cprof', views.cprof.prev_stack[_idx], true);
+		    // self.$profsel_container
+		    // 	.find(
+		    // 	    selectors.toggles_tab_with_cprof_id
+		    // 		.naive_format(
+		    // 		    {cprof: views.cprof.prev_stack[_idx]}
+		    // 		)
+		    // 	    )
+		    // 	.data('_catprof',
+		    // 	      views.cprof
+		    // 	      .prev_obj[views.cprof.prev_stack[_idx]]);
+		    // hashAct('cprof', views.cprof.prev_stack[_idx], true);
+		    $.publish(pubsubs.change_cprof1,
+			      [$.extend({}, state,
+					{cprof: views.cprof.prev_stack[_idx],
+					 _act: 'replace'})]);
+
 		} else {
-		    hashAct('cprof', profiles[0].getProfileID(), true);
+		    // hashAct('cprof', profiles[0].getProfileID(), true);
+		    $.publish(pubsubs.change_cprof1,
+			      [$.extend({}, state,
+					{cprof: profiles[0].getProfileID(),
+					 _act: 'replace'})]);
 		}
 	    }
 	},
@@ -522,18 +824,37 @@
 	.on(events.disable_noprofiles, views.cidp.handle)
 	.on(events.change_cidp, views.cidp.handle);
 
+    $.subscribe(pubsubs.change_cidp1, views.cidp.subscriber);
+    $.subscribe(pubsubs.remove_cidp1, views.cidp.subscriber);
+    $.subscribe(pubsubs.change_cidp2, views.cidp.subscriber);
+    $.subscribe(pubsubs.remove_cidp2, views.cidp.subscriber);
+
     views.cprof = {
 	handle: function(evt) {
+	    console.log('views.cprof.handle called!', evt.type, this);
 	    var self = views.cprof;
 	    switch (evt.type) {
+	    // case 'click':
+	    // 	evt.preventDefault();
+	    // 	if ($(this).parent().hasClass('active')) {
+	    // 	    return this;
+	    // 	}
+	    // 	var key = 'cprof',
+	    // 	    val = $(this).attr('data-catprof');
+	    // 	hashAct(key, val);
+	    // 	break;
 	    case 'click':
 		evt.preventDefault();
 		if ($(this).parent().hasClass('active')) {
 		    return this;
 		}
-		var key = 'cprof',
+		var state = $.fn.HashHandle("hash"),
+		    key = 'cprof',
 		    val = $(this).attr('data-catprof');
-		hashAct(key, val);
+		state[key] = val;
+		return $.publish(pubsubs.change_cprof1,
+				 [state,
+				  $(this)]);
 		break;
 	    case events.change_cprof:
 		self.element = this;
@@ -542,6 +863,28 @@
 		break;
 	    }
 	    return this; // jQuery chaining
+	},
+	subscriber: function(evt, state, $el) {
+	    var self = views.cprof;
+	    // if (evt.type == pubsubs.remove_cprof1.split('.')[0]) {
+	    // 	return this;
+	    // }
+	    if (!(state instanceof Object)) {
+		return false;
+	    }
+	    if ($el instanceof $) {
+		self.element = $el.get(0);
+	    } else {
+		$el = $(selectors.toggles_tab_with_cprof_id.naive_format(state));
+		if ($el.length != 1) {
+		    return false;
+		}
+		self.element = $el.get(0);
+	    }
+	    console.log('cprof subscriber', 'evt.type', evt.type, 'self', self);
+	    self.evt = evt;
+	    self.main();
+	    return this;
 	},
 	obj: undefined,
 	prev_stack: [],
@@ -873,12 +1216,26 @@
 		self.$profpane
 		    .find(selectors.changes_cdev_with_cdev_id
 			  .naive_format({cdev: state.cdev}))
+		    .each(function() {
+			console.log('{0} triggered on'.naive_format(events.change_cdev),
+				    this);
+		    })
 		    .triggerHandler(events.change_cdev);
 	    } else if (!!views.cdev.prev_obj &&
 		       self.search_cdev(views.cdev.prev_obj.id).length == 1) {
-		hashAct('cdev', views.cdev.prev_obj.id, true);
+		// hashAct('cdev', views.cdev.prev_obj.id, true);
+		$.publish(pubsubs.change_cdev1,
+			  [$.extend({}, state,
+				    {cdev: views.cdev.prev_obj.id,
+				     _act: 'replace'}),
+			  self.search_cdev(views.cdev.prev_obj.id)]);
 	    } else if (self.search_cdev(catDeviceGuess).length == 1) {
-		hashAct('cdev', catDeviceGuess, true);
+		// hashAct('cdev', catDeviceGuess, true);
+		$.publish(pubsubs.change_cdev1,
+			  [$.extend({}, state,
+				    {cdev: catDeviceGuess,
+				     _act: 'replace'}),
+			  self.search_cdev(catDeviceGuess)]);
 	    } else {
 		self.$profpane
 		    .find(selectors.catui_device_no_match)
@@ -893,18 +1250,36 @@
 	.on('click', views.cprof.handle)
 	.on(events.change_cprof, views.cprof.handle);
 
+    $.subscribe(pubsubs.change_cprof1, views.cprof.subscriber);
+    $.subscribe(pubsubs.remove_cprof1, views.cprof.subscriber);
+    $.subscribe(pubsubs.change_cprof2, views.cprof.subscriber);
+    $.subscribe(pubsubs.remove_cprof2, views.cprof.subscriber);
+
     views.cdev = {
 	handle: function(evt) {
+	    console.log('views.cdev.handle called!', evt.type, this);
 	    var self = views.cdev;
 	    switch (evt.type) {
+	    // case 'click':
+	    // 	evt.preventDefault();
+	    // 	var state = $.fn.HashHandle("hash"),
+	    // 	    key = 'cdev',
+	    // 	    val = $(this).attr('data-catdev');
+	    // 	if (!(key in state) || state[key] !== val) {
+	    // 	    hashAct(key, val);
+	    // 	}
 	    case 'click':
 		evt.preventDefault();
 		var state = $.fn.HashHandle("hash"),
 		    key = 'cdev',
 		    val = $(this).attr('data-catdev');
 		if (!(key in state) || state[key] !== val) {
-		    hashAct(key, val);
+		    state[key] = val;
+		    return $.publish(pubsubs.change_cdev1,
+				     [state,
+				      $(this)]);
 		}
+		break;
 	    case events.change_cdev:
 		self.element = this;
 		self.event = evt;
@@ -912,6 +1287,34 @@
 		break;
 	    }
 	    return this; // jQuery chaining
+	},
+	subscriber: function(evt, state, $el) {
+	    var self = views.cdev;
+	    // if (evt.type == pubsubs.remove_cdev1.split('.')[0]) {
+	    // 	return this;
+	    // }
+	    if (!(state instanceof Object)) {
+		return false;
+	    }
+	    if ($el instanceof $) {
+		self.element = $el.get(0);
+	    } else {
+		$el = $(selectors.changes_cdev_with_cprof_cdev_ids_ctx_catprofpane
+			    .naive_format(state));
+		if ($el.length != 1) {
+		    $(selectors.changes_cdev_nomatch_with_cprof_id
+		      .naive_format({cprof: state.cprof}))
+		    	.addClass('active')
+		    	.siblings()
+		    	.removeClass('active');
+		    return false;
+		}
+		self.element = $el.get(0);
+	    }
+	    console.log('cdev subscriber', 'evt.type', evt.type, 'self', self);
+	    self.evt = evt;
+	    self.main();
+	    return this;
 	},
 	obj: undefined,
 	prev_obj: undefined,
@@ -1144,6 +1547,11 @@
     $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
 	.on('click', views.cdev.handle)
 	.on(events.change_cdev, views.cdev.handle);
+
+    $.subscribe(pubsubs.change_cdev1, views.cdev.subscriber);
+    $.subscribe(pubsubs.remove_cdev1, views.cdev.subscriber);
+    $.subscribe(pubsubs.change_cdev2, views.cdev.subscriber);
+    $.subscribe(pubsubs.remove_cdev2, views.cdev.subscriber);
 
     $('{0} button'.naive_format(selectors.catui_device_download))
 	.on('click', function (evt) {
