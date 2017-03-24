@@ -175,14 +175,14 @@ autofocus autocomplete="off">
 		      από το φορέα σας.--></p>
 		    <div class="panel-group" role="tablist" aria-multiselectable="false" data-catui="device-deviceinfo">
 		      <div class="panel panel-default">
-			<div class="panel-heading" role="tab" id="heading_deviceinfo_Dummy">
+			<div class="panel-heading" role="tab" id="heading_deviceinfo_{profile_container_id}_{device_id}">
 			  <h5 class="panel-title">
-			    <a role="button" class="collapsed" data-toggle="collapse-noanimation" data-target="#deviceinfo_Dummy" aria-expanded="false" aria-controls="deviceinfo_Dummy">
+			    <a role="button" class="collapsed" data-toggle="collapse-noanimation" data-target="#deviceinfo_{profile_container_id}_{device_id}" aria-expanded="false" aria-controls="deviceinfo_{profile_container_id}_{device_id}">
 			      Information &amp; Usage<span class="pull-right"><i class="fa fa-angle-double-down" aria-hidden="true"></i><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
 			    </a>
 			  </h5><!-- /h5 -->
 			</div><!-- /.panel-heading -->
-			<div id="deviceinfo_Dummy" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_deviceinfo_Dummy">
+			<div id="deviceinfo_{profile_container_id}_{device_id}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_deviceinfo_{profile_container_id}_{device_id}">
 			  <div class="panel-body">deviceinfo placeholder</div>
 			</div><!-- /.panel-collapse -->
 		      </div><!-- /.panel -->
@@ -198,14 +198,14 @@ autofocus autocomplete="off">
 		    <h4>Other platforms</h4>
 		    <div class="panel-group" role="tablist" aria-multiselectable="false">
 		      <div class="panel panel-default">
-			<div class="panel-heading" role="tab" id="heading_devicegroup_Dummy">
+			<div class="panel-heading" role="tab" id="heading_devicegroup_{cdev_group}">
 			  <a class="collapsed panel-title"
 			     role="button"
 			     data-toggle="collapse-noanimation"
-			     data-target="#devicegroup_Dummy"
-			     aria-expanded="false" aria-controls="devicegroup_Dummy">device group</a>
+			     data-target="#devicegroup_{cdev_group}"
+			     aria-expanded="false" aria-controls="devicegroup_{cdev_group}">device group</a>
 			</div><!-- /.panel-heading -->
-			<div class="panel-collapse collapse" role="tabpanel" id="devicegroup_Dummy" aria-labelledby="heading_devicegroup_Dummy" aria-expanded="false">
+			<div class="panel-collapse collapse" role="tabpanel" id="devicegroup_{cdev_group}" aria-labelledby="heading_devicegroup_{cdev_group}" aria-expanded="false">
 			  <ul class="list-group">
 			    <li class="list-group-item"><a data-catdev="dummy" href="#dummy">device</a></li>
 			  </ul><!-- /.list-group -->
@@ -263,11 +263,9 @@ autofocus autocomplete="off">
 <script type="text/javascript" src="{% static 'js/appear.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/nprogress.js' %}"></script>
 <script type="text/javascript">
-    var catLang = "{{LANGUAGE_CODE}}",
-  catApi = new CAT({apiBase: "{% url 'cat-api' %}", lang: catLang}),
   catDeviceGuess = CatDevice.guessDeviceID(navigator.userAgent);
-  // pre-fetching... ("optimization")
-  // catApi.listAllIdentityProviders(catLang);
+    var CAT = new ConfigurationAssistantTool({apiBase: "{% url 'cat-api' %}",
+					      lang: "{{LANGUAGE_CODE}}"});
   NProgress.configure({ showSpinner: false });
   $(function () {
 
