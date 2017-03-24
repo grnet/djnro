@@ -3,8 +3,8 @@
 // exported
 var CAT, CatIdentityProvider, CatProfile, CatDevice;
 
-(function($){
-    // Polyfills :(
+var ConfigurationAssistantTool = (function($){
+    // Polyfill
     if (!Array.prototype.find) {
 	Object.defineProperty(Array.prototype, "find", {
 	    value: function(predicate) {
@@ -30,6 +30,15 @@ var CAT, CatIdentityProvider, CatProfile, CatDevice;
 	    }
 	});
     }
+    // Arguments -> Array converter that (supposedly) does not kill optimizations
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
+    // However this still means passing the Arguments object around...
+    Array.from_arguments = function() {
+	return (arguments.length === 1 ?
+		[arguments[0]] :
+		Array.apply(null, arguments));
+    }
+    // Polyfill
     if (!Object.keys) {
 	Object.keys = function(o) {
 	    if (o !== Object(o)) {
@@ -45,7 +54,22 @@ var CAT, CatIdentityProvider, CatProfile, CatDevice;
 	    return k;
 	}
     }
+    // The equivalent for (non-working):
+    // new Obj.apply(null, constructor_args_array)
+    // another alternative (which requires .bind):
+    // new (Function.prototype.bind.apply(Obj, [null].concat(args)));
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
+    Function.prototype.new_with_array = function(aArgs) {
+	var fConstructor = this,
+	    fNewConstr = function() {
+		fConstructor.apply(this, aArgs);
+	    };
+	fNewConstr.prototype = fConstructor.prototype;
+	return new fNewConstr();
+    }
+
     // Inheritance: We'll fall back to this instead of a polyfill!
+    // but we don't use inheritance...
     function createObject(proto) {
 	function ctor() { }
 	ctor.prototype = proto;
@@ -258,7 +282,7 @@ var CAT, CatIdentityProvider, CatProfile, CatDevice;
 	    redirectLocateUser: true,
 	    api_version: 1
 	}
-        this.options = $.extend( {}, this._defaults, options);
+        this.options = $.extend({}, this._defaults, options);
 	this._cache = {};
 	this._xhrcache = {};
     }
@@ -465,7 +489,10 @@ var CAT, CatIdentityProvider, CatProfile, CatDevice;
 		    var jqxhr = !!arguments[2] ? arguments[2] : {};
 		    if ($cat.options.api_version !== 1 &&
 			!!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
-			data = $cat.apiVersionGetTranslated(data, jqxhr._cat_qro.action, 'from', true);
+			data = $cat.apiVersionGetTranslated(data,
+							    jqxhr._cat_qro.action,
+							    'from',
+							    true);
 		    }
 		    $cat._cache[act] = data;
 		    return data;
@@ -544,7 +571,10 @@ var CAT, CatIdentityProvider, CatProfile, CatDevice;
 		    var jqxhr = !!arguments[2] ? arguments[2] : {};
 		    if ($cat.options.api_version !== 1 &&
 			!!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
-			data = $cat.apiVersionGetTranslated(data, jqxhr._cat_qro.action, 'from', true);
+			data = $cat.apiVersionGetTranslated(data,
+							    jqxhr._cat_qro.action,
+							    'from',
+							    true);
 		    }
 		    $cat._cache[act][lang] = data;
 		    return data;
@@ -630,7 +660,10 @@ var CAT, CatIdentityProvider, CatProfile, CatDevice;
 		    var jqxhr = !!arguments[2] ? arguments[2] : {};
 		    if ($cat.options.api_version !== 1 &&
 			!!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
-			data = $cat.apiVersionGetTranslated(data, jqxhr._cat_qro.action, 'from', true);
+			data = $cat.apiVersionGetTranslated(data,
+							    jqxhr._cat_qro.action,
+							    'from',
+							    true);
 		    }
 		    $cat._cache[act][idval][lang] = data;
 		    return data;
@@ -722,7 +755,10 @@ var CAT, CatIdentityProvider, CatProfile, CatDevice;
 		    var jqxhr = !!arguments[2] ? arguments[2] : {};
 		    if ($cat.options.api_version !== 1 &&
 			!!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
-			data = $cat.apiVersionGetTranslated(data, jqxhr._cat_qro.action, 'from', true);
+			data = $cat.apiVersionGetTranslated(data,
+							    jqxhr._cat_qro.action,
+							    'from',
+							    true);
 		    }
 		    $cat._cache[act][id1val][id2val][lang] = data;
 		    return data;
@@ -1569,5 +1605,33 @@ var CAT, CatIdentityProvider, CatProfile, CatDevice;
 	}
 	// failsafe?
 	return 'Other';
+    }
+
+    // module constructor
+    return function() {
+	var api_instance = CAT.new_with_array(arguments);
+	function prepend_api() {
+	    var args = Array.from_arguments.apply(null, arguments);
+	    args.unshift(this.API);
+	    return args;
+	}
+	return {
+	    API: api_instance,
+	    reset_api: function() {
+		return this.API = CAT.new_with_array(arguments);
+	    },
+	    IdentityProvider: function() {
+		return CatIdentityProvider
+		    .new_with_array(prepend_api.apply(this, arguments));
+	    },
+	    Profile: function() {
+		return CatProfile
+		    .new_with_array(prepend_api.apply(this, arguments));
+	    },
+	    Device: function() {
+		return CatDevice
+		    .new_with_array(prepend_api.apply(this, arguments));
+	    }
+	}
     }
 })(jQuery);
