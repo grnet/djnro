@@ -100,16 +100,16 @@
 	    change_cdev: 'catDevChange',
 	}
 
-    var catIdp,
-	catProf, _catProf = [], _catProfO = {},
-	catDev, _catDev;
+    // var catIdp,
+    // 	catProf, _catProf = [], _catProfO = {},
+    // 	catDev, _catDev;
 
     $(window).on(events.history_change, function (evt) {
 	var state = $.fn.HashHandle("hash"),
 	    pairs = {
-		cidp:  { evt: events.change_cidp,  obj: catIdp  },
-		cprof: { evt: events.change_cprof, obj: catProf },
-		cdev:  { evt: events.change_cdev,  obj: catDev  }
+		cidp:  { evt: events.change_cidp,  obj: test2_change_cidp.cidp  },
+		cprof: { evt: events.change_cprof, obj: test2_change_cprof.cprof },
+		cdev:  { evt: events.change_cdev,  obj: test2_change_cdev.cdev  }
 	    }
 	for (var key in pairs) {
 	    var stateChange = 0;
@@ -129,7 +129,7 @@
 	    switch (key) {
 	    case 'cidp':
 		if (stateChange === 2) {
-		    catIdp = undefined;
+		    test2_change_cidp.cidp = undefined;
 		    $('{0}.in'.naive_format(selectors.cat_modal)).modal('hide');
 		} else {
 		    return $(selectors.toggles_modal_with_cidp_id
@@ -143,18 +143,18 @@
 			// don't blindly set _catProf (last catProf), but push
 			// catProf.id in front of _catProf and add catProf to
 			// _catProfO
-			if (!!catProf) {
+			if (!!test2_change_cprof.cprof) {
 			    var idx;
-			    if ((idx = _catProf.indexOf(catProf.id)) != -1) {
-				_catProf.splice(idx, 1);
+			    if ((idx = test2_change_cprof.prev_stack.indexOf(test2_change_cprof.cprof.id)) != -1) {
+				test2_change_cprof.prev_stack.splice(idx, 1);
 			    } else {
-				_catProfO[catProf.id] = catProf;
+				test2_change_cprof.prev_obj[test2_change_cprof.cprof.id] = test2_change_cprof.cprof;
 			    }
-			    _catProf.unshift(catProf.id);
+			    test2_change_cprof.prev_stack.unshift(test2_change_cprof.cprof.id);
 			}
 			hashAct('cprof', undefined, true);
 		    }
-		    catProf = undefined;
+		    test2_change_cprof.cprof = undefined;
 		} else {
 		    return $(selectors.toggles_tab_with_cprof_id
 			     .naive_format({cprof: state[key]}))
@@ -164,10 +164,10 @@
 	    case 'cdev':
 		if (stateChange === 2) {
 		    if (key != 'cdev') {
-			_catDev = !!catDev && catDev || _catDev;
+			test2_change_cdev.prev_obj = !!test2_change_cdev.cdev && test2_change_cdev.cdev || test2_change_cdev.prev_obj;
 			hashAct('cdev', undefined, true);
 		    }
-		    catDev = undefined;
+		    test2_change_cdev.cdev = undefined;
 		} else {
 		    if (!('cprof' in state)) {
 			console.log('have cdev but no cprof!!');
@@ -328,280 +328,362 @@
 	return this;
     });
 
-    $(selectors.toggles_modal_has_cidp_id)
-	.on(events.click_composite, function (evt) {
-	    // evt.preventDefault();
-	    var key = 'cidp',
+    // $(selectors.toggles_modal_has_cidp_id)
+    // 	.on(events.click_composite, function (evt) {
+    // 	    // evt.preventDefault();
+    // 	    var key = 'cidp',
+    // 		val = $(this).attr('data-catidp');
+    // 	    hashAct(key, val);
+    // 	    return this;
+    // 	})
+    // 	.on(events.disable_noprofiles, function (evt) {
+    // 	    evt.preventDefault();
+    // 	    var href = $(this).data('idu');
+    // 	    $(this)
+    // 		.attr({
+    // 		    'data-target': null,
+    // 		    'data-toggle': null,
+    // 		    'href': href,
+    // 		    'data-idu': null,
+    // 		    'data-catidp': null
+    // 		})
+    // 		.removeData('target toggle catidp idu').off(events.click_composite);
+    // 	    return this;
+    // 	});
+
+    var test2_change_cidp = {
+	handle: function(evt) {
+	    var self = test2_change_cidp;
+	    switch (evt.type) {
+	    case events.click_composite:
+		// evt.preventDefault();
+		var key = 'cidp',
 		val = $(this).attr('data-catidp');
-	    hashAct(key, val);
-	    return this;
-	})
-	.on(events.disable_noprofiles, function (evt) {
-	    evt.preventDefault();
-	    var href = $(this).data('idu');
-	    $(this)
-		.attr({
-		    'data-target': null,
-		    'data-toggle': null,
-		    'href': href,
-		    'data-idu': null,
-		    'data-catidp': null
-		})
-		.removeData('target toggle catidp idu').off(events.click_composite);
-	    return this;
-	})
-	.on(events.change_cidp, test_change_cidp);
-
-    function test_change_cidp(evt) {
-	    var button = this;
-	    $('{0},{1}'.naive_format(selectors.catui_container_logo,
-				     selectors.catui_container_support))
-		.triggerHandler(events.logosup_hide);
-	    catIdp = $(button).data('_catidp');
-	    if (!(catIdp instanceof CAT.IdentityProvider().constructor)) {
-		catIdp = CAT.IdentityProvider(parseInt($(button).data('catidp')));
-		$(button).data('_catidp', catIdp);
+		hashAct(key, val);
+		break;
+	    case events.disable_noprofiles:
+		evt.preventDefault();
+		var href = $(this).data('idu');
+		$(this)
+		    .attr({
+			'data-target': null,
+			'data-toggle': null,
+			'href': href,
+			'data-idu': null,
+			'data-catidp': null
+		    })
+		    .removeData('target toggle catidp idu')
+		    .off(events.click_composite);
+		break;
+	    case events.change_cidp:
+		self.element = this;
+		self.event = evt;
+		self.main();
+		break;
 	    }
-	    // var cb_profiles = function(profiles)
-	    var cb = function(title, $icon, profiles) {
-		// console.log('catIdpChange cb:', arguments);
-		if (profiles === null ||
-		    !(profiles instanceof Array) ||
-		    profiles.length == 0) {
-		    $(button).triggerHandler(events.disable_noprofiles);
-		    // avoid async catIdp.getEntityID() for now
-		    // hashhandle removeHard cidp
-		    hashAct('cidp', catIdp.id, true);
-		    // hashAct('cidp', undefined, true);
-		    if (!!NProgress) {
-			NProgress.done();
-		    }
-		    return this;
-		}
-		var $profsel_container = $(selectors.cat_modal)
-		    .find(selectors.catui_profile_select_container),
-		    $profsel_template = $profsel_container.find('> :first-child');
-		var $profsels = [];
-		var profiles_byid = {};
-		for (var idx=0; idx < profiles.length; idx++) {
+	    return this; // jQuery chaining
+	},
+	cidp: undefined,
+	progress: 'NProgress' in window ?
+	    NProgress :
+	    {
+		start: function() {return undefined;},
+		done: function() {return undefined;}
+	    },
+	main: function() {
+	    var self = this;
+	    var cidp = $(self.element).data('_catidp');
+	    self.cidp = (cidp instanceof CAT.IdentityProvider().constructor) ?
+		cidp :
+		CAT.IdentityProvider(parseInt($(self.element).data('catidp')));
+	    $(self.element).data('_catidp',
+				 self.cidp);
+	    self.progress.start();
+	    return $.when(
+		self.cidp.getDisplay(),
+		self.cidp.getIcon(),
+		self.cidp.getProfiles(true)
+	    ).then(self.main_cb, self.main_cb);
+	},
+	main_cb: function(title, $icon, profiles) {
+	    var self = test2_change_cidp;
+	    if (!!!self.cidp) {
+		return null;
+	    }
+	    if (profiles === null ||
+		!(profiles instanceof Array) ||
+		profiles.length == 0) {
+		$(self.element).triggerHandler(events.disable_noprofiles);
+		// avoid async self.cidp.getEntityID() for now
+		// hashhandle removeHard cidp
+		hashAct('cidp', self.cidp.id, true);
+		// hashAct('cidp', undefined, true);
+		self.progress.done();
+		return false;
+	    }
+	    var profiles_byid = self.setup_profile_selectors(profiles);
+	    self.select_profile(profiles, profiles_byid);
+	    self.setup_title_icon(title, $icon);
+	    self.progress.done();
+	    $(selectors.cat_modal)
+		.modal('show');
+	},
+	setup_profile_selectors: function(profiles) {
+	    var self = this;
+	    self.$profsel_container = $(selectors.cat_modal)
+		.find(selectors.catui_profile_select_container);
+	    var $profsel_template = self.$profsel_container.find('> :first-child'),
+		$profsels = [],
+		profiles_byid = {};
+	    for (var idx=0; idx < profiles.length; idx++) {
 		    profiles_byid[profiles[idx].getProfileID()] = profiles[idx];
-		    // console.log("profile:", idx, profiles[idx]);
 		    // also clone bound events!!!!
-		    var $profsel_el = $profsel_template.clone(true),
-			$profsel_a = $profsel_el.find('> {0}'.naive_format(
-			    selectors.toggles_tab_has_catprof_id));
-		    // $profsel_el[(idx == 0) ? 'addClass' : 'removeClass']('active');
-		    $.when(
-			profiles[idx].getDisplay()
-		    ).then(function(display) {
-			if (!!display) {
-			    $profsel_a.text(display);
-			} else {
-			    $profsel_a.html('&nbsp;');
-			}
-		    });
-		    $profsel_el.removeClass('active');
-		    $profsel_a.attr('data-catprof', profiles[idx].getProfileID())
-			.data('_catprof', profiles[idx])
-			.attr('data-target',
-			      selectors.target_catprofpane_with_cprof_id
-			      .naive_format({cprof: profiles[idx].getProfileID()})
-			     )
-			.attr('href',
-			      '#cat-{0}'.naive_format(
-				  selector_encode({cidp: profiles[idx].getIdpID(),
-						   cprof: profiles[idx].getProfileID()})
-			      )
-			     );
-		    $profsels.push($profsel_el);
-		}
-		$profsel_container
-		    .html($profsels)
-		    .addClass('hidden');
-
-		var state = $.fn.HashHandle("hash");
-		if (('cprof' in state) && (state.cprof in profiles_byid)) {
-		    $profsel_container
+		var $profsel_el = $profsel_template.clone(true),
+		    $profsel_a = $profsel_el
+		    .find('> {0}'
+			  .naive_format(selectors.toggles_tab_has_catprof_id)
+			 );
+		$.when(
+		    profiles[idx].getDisplay()
+		).then(function(display) {
+		    if (!!display) {
+			$profsel_a.text(display);
+		    } else {
+			$profsel_a.html('&nbsp;');
+		    }
+		});
+		$profsel_el.removeClass('active');
+		$profsel_a.attr({'data-catprof': profiles[idx].getProfileID(),
+				 'data-catidp': self.cidp.id})
+		    .data('_catprof', profiles[idx])
+		    .attr('data-target',
+			  selectors.target_catprofpane_with_cprof_id
+			  .naive_format({cprof: profiles[idx].getProfileID()})
+			 )
+		    .attr('href',
+			  '#cat-{0}'.naive_format(
+			      selector_encode({cidp: profiles[idx].getIdpID(),
+					       cprof: profiles[idx].getProfileID()})
+			  )
+			 );
+		$profsels.push($profsel_el);
+	    }
+	    self.$profsel_container
+		.html($profsels)
+		.addClass('hidden');
+	    return profiles_byid;
+	},
+	select_profile: function(profiles, profiles_byid) {
+	    var self = this;
+	    var state = $.fn.HashHandle("hash");
+	    if (('cprof' in state) && (state.cprof in profiles_byid)) {
+		self.$profsel_container
+		    .find(
+			selectors.toggles_tab_with_cprof_id
+			    .naive_format({cprof: state.cprof})
+		    )
+		    .triggerHandler(events.change_cprof);
+	    // } else if (!!_catProf && (_catProf.id in profiles_byid)) {
+	    } else {
+		for (var _idx = 0;
+		     _idx < test2_change_cprof.prev_stack.length &&
+		     !(test2_change_cprof.prev_stack[_idx] in profiles_byid);
+		     _idx++); // empty statement
+		if (_idx < test2_change_cprof.prev_stack.length) {
+		    self.$profsel_container
 			.find(
 			    selectors.toggles_tab_with_cprof_id
-				.naive_format({cprof: state.cprof})
-			)
-			.triggerHandler(events.change_cprof);
-		// } else if (!!_catProf && (_catProf.id in profiles_byid)) {
-		} else {
-		    for (var _idx = 0;
-			 _idx < _catProf.length && !(_catProf[_idx] in profiles_byid);
-			 _idx++); // empty statement
-		    if (_idx < _catProf.length) {
-			$profsel_container
-			    .find(
-				selectors.toggles_tab_with_cprof_id
-				    .naive_format({cprof: _catProf[_idx]})
+				.naive_format(
+				    {cprof: test2_change_cprof.prev_stack[_idx]}
+				)
 			    )
-		    	    .data('_catprof', _catProfO[_catProf[_idx]]);
-			hashAct('cprof', _catProf[_idx], true);
-		    } else {
-			hashAct('cprof', profiles[0].getProfileID(), true);
-		    }
+		    	.data('_catprof',
+			      test2_change_cprof
+			      .prev_obj[test2_change_cprof.prev_stack[_idx]]);
+		    hashAct('cprof', test2_change_cprof.prev_stack[_idx], true);
+		} else {
+		    hashAct('cprof', profiles[0].getProfileID(), true);
 		}
-
-		if (!!!title) {
-		    title = $(button).find('.title').text();
-		}
-		if (!!title) {
-		    if ($(button).data('idu')) {
-			var title_a = $('<a>');
-			title_a.attr('href', $(button).data('idu'))
-			    .text(title)
-			    .append($(button).children('i').clone());
-			$(selectors.cat_modal)
-			    .find(selectors.catui_institution)
-			    .html(title_a);
-		    } else {
-			$(selectors.cat_modal)
-			    .find(selectors.catui_institution)
-			    .text(title);
-		    }
-		    if ($icon instanceof $) {
-			$icon.attr({title: title, alt: title});
-		    }
+	    }
+	},
+	setup_title_icon: function(title, $icon) {
+	    var self = this;
+	    if (!!!title) {
+		title = $(self.element).find('.title').text();
+	    }
+	    if (!!title) {
+		if ($(self.element).data('idu')) {
+		    var title_a = $('<a>');
+		    title_a.attr('href', $(self.element).data('idu'))
+			.text(title)
+			.append($(self.element).children('i').clone());
+		    $(selectors.cat_modal)
+			.find(selectors.catui_institution)
+			.html(title_a);
 		} else {
 		    $(selectors.cat_modal)
 			.find(selectors.catui_institution)
-			.html('&nbsp;');
+			.text(title);
 		}
-
-		$(selectors.cat_modal)
-		    .find(selectors.catui_container_logo)
-		    .html($icon)
-		    .triggerHandler(
-			$icon !== null ? events.logosup_show : events.logosup_hide
-		    );
-
-		if (!!NProgress) {
-		    NProgress.done();
+		if ($icon instanceof $) {
+		    $icon.attr({title: title, alt: title});
 		}
-
+	    } else {
 		$(selectors.cat_modal)
-		    .modal('show');
-
-		return this;
+		    .find(selectors.catui_institution)
+		    .html('&nbsp;');
 	    }
-
-	    if (!!NProgress) {
-		NProgress.start();
-	    }
-	    return $.when(
-		catIdp.getDisplay(),
-		catIdp.getIcon(),
-		catIdp.getProfiles(true)
-	    ).then(cb, cb);	    
+	    $(selectors.cat_modal)
+		.find(selectors.catui_container_logo)
+		.html($icon)
+		.triggerHandler(
+		    $icon !== null ? events.logosup_show : events.logosup_hide
+		);
+	}
     }
+		
+    $(selectors.toggles_modal_has_cidp_id)
+	.on(events.click_composite, test2_change_cidp.handle)
+	.on(events.disable_noprofiles, test2_change_cidp.handle)
+	.on(events.change_cidp, test2_change_cidp.handle);
 
+    // $(selectors.toggles_tab_has_catprof_id)
+    // 	.on('click', function (evt) {
+    // 	    evt.preventDefault();
+    // 	    if ($(this).parent().hasClass('active')) {
+    // 		return this;
+    // 	    }
+    // 	    var key = 'cprof',
+    // 		val = $(this).attr('data-catprof');
+    // 	    hashAct(key, val);
+    // 	    return this;
+    // 	});
 
-    $(selectors.toggles_tab_has_catprof_id)
-	.on('click', function (evt) {
-	    evt.preventDefault();
-	    if ($(this).parent().hasClass('active')) {
-		return this;
+    var test2_change_cprof = {
+	handle: function(evt) {
+	    var self = test2_change_cprof;
+	    switch (evt.type) {
+	    case 'click':
+		evt.preventDefault();
+		if ($(this).parent().hasClass('active')) {
+		    return this;
+		}
+		var key = 'cprof',
+		    val = $(this).attr('data-catprof');
+		hashAct(key, val);
+		break;
+	    case events.change_cprof:
+		self.element = this;
+		self.event = evt;
+		self.main();
+		break;
 	    }
-	    var key = 'cprof',
-		val = $(this).attr('data-catprof');
-	    hashAct(key, val);
-	    return this;
-	})
-	.on(events.change_cprof, test_change_cprof);
+	    return this; // jQuery chaining
+	},
+	cprof: undefined,
+	prev_stack: [],
+	prev_obj: {},
+	main: function() {
+	    var self = this;
+	    var cprof = $(self.element).data('_catprof');
+	    self.cprof = (cprof instanceof CAT.Profile().constructor) ?
+		cprof :
+		CAT.Profile(test2_change_catidp.cidp.id,
+			    parseInt($(self.element).data('catprof')));
 
-    function test_change_cprof(evt) {
- 	    var button = this,
-		profile = $(button).data('_catprof');
-	    catProf = (profile instanceof CAT.Profile().constructor) ?
-		profile : CAT.Profile(catIdp.id,
-	    			      parseInt($(button).data('catprof')));
-	    var deferreds_catprofchange = [];
-
-	    $(button).parent('li')
+	    $(self.element).parent('li')
 	    	.addClass('active')
 	    	.siblings().removeClass('active');
 
+	    self.setup_support();
+
+	    self.setup_profpanes();
+	},
+	toggle_support_elements: function($supcon, hasSupport) {
+	    var answer =     !!hasSupport ? 'yes' : 'no',
+		answer_inv = !!hasSupport ? 'no' : 'yes',
+		toggle =     { yes: 'addClass', no: 'removeClass' };
+	    $supcon[toggle[answer_inv]]('hidden')
+		.siblings().each(function() {
+		    if ($(this).data('catui-support') === answer) {
+			$(this)[toggle[!!hasSupport ? answer_inv : answer]]('hidden');
+		    }
+		    if ($(this).data('catui-support') === answer_inv) {
+			$(this)[toggle[!!hasSupport ? answer : answer_inv]]('hidden');
+		    }
+		});
+	},
+	setup_support: function() {
+	    var self = this;
 	    $(selectors.catui_container_support)
 		.triggerHandler(events.logosup_hide);
-	    var $support_container = $(selectors.catui_container_support_contact),
-		$supportel_template = $support_container.find('> span:first-child');
-	    var cb_support = function(local_url, local_email, local_phone) {
-		function toggleSupportElements($supcon, hasSupport) {
-		    var answer =     !!hasSupport ? 'yes' : 'no',
-			answer_inv = !!hasSupport ? 'no' : 'yes',
-			toggle =     { yes: 'addClass', no: 'removeClass' };
-		    $supcon[toggle[answer_inv]]('hidden')
-			.siblings().each(function() {
-			    if ($(this).data('catui-support') === answer) {
-				$(this)[toggle[!!hasSupport ? answer_inv : answer]]('hidden');
-			    }
-			    if ($(this).data('catui-support') === answer_inv) {
-				$(this)[toggle[!!hasSupport ? answer : answer_inv]]('hidden');
-			    }
-			});
-		}
-		if (!!!local_url &&
-		    !!!local_email &&
-		    !!!local_phone) {
-		    toggleSupportElements($support_container, false);
-		    $(selectors.catui_container_support)
-			.triggerHandler(events.logosup_show);
-		    return this;
-		} else {
-		    $supportels = [];
-		    if (!!local_url) {
-			var $supportel = $supportel_template.clone(true),
-			    $supportel_i = $supportel.find('> i'),
-			    $supportel_a = $supportel.find('> a');
-			$supportel_i.attr('class', 'fa fa-link');
-			$supportel_a
-			    .attr('href',
-				  (local_url.search(/(https?:)?\/\//) == 0) ?
-				  local_url : '//' + local_url)
-			    .text(function() {
-				var txt = local_url.
-				    replace(/^((https?:)?\/\/)(www\.)?/, ''),
-				    lidx = txt.length - 1;
-				if (txt.indexOf('/') == lidx) {
-				    return txt.substr(0, lidx);
-				}
-				return txt;
-			    });
-			$supportels.push($supportel);
-		    }
-		    if (!!local_email) {
-			var $supportel = $supportel_template.clone(true),
-			    $supportel_i = $supportel.find('> i'),
-			    $supportel_a = $supportel.find('> a');
-			$supportel_i.attr('class', 'fa fa-envelope-o');
-			$supportel_a.attr('href', 'mailto:' + local_email)
-			    .text(local_email);
-			$supportels.push($supportel);
-		    }
-		    if (!!local_phone) {
-			var $supportel = $supportel_template.clone(true),
-			    $supportel_i = $supportel.find('> i'),
-			    $supportel_a = $supportel.find('> a');
-			$supportel_i.attr('class', 'fa fa-phone');
-			$supportel_a.attr('href', 'tel:' + local_phone)
-			    .text(local_phone);
-			$supportels.push($supportel);
-		    }
-		    $support_container.html($supportels);
-		    toggleSupportElements($support_container, true);
-		    $(selectors.catui_container_support)
-			.triggerHandler(events.logosup_show);
-		    return this;
-		}
-	    }
 	    $.when(
-		catProf.getLocalUrl(),
-		catProf.getLocalEmail(),
-		catProf.getLocalPhone()
-	    ).then(cb_support, cb_support);
+		self.cprof.getLocalUrl(),
+		self.cprof.getLocalEmail(),
+		self.cprof.getLocalPhone()
+	    ).then(self.setup_support_cb, self.setup_support_cb);
+	},
+	setup_support_cb: function(local_url, local_email, local_phone) {
+	    var self = test2_change_cprof,
+		$support_container = $(selectors.catui_container_support_contact),
+		$supportel_template = $support_container.find('> span:first-child'),
+		$supportels = [];
+	    if (!!!self.cprof) {
+		return null;
+	    }
+	    if (!!!local_url &&
+		!!!local_email &&
+		!!!local_phone) {
+		self.toggle_support_elements($support_container, false);
+	    } else {
+		if (!!local_url) {
+		    var $supportel = $supportel_template.clone(true),
+			$supportel_i = $supportel.find('> i'),
+			$supportel_a = $supportel.find('> a');
+		    $supportel_i.attr('class', 'fa fa-link');
+		    $supportel_a
+			.attr('href',
+			      (local_url.search(/(https?:)?\/\//) == 0) ?
+			      local_url : '//' + local_url)
+			.text(function() {
+			    var txt = local_url.
+				replace(/^((https?:)?\/\/)(www\.)?/, ''),
+				lidx = txt.length - 1;
+			    if (txt.indexOf('/') == lidx) {
+				return txt.substr(0, lidx);
+			    }
+			    return txt;
+			});
+		    $supportels.push($supportel);
+		}
+		if (!!local_email) {
+		    var $supportel = $supportel_template.clone(true),
+			$supportel_i = $supportel.find('> i'),
+			$supportel_a = $supportel.find('> a');
+		    $supportel_i.attr('class', 'fa fa-envelope-o');
+		    $supportel_a.attr('href', 'mailto:' + local_email)
+			.text(local_email);
+		    $supportels.push($supportel);
+		}
+		if (!!local_phone) {
+		    var $supportel = $supportel_template.clone(true),
+			$supportel_i = $supportel.find('> i'),
+			$supportel_a = $supportel.find('> a');
+		    $supportel_i.attr('class', 'fa fa-phone');
+		    $supportel_a.attr('href', 'tel:' + local_phone)
+			.text(local_phone);
+		    $supportels.push($supportel);
+		}
+		$support_container.html($supportels);
+		self.toggle_support_elements($support_container, true);
+	    }
+	    $(selectors.catui_container_support)
+		.triggerHandler(events.logosup_show);
+	    return this;
+	},
+	setup_profpanes: function() {
+	    var self = this,
+		deferreds = [];
 
 	    var $profpane_container = $(selectors.cat_modal)
 		.find(selectors.catui_profiles_container),
@@ -618,457 +700,498 @@
 
 	    var $profpane = $profpane_container
 		.find(selectors.catui_profile_container_with_catprofpane_id
-		      .naive_format({cprof: catProf.getProfileID()}));
+		      .naive_format({cprof: self.cprof.getProfileID()}));
 	    if ($profpane.length == 1) {
-		// console.log('found profpane!');
-		$profpane
-	    	    .addClass('active')
-	    	    .siblings().removeClass('active');
-		$(selectors.catui_profile_select_container)
-		    .children()
-		    .each(function(idx, el) {
-			// by default hide profpane selector container
-		    	$(this).parent().addClass('hidden');
-			// but if there is more than one selector, show it and break
-		    	if (idx > 0) {
-		    	    $(this).parent().removeClass('hidden');
-		    	    return false;
-		    	}
-			return this;
-		    });
-
-		$profpane.find(selectors.catui_device_container)
-		    .siblings(selectors.catui_device_loading_placeholder).addClass('active')
-		    .siblings(':not(.active-exempt)').removeClass('active');
-
-		var state = $.fn.HashHandle("hash"),
-		    cdev_search = function(cdevid) {
-			return $profpane
-			    .find(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
-			    .filter(function() { return $(this).data('catdev') == cdevid; });
-		    }
-		if (('cdev' in state) && cdev_search(state.cdev).length == 1) {
-		    $profpane
-			.find(selectors.changes_cdev_with_cdev_id
-			      .naive_format({cdev: state.cdev}))
-			.triggerHandler(events.change_cdev);
-		} else if (!!_catDev && cdev_search(_catDev.id).length == 1) {
-		    hashAct('cdev', _catDev.id, true);
-		} else if (cdev_search(catDeviceGuess).length == 1) {
-		    hashAct('cdev', catDeviceGuess, true);
-		} else {
-		    $profpane
-			.find(selectors.catui_device_no_match)
-			.addClass('active')
-			.siblings()
-			.removeClass('active');
-		}
-
-		return this;
+		self.$profpane = $profpane;
+		self.activate_profpane();
+		return $profpane;
 	    }
+
 	    $profpane = $profpane_template.clone(true);
 	    $profpane
-		.attr({'id': selector_encode({cidp: catProf.getIdpID(),
-					      cprof: catProf.getProfileID()}),
+		.attr({'id': selector_encode({cidp: self.cprof.getIdpID(),
+					      cprof: self.cprof.getProfileID()}),
 		       'data-catui': 'profile-container',
-		       'data-catprofpane': catProf.getProfileID()});
+		       'data-catprofpane': self.cprof.getProfileID()});
+	    self.$profpane = $profpane;
 
-	    var cb_description = function(description) {
-		var $description_element = $profpane
-		    .find(selectors.catui_profile_description);
-		if (!!description) {
-		    $description_element.text(description);
-		} else {
-		    $description_element.html('');
-		}
-		// if profiles <= 1 or profile title == description, hide description
-		if ($(selectors.catui_profile_select_container).children().length <= 1 ||
-		    $(button).text() == description ||
-		    !!!description) {
-		    $description_element.addClass('hidden');
-		} else {
-		    $description_element.removeClass('hidden');
-		}
-	    }
-	    deferreds_catprofchange.push(
+	    deferreds.push(
 		$.when(
-		    catProf.getDescription()
-		).then(cb_description, cb_description)
+		    self.cprof.getDescription()
+		).then(self.setup_description_cb, self.setup_description_cb)
 	    );
 
-	    var cb_devicelist = function(devices) {
-		if (!!devices) {
-		    return CAT.Device().constructor.groupDevices(devices);
-		} else {
-		    return null;
-		}
-	    }
-	    var cb_devicelist_final = function(grouped_devices) {
-		// console.log('cb2:', grouped_devices);
-		// console.log('cb2 $profpane.selector:', $profpane);
-		if (!!!grouped_devices) {
-		    var d = new $.Deferred();
-		    d.reject(grouped_devices);
-		    return d.promise();
-		}
-		var $devicelist_container = $profpane.find(selectors.catui_devicelist_container),
-		    $devicegroup_heading_template = $devicelist_container.find('.panel-heading'),
-		    $devicegroup_template = $devicegroup_heading_template.next(),
-		    $device_template = $devicegroup_template.find('.list-group-item').first();
-		var devgroups = [],
-		    devgroup_id_from = $devicegroup_template.attr('id'),
-		    ungrouped_devices = {};
-		for (var devgroup in grouped_devices) {
-		    var $devgroup_heading = $devicegroup_heading_template.clone(true);
-		    var devgroup_id_to = devgroup_id_from
-			.naive_format({cdev_group: devgroup});
-		    $devgroup_heading
-			.attr('id', function(idx, cur) {
-			    return cur.naive_format({cdev_group: devgroup});
-			    // return cur.replace(devgroup_id_from, devgroup_id_to);
-			})
-			.find('a')
-			.attr({ 'data-target': '#{0}_{1}'.naive_format(devgroup_id_to,
-								       $profpane.attr('id')),
-				'data-toggle': 'collapse-noanimation',
-				'aria-controls': '#{0}_{1}'.naive_format(devgroup_id_to,
-									 $profpane.attr('id'))})
-			.text(devgroup);
-		    var $devgroup = $devicegroup_template.clone(true);
-		    $devgroup
-			.attr('id', '{0}_{1}'.naive_format(devgroup_id_to,
-							   $profpane.attr('id')))
-			.attr('aria-labelledby', function(idx, cur) {
-			    return cur.replace(devgroup_id_from,
-					       '{0}_{1}'.naive_format(
-						   devgroup_id_to,
-						   $profpane.attr('id'))
-					      );
-			});
-		    var devs = [];
-		    for (var devidx = 0; devidx < grouped_devices[devgroup].length; devidx++) {
-			var $device = $device_template.clone(true),
-			    device_id = grouped_devices[devgroup][devidx].getDeviceID();
-			ungrouped_devices[device_id] = grouped_devices[devgroup][devidx];
-			$device.children('a')
-			    .data('_catdev', grouped_devices[devgroup][devidx])
-			    .attr('href',
-				  '#cat-{0}'.naive_format(
-				      selector_encode({cidp: catProf.getIdpID(),
-						       cprof: catProf.getProfileID(),
-						       cdev: device_id}))
-				 )
-			    .attr({'data-catdev': device_id,
-				   'data-catprof': catProf.getProfileID()});
-			$.when(
-			    grouped_devices[devgroup][devidx].getDisplay(),
-			    grouped_devices[devgroup][devidx].getDeviceCustomText()
-			).then(function(display, custom_text) {
-			    var $a = $device.children('a');
-			    $a.text(display || device_id);
-			    if (!!custom_text) {
-				$a.append($('<small>').text(custom_text));
-			    }
-			});
-			devs.push($device);
+	    deferreds.push(
+		$.when(
+		    self.cprof.getDevices()
+		).then(self.setup_devicelist_cb, self.setup_devicelist_cb)
+		    .then(self.setup_devicelist_cb2, self.setup_devicelist_cb2)
+	    );
+
+	    $.when.apply($, deferreds)
+		.then(
+		    function() {
+			$profpane_container
+			    .append(self.$profpane);
+			self.activate_profpane();
+		    },
+		    function() {
+			self.$profpane.remove();
+			$profpane_error
+	    		    .addClass('active')
+	    		    .siblings().removeClass('active');
 		    }
-		    $devgroup
-			.children('ul')
-			.html(devs);
-		    devgroups.push($devgroup_heading, $devgroup);
-		}
-		$devicelist_container
-		    .find('.panel')
-		    .html(devgroups);
+		);
+	},
+	setup_description_cb: function(description) {
+	    var self = test2_change_cprof,
+		$description_element = self.$profpane
+		.find(selectors.catui_profile_description);
+
+	    if (!!!self.cprof) {
+		// return null;
+		return $.Deferred().reject(description);
 	    }
-	    deferreds_catprofchange.push(
-		$.when(
-		    catProf.getDevices()
-		).then(cb_devicelist, cb_devicelist)
-		    .then(cb_devicelist_final, cb_devicelist_final)
-	    );
 
-	    $.when.apply($, deferreds_catprofchange)
-		.then(function() {
-		    // console.log('appending profpane -> container', $profpane, $profpane_container);
-		    $profpane_container
-			.append($profpane);
+	    if (!!description) {
+		$description_element.text(description);
+	    } else {
+	    	$description_element.html('');
+	    }
+	    // if profiles <= 1 or profile title == description, hide description
+	    if ($(selectors.catui_profile_select_container).children().length <= 1 ||
+		$(self.element).text() == description ||
+		!!!description) {
+		$description_element.addClass('hidden');
+	    } else {
+		$description_element.removeClass('hidden');
+	    }
+	},
+	setup_devicelist_cb: function(devices) {
+	    var self = test2_change_cprof;
 
-		    $profpane.find(selectors.catui_device_container)
-			.siblings(selectors.catui_device_loading_placeholder)
-			.addClass('active')
-			.siblings(':not(.active-exempt)')
-			.removeClass('active');
+	    if (!!!self.cprof) {
+		// return null;
+		return $.Deferred().reject(devices);
+	    }
 
-		    var state = $.fn.HashHandle("hash"),
-			cdev_search = function(cdevid) {
-			    return $profpane
-				.find(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
-				.filter(function() { return $(this).data('catdev') == cdevid; });
+	    if (!!devices) {
+		return CAT.Device().constructor.groupDevices(devices);
+	    } else {
+		return null;
+	    }
+	},
+	setup_devicelist_cb2: function(grouped_devices) {
+	    var self = test2_change_cprof;
+
+	    if (!!!self.cprof) {
+		//return null;
+		return $.Deferred().reject(grouped_devices);
+	    }
+
+	    // console.log('cb2:', grouped_devices);
+	    // console.log('cb2 $profpane.selector:', $profpane);
+	    if (!!!grouped_devices) {
+		// var d = new $.Deferred();
+		// d.reject(grouped_devices);
+		// return d.promise();
+		return $.Deferred().reject(grouped_devices);
+	    }
+	    var $devicelist_container = self.$profpane
+		.find(selectors.catui_devicelist_container),
+		$devicegroup_heading_template = $devicelist_container
+		.find('.panel-heading'),
+		$devicegroup_template = $devicegroup_heading_template.next(),
+		$device_template = $devicegroup_template
+		.find('.list-group-item').first();
+	    var devgroups = [],
+		devgroup_id_from = $devicegroup_template.attr('id'),
+		ungrouped_devices = {};
+	    for (var devgroup in grouped_devices) {
+		var $devgroup_heading = $devicegroup_heading_template.clone(true);
+		var devgroup_id_to = devgroup_id_from
+		    .naive_format({cdev_group: devgroup});
+		$devgroup_heading
+		    .attr('id', function(idx, cur) {
+			return cur.naive_format({cdev_group: devgroup});
+			// return cur.replace(devgroup_id_from, devgroup_id_to);
+		    })
+		    .find('a')
+		    .attr({ 'data-target': '#{0}_{1}'.naive_format(devgroup_id_to,
+								   self.$profpane.attr('id')),
+			    'data-toggle': 'collapse-noanimation',
+			    'aria-controls': '#{0}_{1}'.naive_format(devgroup_id_to,
+								     self.$profpane.attr('id'))})
+		    .text(devgroup);
+		var $devgroup = $devicegroup_template.clone(true);
+		$devgroup
+		    .attr('id', '{0}_{1}'.naive_format(devgroup_id_to,
+						       self.$profpane.attr('id')))
+		    .attr('aria-labelledby', function(idx, cur) {
+			return cur.replace(devgroup_id_from,
+					   '{0}_{1}'.naive_format(
+					       devgroup_id_to,
+					       self.$profpane.attr('id'))
+					  );
+		    });
+		var devs = [];
+		for (var devidx = 0; devidx < grouped_devices[devgroup].length; devidx++) {
+		    var $device = $device_template.clone(true),
+			device_id = grouped_devices[devgroup][devidx].getDeviceID();
+		    ungrouped_devices[device_id] = grouped_devices[devgroup][devidx];
+		    $device.children('a')
+			.data('_catdev', grouped_devices[devgroup][devidx])
+			.attr('href',
+			      '#cat-{0}'.naive_format(
+				  selector_encode({cidp: self.cprof.getIdpID(),
+						   cprof: self.cprof.getProfileID(),
+						   cdev: device_id}))
+			     )
+			.attr({'data-catdev': device_id,
+			       'data-catprof': self.cprof.getProfileID()});
+		    $.when(
+			grouped_devices[devgroup][devidx].getDisplay(),
+			grouped_devices[devgroup][devidx].getDeviceCustomText()
+		    ).then(function(display, custom_text) {
+			var $a = $device.children('a');
+			$a.text(display || device_id);
+			if (!!custom_text) {
+			    $a.append($('<small>').text(custom_text));
 			}
-		    if (('cdev' in state) && cdev_search(state.cdev).length == 1) {
-			$profpane
-			    .find(selectors.changes_cdev_with_cdev_id
-				  .naive_format({cdev: state.cdev}))
-			    .triggerHandler(events.change_cdev);
-		    } else if (!!_catDev && cdev_search(_catDev.id).length == 1) {
-			hashAct('cdev', _catDev.id, true);
-		    } else if (cdev_search(catDeviceGuess).length == 1) {
-			hashAct('cdev', catDeviceGuess, true);
-		    } else {
-			$profpane
-			    .find(selectors.catui_device_no_match)
-			    .addClass('active')
-			    .siblings()
-			    .removeClass('active');
+		    });
+		    devs.push($device);
+		}
+		$devgroup
+		    .children('ul')
+		    .html(devs);
+		devgroups.push($devgroup_heading, $devgroup);
+	    }
+	    $devicelist_container
+		.find('.panel')
+		.html(devgroups);
+	},
+	activate_profpane: function() {
+	    var self = this;
+
+	    self.$profpane
+	    	.addClass('active')
+	    	.siblings().removeClass('active');
+	    $(selectors.catui_profile_select_container)
+		.children()
+		.each(function(idx, el) {
+		    // by default hide profpane selector container
+		    $(this).parent().addClass('hidden');
+		    // but if there is more than one selector, show it and break
+		    if (idx > 0) {
+		    	$(this).parent().removeClass('hidden');
+		    	return false;
 		    }
-
-		    $profpane
-	    		.addClass('active')
-	    		.siblings().removeClass('active');
-
-		    $(selectors.catui_profile_select_container)
-		    	.children()
-		    	.each(function(idx, el) {
-			    // by default hide profpane selector container
-		    	    $(this).parent().addClass('hidden');
-			    // but if there is more than one selector, show it and break
-		    	    if (idx > 0) {
-		    		$(this).parent().removeClass('hidden');
-		    		return false;
-		    	    }
-			    return this;
-		    	});
-
-		}, function() { // on fail:
-		    $profpane_error
-	    		.addClass('active')
-	    		.siblings().removeClass('active');
+		    return this;
 		});
+
+	    self.$profpane.find(selectors.catui_device_container)
+		.siblings(selectors.catui_device_loading_placeholder).addClass('active')
+		.siblings(':not(.active-exempt)').removeClass('active');
+
+	    self.select_cdev();
+	},
+	search_cdev: function(cdevid) {
+	    var self = this;
+	    return self.$profpane
+		.find(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
+		.filter(function() {
+		    return $(this).data('catdev') == cdevid;
+		});
+	},
+	select_cdev: function() {
+	    var self = this;
+	    var state = $.fn.HashHandle("hash");
+	    if (('cdev' in state) && self.search_cdev(state.cdev).length == 1) {
+		self.$profpane
+		    .find(selectors.changes_cdev_with_cdev_id
+			  .naive_format({cdev: state.cdev}))
+		    .triggerHandler(events.change_cdev);
+	    } else if (!!test2_change_cdev.prev_obj &&
+		       self.search_cdev(test2_change_cdev.prev_obj.id).length == 1) {
+		hashAct('cdev', test2_change_cdev.prev_obj.id, true);
+	    } else if (self.search_cdev(catDeviceGuess).length == 1) {
+		hashAct('cdev', catDeviceGuess, true);
+	    } else {
+		self.$profpane
+		    .find(selectors.catui_device_no_match)
+		    .addClass('active')
+		    .siblings()
+		    .removeClass('active');
+	    }
+	}
     }
 
-    $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
-	.on('click', function (evt) {
-	    evt.preventDefault();
-	    var state = $.fn.HashHandle("hash"),
-		key = 'cdev',
-		val = $(this).attr('data-catdev');
-	    if (!(key in state) || state[key] !== val) {
-		hashAct(key, val);
-	    }
-	    return this;
-	})
-	.on(events.change_cdev, test_change_cdev);
+    $(selectors.toggles_tab_has_catprof_id)
+	.on('click', test2_change_cprof.handle)
+	.on(events.change_cprof, test2_change_cprof.handle);
 
-    function test_change_cdev(evt) {
-	    var button = this,
-		device = $(button).data('_catdev');
-	    catDev = (device instanceof CAT.Device().constructor) ?
-		device : CAT.Device(catIdp.id,
-				    $(button).data('catprof'),
-	    			    $(button).data('catdev'));
-	    var deferreds_catdevchange = [];
-	    var $device_container = $(button)
+    // $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
+    // 	.on('click', function (evt) {
+    // 	    evt.preventDefault();
+    // 	    var state = $.fn.HashHandle("hash"),
+    // 		key = 'cdev',
+    // 		val = $(this).attr('data-catdev');
+    // 	    if (!(key in state) || state[key] !== val) {
+    // 		hashAct(key, val);
+    // 	    }
+    // 	    return this;
+    // 	});
+
+    var test2_change_cdev = {
+	handle: function(evt) {
+	    var self = test2_change_cdev;
+	    switch (evt.type) {
+	    case 'click':
+		evt.preventDefault();
+		var state = $.fn.HashHandle("hash"),
+		    key = 'cdev',
+		    val = $(this).attr('data-catdev');
+		if (!(key in state) || state[key] !== val) {
+		    hashAct(key, val);
+		}
+	    case events.change_cdev:
+		self.element = this;
+		self.event = evt;
+		self.main();
+		break;
+	    }
+	    return this; // jQuery chaining
+	},
+	prev_obj: undefined,
+	main: function() {
+	    var self = this;
+	    var cdev = $(self.element).data('_catdev');
+	    self.cdev = (cdev instanceof CAT.Device().constructor) ?
+		cdev :
+		CAT.Device(test2_change_catidp.cidp.id,
+			   parseInt($(self.element).data('catprof')),
+			   parseInt($(self.element).data('catdev')));
+
+	    self.$device_container = $(self.element)
 		.parents(selectors.catui_profile_container)
 		.find(selectors.catui_device_container);
 
-	    $device_container
+	    self.setup_device();
+	},
+	setup_device: function() {
+	    var self = this;
+
+	    self.$device_container
 		.siblings(selectors.catui_device_loading_placeholder).addClass('active')
 		.siblings(':not(.active-exempt)').removeClass('active');
 	    // HACK!
-	    $device_container.closest('.modal').scrollTop(0);
+	    self.$device_container.closest(selectors.cat_modal).scrollTop(0);
 
-	    var cb_device = function(device_id,
-				     device_display,
-				     device_status,
-				     device_eapcustomtext,
-				     device_devicecustomtext,
-				     device_message,
-				     device_isredirect,
-				     device_issigned,
-				     device_redirect,
-				     device_lang_display) {
-
-		function setDeviceField(data_catui_val, text) {
-		    var $el = $device_container
-			.find('[data-catui="{0}"]'
-			      .naive_format(data_catui_val));
-		    if (!!text) {
-			if (typeof text === 'string') {
-			    // console.log('setting text', $el, text);
-			    $el.removeClass('hidden').text(text);
-			} else if (typeof text === 'function') {
-			    // console.log('callback', $el, text);
-			    $el.removeClass('hidden').each(text);
-			}
-		    } else {
-			// console.log('hiding', $el);
-			$el.addClass('hidden').empty();
-		    }
-		    return $el;
+	    $.when(
+		self.cdev.getDeviceID(),
+		self.cdev.getDisplay(),
+		self.cdev.getStatus(),
+		self.cdev.getEapCustomText(),
+		self.cdev.getDeviceCustomText(),
+		self.cdev.getMessage(),
+		self.cdev.isRedirect(),
+		self.cdev.isSigned(),
+		self.cdev.getRedirect(),
+		self.cdev.cat.getLanguageDisplay(self.cdev.lang)
+	    ).then(self.setup_device_cb, self.setup_device_cb)
+		.then(
+		    function() {
+			self.$device_container
+			    .addClass('active')
+			    .siblings(':not(.active-exempt)')
+			    .removeClass('active');
+		    },
+		    function() {
+			// console.log('catdevchange master promise failed!', this, arguments);
+			self.$device_container
+			    .siblings(selectors.catui_device_load_error)
+			    .addClass('active')
+			    .siblings(':not(.active-exempt)')
+			    .removeClass('active');
+		    });
+	},
+	set_device_field: function(data_catui_val, text) {
+	    var self = this,
+		$el = self.$device_container
+		.find('[data-catui="{0}"]'
+		      .naive_format(data_catui_val));
+	    if (!!text) {
+		if (typeof text === 'string') {
+		    // console.log('setting text', $el, text);
+		    $el.removeClass('hidden').text(text);
+		} else if (typeof text === 'function') {
+		    // console.log('callback', $el, text);
+		    $el.removeClass('hidden').each(text);
 		}
-		setDeviceField('device-display', device_display || device_id);
-		setDeviceField('device-eapcustomtext', device_eapcustomtext);
-		setDeviceField('device-devicecustomtext', device_devicecustomtext);
-		setDeviceField('device-message',
-			       !!device_message ?
-			       function() {
-				   $(this).find('[role="message"]')
-				       .html(device_message)
-				       .find('a').each(function() {
-					   var href = $(this).attr('href'),
-					       href_slash_idx = href.indexOf('/');
-					   if (href_slash_idx <= 0 &&
-					       href.search('//') != 0) {
-					       $(this).attr('href',
-							    CAT.API.localDownloadBase() +
-							    href.substr(href_slash_idx + 1));
-					   }
-					   return this;
-				       });
-				   $(this)
-				       .removeClass('catui-message-acknowledged');
-				   return this;
-			       } :
-			       function() {
-				   $(this).addClass('hidden')
-				       .removeClass('catui-message-acknowledged');
-				   return this;
-			       });
-		setDeviceField('device-redirectmessage',
-			       device_isredirect ?
-			       function() {
-				   var device_redirect_url =
-				       (device_redirect.search(/(https?:)?\/\//) == 0) ?
-				       device_redirect : '//' + device_redirect;
-				   $(this)
-				       .find(
-					   'a{0}'.naive_format(
-					       selectors.catui_device_redirecturl)
-				       )
-				       .attr('href', device_redirect_url)
-				       .text(device_redirect);
-				   return this;
-			       } :
-			       function() {
-				   $(this)
-				       .addClass('hidden')
-				       .find(
-					   'a{0}'.naive_format(
-					       selectors.catui_device_redirecturl)
-				       )
-				       .removeAttr('href')
-				       .text(null);
-				   return this;
-			       });
-		setDeviceField('device-signed',
-			       function() {
-				   var act = !device_issigned ? 'addClass' : 'removeClass';
-				   $(this)[act]('hidden');
-				   return this;
-			       });
-		setDeviceField('device-language',
-			       function() {
-				   var act = !!!device_lang_display ? 'addClass' : 'removeClass';
-				   $(this)
-				       .text(device_lang_display || '')
-				       .parent('span')[act]('hidden');
-				   return this;
-			       });
-		if (!device_isredirect) {
-		    setDeviceField('device-download',
-				   function() {
-				       $(this)
-					   .removeClass('download-failed')
-					   .find('button')
-					   .removeClass('btn-danger')
-					   .addClass('btn-success')
-					   .data('_catdev', catDev)
-					   .find(selectors.catui_dltxt_init)
-					   .removeClass('hidden')
-					   .siblings().addClass('hidden');
-				   });
-		}
-		var deviceinfo_cb = function(device_deviceinfo) {
-		    if (!!!device_deviceinfo) {
-			setDeviceField('device-deviceinfo', function() {
-			    $(this)
-				.addClass('hidden')
-				.find('.panel-body')
-				.empty();
-			});
-			return null;
-		    }
-		    var sdf_deviceinfo = function() {
-			var devinfo_id = 'deviceinfo_{0}_{1}'
-			    .naive_format(
-				$(this)
-				    .closest(selectors.catui_profile_container)
-				    .attr('id'),
-				device_id);
-			$(this)
-			    .removeClass('hidden')
-			    .find('.panel-heading')
-			      .attr('id', 'heading_' + devinfo_id)
-			      .find('a')
-			        .attr({'data-target': '#' + devinfo_id,
-				       'aria-controls': devinfo_id})
-			        .end()
-			      .end()
-			    .find('[role="tabpanel"]')
-			    .attr({'id': devinfo_id,
-				   'aria-labelledby': 'heading_' + devinfo_id})
-			    .find('.panel-body')
-			      .html(device_deviceinfo)
-			      .find('a').each(function() {
-				  var href = $(this).attr('href');
-				  if (href.search(/(https?:)?\/\//) != 0) {
-				      href = '//' + href;
-				      $(this).attr('href', href);
-				  }
-				  return this;
-			      });
-			return this;
-		    }
-		    setDeviceField('device-deviceinfo',
-				   sdf_deviceinfo);
-		}
-		$.when(
-		    catDev.getDeviceInfo()
-		).then(deviceinfo_cb, deviceinfo_cb);
+	    } else {
+		// console.log('hiding', $el);
+		$el.addClass('hidden').empty();
 	    }
-	    deferreds_catdevchange.push(
-		$.when(
-		    catDev.getDeviceID(),
-		    catDev.getDisplay(),
-		    catDev.getStatus(),
-		    catDev.getEapCustomText(),
-		    catDev.getDeviceCustomText(),
-		    catDev.getMessage(),
-		    catDev.isRedirect(),
-		    catDev.isSigned(),
-		    catDev.getRedirect(),
-		    catDev.cat.getLanguageDisplay(catDev.lang)
-		).then(cb_device, cb_device)
-	    );
+	    return $el;
+	},
+	setup_device_cb: function(device_id,
+				  device_display,
+				  device_status,
+				  device_eapcustomtext,
+				  device_devicecustomtext,
+				  device_message,
+				  device_isredirect,
+				  device_issigned,
+				  device_redirect,
+				  device_lang_display) {
+	    var self = test2_change_cdev;
 
-	    $.when.apply($, deferreds_catdevchange)
-		.then(function() {
-		    $device_container
-			.addClass('active')
-			.siblings(':not(.active-exempt)')
-			.removeClass('active');
-		}, function() {
-		    // console.log('catdevchange master promise failed!', this, arguments);
-		    $device_container
-			.siblings(selectors.catui_device_load_error)
-			.addClass('active')
-			.siblings(':not(.active-exempt)')
-			.removeClass('active');
+	    if (!!!self.cdev) {
+		// return null;
+		return $.Deferred().reject(null);
+	    }
+
+	    self.set_device_field('device-display', device_display || device_id);
+	    self.set_device_field('device-eapcustomtext', device_eapcustomtext);
+	    self.set_device_field('device-devicecustomtext', device_devicecustomtext);
+	    self.set_device_field('device-message',
+				  !!device_message ?
+				  function() {
+				      $(this).find('[role="message"]')
+					  .html(device_message)
+					  .find('a').each(function() {
+					      var href = $(this).attr('href'),
+						  href_slash_idx = href.indexOf('/');
+					      if (href_slash_idx <= 0 &&
+						  href.search('//') != 0) {
+						  $(this).attr('href',
+							       self.cdev.cat.localDownloadBase() +
+							       href.substr(href_slash_idx + 1));
+					      }
+					      return this;
+					  });
+				      $(this)
+					  .removeClass('catui-message-acknowledged');
+				      return this;
+				  } :
+				  function() {
+				      $(this).addClass('hidden')
+					  .removeClass('catui-message-acknowledged');
+				      return this;
+				  });
+	    self.set_device_field('device-redirectmessage',
+				  device_isredirect ?
+				  function() {
+				      var device_redirect_url =
+					  (device_redirect.search(/(https?:)?\/\//) == 0) ?
+					  device_redirect : '//' + device_redirect;
+				      $(this)
+					  .find(
+					      'a{0}'.naive_format(
+						  selectors.catui_device_redirecturl)
+					  )
+					  .attr('href', device_redirect_url)
+					  .text(device_redirect);
+				      return this;
+				  } :
+				  function() {
+				      $(this)
+					  .addClass('hidden')
+					  .find(
+					      'a{0}'.naive_format(
+						  selectors.catui_device_redirecturl)
+					  )
+					  .removeAttr('href')
+					  .text(null);
+				      return this;
+				  });
+	    self.set_device_field('device-signed',
+				  function() {
+				      var act = !device_issigned ? 'addClass' : 'removeClass';
+				      $(this)[act]('hidden');
+				      return this;
+				  });
+	    self.set_device_field('device-language',
+				  function() {
+				      var act = !!!device_lang_display ? 'addClass' : 'removeClass';
+				      $(this)
+					  .text(device_lang_display || '')
+					  .parent('span')[act]('hidden');
+				      return this;
+				  });
+	    if (!device_isredirect) {
+		self.set_device_field('device-download',
+				      function() {
+					  $(this)
+					      .removeClass('download-failed')
+					      .find('button')
+					      .removeClass('btn-danger')
+					      .addClass('btn-success')
+					      .data('_catdev', self.cdev)
+					      .find(selectors.catui_dltxt_init)
+					      .removeClass('hidden')
+					      .siblings().addClass('hidden');
+				      });
+	    }
+	    $.when(
+		self.cdev.getDeviceInfo()
+	    ).then(self.setup_deviceinfo_cb, self.setup_deviceinfo_cb);
+	},
+	setup_deviceinfo_cb: function(device_deviceinfo) {
+	    var self = test2_change_cdev;
+
+	    if (!!!self.cdev) {
+		// return null;
+		return $.Deferred().reject(device_deviceinfo);
+	    }
+
+	    if (!!!device_deviceinfo) {
+		self.set_device_field('device-deviceinfo', function() {
+		    $(this)
+			.addClass('hidden')
+			.find('.panel-body')
+			.empty();
 		});
-
-	    return this;
+		return null;
+	    }
+	    self.set_device_field('device-deviceinfo', function() {
+		var devinfo_id = 'deviceinfo_{0}_{1}'
+		    .naive_format(
+			$(this)
+			    .closest(selectors.catui_profile_container)
+			    .attr('id'),
+			self.cdev.id);
+		$(this)
+		    .removeClass('hidden')
+		    .find('.panel-heading')
+		      .attr('id', 'heading_' + devinfo_id)
+		      .find('a')
+		        .attr({'data-target': '#' + devinfo_id,
+			       'aria-controls': devinfo_id})
+		        .end()
+		      .end()
+		    .find('[role="tabpanel"]')
+		    .attr({'id': devinfo_id,
+			   'aria-labelledby': 'heading_' + devinfo_id})
+		    .find('.panel-body')
+		      .html(device_deviceinfo)
+		      .find('a').each(function() {
+			  var href = $(this).attr('href');
+			  if (href.search(/(https?:)?\/\//) != 0) {
+			      href = '//' + href;
+			      $(this).attr('href', href);
+			  }
+			  return this;
+		      });
+		return this;
+	    });
+	    return device_deviceinfo;
+	},
     }
+
+    $(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
+	.on('click', test2_change_cdev.handle)
+	.on(events.change_cdev, test2_change_cdev.handle);
 
     $('{0} button'.naive_format(selectors.catui_device_download))
 	.on('click', function (evt) {
