@@ -1,5 +1,12 @@
 ;
 
+function _have_appear() {
+    return !!CAT_UI && (CAT_UI instanceof Object) &&
+	('appear' in CAT_UI) && (CAT_UI.appear instanceof Object) &&
+	('trigger' in CAT_UI.appear) &&
+	(typeof CAT_UI.appear.trigger === 'function');
+}
+
 function inst_search(evt) {
     if (evt.type == 'keyup') {
 	switch (evt.keyCode) {
@@ -28,7 +35,7 @@ function inst_search(evt) {
 	.val().trim().toLowerCase().split(/[\s,]+/);
     var shown = 0, hidden = 0,
 	prev = {shown: 0, hidden: 0},
-	have_appear = !!CAT_UI && ('appear' in CAT_UI);
+	have_appear = _have_appear();
     $('ul.insts li').each(function(index) {
 	var elem = this,
 	    $title_elem = $('.title', elem),
@@ -110,7 +117,7 @@ function geolocate(_opts) {
 	geoip_url: 'https://freegeoip.net/json/'
     }, _opts);
     var have_nprogress = 'NProgress' in window,
-	have_appear = !!CAT_UI && ('appear' in CAT_UI),
+	have_appear = _have_appear(),
 	master_d = new $.Deferred(),
 	geo_done = false;
     var cb = function(pos) {
