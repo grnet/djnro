@@ -12,7 +12,13 @@ function inst_search(evt) {
 		    .find('li:not(:hidden):first > a');
 		tofocus.focus();
 		if (tofocus.closest('ul.insts.match').length == 1) {
-		    tofocus.trigger('compositeClick');
+		    // if single match does not have CAT data attribute
+		    // trigger native click
+		    if (tofocus.data('catidp')) {
+			tofocus.trigger('click.cat_ui');
+		    } else {
+			tofocus.get(0).click();
+		    }
 		}
 	    }
 	    break;
@@ -78,7 +84,8 @@ function insts_nav(evt) {
 	$('#inst-search-input').focus();
 	break;
     case 13 << evtype.keyup:
-	$(this).trigger('compositeClick');
+	// if click.cat_ui not bound, enter should trigger native this.click()
+	$(this).trigger('click.cat_ui');
 	break;
     default:
 	stop = false;
