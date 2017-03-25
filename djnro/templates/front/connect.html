@@ -262,103 +262,39 @@ autofocus autocomplete="off">
 <script type="text/javascript" src="{% static 'js/cat_embed.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/appear.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/nprogress.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/cat_ui.js' %}"></script>
 <script type="text/javascript">
-  catDeviceGuess = CatDevice.guessDeviceID(navigator.userAgent);
     var CAT = new ConfigurationAssistantTool({apiBase: "{% url 'cat-api' %}",
 					      lang: "{{LANGUAGE_CODE}}"});
   NProgress.configure({ showSpinner: false });
-  $(function () {
-
-      $('.has-clear input[type="search"]').on('input propertychange', function() {
-	  var $this = $(this);
-	  var visible = Boolean($this.val());
-	  $this.siblings('.form-control-clear').toggleClass('hidden', !visible);
-      }).trigger('propertychange');
-      $('.form-control-clear').click(function() {
-	  $(this).siblings('input[type="search"]').val('')
-	      .trigger('propertychange').trigger('change').focus();
-      });
-
-      $('#catModal,.institution-list').tooltip({selector: '[data-toggle="tooltip"]'});
-
-      var coords_cb = function() {
-	  var _this = this[1],
-	      _args = arguments[1],
-	      ret_slocs = _args[0],
-	      geo = {};
-
-	  if (!!_args[1] &&
-	      _args[1] == 'success' &&
-	      !!_this.dataType &&
-	      _this.dataType == 'json' &&
-	      ret_slocs instanceof Array) {
-
-	      ret_slocs.forEach(function(cur, idx) {
-		  var inst_key = cur.inst_key;
-		  var coords = {
-		      lat: parseFloat(cur.lat),
-		      lon: parseFloat(cur.lng)
-		  }
-		  if (!(inst_key in geo)) {
-		      geo[inst_key] = [coords];
-		  } else if (geo[inst_key].find(function(cur) {
-		      return (JSON.stringify(cur) === JSON.stringify(coords));
-		  }) === undefined) {
-		      geo[inst_key].push(coords);
-		  }
-	      });
-	  }
-
-	  $('ul.insts li a').each(function() {
-	      var catid = parseInt($(this).data('catidp'));
-	      if (!!catid &&
-		  !($(this).data('_catidp') instanceof CatIdentityProvider)) {
-		  $(this).data('_catidp', new CatIdentityProvider(catApi,
-								  catid,
-								  catLang)
-			      );
-	      }
-	      var that = this,
-		  iid = $(that).data('iid');
-	      if (!!iid &&
-		  (iid in geo)) {
-		  var getGeo = function() {
-		      return new $.Deferred()
-			  .resolve(geo[iid]);
-		  }
-	      } else {
-		  return this;
-	      }
-	      if ($(this).data('_catidp') instanceof CatIdentityProvider) {
-		  var getgeo_cb = function(ret) {
-		      if (ret instanceof Array) {
-			  $(that).data('_coords', ret);
-			  return ret;
-		      }
-		      $(that).data('sloc_coords', geo[iid]);
-		      $(that).data('_catidp').getGeo = getGeo;
-		  }
-		  $.when(
-		      $(this).data('_catidp').getGeo()
-		  ).then(getgeo_cb, getgeo_cb);
-	      } else {
-		  $(that).data('_catidp', {
-		      getGeo: getGeo,
-		      getDistanceFrom: CatIdentityProvider.prototype.getDistanceFrom
-		  });
-	      }
-	  });
-      }
-      $.when(
-	  catApi.listAllIdentityProviders(catLang),
-	  $.getJSON("{% url 'get-all-services' %}")
-      ).then(coords_cb, coords_cb);
-
-  });
+  var CAT_UI = CatUI({CAT: CAT});
+    //CAT_UI.initialized.done(function() {CAT_UI.teardown();});
 </script>
-<script type="text/javascript" src="{% static 'js/cat_ui.js' %}"></script>
 {% endif %}
 <script type="text/javascript" src="{% static 'js/connect.js' %}"></script>
+<script type="text/javascript">
+    (function($){
+	$('.institution-search input').placeholder();
+	$('.has-clear input[type="search"]').on('input propertychange', function() {
+	    var $this = $(this);
+	    var visible = Boolean($this.val());
+	    $this.siblings('.form-control-clear').toggleClass('hidden', !visible);
+	}).trigger('propertychange');
+	$('.form-control-clear').click(function() {
+	    $(this).siblings('input[type="search"]').val('')
+		.trigger('propertychange').trigger('change').focus();
+	});
+
+	$('#catModal,.institution-list').tooltip({selector: '[data-toggle="tooltip"]'});
+
+	var coords_d = [ $.getJSON("{% url 'get-all-services' %}") ];
+	if (!!CAT_UI && ('initialized' in CAT_UI)) {
+	    coords_d.push(CAT_UI.initialized);
+	}
+	$.when.apply($, coords_d)
+	    .then(populate_geo_cb, populate_geo_cb);
+    })(jQuery);
+</script>
 {% endblock %}
 
 {% block extrahead %}
