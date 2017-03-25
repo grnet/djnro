@@ -186,3 +186,104 @@ function geolocate() {
 $('.search-actions').on('click', '.trigger-geolocate[disabled] a', function(evt) {
     evt.preventDefault();
 });
+
+function populate_geo_cb() {
+    var _this, _args, slocs_ret,
+	geo = {};
+    if (this instanceof Array) {
+	_this = this[0];
+	_args = arguments[0];
+	slocs_ret = _args[0];
+    } else {
+	_this = this;
+	_args = arguments;
+	slocs_ret = _args[0];
+    }
+    
+    if (!!_args[1] &&
+	_args[1] == 'success' &&
+	!!_this.dataType &&
+	_this.dataType == 'json' &&
+	slocs_ret instanceof Array) {
+
+	slocs_ret.forEach(function(cur, idx) {
+	    var inst_key = cur.inst_key;
+	    var coords = {
+		lat: parseFloat(cur.lat),
+		lon: parseFloat(cur.lng)
+	    }
+	    if (!(inst_key in geo)) {
+		geo[inst_key] = [coords];
+	    } else if (geo[inst_key].find(function(cur) {
+		return (JSON.stringify(cur) === JSON.stringify(coords));
+	    }) === undefined) {
+		geo[inst_key].push(coords);
+	    }
+	});
+    }
+
+    $('ul.insts > li > a').each(function() {
+	var that = this,
+	    iid = $(this).data('iid'),
+	    _cidp = $(this).data('_catidp'),
+	    _geo = {
+		getDistanceFrom:
+		!!CAT ?
+		    CAT.IdentityProvider().constructor.prototype.getDistanceFrom :
+		    getDistanceFrom,
+		coord_sets: [],
+		getGeo: function() {
+		    var d = $.Deferred();
+		    if (!!this.coord_sets.length > 0 &&
+			(this.coord_sets[0] instanceof Array)) {
+			return d.resolve(this.coord_sets[0]);
+		    } else {
+			return d.reject(null);
+		    }
+		}
+	    }
+	if (!!iid &&
+	    (iid in geo)) {
+	    _geo.coord_sets.push(geo[iid]);
+	}
+	if (_cidp instanceof CAT.IdentityProvider().constructor) {
+	    var getgeo_cb = function(ret) {
+		if (ret instanceof Array) {
+		    _geo.coord_sets.unshift(ret);
+		    return ret;
+		}
+	    }
+	    $.when(
+		_cidp.getGeo()
+	    ).then(getgeo_cb, getgeo_cb);
+	}
+	$(this).data('_geo', _geo);
+    });
+}
+
+function getDistanceFrom(lat, lon) {
+    function deg2rad (deg) {
+	return deg * ((1 / 180) * Math.PI);
+    }
+    var cb = function(ret) {
+	if (ret instanceof Array) {
+	    var res = [];
+	    ret.forEach(function(cur, idx) {
+		var lat2 = deg2rad(cur.lat);
+		var lat1 = deg2rad(lat);
+		var lon2 = deg2rad(cur.lon);
+		var lon1 = deg2rad(lon);
+		res.push(
+		    Math.acos(
+			(Math.sin(lat1) * Math.sin(lat2)) +
+			    (Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1))
+		    ) * 6371
+		);
+	    });
+	    return res;
+	} else {
+	    return [Infinity];
+	}
+    }
+    return $.when(this.getGeo()).then(cb, cb);
+}
