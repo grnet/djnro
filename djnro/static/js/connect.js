@@ -96,20 +96,37 @@ function insts_nav(evt) {
 }
 $('ul.insts li a').on('keyup keydown', insts_nav);
 
-function geolocate() {
+function geolocate(_opts) {
+    var opts = $.extend({
+	timeout: 10000,
+	geoip_url: 'https://freegeoip.net/json/'
+    }, _opts);
+    var have_nprogress = 'NProgress' in window,
+	have_appear = !!CAT_UI && ('appear' in CAT_UI),
+	master_d = new $.Deferred(),
+	geo_done = false;
     var cb = function(pos) {
+	// console.log('cb master_d.state, geo_done', master_d.state(), geo_done);
+	if (geo_done) {
+	    return;
+	}
+	if (master_d.state() == 'pending') {
+	    // console.log('cb resolving master_d');
+	    master_d.resolve();
+	}
+	geo_done = true;
 	var deferreds = [],
 	    distance_max = 0,
 	    distance_min = Infinity,
 	    size_classes = ['btn-xs', 'btn-sm', '', 'btn-lg'];
-	$('ul.insts li a').each(function() {
+	$('ul.insts > li > a').each(function() {
 	    var that = this,
-		cidp = $(this).data('_catidp'),
+		geo = $(this).data('_geo'),
 		d = new $.Deferred();
 	    $(this).removeClass(size_classes.join(' '));
-	    if (!!cidp &&
-		('getDistanceFrom' in cidp) &&
-		typeof cidp.getDistanceFrom === 'function') {
+	    if (!!geo &&
+		('getDistanceFrom' in geo) &&
+		typeof geo.getDistanceFrom === 'function') {
 		var gdf_cb = function(ret) {
 		    if (!(ret instanceof Array)) {
 			d.reject(ret);
@@ -134,7 +151,7 @@ function geolocate() {
 		    }
 		}
 		$.when(
-		    cidp.getDistanceFrom(pos.coords.latitude, pos.coords.longitude)
+		    geo.getDistanceFrom(pos.coords.latitude, pos.coords.longitude)
 		).then(gdf_cb, gdf_cb);
 	    } else {
 		$(that).data('_distance', Infinity);
@@ -146,7 +163,7 @@ function geolocate() {
 	    deferreds.push(d);
 	});
 	var sort_cb = function() {
-	    var li_elements = $('ul.insts li');
+	    var li_elements = $('ul.insts > li');
 	    li_elements.detach().each(function() {
 		var $that = $(this).children('a');
 		$that.removeClass(size_classes.join(' '));
@@ -174,13 +191,58 @@ function geolocate() {
 		return a - b;
 	    });
 	    $('ul.insts').append(li_elements);
+	    if (have_appear) {
+		CAT_UI.appear.trigger();
+	    }
 	}
 	$.when.apply($, deferreds)
 	    .then(sort_cb, sort_cb);
 	$('.trigger-geolocate').attr('disabled','disabled')
 	    .children('a').attr('tabindex', -1);
+	if (have_nprogress) {
+	    NProgress.done();
+	}
     }
-    navigator.geolocation.getCurrentPosition(cb);
+    var cb_fallback = function() {
+	// console.log('cb_fallback master_d.state, geo_done', master_d.state(), geo_done);
+	if (geo_done) {
+	    return;
+	}
+	var geoip_cb = function(data) {
+	    if (!!data &&
+		'latitude' in data &&
+		'longitude' in data) {
+		var pos = {
+		    coords: {
+			latitude: data.latitude,
+			longitude: data.longitude
+		    }
+		}
+		return cb(pos);
+	    } else {
+		if (have_nprogress) {
+		    NProgress.done();
+		}
+		return null;
+	    }
+	}
+	return $.when(
+	    $.get(opts.geoip_url)
+	).then(geoip_cb, geoip_cb);
+    }
+    if (have_nprogress) {
+	NProgress.start();
+    }
+    master_d.fail(cb_fallback);
+    if ('geolocation' in navigator) {
+	navigator.geolocation.getCurrentPosition(cb, cb_fallback,
+						 {timeout: opts.timeout});
+    } else {
+	master_d.reject();
+    }
+    setTimeout(function() {
+	master_d.reject();
+    }, opts.timeout);
 }
 
 $('.search-actions').on('click', '.trigger-geolocate[disabled] a', function(evt) {
