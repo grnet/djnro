@@ -26,13 +26,18 @@ function inst_search(evt) {
     }
     var needles = $('#inst-search-input')
 	.val().trim().toLowerCase().split(/[\s,]+/);
-    var shown = 0, hidden = 0;
+    var shown = 0, hidden = 0,
+	prev = {shown: 0, hidden: 0},
+	have_appear = !!CAT_UI && ('appear' in CAT_UI);
     $('ul.insts li').each(function(index) {
 	var elem = this,
 	    $title_elem = $('.title', elem),
 	    title = $title_elem.text().trim().toLowerCase(),
 	    oper_name = ($title_elem.data('on') || '').trim()
 	      .toLowerCase();
+	if (have_appear) {
+	    prev[$(this).hasClass('match') ? 'shown' : 'hidden'] += 1;
+	}
 	if (needles.reduce(function(carry, item) {
 	    var item_lc = item.toLowerCase();
 	    return (carry &&
@@ -49,6 +54,9 @@ function inst_search(evt) {
 	    hidden += 1;
 	}
     });
+    if (have_appear && (shown != prev.shown || hidden != prev.hidden)) {
+	CAT_UI.appear.trigger();
+    }
     if (shown == 1) {
 	$('ul.insts').removeClass('filtered')
 	    .addClass('match');
