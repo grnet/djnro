@@ -66,10 +66,41 @@ var CatUI = (function($){
 	}
     }
 
+    function hashAct2(key, val, hard, obj, trhsevt) {
+	var state = getHashState(),
+	    act = (!!hard && 'replace' || 'push') + 'State';
+	obj = !!obj && obj || {};
+	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
+	if (key in state) {
+	    if (state[key] == val || typeof val === 'undefined') {
+		delete state[key];
+	    } else {
+		state[key] = val;
+	    }
+	} else if (typeof val !== 'undefined') {
+	    state[key] = val;
+	}
+	var state_str = $.getQueryString(state);
+	if (state_str.length > 0) {
+	    state_str = '?' + state_str;
+	}
+	console.log('History', act, state, '"'+ state_str +'"');
+	History[act](state, null, state_str);
+    }
+
+    function getHashState() {
+	// var state_hash = History.getState();
+	// var state = $.getQueryParameters(state_hash);
+	// var state = History.getState().data;
+	// return state;
+	// var state_str = window.location.search;
+	// if (state_str.
+	return $.getQueryParameters(window.location.search);
+    }
+
     var controllers = {};
 
     controllers.tostate = function(evt, state, $el) {
-	// console.log('controllers.tostate arguments', arguments);
 	var trigger_popstate = true;
 	var hard;
 	if (typeof state === 'undefined') {
@@ -79,24 +110,47 @@ var CatUI = (function($){
 	    hard = state._act == 'replace';
 	    delete state._act;
 	}
+	var prev_state = getHashState();
 	var implied_act = evt.type.split('_', 2);
-	console.log('controllers.tostate state', state, '$el', $el, 'implied_act', implied_act);
+	var ordered_keys = pubsub_cats_ordered;
+	console.log('controllers.tostate state', state, implied_act, 'ordered_keys', ordered_keys);
 	if (implied_act.length > 1 && implied_act[1] == 'remove' && (implied_act[0] in state)) {
 	    // console.log('controllers.tostate', evt.type, 3, 'key', implied_act[0], 'val', undefined, 'hard', hard, $el);
-	    hashAct(implied_act[0], undefined, hard, $el);
+	    // hashAct2(implied_act[0], undefined, hard, $el);
+
+            for (var _i=0; _i < ordered_keys.length && implied_act[0] != ordered_keys[_i];
+		 _i++); // empty statement
+            if (_i < ordered_keys.length) {
+		for (var i=_i; i < ordered_keys.length; i++) {
+                    // console.log('hashAct_sub', evt.type, 4, 'key', ordered_keys[i], 'val', undefined, 'hard', true, {$el: $el}, 'trhsevt', trigger_popstate);
+                    // hashAct2(ordered_keys[i], undefined, true, $el);
+		    if (ordered_keys[i] in prev_state) {
+			delete prev_state[ordered_keys[i]];
+		    }
+		}
+            }
+	    var act = (hard ? 'replace' : 'push') + 'State';
+	    var state_str = $.getQueryString(prev_state);
+	    if (state_str.length > 0) {
+		state_str = '?' + state_str;
+	    }
+	    console.log('lalalala', prev_state, state_str, _i, i);
+	    History[act](prev_state, null, state_str);
+
 	} else {
-	    var prev_state = $.fn.HashHandle('hash');
+	    // var prev_state = $.fn.HashHandle('hash');
+	    // var prev_state = getHashState();
 	    // console.log('controllers.tostate', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, $el);
 	    for (var k in state) {
 		if (!(k in prev_state) || prev_state[k] != state[k]) {
 		    // console.log('controllers.tostate', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, $el);
-		    hashAct(k, state[k], hard, $el);
+		    hashAct2(k, state[k], hard, $el);
 		}
 	    }
 	    for (var _k in prev_state) {
 		if (!(_k in state)) {
 		    // console.log('controllers.tostate', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, $el);
-		    hashAct(_k, undefined, hard, $el);
+		    hashAct2(_k, undefined, hard, $el);
 		}
 	    }
 	}
@@ -151,8 +205,9 @@ var CatUI = (function($){
     }
 
     var events = {
-	history_change: '{0}.cat_ui'
-	    .naive_format('onpopstate' in window ? 'popstate' : 'hashchange'),
+	// history_change: '{0}.cat_ui'
+	//     .naive_format('onpopstate' in window ? 'popstate' : 'hashchange'),
+	history_change: 'statechange.cat_ui',
 	click: 'click.cat_ui',
 	cidp_disable_selector: 'cidp_disable_selector.cat_ui',
 	cidp_bind_selector: 'cidp_bind_selector.cat_ui',
@@ -192,7 +247,8 @@ var CatUI = (function($){
     // pubsubs.cidp.disable_noprofiles = 'cidp_disable_noprofiles.cat_ui';
 
     controllers.fromstate = function(evt, $el) {
-	var state = $.fn.HashHandle("hash"),
+	// var state = $.fn.HashHandle("hash"),
+	var state = getHashState(),
 	    pairs = {
 		cidp:  { obj: views.cidp.obj  },
 		cprof: { obj: views.cprof.obj },
@@ -377,7 +433,8 @@ var CatUI = (function($){
 	    return this;
 	},
 	bs_modal_hidden: function(evt) {
-	    var state = $.fn.HashHandle("hash");
+	    // var state = $.fn.HashHandle("hash");
+	    var state = getHashState();
 	    $.publish(pubsubs.cidp.remove.tostate, [state]);
 	    // bootstrap transitions (.modal.fade) use timers (conditionally) which
 	    // may clash with rapid state transitions
@@ -404,7 +461,8 @@ var CatUI = (function($){
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
 		evt.preventDefault();
-		var state = $.fn.HashHandle("hash"),
+		// var state = $.fn.HashHandle("hash"),
+		var state = getHashState(),
 		key = 'cidp',
 		val = $(this).attr('data-catidp');
 		state[key] = val;
@@ -556,7 +614,7 @@ var CatUI = (function($){
 		// hashhandle removeHard cidp
 		// hashAct('cidp', self.obj.id, true);
 		$.publish(pubsubs.cidp.remove.tostate,
-			  [$.extend({}, $.fn.HashHandle("hash"),
+			  [$.extend({}, getHashState(), //$.fn.HashHandle("hash"),
 				    {_act: 'replace'})]);
 		// hashAct('cidp', undefined, true);
 		self.progress.done();
@@ -616,7 +674,8 @@ var CatUI = (function($){
 	},
 	select_profile: function(profiles, profiles_byid) {
 	    var self = this;
-	    var state = $.fn.HashHandle("hash");
+	    // var state = $.fn.HashHandle("hash");
+	    var state = getHashState();
 	    if (('cprof' in state) && (state.cprof in profiles_byid)) {
 		$.publish(pubsubs.cprof.change.fromstate, [state]);
 	    // } else if (!!_catProf && (_catProf.id in profiles_byid)) {
@@ -823,7 +882,8 @@ var CatUI = (function($){
 		if ($(this).parent().hasClass('active')) {
 		    return this;
 		}
-		var state = $.fn.HashHandle("hash"),
+		// var state = $.fn.HashHandle("hash"),
+		var state = getHashState(),
 		    key = 'cprof',
 		    val = $(this).attr('data-catprof');
 		if (!(key in state) || state[key] !== val) {
@@ -1196,7 +1256,8 @@ var CatUI = (function($){
 	},
 	select_cdev: function() {
 	    var self = this;
-	    var state = $.fn.HashHandle("hash");
+	    // var state = $.fn.HashHandle("hash");
+	    var state = getHashState();
 	    if (('cdev' in state) && self.search_cdev(state.cdev).length == 1) {
 		$.publish(pubsubs.cdev.change.fromstate, [state]);
 	    } else if (!!views.cdev.prev_obj &&
@@ -1233,7 +1294,8 @@ var CatUI = (function($){
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
 		evt.preventDefault();
-		var state = $.fn.HashHandle("hash"),
+		// var state = $.fn.HashHandle("hash"),
+		var state = getHashState(),
 		    key = 'cdev',
 		    val = $(this).attr('data-catdev');
 		if (!(key in state) || state[key] !== val) {
@@ -1803,9 +1865,14 @@ var CatUI = (function($){
 	    var wlh = window.location.hash;
 	    if (wlh.search(/#cat[-=]/) == 0) {
 		var dec_wlh = selector_decode(wlh.substr(5));
-		$.fn.HashHandle('_goHard', dec_wlh);
+		// $.fn.HashHandle('_goHard', dec_wlh);
+		var dec_wlh_str = $.getQueryString(dec_wlh);
+		if (dec_wlh_str.length > 0) {
+		    dec_wlh_str = '?' + dec_wlh_str;
+		}
+		History.replaceState(dec_wlh, '', dec_wlh_str);
 	    } else {
-		$(window).trigger(events.history_change);
+	    	$(window).trigger(events.history_change);
 	    }
 	});
 
