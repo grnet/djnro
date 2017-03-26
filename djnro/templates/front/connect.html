@@ -264,10 +264,35 @@ autofocus autocomplete="off">
 <script type="text/javascript" src="{% static 'js/nprogress.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/cat_ui.js' %}"></script>
 <script type="text/javascript">
+    var _overrides = {
+	exthandlers: {
+	    cidp_unbind_selector: function() {
+		var $el = $(this),
+		    idu_href = $el.data('idu');
+		if (idu_href) {
+		    $el.attr('href', idu_href);
+		}
+		return this;
+	    },
+	    modal_title: function(title) {
+		var idu_href = $(this).data('idu');
+		if (idu_href) {
+		    var $el = $('<a>');
+		    $el.attr('href', idu_href);
+		    $el.text(title);
+		    if ($(this).children('i').length > 0) {
+			$el.append($(this).children('i').clone());
+		    }
+		    return $el;
+		}
+		return title;
+	    }
+    	}
+    }
     var CAT = new ConfigurationAssistantTool({apiBase: "{% url 'cat-api' %}",
 					      lang: "{{LANGUAGE_CODE}}"});
   NProgress.configure({ showSpinner: false });
-  var CAT_UI = CatUI({CAT: CAT});
+  var CAT_UI = CatUI({CAT: CAT}, _overrides);
     //CAT_UI.initialized.done(function() {CAT_UI.teardown();});
 </script>
 {% endif %}
