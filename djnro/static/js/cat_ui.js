@@ -153,7 +153,10 @@ var CatUI = (function($){
     var events = {
 	history_change: '{0}.cat_ui'
 	    .naive_format('onpopstate' in window ? 'popstate' : 'hashchange'),
-	click: 'click.cat_ui'
+	click: 'click.cat_ui',
+	cidp_disable_selector: 'cidp_disable_selector.cat_ui',
+	cidp_bind_selector: 'cidp_bind_selector.cat_ui',
+	cidp_unbind_selector: 'cidp_unbind_selector.cat_ui'
     }
 
     var pubsub_cats_ordered = ['cidp', 'cprof', 'cdev'],
@@ -186,7 +189,7 @@ var CatUI = (function($){
 	    }
 	    return ret;
 	}.apply(null, pubsub_cats_ordered);
-    pubsubs.cidp.disable_noprofiles = 'cidp_disable_noprofiles.cat_ui';
+    // pubsubs.cidp.disable_noprofiles = 'cidp_disable_noprofiles.cat_ui';
 
     controllers.fromstate = function(evt, $el) {
 	var state = $.fn.HashHandle("hash"),
@@ -386,6 +389,12 @@ var CatUI = (function($){
 	}
     }
 
+    var exthandlers = {
+	cidp_bind_selector: $.noop,
+	cidp_unbind_selector: $.noop,
+	modal_title: function(title) { return title; }
+    }
+
     var views = {};
 
     views.cidp = {
@@ -403,6 +412,66 @@ var CatUI = (function($){
 		return $.publish(pubsubs.cidp.change.tostate,
 				 [state, $(this)]);
 		break;
+	    // case strip_namespace(events.cidp_disable_selector):
+	    // 	// evt.preventDefault();
+	    // 	var $el = $(this);
+	    // 	// if (!($el instanceof $) || $el.length != 1) {
+	    // 	//     return false;
+	    // 	// }
+	    // 	var href = $el.data('idu');
+	    // 	$el.attr({'data-target': null,
+	    // 		  'data-toggle': null,
+	    // 		  'href': href,
+	    // 		  'data-idu': null,
+	    // 		  'data-catidp': null})
+	    // 	    .removeData('target toggle catidp idu')
+	    // 	    .off(events.click);
+	    // 	break;
+	    case strip_namespace(events.cidp_disable_selector):
+		var $el = $(this);
+		$el.trigger(events.cidp_unbind_selector);
+		$el.attr('data-catidp', null).removeData('catidp');
+		break;
+	    case strip_namespace(events.cidp_bind_selector):
+		var $el = $(this),
+		catIdpID = parseInt($el.data('catidp')),
+		_cidp = $el.data('_catidp');
+		if (!!!catIdpID) {
+		    return false;
+		}
+		$el.attr({'data-toggle': 'modal',
+			  'data-target': 'catModal'});
+		if (!(_cidp instanceof cuopts.CAT.IdentityProvider().constructor)) {
+		    _cidp = cuopts.CAT.IdentityProvider(catIdpID);
+		    $el.data('_catidp', _cidp);
+		}
+		$el.attr('href',
+			 '#cat-{0}'.naive_format(
+			     selector_encode({cidp: catIdpID})
+			 )
+			);
+		$el.on(events.click, views.cidp.handle);
+		// exthandlers.cidp_bind_selector($el);
+		exthandlers.cidp_bind_selector.call(this);
+		break;
+	    case strip_namespace(events.cidp_unbind_selector):
+		var $el = $(this),
+		catIdpID = parseInt($el.data('catidp'));
+		if (!!!catIdpID) {
+		    return false;
+		}
+		$el.removeData('_catidp');
+		$el.attr({'data-toggle': null,
+			  'data-target': null})
+		    .removeData('toggle target');
+		var href = $(this).attr('href');
+		if (href && href.indexOf('#cat-') == 0) {
+		    $(this).attr('href', null);
+		}
+		$el.off(events.click);
+		// exthandlers.cidp_unbind_selector($el);
+		exthandlers.cidp_unbind_selector.call(this);
+		break;
 	    }
 	    return this; // jQuery chaining
 	},
@@ -417,20 +486,20 @@ var CatUI = (function($){
 		    $(self.element).focus();
 		}
 		break;
-	    case strip_namespace(pubsubs.cidp.disable_noprofiles):
-		evt.preventDefault();
-		if (!($el instanceof $) || $el.length != 1) {
-		    return false;
-		}
-		var href = $el.data('idu');
-		$el.attr({'data-target': null,
-			  'data-toggle': null,
-			  'href': href,
-			  'data-idu': null,
-			  'data-catidp': null})
-		    .removeData('target toggle catidp idu')
-		    .off(events.click);
-		break;
+	    // case strip_namespace(pubsubs.cidp.disable_noprofiles):
+	    // 	evt.preventDefault();
+	    // 	if (!($el instanceof $) || $el.length != 1) {
+	    // 	    return false;
+	    // 	}
+	    // 	var href = $el.data('idu');
+	    // 	$el.attr({'data-target': null,
+	    // 		  'data-toggle': null,
+	    // 		  'href': href,
+	    // 		  'data-idu': null,
+	    // 		  'data-catidp': null})
+	    // 	    .removeData('target toggle catidp idu')
+	    // 	    .off(events.click);
+	    // 	break;
 	    case strip_namespace(pubsubs.cidp.change.fromstate):
 		if (!(state instanceof Object)) {
 		    return false;
@@ -481,7 +550,8 @@ var CatUI = (function($){
 	    if (profiles === null ||
 		!(profiles instanceof Array) ||
 		profiles.length == 0) {
-		$.publish(pubsubs.cidp.disable_noprofiles, [undefined, $(self.element)]);
+		// $.publish(pubsubs.cidp.disable_noprofiles, [undefined, $(self.element)]);
+		$(self.element).trigger(events.cidp_disable_selector);
 		// avoid async self.obj.getEntityID() for now
 		// hashhandle removeHard cidp
 		// hashAct('cidp', self.obj.id, true);
@@ -577,19 +647,23 @@ var CatUI = (function($){
 		title = $(self.element).find('.title').text();
 	    }
 	    if (!!title) {
-		if ($(self.element).data('idu')) {
-		    var title_a = $('<a>');
-		    title_a.attr('href', $(self.element).data('idu'))
-			.text(title)
-			.append($(self.element).children('i').clone());
-		    $(selectors.cat_modal)
-			.find(selectors.catui_institution)
-			.html(title_a);
-		} else {
-		    $(selectors.cat_modal)
-			.find(selectors.catui_institution)
-			.text(title);
-		}
+		var _title = exthandlers.modal_title.call(self.element, title);
+		$(selectors.cat_modal)
+		    .find(selectors.catui_institution)
+		[(_title instanceof $) ? 'html' : 'text'](_title);
+		// if ($(self.element).data('idu')) {
+		//     var title_a = $('<a>');
+		//     title_a.attr('href', $(self.element).data('idu'))
+		// 	.text(title)
+		// 	.append($(self.element).children('i').clone());
+		//     $(selectors.cat_modal)
+		// 	.find(selectors.catui_institution)
+		// 	.html(title_a);
+		// } else {
+		//     $(selectors.cat_modal)
+		// 	.find(selectors.catui_institution)
+		// 	.text(title);
+		// }
 		if ($icon instanceof $) {
 		    $icon.attr({title: title, alt: title});
 		}
@@ -646,8 +720,11 @@ var CatUI = (function($){
 		    // console.log('cb2', this, appear_self, arguments);
     	    	    if (!(ret instanceof Array) ||
     	    		ret.length == 0) {
-			$.publish(pubsubs.cidp.disable_noprofiles, [undefined, $el]);
-    	    	    }
+			// $.publish(pubsubs.cidp.disable_noprofiles, [undefined, $el]);
+			$el.trigger(events.cidp_disable_selector);
+    	    	    } else {
+			$el.trigger(events.cidp_bind_selector);
+		    }
     		}
 		// var cb1 = function(ret) {
 		// 	// console.log('cb1', this, appear_self, arguments);
@@ -674,29 +751,57 @@ var CatUI = (function($){
 		$(selectors.catui_cat_api_tou).attr('href', tou.substr(tou_url_start));
 	    }
 	},
-	// not a views.cidp method (does not work with self)
-	setup_selectors: function(cidp_data_byid) {
+	// static method
+	bind_selectors: function(valid_cidp_byid) {
 	    return $(selectors.toggles_modal_has_cidp_id).map(function() {
 		var cidp = parseInt($(this).data('catidp'));
-		if (!!!cidp || ((cidp_data_byid instanceof Object) &&
-				!(cidp in cidp_data_byid))) {
-		    if ($(this).data('_catidp')) {
-			$(this).removedata('_catidp');
+		if (!!!cidp || ((valid_cidp_byid instanceof Object) &&
+				!(cidp in valid_cidp_byid))) {
+		    // if ($(this).data('_catidp')) {
+		    // 	$(this).removedata('_catidp');
+		    // }
+
+		    // $(this).trigger(events.cidp_unbind_selector);
+		    return null; // excludes this from .map return val
+		}
+		// if (!($(this).data('_catidp') instanceof
+		//       cuopts.CAT.IdentityProvider().constructor)) {
+		//     $(this).data('_catidp',
+		// 		 cuopts.CAT.IdentityProvider(cidp));
+		// }
+		// if (typeof $(this).attr('href') === 'undefined') {
+		//     $(this).attr('href',
+		// 		 '#cat-{0}'.naive_format(
+		// 		     selector_encode({cidp: cidp})
+		// 		 )
+		// 		);
+		// }
+		$(this).trigger(events.cidp_bind_selector);
+		return this;
+	    });
+	},
+	// static method
+	unbind_selectors: function(valid_cidp_byid) {
+	    return $(selectors.toggles_modal_has_cidp_id).map(function() {
+		// if (!$(this).data('_catidp')) {
+		//     return null; //excludes this from .map return val
+		// }
+		if (valid_cidp_byid instanceof Object) {
+		    var cidp = parseInt($(this).data('catidp'));
+		    if (!!!cidp &&
+			!(cidp in valid_cidp_byid)) {
+			return null; //excludes this from .map return val
 		    }
-		    return null; // excludes this from return val
 		}
-		if (!($(this).data('_catidp') instanceof
-		      rtparms.CAT.IdentityProvider().constructor)) {
-		    $(this).data('_catidp',
-				 rtparms.CAT.IdentityProvider(cidp));
-		}
-		if (typeof $(this).attr('href') === 'undefined') {
-		    $(this).attr('href',
-				 '#cat-{0}'.naive_format(
-				     selector_encode({cidp: cidp})
-				 )
-				);
-		}
+		// $(this).removeData('_catidp');
+		// var href = $(this).attr('href'),
+		//     new_href = $(this).data('idu') || null;
+		// if (href && href.indexOf('#cat-') == 0) {
+		//     // console.log('kokkala', href, new_href);
+		//     $(this).attr({'href': new_href,
+		// 		  'data-toggle': null});
+		// }
+		$(this).trigger(events.cidp_unbind_selector);
 		return this;
 	    });
 	}
@@ -1531,7 +1636,7 @@ var CatUI = (function($){
 	act = act ? 'subscribe' : 'unsubscribe';
 	$[act](pubsubs.cidp.change.fromstate, views.cidp.subscriber);
 	$[act](pubsubs.cidp.remove.fromstate, views.cidp.subscriber);
-	$[act](pubsubs.cidp.disable_noprofiles, views.cidp.subscriber);
+	// $[act](pubsubs.cidp.disable_noprofiles, views.cidp.subscriber);
 	$[act](pubsubs.cprof.change.fromstate, views.cprof.subscriber);
 	$[act](pubsubs.cprof.remove.fromstate, views.cprof.subscriber);
 	$[act](pubsubs.cdev.change.fromstate, views.cdev.subscriber);
@@ -1569,9 +1674,13 @@ var CatUI = (function($){
 	$(selectors.inst_list_ul)
 	    [act]('mouseup mousedown focusin', handlers.composite_click_optimized);
 	$(selectors.cat_modal)
-	    [act]('hidden.bs.modal', handlers.bs_modal_hidden);
+	[act]('hidden.bs.modal', handlers.bs_modal_hidden);
+
+	    // [act](events.click, views.cidp.handle)
 	$(selectors.toggles_modal_has_cidp_id)
-	    [act](events.click, views.cidp.handle);
+	    [act](events.cidp_bind_selector, views.cidp.handle)
+	    [act](events.cidp_unbind_selector, views.cidp.handle)
+	    [act](events.cidp_disable_selector, views.cidp.handle);
 	$(selectors.toggles_tab_has_catprof_id)
 	    [act](events.click, views.cprof.handle);
 	$(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
@@ -1602,6 +1711,23 @@ var CatUI = (function($){
 		cuopts.CAT.Device().constructor.guessDeviceID(navigator.userAgent);
 	}
 
+	if (overrides instanceof Object) {
+	    (function(overrides, overridable) {
+		for (var ov in overrides) {
+		    for (var i=0;
+			 i < overridable.length &&
+			 ov != overridable[i];
+			 i++); // empty statement
+		    if (i < overridable.length &&
+			(overrides[ov] instanceof Object) &&
+			(eval(ov) instanceof Object)) {
+			$.extend(true, eval(ov), overrides[ov]);
+		    }
+		}
+	    }(overrides, ['selectors', 'events', 'pubsubs', 'exthandlers',
+			  'handlers', 'views', 'controllers']));
+	}
+
 	// console.log('init was', init);
 	// init = true;
 
@@ -1613,7 +1739,7 @@ var CatUI = (function($){
 		if (!(ret instanceof Object)) {
 		    return init_d.reject();
 		}
-		var cidp_selectors = views.cidp.setup_selectors(ret);
+		var cidp_selectors = views.cidp.bind_selectors(ret);
 		if (cidp_selectors.length == 0) {
 		    return init_d.reject();
 		}
@@ -1623,6 +1749,7 @@ var CatUI = (function($){
 		events: events,
 		pubsubs: pubsubs,
 		handlers: handlers,
+		exthandlers: exthandlers,
 		views: views,
 		controllers: controllers,
 		initialized: init_d,
@@ -1633,7 +1760,9 @@ var CatUI = (function($){
 		    if (!!this.appear &&
 			('destroy' in this.appear)) {
 			this.appear.destroy();
+			delete this.appear;
 		    }
+		    views.cidp.unbind_selectors();
 		    setup_subscribers(off);
 		    setup_handlers(off);
 		    cuopts.CAT.API.touCallBack($.noop);
@@ -1650,8 +1779,16 @@ var CatUI = (function($){
 	).then(init_cb, init_cb)
 	    .then(
 		function() {
-		    if (!!appear && typeof appear === 'function') {
+		    if (('appear' in window) && typeof appear === 'function') {
 			init_ret.appear = appear(views.cidp.appear);
+		    } else {
+			views.cidp.appear.init();
+			$(selectors.toggles_modal_has_cidp_id).each(function() {
+			    if (!!!$(this).data('_cidp')) {
+				views.cidp.appear.appear(this);
+			    }
+			    return this;
+			});
 		    }
 		    init_d.resolve();
 		    // console.log('ok');
