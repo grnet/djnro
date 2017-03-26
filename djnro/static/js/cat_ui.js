@@ -630,9 +630,9 @@ var CatUI = (function($){
     		    catIdpID = parseInt($el.data('catidp')),
 		    _cidp = $el.data('_catidp');
 
-		function lifo_queue_exec(deferred, callback, delay_factor) {
+		function lifo_queue_exec(q_when, q_then, delay_factor) {
     		    appear_self.queue.unshift(function() {
-			$.when(deferred).then(callback, callback);
+			$.when(q_when()).then(q_then, q_then);
 		    });
 		    setTimeout(function() {
 			var qcb = appear_self.queue.shift();
@@ -659,7 +659,10 @@ var CatUI = (function($){
 		// lifo_queue_exec(cuopts.CAT.API.listAllIdentityProvidersByID(), cb1);
 
 		if (!!catIdpID && !!!_cidp) {
-		    lifo_queue_exec(rtparms.CAT.API.listProfiles(catIdpID), cb2, 2);
+		    lifo_queue_exec(
+			function() { return cuopts.CAT.API.listProfiles(catIdpID); },
+			cb2, 2
+		    );
 		}
 
 		return this;
