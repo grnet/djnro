@@ -16,33 +16,38 @@ var CatUI = (function($){
     }
 
     if (!String.prototype.naive_format) {
-	String.prototype.naive_format = function() {
-	    var args = Array.from_arguments.apply(null, arguments),
-		kwargs = {};
-	    if (args[0] instanceof Object) {
-		kwargs = args.shift();
+    	Object.defineProperty(String.prototype, "naive_format", {
+    	    value: function() {
+	// String.prototype.naive_format = function() {
+		var args = Array.from_arguments.apply(null, arguments),
+		    kwargs = {};
+		if (args[0] instanceof Object) {
+		    kwargs = args.shift();
+		}
+		return this.replace(/{(\w+)}/g, function(match, number_or_name) {
+		    if (number_or_name in kwargs) {
+			return kwargs[number_or_name];
+		    }
+		    else if (number_or_name in args) {
+			return args[number_or_name];
+		    }
+		    else {
+			return match;
+		    }
+		});
 	    }
-	    return this.replace(/{(\w+)}/g, function(match, number_or_name) {
-		if (number_or_name in kwargs) {
-		    return kwargs[number_or_name];
-		}
-		else if (number_or_name in args) {
-		    return args[number_or_name];
-		}
-		else {
-		    return match;
-		}
-	    });
-	}
+	});
     }
 
-    var btoa = window.btoa || $.base64.btoa,
-	atob = window.atob || $.base64.atob;
+    // var btoa = window.btoa || $.base64.btoa,
+    // 	atob = window.atob || $.base64.atob;
     function selector_encode(obj) {
+	var btoa = window.btoa || $.base64.btoa;
 	return btoa(JSON.stringify(obj)).replace(/=/g, '_');
     }
     // $.selector_encode = selector_encode;
     function selector_decode(hash) {
+	var atob = window.atob || $.base64.atob;
 	return JSON.parse(atob(hash.replace(/_/g, '=')));
     }
     // $.selector_decode = selector_decode;
@@ -689,8 +694,8 @@ var CatUI = (function($){
 	    switch (evt.type) {
 	    case 'mouseup':
 		if (buttonPressed instanceof $) {
-		    buttonPressed.trigger(events.click);
 		    $(this).removeData('_buttonpressed');
+		    buttonPressed.trigger(events.click);
 		}
 		break;
 	    case 'mousedown':
@@ -740,6 +745,11 @@ var CatUI = (function($){
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
 		evt.preventDefault();
+		if (!('namespace' in evt) ||
+		    evt.namespace.indexOf('cat_ui') == -1) {
+		    // console.log('preventing non-jquery click!')
+		    break;
+		}
 		// var state = $.fn.HashHandle("hash"),
 		// var state = getObjFromFrag(),
 		var state = hstate.fromFragment(),
@@ -859,12 +869,16 @@ var CatUI = (function($){
 	    return this;
 	},
 	obj: undefined,
-	progress: 'NProgress' in window ?
-	    NProgress :
-	    {
-		start: $.noop,
-		done: $.noop
-	    },
+	progress: function() {
+	    if ('NProgress' in window) {
+		return window.NProgress;
+	    } else {
+		return {
+		    start: $.noop,
+		    done: $.noop
+		}
+	    }
+	},
 	main: function() {
 	    var self = this;
 	    var cidp = $(self.element).data('_catidp');
@@ -873,7 +887,7 @@ var CatUI = (function($){
 		cuopts.CAT.IdentityProvider(parseInt($(self.element).data('catidp')));
 	    $(self.element).data('_catidp',
 				 self.obj);
-	    self.progress.start();
+	    self.progress().start();
 	    return $.when(
 		self.obj.getDisplay(),
 		self.obj.getIcon(),
@@ -886,7 +900,7 @@ var CatUI = (function($){
 		return null;
 	    }
 	    if (profiles === null ||
-		!(profiles instanceof Array) ||
+		!Array.isArray(profiles) ||
 		profiles.length == 0) {
 		// $.publish(pubsubs.cidp.disable_noprofiles, [undefined, $(self.element)]);
 		$(self.element).trigger(events.cidp_disable_selector);
@@ -897,13 +911,13 @@ var CatUI = (function($){
 			  [$.extend({}, hstate.FromFragment(), // getObjFromFrag(), // $.fn.HashHandle("hash"),
 				    {_act: 'replace'})]);
 		// hashAct('cidp', undefined, true);
-		self.progress.done();
+		self.progress().done();
 		return false;
 	    }
 	    var profiles_byid = self.setup_profile_selectors(profiles);
 	    self.select_profile(profiles, profiles_byid);
 	    self.setup_title_icon(title, $icon);
-	    self.progress.done();
+	    self.progress().done();
 	    $(selectors.cat_modal)
 		.modal('show');
 	},
@@ -1058,7 +1072,7 @@ var CatUI = (function($){
 
     		var cb2 = function(ret) {
 		    // console.log('cb2', this, appear_self, arguments);
-    	    	    if (!(ret instanceof Array) ||
+    	    	    if (!Array.isArray(ret) ||
     	    		ret.length == 0) {
 			// $.publish(pubsubs.cidp.disable_noprofiles, [undefined, $el]);
 			$el.trigger(events.cidp_disable_selector);
