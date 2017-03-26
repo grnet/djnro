@@ -1,6 +1,29 @@
-;
+;(function(root, factory) {
+    var deps = ['jquery', 'history', 'nprogress', 'querystring',
+		'jquery.base64',
+		'Array.isArray'];
+    if (typeof define === 'function' && define.amd) {
+	define(deps, function() {
+	    // return (root.ConfigurationAssistantToolUI = factory.apply(root, arguments);
+	    return factory.apply(root, arguments);
+	});
+    } else if (typeof module === 'object' && module.exports) {
+	var req_deps = (function() {
+	    var deps = [];
+	    for (var i = 0; i < arguments.length; i++) {
+		deps.push(require(dep));
+	    }
+	    return deps;
+	}.apply(null, deps));
+	// module.exports = (root.ConfigurationAssistantToolUI = factory.apply(root, req_deps));
+	module.exports = factory.apply(root, req_deps);
+    } else {
+	root.ConfigurationAssistantToolUI = factory.call(root, root.jQuery);
+    }
 
-var CatUI = (function($){
+}(this, function($, History, NProgress, queryString) {
+
+    var root = this;
     var cuopts = {};
 
     // pub/sub
@@ -42,97 +65,49 @@ var CatUI = (function($){
     // var btoa = window.btoa || $.base64.btoa,
     // 	atob = window.atob || $.base64.atob;
     function selector_encode(obj) {
-	var btoa = window.btoa || $.base64.btoa;
+	var btoa = root.btoa || $.base64.btoa;
 	return btoa(JSON.stringify(obj)).replace(/=/g, '_');
     }
     // $.selector_encode = selector_encode;
     function selector_decode(hash) {
-	var atob = window.atob || $.base64.atob;
+	var atob = root.atob || $.base64.atob;
 	return JSON.parse(atob(hash.replace(/_/g, '=')));
     }
     // $.selector_decode = selector_decode;
 
-    // copied (simplified) from:
-    // https://github.com/sindresorhus/query-string
-    function getQueryParameters(str) {
-	var ret = {};
-	if (typeof str !== 'string') {
-		return ret;
+    var getQueryParameters,
+	getQueryString;
+    (function() {
+	var qs = queryString || root.queryString,
+	    opts = {
+		sort: false,
+		multiVal: false
+	    };
+	getQueryParameters = function(str) {
+	    return qs.parse(str, opts);
 	}
-	str = str.trim().replace(/^(\?)/, '');
-	if (!str) {
-	    return ret;
+	getQueryString = function(obj) {
+	    return qs.stringify(obj, opts);
 	}
-	str.split('&').forEach(function (param) {
-	    var parts = param.replace(/\+/g, ' ').split('=');
-	    // Firefox (pre 40) decodes `%3D` to `=`
-	    // https://github.com/sindresorhus/query-string/pull/37
-	    var key = parts.shift();
-	    var val = parts.length > 0 ? parts.join('=') : undefined;
-	    key = decodeURIComponent(key);
-	    // missing `=` should be `null`:
-	    // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
-	    val = val === undefined ? null : decodeURIComponent(val);
-	    if (ret[key] === undefined) {
-		ret[key] = val;
-	    } else if (Array.isArray(ret[key])) {
-		ret[key].push(val);
-	    } else {
-		ret[key] = [ret[key], val];
-	    }
-	});
-	return ret;
-    }
-    function getQueryString(obj) {
-	function arrMap(key) {
-	    var val = obj[key];
-	    if (val === undefined) {
-		return '';
-	    }
-	    if (val === null) {
-		return encodeURIComponent(key);
-	    }
-	    if (Array.isArray(val)) {
-		var result = [];
-		val.slice().forEach(function (val2) {
-		    if (val2 === undefined) {
-			return;
-		    }
-		    if (val2 === null) {
-			result.push(encodeURIComponent(key));
-		    } else {
-			result.push(encodeURIComponent(key) + '=' + encodeURIComponent(val2));
-		    }
-		});
-		return result.join('&');
-	    }
-	    return encodeURIComponent(key) + '=' + encodeURIComponent(val);
-	}
-	function arrFilter(x) {
-	    return x.length > 0;
-	}
-	if (('map' in Array.prototype) && ('filter' in Array.prototype)) {
-	    // no .sort() please!
-	    return obj ? Object.keys(obj)
-		.map(arrMap)
-		.filter(arrFilter)
-		.join('&') : '';
-	} else {
-	    // no .sort() please!
-	    return obj ? $.grep($.map(Object.keys(obj), arrMap), arrFilter)
-		.join('&') : '';
-	}
-    }
-
+    }());
 
     var hstate = {
 	prefix: '#!',
+	init: function() {
+	    var self = this,
+		history = typeof History != "undefined" ? History : root.history;
+	    if (history.emulate) {
+		console.log('running history.setup');
+		self.prefix = '/';
+		history.setup(undefined, '!');
+	    }
+	},
 	// hashRegExp: /^(?:[^#]*)(?:#?(.*))$/,
 	fromFragment: function (_hash) {
-	    var self = this, location, hash;
-	    if (window.history.emulate) {
-		self.prefix = '/';
-		location = window.history.location;
+	    var self = this, location, hash,
+		history = typeof History != "undefined" ? History : root.history;
+	    if (history.emulate) {
+		location = history.location;
 		hash = _hash || location.pathname;
 		if (hash.indexOf(self.prefix) == 0) {
 		    hash = hash.substr(self.prefix.length);
@@ -140,7 +115,7 @@ var CatUI = (function($){
 		console.log('fromFragment: hash before objecting ', hash);
 		// console.log('url, urlparts[1], frag ', url, urlparts[1], frag);
 	    } else {
-		location = window.location;
+		location = root.location;
 		// var url = _hash || location.href;
 		// var urlparts = url.match(self.hashRegExp);
 		// var hash = '';
@@ -167,12 +142,13 @@ var CatUI = (function($){
 	    return getQueryParameters(hash);
 	},
 	toFragment: function(obj, act, trigger, $el) {
-	    var self = this;
+	    var self = this,
+		history = typeof History != "undefined" ? History : root.history;
 	    console.log('hstate.toFragment ', 'obj ', obj, 'act ', act, 'trigger ', trigger,
 			'$el ', $el);
 
 	    // just initialize self.prefix properly
-	    self.fromFragment();
+	    // self.fromFragment();
 	    var hash = getQueryString(obj);
 	    // console.log(
 	    // 	'obj keys ', Object.keys(obj).join(' '), ' -- ',
@@ -188,19 +164,18 @@ var CatUI = (function($){
 	    // just force boolean
 	    trigger = Boolean(typeof trigger == "undefined" ? true : trigger);
 
-	    // if (!window.history.emulate && !(hash.indexOf('#') <= 0)) {
+	    // if (!history.emulate && !(hash.indexOf('#') <= 0)) {
 	    // 	return false;
 	    // }
 
 	    var scrollV, scrollH,
-		location = window.history.emulate ? window.history.location : window.location,
-		history = window.history;
+		location = history.emulate ? history.location : root.location;
 
-	    var same_hash = window.history.emulate ?
+	    var same_hash = history.emulate ?
 		location.pathname == hash :
 		location.hash == hash;
 	    if (same_hash) {
-		if (window.history.emulate) {
+		if (history.emulate) {
 		    console.log('location.pathname, hash, same_hash? ', location.pathname, ' ',
 				hash, ' ',
 				same_hash);
@@ -247,17 +222,17 @@ var CatUI = (function($){
 	    if (trigger) {
 		// var triggerEvt = (act in history) ? 'popstate' : 'hashchange';
 		console.log('hstate.toFragment triggering ', events.history_change);
-		$(window).trigger(events.history_change, [$el]);
+		$(root).trigger(events.history_change, [$el]);
 	    }
 	    return true;
 	}
     }
 
     // function getObjFromFrag(h) {
-    // 	var location = window.history.location || window.location;
-    // 	// var location = window.location;
-    // 	if (window.history.emulate) {
-    // 	    var bla = h || window.history.location.pathname.substr(1);
+    // 	var location = root.history.location || root.location;
+    // 	// var location = root.location;
+    // 	if (root.history.emulate) {
+    // 	    var bla = h || root.history.location.pathname.substr(1);
     // 	    console.log('getObjFromFrag.emul ', bla);
     // 	    return getQueryParameters(bla);
     // 	    // var url = h || location.hash;
@@ -293,7 +268,7 @@ var CatUI = (function($){
     // 	console.log('changeFrag', 'obj', obj, 'act', act, 'trhsevt', trhsevt, '$el', $el);
 
     // 	var hash = getQueryString(obj);
-    // 	if (window.history.emulate) {
+    // 	if (root.history.emulate) {
     // 	    hash = '/' + hash;
     // 	} else if (hash) {
     // 	    hash = _hashbang + hash;
@@ -307,16 +282,16 @@ var CatUI = (function($){
 
     // 	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
 
-    // 	if (!window.history.emulate && !(hash.indexOf('#') <= 0)) {
+    // 	if (!root.history.emulate && !(hash.indexOf('#') <= 0)) {
     // 	    return false;
     // 	}
 
     // 	var scrollV, scrollH,
-    // 	    loc = window.history.location || window.location,
-    // 	    // loc = window.location,
-    // 	    history = window.history;
+    // 	    loc = root.history.location || root.location,
+    // 	    // loc = root.location,
+    // 	    history = root.history;
 
-    // 	if (window.history.emulate) {
+    // 	if (root.history.emulate) {
     // 	    console.log('loc.pathname, hash ', loc.pathname, hash);
     // 	    if (loc.pathname == hash) {
     // 		return true;
@@ -330,14 +305,14 @@ var CatUI = (function($){
 
     // 	if (act in history) {
     // 	    console.log('changeFrag ', act, ' ', loc.pathname, ' ', loc.search, ' ', hash);
-    // 	    if (window.history.emulate) {
+    // 	    if (root.history.emulate) {
     // 		history[act](obj, null, hash);
     // 	    } else {
     // 		history[act](obj, null, loc.pathname + loc.search + hash);
     // 	    }
     // 	    if (trhsevt) {
     // 		console.log('History hashhandle triggering popstate');
-    // 		$(window).trigger('popstate', [$el]);
+    // 		$(root).trigger('popstate', [$el]);
     // 	    }
     // 	} else {
     //         // Prevent scrolling by storing the page's current scroll offset
@@ -352,7 +327,7 @@ var CatUI = (function($){
     //         document.body.scrollLeft = scrollH;
     // 	    if (trhsevt) {
     // 		console.log('History hashhandle triggering hashchange');
-    // 		$(window).trigger('hashchange', [$el]);
+    // 		$(root).trigger('hashchange', [$el]);
     // 	    }
     // 	}
     // 	return true;
@@ -488,7 +463,7 @@ var CatUI = (function($){
 
     var events = {
 	history_change: '{0}.cat_ui'
-	    .naive_format('onpopstate' in window ? 'popstate' : 'hashchange'),
+	    .naive_format('onpopstate' in root ? 'popstate' : 'hashchange'),
 	click: 'click.cat_ui',
 	cidp_disable_selector: 'cidp_disable_selector.cat_ui',
 	cidp_bind_selector: 'cidp_bind_selector.cat_ui',
@@ -870,8 +845,10 @@ var CatUI = (function($){
 	},
 	obj: undefined,
 	progress: function() {
-	    if ('NProgress' in window) {
-		return window.NProgress;
+	    if (typeof NProgress === 'function') {
+		return NProgress;
+	    } else if ('NProgress' in root) {
+		return root.NProgress;
 	    } else {
 		return {
 		    start: $.noop,
@@ -1950,9 +1927,9 @@ var CatUI = (function($){
 		    target = $target.attr('target');
 		if (href) {
 		    if (target == '_blank') {
-			window.open(href);
+			root.open(href);
 		    } else {
-			window.location.href = href;
+			root.location.href = href;
 		    }
 		    if (clickhandler) {
 			return this;
@@ -1992,6 +1969,7 @@ var CatUI = (function($){
 	}
     }
 
+
     function setup_subscribers(act) {
 	act = act ? 'subscribe' : 'unsubscribe';
 	$[act](pubsubs.cidp.change.fromstate, views.cidp.subscriber);
@@ -2013,7 +1991,7 @@ var CatUI = (function($){
     }
     function setup_handlers(act) {
 	act = act ? 'on' : 'off';
-	$(window)[act](events.history_change, controllers.fromstate);
+	$(root)[act](events.history_change, controllers.fromstate);
 	$(document)
 	    [act](events.click,
 		selectors.toggles_collapse_noanimation,
@@ -2056,14 +2034,18 @@ var CatUI = (function($){
     // var init = false;
 
     return function(_cuopts, overrides) {
-	// views.cidp.cuopts = _cuopts;
-	// views.cprof.cuopts = _cuopts;
-	// views.cdev.cuopts = _cuopts;
-	// this.cuopts = _cuopts;
+	var on = true,
+	    off = false,
+	    init_d = $.Deferred(),
+	    _appear,
+	    overridable = ['selectors', 'events', 'pubsubs', 'exthandlers',
+			   'handlers', 'views', 'controllers'];
+
 	if (_cuopts instanceof Object) {
 	    $.extend(true, cuopts, _cuopts);
 	}
 	if (!('CAT' in cuopts)) {
+	    // throw something?
 	    return null;
 	}
 	if (!('catDeviceGuess' in cuopts)) {
@@ -2084,50 +2066,74 @@ var CatUI = (function($){
 			$.extend(true, eval(ov), overrides[ov]);
 		    }
 		}
-	    }(overrides, ['selectors', 'events', 'pubsubs', 'exthandlers',
-			  'handlers', 'views', 'controllers']));
+	    }(overrides, overridable));
 	}
 
 	// console.log('init was', init);
 	// init = true;
 
-	var on = true,
-	    off = false,
-	    init_d = $.Deferred(),
-	    _appear,
-	    init_cb = function(ret) {
-		if (!(ret instanceof Object)) {
-		    return init_d.reject();
+
+	var init_ret = {
+	    opts: cuopts,
+	    selectors: selectors,
+	    events: events,
+	    pubsubs: pubsubs,
+	    handlers: handlers,
+	    exthandlers: exthandlers,
+	    views: views,
+	    controllers: controllers,
+	    initialized: init_d,
+	    appear: _appear,
+	    teardown: function() {
+		// console.log('init was', init);
+		// init = false;
+		if ((this.appear instanceof Object) &&
+		    typeof this.appear.destroy === 'function') {
+		    this.appear.destroy();
+		    delete this.appear;
 		}
-		var cidp_selectors = views.cidp.bind_selectors(ret);
-		if (cidp_selectors.length == 0) {
-		    return init_d.reject();
-		}
-	    },
-	    init_ret = {
-		selectors: selectors,
-		events: events,
-		pubsubs: pubsubs,
-		handlers: handlers,
-		exthandlers: exthandlers,
-		views: views,
-		controllers: controllers,
-		initialized: init_d,
-		appear: _appear,
-		teardown: function() {
-		    // console.log('init was', init);
-		    // init = false;
-		    if (!!this.appear &&
-			('destroy' in this.appear)) {
-			this.appear.destroy();
-			delete this.appear;
-		    }
-		    views.cidp.unbind_selectors();
-		    setup_subscribers(off);
-		    setup_handlers(off);
-		    cuopts.CAT.API.touCallBack($.noop);
-		}
+		views.cidp.unbind_selectors();
+		setup_subscribers(off);
+		setup_handlers(off);
+		cuopts.CAT.API.touCallBack($.noop);
 	    }
+	}
+
+	function init_cb(ret) {
+	    if (!(ret instanceof Object)) {
+		return init_d.reject();
+	    }
+	    var cidp_selectors = views.cidp.bind_selectors(ret);
+	    if (cidp_selectors.length == 0) {
+		return init_d.reject();
+	    }
+	}
+
+	function init_success() {
+	    // if (typeof appear === 'function') {
+	    // 	init_ret.appear = appear(views.cidp.appear);
+	    // } else
+	    if (('appear' in root) &&
+		typeof root.appear === 'function') {
+		init_ret.appear = root.appear(views.cidp.appear);
+	    } else {
+		views.cidp.appear.init();
+		$(selectors.toggles_modal_has_cidp_id).each(function() {
+		    if (!!!$(this).data('_cidp')) {
+			views.cidp.appear.appear(this);
+		    }
+		    return this;
+		});
+	    }
+	    init_d.resolve();
+	    // console.log('ok');
+	}
+
+	function init_fail() {
+	    init_ret.teardown();
+	    init_d.reject();
+	    // console.log('fail');
+	}
 
 	// console.log(controllers);
 	setup_subscribers(on);
@@ -2137,44 +2143,21 @@ var CatUI = (function($){
 	$.when(
 	    cuopts.CAT.API.listAllIdentityProvidersByID()
 	).then(init_cb, init_cb)
-	    .then(
-		function() {
-		    if (('appear' in window) && typeof appear === 'function') {
-			init_ret.appear = appear(views.cidp.appear);
-		    } else {
-			views.cidp.appear.init();
-			$(selectors.toggles_modal_has_cidp_id).each(function() {
-			    if (!!!$(this).data('_cidp')) {
-				views.cidp.appear.appear(this);
-			    }
-			    return this;
-			});
-		    }
-		    init_d.resolve();
-		    // console.log('ok');
-		},
-		function() {
-		    init_ret.teardown();
-		    init_d.reject();
-		    // console.log('fail');
-		});
+	    .then(init_success, init_fail);
 
 	setTimeout(function() {
-	    var location = window.history.location || window.location;
-	    var wlh = location.hash;
-	    // if (window.history.location) {
-	    // 	history.redirect('');
-	    // }
+	    hstate.init();
+	    var wlh = root.location.hash;
 	    if (wlh.search(/#cat[-=]/) == 0) {
 		var dec_wlh = selector_decode(wlh.substr(5));
 		// $.fn.HashHandle('_goHard', dec_wlh);
 		// changeFrag(dec_wlh, 'replace', true);
 		hstate.toFragment(dec_wlh, 'replace', true);
 	    } else {
-		$(window).trigger(events.history_change);
+		$(root).trigger(events.history_change);
 	    }
 	});
 
 	return init_ret;
     }
-})(jQuery);
+}));
