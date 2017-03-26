@@ -1,7 +1,7 @@
 ;
 
 var CatUI = (function($){
-    var rtparms = {};
+    var cuopts = {};
 
     // pub/sub
     var o = $({});
@@ -10,7 +10,7 @@ var CatUI = (function($){
     }
     $.unsubscribe = function() {
 	o.off.apply(o, arguments);
-  }
+    }
     $.publish = function() {
 	o.trigger.apply(o, arguments);
     }
@@ -66,8 +66,10 @@ var CatUI = (function($){
 	}
     }
 
-    function controller_tostate(evt, state, $el) {
-	// console.log('controller_tostate arguments', arguments);
+    var controllers = {};
+
+    controllers.tostate = function(evt, state, $el) {
+	// console.log('controllers.tostate arguments', arguments);
 	var trigger_popstate = true;
 	var hard;
 	if (typeof state === 'undefined') {
@@ -78,21 +80,22 @@ var CatUI = (function($){
 	    delete state._act;
 	}
 	var implied_act = evt.type.split('_', 2);
+	console.log('controllers.tostate state', state, '$el', $el, 'implied_act', implied_act);
 	if (implied_act.length > 1 && implied_act[1] == 'remove' && (implied_act[0] in state)) {
-	    // console.log('controller_tostate', evt.type, 3, 'key', implied_act[0], 'val', undefined, 'hard', hard, $el);
+	    // console.log('controllers.tostate', evt.type, 3, 'key', implied_act[0], 'val', undefined, 'hard', hard, $el);
 	    hashAct(implied_act[0], undefined, hard, $el);
 	} else {
 	    var prev_state = $.fn.HashHandle('hash');
-	    // console.log('controller_tostate', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, $el);
+	    // console.log('controllers.tostate', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, $el);
 	    for (var k in state) {
 		if (!(k in prev_state) || prev_state[k] != state[k]) {
-		    // console.log('controller_tostate', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, $el);
+		    // console.log('controllers.tostate', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, $el);
 		    hashAct(k, state[k], hard, $el);
 		}
 	    }
 	    for (var _k in prev_state) {
 		if (!(_k in state)) {
-		    // console.log('controller_tostate', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, $el);
+		    // console.log('controllers.tostate', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, $el);
 		    hashAct(_k, undefined, hard, $el);
 		}
 	    }
@@ -168,16 +171,16 @@ var CatUI = (function($){
 			    .naive_format(arguments[i_ps],
 					  triggers[i_t],
 					  directions[i_d]);
-			switch (directions[i_d]) {
-			    // case 'fromstate':
-			    // $.subscribe(ret[arguments[i_ps]][triggers[i_t]][directions[i_d]],
-			    // 		controller_fromstate);
-			    // break;
-			    case 'tostate':
-			    $.subscribe(ret[arguments[i_ps]][triggers[i_t]][directions[i_d]],
-			    		controller_tostate);
-			    break;
-			}
+			// switch (directions[i_d]) {
+			//     // case 'fromstate':
+			//     // $.subscribe(ret[arguments[i_ps]][triggers[i_t]][directions[i_d]],
+			//     // 		controllers.fromstate);
+			//     // break;
+			//     // case 'tostate':
+			//     // $.subscribe(ret[arguments[i_ps]][triggers[i_t]][directions[i_d]],
+			//     // 		controllers.tostate);
+			//     // break;
+			// }
 		    }
 		}
 	    }
@@ -185,14 +188,14 @@ var CatUI = (function($){
 	}.apply(null, pubsub_cats_ordered);
     pubsubs.cidp.disable_noprofiles = 'cidp_disable_noprofiles.cat_ui';
 
-    function controller_fromstate(evt, $el) {
+    controllers.fromstate = function(evt, $el) {
 	var state = $.fn.HashHandle("hash"),
 	    pairs = {
 		cidp:  { obj: views.cidp.obj  },
 		cprof: { obj: views.cprof.obj },
 		cdev:  { obj: views.cdev.obj  }
 	    }
-	console.log('controller_fromstate init',
+	console.log('controllers.fromstate init',
 		    'state', state, 'pairs', pairs,
 		    'evt.originalEvent', evt.originalEvent, '$el', $el);
 	for (var key in pairs) {
@@ -207,13 +210,13 @@ var CatUI = (function($){
 		stateChange = 1;
 	    }
 	    // special case: device id (cdev) may be common across objects
-	    // else if (key == 'cdev' && (pairs[key].obj instanceof rtparms.CAT.Device().constructor)) {
+	    // else if (key == 'cdev' && (pairs[key].obj instanceof cuopts.CAT.Device().constructor)) {
 	    // 	if (('cprof' in state) &&
 	    // 	    state.cprof != pairs[key].obj.getProfileID()) {
 	    // 	    stateChange = 1;
 	    // 	}
 	    // }		     
-	    console.log('controller_fromstate', key +' stateChange: '+ stateChange);
+	    console.log('controllers.fromstate', key +' stateChange: '+ stateChange);
 	    if (stateChange === 0) {
 		continue;
 	    }
@@ -363,7 +366,7 @@ var CatUI = (function($){
     		    var cidp = parseInt(buttonPressed.data('catidp'));
     		    if (!!cidp) {
     			// optimization: pre-fetching on mousedown/focus
-    			rtparms.CAT.API.listProfiles(cidp);
+    			cuopts.CAT.API.listProfiles(cidp);
     		    }
 		}
     		break;
@@ -458,9 +461,9 @@ var CatUI = (function($){
 	main: function() {
 	    var self = this;
 	    var cidp = $(self.element).data('_catidp');
-	    self.obj = (cidp instanceof rtparms.CAT.IdentityProvider().constructor) ?
+	    self.obj = (cidp instanceof cuopts.CAT.IdentityProvider().constructor) ?
 		cidp :
-		rtparms.CAT.IdentityProvider(parseInt($(self.element).data('catidp')));
+		cuopts.CAT.IdentityProvider(parseInt($(self.element).data('catidp')));
 	    $(self.element).data('_catidp',
 				 self.obj);
 	    self.progress.start();
@@ -600,74 +603,108 @@ var CatUI = (function($){
 		.html($icon)
 	    [$icon === null ? 'addClass' : 'removeClass']('hidden');
 	},
-	appear_init: function() {
-	    var interval = 50;
-	    if (('appear_qinterval' in rtparms) &&
-		parseFloat(rtparms.appear_qinterval)) {
-		interval = parseFloat(rtparms.appear_qinterval);
-	    }
-	    this.queue = [];
-	    this.queueInterval = interval;
-	    this.getQueueDelay = function(queueLength, factor) {
-		factor = (typeof factor !== 'undefined') ?
-		    parseFloat(factor) : 1;
-		return (queueLength * this.queueInterval * factor)
-		    - (this.queueInterval * factor);
-	    }
-	},
-	appear_elements: function() {
-	    return $(selectors.toggles_modal_has_cidp_id)
-		.get();
-	},
-	appear_cb: function(el) {
-	    var self = views.cidp,
-		appear_self = this;
-    	    var $el = $(el),
-    		catIdpID = parseInt($el.data('catidp')),
-		_cidp = $el.data('_catidp');
+	appear: {
+	    init: function() {
+		var interval = 50;
+		if (('appear_qinterval' in cuopts) &&
+		    parseFloat(cuopts.appear_qinterval)) {
+		    interval = parseFloat(cuopts.appear_qinterval);
+		}
+		this.queue = [];
+		this.queueInterval = interval;
+		this.getQueueDelay = function(queueLength, factor) {
+		    factor = (typeof factor !== 'undefined') ?
+			parseFloat(factor) : 1;
+		    return (queueLength * this.queueInterval * factor)
+			- (this.queueInterval * factor);
+		}
+	    },
+	    elements: function() {
+		return $(selectors.toggles_modal_has_cidp_id)
+		    .get();
+	    },
+	    appear: function(el) {
+		var self = views.cidp,
+		    appear_self = this;
+    		var $el = $(el),
+    		    catIdpID = parseInt($el.data('catidp')),
+		    _cidp = $el.data('_catidp');
 
-	    function lifo_queue_exec(deferred, callback, delay_factor) {
-    		appear_self.queue.unshift(function() {
-		    $.when(deferred).then(callback, callback);
-		});
-		setTimeout(function() {
-		    var qcb = appear_self.queue.shift();
-		    if (typeof qcb === 'function') {
-			qcb();
-		    }
-		}, appear_self.getQueueDelay(appear_self.queue.length, delay_factor));
+		function lifo_queue_exec(deferred, callback, delay_factor) {
+    		    appear_self.queue.unshift(function() {
+			$.when(deferred).then(callback, callback);
+		    });
+		    setTimeout(function() {
+			var qcb = appear_self.queue.shift();
+			if (typeof qcb === 'function') {
+			    qcb();
+			}
+		    }, appear_self.getQueueDelay(appear_self.queue.length, delay_factor));
+		}
+
+    		var cb2 = function(ret) {
+		    // console.log('cb2', this, appear_self, arguments);
+    	    	    if (!(ret instanceof Array) ||
+    	    		ret.length == 0) {
+			$.publish(pubsubs.cidp.disable_noprofiles, [undefined, $el]);
+    	    	    }
+    		}
+		// var cb1 = function(ret) {
+		// 	// console.log('cb1', this, appear_self, arguments);
+		// 	if (!(ret instanceof Object) ||
+		// 	    !(catIdpID in ret)) {
+		// 	    lifo_queue_exec(cuopts.CAT.API.listProfiles(catIdpID), cb2, 2);
+		// 	}
+		// }
+		// lifo_queue_exec(cuopts.CAT.API.listAllIdentityProvidersByID(), cb1);
+
+		if (!!catIdpID && !!!_cidp) {
+		    lifo_queue_exec(rtparms.CAT.API.listProfiles(catIdpID), cb2, 2);
+		}
+
+		return this;
 	    }
-
-    	    var cb2 = function(ret) {
-		// console.log('cb2', this, appear_self, arguments);
-    	    	if (!(ret instanceof Array) ||
-    	    	    ret.length == 0) {
-		    $.publish(pubsubs.cidp.disable_noprofiles, [undefined, $el]);
-    	    	}
-    	    }
-	    // var cb1 = function(ret) {
-	    // 	// console.log('cb1', this, appear_self, arguments);
-	    // 	if (!(ret instanceof Object) ||
-	    // 	    !(catIdpID in ret)) {
-	    // 	    lifo_queue_exec(rtparms.CAT.API.listProfiles(catIdpID), cb2, 2);
-	    // 	}
-	    // }
-	    // lifo_queue_exec(rtparms.CAT.API.listAllIdentityProvidersByID(), cb1);
-
-	    if (!!catIdpID && !!!_cidp) {
-		lifo_queue_exec(rtparms.CAT.API.listProfiles(catIdpID), cb2, 2);
-	    }
-
-	    return this;
 	},
 	tou_cb: function(tou) {
 	    var tou_url_start;
 	    if (!!tou && (tou_url_start = tou.search(/(https?:)?\/\//)) != -1) {
 		$(selectors.catui_cat_api_tou).attr('href', tou.substr(tou_url_start));
 	    }
+	},
+	// not a views.cidp method (does not work with self)
+	setup_selectors: function(cidp_data_byid) {
+	    return $(selectors.toggles_modal_has_cidp_id).map(function() {
+		var cidp = parseInt($(this).data('catidp'));
+		if (!!!cidp || ((cidp_data_byid instanceof Object) &&
+				!(cidp in cidp_data_byid))) {
+		    if ($(this).data('_catidp')) {
+			$(this).removedata('_catidp');
+		    }
+		    return null; // excludes this from return val
+		}
+		if (!($(this).data('_catidp') instanceof
+		      rtparms.CAT.IdentityProvider().constructor)) {
+		    $(this).data('_catidp',
+				 rtparms.CAT.IdentityProvider(cidp));
+		}
+		if (typeof $(this).attr('href') === 'undefined') {
+		    $(this).attr('href',
+				 '#cat-{0}'.naive_format(
+				     selector_encode({cidp: cidp})
+				 )
+				);
+		}
+		return this;
+	    });
 	}
     }
-		
+
+    // var appear_params = {
+    // 	init: views.cidp.appear_init,
+    // 	elements: views.cidp.appear_elements,
+    // 	appear: views.cidp.appear_cb
+    // };
+
     views.cprof = {
 	handle: function(evt) {
 	    console.log('views.cprof.handle called!', evt.type, this);
@@ -722,9 +759,9 @@ var CatUI = (function($){
 	main: function() {
 	    var self = this;
 	    var cprof = $(self.element).data('_catprof');
-	    self.obj = (cprof instanceof rtparms.CAT.Profile().constructor) ?
+	    self.obj = (cprof instanceof cuopts.CAT.Profile().constructor) ?
 		cprof :
-		rtparms.CAT.Profile(views.cidp.obj.id,
+		cuopts.CAT.Profile(views.cidp.obj.id,
 				    parseInt($(self.element).data('catprof')));
 
 	    $(self.element).parent('li')
@@ -917,7 +954,7 @@ var CatUI = (function($){
 	    }
 
 	    if (!!devices) {
-		return rtparms.CAT.Device().constructor.groupDevices(devices);
+		return cuopts.CAT.Device().constructor.groupDevices(devices);
 	    } else {
 		return null;
 	    }
@@ -1062,13 +1099,13 @@ var CatUI = (function($){
 				    {cdev: views.cdev.prev_obj.id,
 				     _act: 'replace'}),
 			  self.search_cdev(views.cdev.prev_obj.id)]);
-	    } else if (self.search_cdev(rtparms.catDeviceGuess).length == 1) {
-		// hashAct('cdev', rtparms.catDeviceGuess, true);
+	    } else if (self.search_cdev(cuopts.catDeviceGuess).length == 1) {
+		// hashAct('cdev', cuopts.catDeviceGuess, true);
 		$.publish(pubsubs.cdev.change.tostate,
 			  [$.extend({}, state,
-				    {cdev: rtparms.catDeviceGuess,
+				    {cdev: cuopts.catDeviceGuess,
 				     _act: 'replace'}),
-			  self.search_cdev(rtparms.catDeviceGuess)]);
+			  self.search_cdev(cuopts.catDeviceGuess)]);
 	    } else {
 		self.$profpane
 		    .find(selectors.catui_device_no_match)
@@ -1137,9 +1174,9 @@ var CatUI = (function($){
 	main: function() {
 	    var self = this;
 	    var cdev = $(self.element).data('_catdev');
-	    self.obj = (cdev instanceof rtparms.CAT.Device().constructor) ?
+	    self.obj = (cdev instanceof cuopts.CAT.Device().constructor) ?
 		cdev :
-		rtparms.CAT.Device(views.cidp.obj.id,
+		cuopts.CAT.Device(views.cidp.obj.id,
 				   parseInt($(self.element).data('catprof')),
 				   parseInt($(self.element).data('catdev')));
 
@@ -1382,8 +1419,8 @@ var CatUI = (function($){
 		return false;
 	    }
 	    var device = self.$download_button.data('_catdev') || self.obj;
-	    if (!(device instanceof rtparms.CAT.Device().constructor)) {
-		console.log('aborting! device is not a rtparms.CAT.Device', device);
+	    if (!(device instanceof cuopts.CAT.Device().constructor)) {
+		console.log('aborting! device is not a cuopts.CAT.Device', device);
 		return false;
 	    }
 	    self.$download_button
@@ -1418,7 +1455,7 @@ var CatUI = (function($){
 	    return dlurl;
 	},
 	// click handler, may also be called with button as 1st arg or without args
-	continue_redirect: function(evt) {
+	ack_redirect: function(evt) {
 	    var self = views.cdev,
 		$el = evt,
 		$target,
@@ -1487,12 +1524,6 @@ var CatUI = (function($){
 	}
     }
 
-    var appear_params = {
-	init: views.cidp.appear_init,
-	elements: views.cidp.appear_elements,
-	appear: views.cidp.appear_cb
-    };
-
     function setup_subscribers(act) {
 	act = act ? 'subscribe' : 'unsubscribe';
 	$[act](pubsubs.cidp.change.fromstate, views.cidp.subscriber);
@@ -1502,10 +1533,19 @@ var CatUI = (function($){
 	$[act](pubsubs.cprof.remove.fromstate, views.cprof.subscriber);
 	$[act](pubsubs.cdev.change.fromstate, views.cdev.subscriber);
 	$[act](pubsubs.cdev.remove.fromstate, views.cdev.subscriber);
+	(function act_recursive(obj, act, stopic, subscriber) {
+	    for (var k in obj) {
+		if (obj[k] instanceof Object) {
+		    act_recursive(obj[k], act, stopic, subscriber);
+		} else if (k == stopic) {
+		    $[act](obj[k], subscriber);
+		}
+	    }
+	}(pubsubs, act, 'tostate', controllers.tostate));
     }
     function setup_handlers(act) {
 	act = act ? 'on' : 'off';
-	$(window)[act](events.history_change, controller_fromstate);
+	$(window)[act](events.history_change, controllers.fromstate);
 	$(document)
 	    [act](events.click,
 		selectors.toggles_collapse_noanimation,
@@ -1536,52 +1576,31 @@ var CatUI = (function($){
 	$('{0} button'.naive_format(selectors.catui_device_download))
 	    [act](events.click, views.cdev.handle_download);
 	$('{0} button'.naive_format(selectors.catui_device_redirectmessage))
-	    [act](events.click, views.cdev.continue_redirect);
+	    [act](events.click, views.cdev.ack_redirect);
 	$('{0} button'.naive_format(selectors.catui_device_message))
     	    [act](events.click, views.cdev.ack_device_msg);
     }
-    function init_cidp_selectors(all_cidp_byid) {
-	return $(selectors.toggles_modal_has_cidp_id).map(function() {
-	    var cidp = parseInt($(this).data('catidp'));
-	    if (!!!cidp || ((all_cidp_byid instanceof Object) &&
-			    !(cidp in all_cidp_byid))) {
-		if ($(this).data('_catidp')) {
-		    $(this).removedata('_catidp');
-		}
-		return null; // excludes this from return val
-	    }
-	    if (!($(this).data('_catidp') instanceof
-		  rtparms.CAT.IdentityProvider().constructor)) {
-		$(this).data('_catidp',
-			     rtparms.CAT.IdentityProvider(cidp));
-	    }
-	    if (typeof $(this).attr('href') === 'undefined') {
-		$(this).attr('href',
-			     '#cat-{0}'.naive_format(
-				 selector_encode({cidp: cidp})
-			     )
-			    );
-	    }
-	    return this;
-	});
-    }
 
-    return function(_rtparms) {
-	// views.cidp.rtparms = _rtparms;
-	// views.cprof.rtparms = _rtparms;
-	// views.cdev.rtparms = _rtparms;
-	// this.rtparms = _rtparms;
-	if (_rtparms instanceof Object) {
-	    $.extend(rtparms, _rtparms);
+    // var init = false;
+
+    return function(_cuopts, overrides) {
+	// views.cidp.cuopts = _cuopts;
+	// views.cprof.cuopts = _cuopts;
+	// views.cdev.cuopts = _cuopts;
+	// this.cuopts = _cuopts;
+	if (_cuopts instanceof Object) {
+	    $.extend(true, cuopts, _cuopts);
 	}
-
-	if (!('CAT' in rtparms)) {
+	if (!('CAT' in cuopts)) {
 	    return null;
 	}
-	if (!('catDeviceGuess' in rtparms)) {
-	    rtparms.catDeviceGuess =
-		rtparms.CAT.Device().constructor.guessDeviceID(navigator.userAgent);
+	if (!('catDeviceGuess' in cuopts)) {
+	    cuopts.catDeviceGuess =
+		cuopts.CAT.Device().constructor.guessDeviceID(navigator.userAgent);
 	}
+
+	// console.log('init was', init);
+	// init = true;
 
 	var on = true,
 	    off = false,
@@ -1591,7 +1610,7 @@ var CatUI = (function($){
 		if (!(ret instanceof Object)) {
 		    return init_d.reject();
 		}
-		var cidp_selectors = init_cidp_selectors(ret);
+		var cidp_selectors = views.cidp.setup_selectors(ret);
 		if (cidp_selectors.length == 0) {
 		    return init_d.reject();
 		}
@@ -1602,29 +1621,35 @@ var CatUI = (function($){
 		pubsubs: pubsubs,
 		handlers: handlers,
 		views: views,
+		controllers: controllers,
 		initialized: init_d,
 		appear: _appear,
 		teardown: function() {
+		    // console.log('init was', init);
+		    // init = false;
 		    if (!!this.appear &&
 			('destroy' in this.appear)) {
 			this.appear.destroy();
 		    }
 		    setup_subscribers(off);
 		    setup_handlers(off);
-		    rtparms.CAT.API.touCallBack($.noop);
+		    cuopts.CAT.API.touCallBack($.noop);
 		}
 	    }
 
+	// console.log(controllers);
 	setup_subscribers(on);
 	setup_handlers(on);
-	rtparms.CAT.API.touCallBack(views.cidp.tou_cb);
+	cuopts.CAT.API.touCallBack(views.cidp.tou_cb);
 
 	$.when(
-	    rtparms.CAT.API.listAllIdentityProvidersByID()
+	    cuopts.CAT.API.listAllIdentityProvidersByID()
 	).then(init_cb, init_cb)
 	    .then(
 		function() {
-		    init_ret.appear = appear(appear_params);
+		    if (!!appear && typeof appear === 'function') {
+			init_ret.appear = appear(views.cidp.appear);
+		    }
 		    init_d.resolve();
 		    // console.log('ok');
 		},
