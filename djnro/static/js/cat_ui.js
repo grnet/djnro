@@ -47,56 +47,335 @@ var CatUI = (function($){
     }
     // $.selector_decode = selector_decode;
 
-    function hashAct(key, val, hard, obj, trhsevt) {
-	var state = $.fn.HashHandle('hash'),
-	    hard = !!hard && 'Hard' || '';
-	obj = !!obj && obj || {};
-	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
-	if (key in state) {
-	    if (state[key] == val || typeof val === 'undefined') {
-		// console.log('hashAct', 1, 'remove' + hard, key, obj, trhsevt);
-		$.fn.HashHandle('remove' + hard, key, obj, trhsevt);
+    // copied (simplified) from:
+    // https://github.com/sindresorhus/query-string
+    function getQueryParameters(str) {
+	var ret = {};
+	if (typeof str !== 'string') {
+		return ret;
+	}
+	str = str.trim().replace(/^(\?)/, '');
+	if (!str) {
+	    return ret;
+	}
+	str.split('&').forEach(function (param) {
+	    var parts = param.replace(/\+/g, ' ').split('=');
+	    // Firefox (pre 40) decodes `%3D` to `=`
+	    // https://github.com/sindresorhus/query-string/pull/37
+	    var key = parts.shift();
+	    var val = parts.length > 0 ? parts.join('=') : undefined;
+	    key = decodeURIComponent(key);
+	    // missing `=` should be `null`:
+	    // http://w3.org/TR/2012/WD-url-20120524/#collect-url-parameters
+	    val = val === undefined ? null : decodeURIComponent(val);
+	    if (ret[key] === undefined) {
+		ret[key] = val;
+	    } else if (Array.isArray(ret[key])) {
+		ret[key].push(val);
 	    } else {
-		// console.log('hashAct', 1, 'add' + hard, key, val, obj, trhsevt);
-		$.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
+		ret[key] = [ret[key], val];
 	    }
-	} else if (typeof val !== 'undefined') {
-	    // console.log('hashAct', 2, 'add' + hard, key, val, obj, trhsevt);
-	    $.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
+	});
+	return ret;
+    }
+    function getQueryString(obj) {
+	function arrMap(key) {
+	    var val = obj[key];
+	    if (val === undefined) {
+		return '';
+	    }
+	    if (val === null) {
+		return encodeURIComponent(key);
+	    }
+	    if (Array.isArray(val)) {
+		var result = [];
+		val.slice().forEach(function (val2) {
+		    if (val2 === undefined) {
+			return;
+		    }
+		    if (val2 === null) {
+			result.push(encodeURIComponent(key));
+		    } else {
+			result.push(encodeURIComponent(key) + '=' + encodeURIComponent(val2));
+		    }
+		});
+		return result.join('&');
+	    }
+	    return encodeURIComponent(key) + '=' + encodeURIComponent(val);
+	}
+	function arrFilter(x) {
+	    return x.length > 0;
+	}
+	if (('map' in Array.prototype) && ('filter' in Array.prototype)) {
+	    // no .sort() please!
+	    return obj ? Object.keys(obj)
+		.map(arrMap)
+		.filter(arrFilter)
+		.join('&') : '';
+	} else {
+	    // no .sort() please!
+	    return obj ? $.grep($.map(Object.keys(obj), arrMap), arrFilter)
+		.join('&') : '';
 	}
     }
 
-    function hashAct2(key, val, hard, obj, trhsevt) {
-	var state = getHashState(),
-	    act = (!!hard && 'replace' || 'push') + 'State';
-	obj = !!obj && obj || {};
-	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
-	if (key in state) {
-	    if (state[key] == val || typeof val === 'undefined') {
-		delete state[key];
+
+    var hstate = {
+	prefix: '#!',
+	// hashRegExp: /^(?:[^#]*)(?:#?(.*))$/,
+	fromFragment: function (_hash) {
+	    var self = this, location, hash;
+	    if (window.history.emulate) {
+		self.prefix = '/';
+		location = window.history.location;
+		hash = _hash || location.pathname;
+		if (hash.indexOf(self.prefix) == 0) {
+		    hash = hash.substr(self.prefix.length);
+		}
+		console.log('fromFragment: hash before objecting ', hash);
+		// console.log('url, urlparts[1], frag ', url, urlparts[1], frag);
 	    } else {
-		state[key] = val;
+		location = window.location;
+		// var url = _hash || location.href;
+		// var urlparts = url.match(self.hashRegExp);
+		// var hash = '';
+		// if (urlparts[1]) {
+		//     if (urlparts[1].indexOf('!') == 0) {
+		// 	hash = urlparts[1].substr(1);
+		// 	self.prefix = '#!';
+		//     } else {
+		// 	hash = urlparts[1];
+		// 	self.prefix = '#';
+		//     }
+		var hash = _hash || location.hash;
+		if (hash) {
+		    var hashParts = hash.match(/^(#!?)(.*)$/);
+		    if (hashParts !== null && hashParts.length == 3) {
+			self.prefix = hashParts[1];
+			hash = hashParts[2];
+		    } else {
+			return {};
+		    }
+		}
 	    }
-	} else if (typeof val !== 'undefined') {
-	    state[key] = val;
+	    // console.log('url, urlparts[1], hash ', url, urlparts[1], hash);
+	    return getQueryParameters(hash);
+	},
+	toFragment: function(obj, act, trigger, $el) {
+	    var self = this;
+	    console.log('hstate.toFragment ', 'obj ', obj, 'act ', act, 'trigger ', trigger,
+			'$el ', $el);
+
+	    // just initialize self.prefix properly
+	    self.fromFragment();
+	    var hash = getQueryString(obj);
+	    // console.log(
+	    // 	'obj keys ', Object.keys(obj).join(' '), ' -- ',
+	    // 	'initial hash ', hash);
+	    hash = self.prefix + hash;
+
+	    if (act == 'replace') {
+		act = 'replaceState';
+	    } else {
+		act = 'pushState';
+	    }
+
+	    // just force boolean
+	    trigger = Boolean(typeof trigger == "undefined" ? true : trigger);
+
+	    // if (!window.history.emulate && !(hash.indexOf('#') <= 0)) {
+	    // 	return false;
+	    // }
+
+	    var scrollV, scrollH,
+		location = window.history.emulate ? window.history.location : window.location,
+		history = window.history;
+
+	    var same_hash = window.history.emulate ?
+		location.pathname == hash :
+		location.hash == hash;
+	    if (same_hash) {
+		if (window.history.emulate) {
+		    console.log('location.pathname, hash, same_hash? ', location.pathname, ' ',
+				hash, ' ',
+				same_hash);
+		} else {
+		    console.log('location.hash, hash, same_hash? ', location.hash, ' ',
+				hash, ' ',
+				same_hash);
+		}
+		return false;
+	    }
+	    if (hash == self.prefix && !history.emulate) {
+		hash = '';
+	    }
+
+	    if (act in history) {
+		console.log('hstate.toFragment ',
+			    'emul ', history.emulate,
+			    act, ' ',
+			    'location.pathname ', location.pathname, ' ',
+			    'location.search ', location.search, ' ',
+			    'hash ', hash);
+		// emulated history state mgmt
+		if (history.emulate) {
+		    history[act](obj, null, hash);
+		// native history state mgmt
+		} else {
+		    history[act](obj, null, location.pathname + location.search + hash);
+		}
+	    }
+	    // history state fallback: hashchange 
+	    else {
+		// Prevent scrolling by storing the page's current scroll offset
+		scrollV = document.body.scrollTop;
+		scrollH = document.body.scrollLeft;
+
+		console.log('doing hashchange, location.hash -> hash ', location.hash, ' ', hash);
+		location.hash = hash;
+
+		// Restore the scroll offset, should be flicker free
+		document.body.scrollTop = scrollV;
+		document.body.scrollLeft = scrollH;
+	    }
+
+	    if (trigger) {
+		// var triggerEvt = (act in history) ? 'popstate' : 'hashchange';
+		console.log('hstate.toFragment triggering ', events.history_change);
+		$(window).trigger(events.history_change, [$el]);
+	    }
+	    return true;
 	}
-	var state_str = $.getQueryString(state);
-	if (state_str.length > 0) {
-	    state_str = '?' + state_str;
-	}
-	console.log('History', act, state, '"'+ state_str +'"');
-	History[act](state, null, state_str);
     }
 
-    function getHashState() {
-	// var state_hash = History.getState();
-	// var state = $.getQueryParameters(state_hash);
-	// var state = History.getState().data;
-	// return state;
-	// var state_str = window.location.search;
-	// if (state_str.
-	return $.getQueryParameters(window.location.search);
-    }
+    // function getObjFromFrag(h) {
+    // 	var location = window.history.location || window.location;
+    // 	// var location = window.location;
+    // 	if (window.history.emulate) {
+    // 	    var bla = h || window.history.location.pathname.substr(1);
+    // 	    console.log('getObjFromFrag.emul ', bla);
+    // 	    return getQueryParameters(bla);
+    // 	    // var url = h || location.hash;
+    // 	    // var urlparts = url.match(/^(\/)(.*)$/);
+    // 	    // var frag = '';
+    // 	    // _hashbang = '/';
+    // 	    // if (urlparts[2]) {
+    // 	    // 	frag = urlparts[2];
+    // 	    // }
+    // 	    // console.log('getObjFromFrag.emul ', frag);
+    // 	    // return getQueryParameters(frag);
+    // 	} else {
+    //         var url = h || location.href;
+    // 	}
+    //     var urlparts = url.match(/^([^#]*)#?(.*)$/);
+    // 	console.log('url, urlparts[2] ', url, urlparts[2]);
+    // 	var frag = '';
+    // 	// if hash not empty
+    // 	if (urlparts[2]) {
+    // 	    // if hashbang = #!, chop first char of hash
+    // 	    if (urlparts[2].search('!') == 0) {
+    // 		frag = urlparts[2].substr(1);
+    // 		_hashbang = '#!';
+    // 	    } else if (h != url) {
+    // 		frag = urlparts[2];
+    // 		_hashbang = '#';
+    // 	    }
+    // 	}
+    // 	console.log('getObjFromFrag ', frag);
+    // 	return getQueryParameters(frag);
+    // }
+    // function changeFrag(obj, act, trhsevt, $el) {
+    // 	console.log('changeFrag', 'obj', obj, 'act', act, 'trhsevt', trhsevt, '$el', $el);
+
+    // 	var hash = getQueryString(obj);
+    // 	if (window.history.emulate) {
+    // 	    hash = '/' + hash;
+    // 	} else if (hash) {
+    // 	    hash = _hashbang + hash;
+    // 	}
+
+    // 	if (act == "replace") {
+    // 	    act = "replaceState";
+    // 	} else {
+    // 	    act = "pushState";
+    // 	}
+
+    // 	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
+
+    // 	if (!window.history.emulate && !(hash.indexOf('#') <= 0)) {
+    // 	    return false;
+    // 	}
+
+    // 	var scrollV, scrollH,
+    // 	    loc = window.history.location || window.location,
+    // 	    // loc = window.location,
+    // 	    history = window.history;
+
+    // 	if (window.history.emulate) {
+    // 	    console.log('loc.pathname, hash ', loc.pathname, hash);
+    // 	    if (loc.pathname == hash) {
+    // 		return true;
+    // 	    }
+    // 	} else {
+    // 	    console.log('loc.hash, hash ', loc.hash, hash);
+    // 	    if (loc.hash == hash) {
+    // 		return true;
+    // 	    }
+    // 	}
+
+    // 	if (act in history) {
+    // 	    console.log('changeFrag ', act, ' ', loc.pathname, ' ', loc.search, ' ', hash);
+    // 	    if (window.history.emulate) {
+    // 		history[act](obj, null, hash);
+    // 	    } else {
+    // 		history[act](obj, null, loc.pathname + loc.search + hash);
+    // 	    }
+    // 	    if (trhsevt) {
+    // 		console.log('History hashhandle triggering popstate');
+    // 		$(window).trigger('popstate', [$el]);
+    // 	    }
+    // 	} else {
+    //         // Prevent scrolling by storing the page's current scroll offset
+    //         scrollV = document.body.scrollTop;
+    //         scrollH = document.body.scrollLeft;
+
+    // 	    console.log('doing hashchange, loc.hash -> hash ', loc.hash, ' ', hash);
+    //         loc.hash = hash;
+
+    //         // Restore the scroll offset, should be flicker free
+    //         document.body.scrollTop = scrollV;
+    //         document.body.scrollLeft = scrollH;
+    // 	    if (trhsevt) {
+    // 		console.log('History hashhandle triggering hashchange');
+    // 		$(window).trigger('hashchange', [$el]);
+    // 	    }
+    // 	}
+    // 	return true;
+    // }
+
+    // function hashAct(key, val, hard, obj, trhsevt) {
+    // 	var state = $.fn.HashHandle('hash'),
+    // 	    hard = !!hard && 'Hard' || '';
+    // 	obj = !!obj && obj || {};
+    // 	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
+    // 	var act;
+    // 	if (key in state) {
+    // 	    if (state[key] == val || typeof val === 'undefined') {
+    // 		// console.log('hashAct', 1, 'remove' + hard, key, obj, trhsevt);
+    // 		$.fn.HashHandle('remove' + hard, key, obj, trhsevt);
+    // 		act = 'remove';
+    // 	    } else {
+    // 		// console.log('hashAct', 1, 'add' + hard, key, val, obj, trhsevt);
+    // 		$.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
+    // 		act = 'add';
+    // 	    }
+    // 	} else if (typeof val !== 'undefined') {
+    // 	    // console.log('hashAct', 2, 'add' + hard, key, val, obj, trhsevt);
+    // 	    $.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
+    // 	    act = 'add';
+    // 	}
+    // 	console.log('hashAct', act + hard, key, val, trhsevt);
+    // }
 
     var controllers = {};
 
@@ -106,53 +385,51 @@ var CatUI = (function($){
 	if (typeof state === 'undefined') {
 	    state = {};
 	}
+	// var prev_state = getObjFromFrag();
+	var prev_state = hstate.fromFragment();
 	if ('_act' in state) {
-	    hard = state._act == 'replace';
+	    hard = (state._act == 'replace') && 'replace';
 	    delete state._act;
 	}
-	var prev_state = getHashState();
 	var implied_act = evt.type.split('_', 2);
 	var ordered_keys = pubsub_cats_ordered;
-	console.log('controllers.tostate state', state, implied_act, 'ordered_keys', ordered_keys);
+	console.log('controllers.tostate state', state, implied_act);
 	if (implied_act.length > 1 && implied_act[1] == 'remove' && (implied_act[0] in state)) {
 	    // console.log('controllers.tostate', evt.type, 3, 'key', implied_act[0], 'val', undefined, 'hard', hard, $el);
-	    // hashAct2(implied_act[0], undefined, hard, $el);
-
+	    // hashAct(implied_act[0], undefined, hard, $el);
+	    // delete state[implied_act[0]];
             for (var _i=0; _i < ordered_keys.length && implied_act[0] != ordered_keys[_i];
 		 _i++); // empty statement
             if (_i < ordered_keys.length) {
 		for (var i=_i; i < ordered_keys.length; i++) {
-                    // console.log('hashAct_sub', evt.type, 4, 'key', ordered_keys[i], 'val', undefined, 'hard', true, {$el: $el}, 'trhsevt', trigger_popstate);
-                    // hashAct2(ordered_keys[i], undefined, true, $el);
 		    if (ordered_keys[i] in prev_state) {
-			delete prev_state[ordered_keys[i]];
+			delete state[ordered_keys[i]];
 		    }
 		}
             }
-	    var act = (hard ? 'replace' : 'push') + 'State';
-	    var state_str = $.getQueryString(prev_state);
-	    if (state_str.length > 0) {
-		state_str = '?' + state_str;
+	}
+	var _changed = false;
+	// console.log('controllers.tostate', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, $el);
+	for (var k in state) {
+	    if (!(k in prev_state) || prev_state[k] != state[k]) {
+		// console.log('controllers.tostate', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, $el);
+		_changed = true;
 	    }
-	    console.log('lalalala', prev_state, state_str, _i, i);
-	    History[act](prev_state, null, state_str);
-
-	} else {
-	    // var prev_state = $.fn.HashHandle('hash');
-	    // var prev_state = getHashState();
-	    // console.log('controllers.tostate', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, $el);
-	    for (var k in state) {
-		if (!(k in prev_state) || prev_state[k] != state[k]) {
-		    // console.log('controllers.tostate', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, $el);
-		    hashAct2(k, state[k], hard, $el);
+	}
+	for (var _k in prev_state) {
+	    if (!(_k in state)) {
+		// console.log('controllers.tostate', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, $el);
+		// _changed = true;
+		if (ordered_keys.indexOf(_k) == -1) {
+		    state[_k] = prev_state[_k];
+		} else {
+		    _changed = true;
 		}
 	    }
-	    for (var _k in prev_state) {
-		if (!(_k in state)) {
-		    // console.log('controllers.tostate', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, $el);
-		    hashAct2(_k, undefined, hard, $el);
-		}
-	    }
+	}
+	if (_changed) {
+	    // changeFrag(state, hard, trigger_popstate, $el);
+	    hstate.toFragment(state, hard, trigger_popstate, $el);
 	}
     }
 
@@ -205,9 +482,8 @@ var CatUI = (function($){
     }
 
     var events = {
-	// history_change: '{0}.cat_ui'
-	//     .naive_format('onpopstate' in window ? 'popstate' : 'hashchange'),
-	history_change: 'statechange.cat_ui',
+	history_change: '{0}.cat_ui'
+	    .naive_format('onpopstate' in window ? 'popstate' : 'hashchange'),
 	click: 'click.cat_ui',
 	cidp_disable_selector: 'cidp_disable_selector.cat_ui',
 	cidp_bind_selector: 'cidp_bind_selector.cat_ui',
@@ -248,13 +524,15 @@ var CatUI = (function($){
 
     controllers.fromstate = function(evt, $el) {
 	// var state = $.fn.HashHandle("hash"),
-	var state = getHashState(),
+	// var state = getObjFromFrag(),
+	var state = hstate.fromFragment(),
 	    pairs = {
 		cidp:  { obj: views.cidp.obj  },
 		cprof: { obj: views.cprof.obj },
 		cdev:  { obj: views.cdev.obj  }
 	    }
 	console.log('controllers.fromstate init',
+		    'evt.type ', evt.type,
 		    'state', state, 'pairs', pairs,
 		    'evt.originalEvent', evt.originalEvent, '$el', $el);
 	for (var key in pairs) {
@@ -434,7 +712,8 @@ var CatUI = (function($){
 	},
 	bs_modal_hidden: function(evt) {
 	    // var state = $.fn.HashHandle("hash");
-	    var state = getHashState();
+	    // var state = getObjFromFrag();
+	    var state = hstate.fromFragment();
 	    $.publish(pubsubs.cidp.remove.tostate, [state]);
 	    // bootstrap transitions (.modal.fade) use timers (conditionally) which
 	    // may clash with rapid state transitions
@@ -462,7 +741,8 @@ var CatUI = (function($){
 	    case strip_namespace(events.click):
 		evt.preventDefault();
 		// var state = $.fn.HashHandle("hash"),
-		var state = getHashState(),
+		// var state = getObjFromFrag(),
+		var state = hstate.fromFragment(),
 		key = 'cidp',
 		val = $(this).attr('data-catidp');
 		state[key] = val;
@@ -614,7 +894,7 @@ var CatUI = (function($){
 		// hashhandle removeHard cidp
 		// hashAct('cidp', self.obj.id, true);
 		$.publish(pubsubs.cidp.remove.tostate,
-			  [$.extend({}, getHashState(), //$.fn.HashHandle("hash"),
+			  [$.extend({}, hstate.FromFragment(), // getObjFromFrag(), // $.fn.HashHandle("hash"),
 				    {_act: 'replace'})]);
 		// hashAct('cidp', undefined, true);
 		self.progress.done();
@@ -675,7 +955,8 @@ var CatUI = (function($){
 	select_profile: function(profiles, profiles_byid) {
 	    var self = this;
 	    // var state = $.fn.HashHandle("hash");
-	    var state = getHashState();
+	    // var state = getObjFromFrag();
+	    var state = hstate.fromFragment();
 	    if (('cprof' in state) && (state.cprof in profiles_byid)) {
 		$.publish(pubsubs.cprof.change.fromstate, [state]);
 	    // } else if (!!_catProf && (_catProf.id in profiles_byid)) {
@@ -883,7 +1164,8 @@ var CatUI = (function($){
 		    return this;
 		}
 		// var state = $.fn.HashHandle("hash"),
-		var state = getHashState(),
+		// var state = getObjFromFrag(),
+		var state = hstate.fromFragment(),
 		    key = 'cprof',
 		    val = $(this).attr('data-catprof');
 		if (!(key in state) || state[key] !== val) {
@@ -1257,7 +1539,8 @@ var CatUI = (function($){
 	select_cdev: function() {
 	    var self = this;
 	    // var state = $.fn.HashHandle("hash");
-	    var state = getHashState();
+	    // var state = getObjFromFrag();
+	    var state = hstate.fromFragment();
 	    if (('cdev' in state) && self.search_cdev(state.cdev).length == 1) {
 		$.publish(pubsubs.cdev.change.fromstate, [state]);
 	    } else if (!!views.cdev.prev_obj &&
@@ -1295,7 +1578,8 @@ var CatUI = (function($){
 	    case strip_namespace(events.click):
 		evt.preventDefault();
 		// var state = $.fn.HashHandle("hash"),
-		var state = getHashState(),
+		// var state = getObjFromFrag(),
+		var state = hstate.fromFragment(),
 		    key = 'cdev',
 		    val = $(this).attr('data-catdev');
 		if (!(key in state) || state[key] !== val) {
@@ -1862,17 +2146,18 @@ var CatUI = (function($){
 		});
 
 	setTimeout(function() {
-	    var wlh = window.location.hash;
+	    var location = window.history.location || window.location;
+	    var wlh = location.hash;
+	    // if (window.history.location) {
+	    // 	history.redirect('');
+	    // }
 	    if (wlh.search(/#cat[-=]/) == 0) {
 		var dec_wlh = selector_decode(wlh.substr(5));
 		// $.fn.HashHandle('_goHard', dec_wlh);
-		var dec_wlh_str = $.getQueryString(dec_wlh);
-		if (dec_wlh_str.length > 0) {
-		    dec_wlh_str = '?' + dec_wlh_str;
-		}
-		History.replaceState(dec_wlh, '', dec_wlh_str);
+		// changeFrag(dec_wlh, 'replace', true);
+		hstate.toFragment(dec_wlh, 'replace', true);
 	    } else {
-	    	$(window).trigger(events.history_change);
+		$(window).trigger(events.history_change);
 	    }
 	});
 
