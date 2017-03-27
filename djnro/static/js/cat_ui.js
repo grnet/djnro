@@ -22,6 +22,7 @@
     }
 
 }(this, function($, History, NProgress, queryString) {
+    'use strict';
 
     var root = this;
     var cuopts = {};
@@ -42,7 +43,7 @@
     	Object.defineProperty(String.prototype, "naive_format", {
     	    value: function() {
 	// String.prototype.naive_format = function() {
-		var args = Array.from_arguments.apply(null, arguments),
+		var args = Array.prototype.slice.call(arguments),
 		    kwargs = {};
 		if (args[0] instanceof Object) {
 		    kwargs = args.shift();
@@ -62,18 +63,14 @@
 	});
     }
 
-    // var btoa = window.btoa || $.base64.btoa,
-    // 	atob = window.atob || $.base64.atob;
     function selector_encode(obj) {
 	var btoa = root.btoa || $.base64.btoa;
 	return btoa(JSON.stringify(obj)).replace(/=/g, '_');
     }
-    // $.selector_encode = selector_encode;
     function selector_decode(hash) {
 	var atob = root.atob || $.base64.atob;
 	return JSON.parse(atob(hash.replace(/_/g, '=')));
     }
-    // $.selector_decode = selector_decode;
 
     var getQueryParameters,
 	getQueryString;
@@ -360,6 +357,7 @@
     var controllers = {};
 
     controllers.tostate = function(evt, state, $el) {
+	// console.log('controllers.tostate arguments', arguments);
 	var trigger_popstate = true;
 	var hard;
 	if (typeof state === 'undefined') {
@@ -715,7 +713,7 @@
 
     views.cidp = {
 	handle: function(evt) {
-	    console.log('views.cidp.handle called!', evt.type, this);
+	    // console.log('views.cidp.handle called!', evt, this);
 	    var self = views.cidp;
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
@@ -1152,7 +1150,7 @@
 
     views.cprof = {
 	handle: function(evt) {
-	    console.log('views.cprof.handle called!', evt.type, this);
+	    // console.log('views.cprof.handle called!', evt.type, this);
 	    var self = views.cprof;
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
@@ -1569,7 +1567,7 @@
 
     views.cdev = {
 	handle: function(evt) {
-	    console.log('views.cdev.handle called!', evt.type, this);
+	    // console.log('views.cdev.handle called!', evt.type, this);
 	    var self = views.cdev;
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
