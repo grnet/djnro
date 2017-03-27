@@ -405,12 +405,17 @@ address.cat-support-contact {
 .cat-support-contact > span:before {
     content: "";
 }
-/* profile description looks like a lightweight h4, but
-   it is followed by h4 so no margin-bottom */
+/* profile description looks like a lightweight h4 */
 [data-catui="profile-description"].lead {
-    margin-top: 10px;
-    margin-bottom: 0px;
+    margin-bottom: 10px;
     font-size: 18px;
+}
+[data-catui="devicelist-container"] > h4:first-child,
+[data-catui="device-container"] > h4:first-child {
+    margin-top: 0px;
+}
+[data-catui="profile-select-container"].nav {
+    margin-bottom: 10px;
 }
 /* xxxxxxxxxxxxxxxxxxxxxxxxxx */
 /* device{,list}-container elements stacked and centered at
@@ -687,7 +692,7 @@ ul.insts.filtered li:not(.match) {
 	/* } */
 }
 
-ul.insts a[data-target="catModal"] i {
+ul.insts a[data-toggle="modal"] i {
     display: none;
 }
 ul.insts a i {
