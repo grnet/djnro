@@ -865,13 +865,14 @@
 	    $(self.element).data('_catidp',
 				 self.obj);
 	    self.progress().start();
+		// self.obj.getDisplay(),
+		// self.obj.getIcon(),
 	    return $.when(
-		self.obj.getDisplay(),
-		self.obj.getIcon(),
 		self.obj.getProfiles(true)
 	    ).then(self.main_cb, self.main_cb);
 	},
-	main_cb: function(title, $icon, profiles) {
+	// main_cb: function(title, $icon, profiles) {
+	main_cb: function(profiles) {
 	    var self = views.cidp;
 	    if (!!!self.obj) {
 		return null;
@@ -893,7 +894,11 @@
 	    }
 	    var profiles_byid = self.setup_profile_selectors(profiles);
 	    self.select_profile(profiles, profiles_byid);
-	    self.setup_title_icon(title, $icon);
+	    // self.setup_title_icon(title, $icon);
+	    $.when(
+		self.obj.getDisplay(),
+		self.obj.getIcon()
+	    ).then(self.setup_title_icon, self.setup_title_icon);
 	    self.progress().done();
 	    $(selectors.cat_modal)
 		.modal('show');
@@ -973,7 +978,8 @@
 	    }
 	},
 	setup_title_icon: function(title, $icon) {
-	    var self = this;
+	    // var self = this;
+	    var self = views.cidp;
 	    if (!!!title) {
 		title = $(self.element).find('.title').text();
 	    }
