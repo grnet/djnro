@@ -256,6 +256,10 @@ autofocus autocomplete="off">
 {% endblock %}
 
 {% block extrajs %}
+<!--[if lt IE 10]>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.3/jquery.xdomainrequest.min.js"></script>
+<![endif]-->
+<script type="text/javascript" src="{% static 'js/jquery.placeholder.js' %}"></script>
 {% if catexists %}
 <script type="text/javascript" src="{% static 'js/jquery.base64.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/history.js' %}?type=!"></script>
@@ -338,6 +342,7 @@ img[data-catui="geant-logo"] {
    (emulating bootstrap .img-responsive.center-block) */
 div[data-catui="container-logo"] > * {
     max-width: 100%;
+    width: auto;
     height: auto;
     margin-left: auto;
     margin-right: auto;
@@ -392,8 +397,13 @@ address.cat-support-contact {
 .cat-support-contact > span {
     display: block;
     overflow: hidden;
+    -ms-text-overflow: ellipsis;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+/* IE9 workaround for garbled text-overflow:ellipsis with fontawesome */
+.cat-support-contact > span:before {
+    content: "";
 }
 /* profile description looks like a lightweight h4, but
    it is followed by h4 so no margin-bottom */
@@ -497,8 +507,13 @@ address.cat-support-contact {
 [data-catui="device-redirectmessage"] span {
     display: block;
     overflow: hidden;
+    -ms-text-overflow: ellipsis;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+/* IE9 workaround for garbled text-overflow:ellipsis with fontawesome */
+[data-catui="device-redirectmessage"] span:before {
+    content: "";
 }
 /* class equiv of the element strong/b */
 .strong {
@@ -680,6 +695,10 @@ ul.insts a i {
 }
 .small-small {
     font-size: 72.25%;
+}
+/* jquery.placeholder simulate bootstrap .form-control::-*-placeholder */
+.institution-search .placeholder {
+    color: #999;
 }
 /* simulate .input-lg for > 470px */
 @media (min-width: 471px) {
