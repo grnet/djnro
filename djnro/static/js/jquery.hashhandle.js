@@ -113,14 +113,21 @@
             }
             var a = methods["_fragment"].call(this, null);
             a[k] = v;
+	    var args = [a].concat(Array.prototype.slice.call(arguments,
+							     arguments[2] === true ? 3 : 2));
+	    // console.log('hashandle add', 'args', args,
+	    // 		arguments[2] === true ?
+	    // 		"_goHard" :
+	    // 		"_go");
             return methods[arguments.length > 1 &&
-			   arguments[arguments.length - 1] === true ?
+			   arguments[2] === true ?
 			   "_goHard" :
-			   "_go"].call(this, a);
+			   "_go"].apply(this, args);
         },
 	addHard: function (k, v) {
 	    var args = Array.prototype.slice.call(arguments);
-	    args.push(true);
+	    // args.push(true);
+	    args.splice(2, 0, true);
             return methods["add"].apply(this, args);
 	},
         //clear hashes
@@ -132,13 +139,22 @@
         remove: function (k) {
             var a = methods["_fragment"].call(this, null);
             delete a[k];
+	    var args = [a].concat(Array.prototype.slice.call(arguments,
+							     arguments[1] === true ? 2 : 1));
+	    // console.log('hashandle remove', 'args', args,
+	    // 		arguments[1] === true ?
+	    // 		"_goHard" :
+	    // 		"_go");
             return methods[arguments.length > 1 &&
 			   arguments[1] === true ?
 			   "_goHard" :
-			   "_go"].call(this, a);
+			   "_go"].apply(this, args);
         },
         removeHard: function (k) {
-            return methods["remove"].call(this, k, true);
+	    var args = Array.prototype.slice.call(arguments);
+	    args.splice(1, 0, true);
+	    // console.log('removeHard args', args);
+            return methods["remove"].apply(this, args);
 	},
         //add an href loc to hash
         _addHref: function (event, o) {
@@ -192,14 +208,25 @@
         //actually add hash to url
         _go: function (a) {
             var f = methods["_join"].call(this, a);
-	    $.changeFragment((f == "") ? f : methods["_hashbang"].call(this) + f,
-			     arguments.length > 1 ?
-			     arguments[1] :
-			     undefined);
+	    if (f != "") {
+		f = methods["_hashbang"].call(this) + f;
+	    }
+	    var args = [f].concat(Array.prototype.slice.call(arguments, 1));
+	    if (args[1] != 'replace') {
+		args.splice(1, 0, 'push');
+	    }
+	    // console.log('_go', args);
+	    $.changeFragment.apply($, args);
+	    // $.changeFragment((f == "") ? f : methods["_hashbang"].call(this) + f,
+	    // 		     arguments.length > 1 ?
+	    // 		     arguments[1] :
+	    // 		     undefined);
             return this;
         },
         _goHard: function (a) {
-            return methods["_go"].call(this, a, 'replace');
+	    var args = [a, 'replace'].concat(Array.prototype.slice.call(arguments, 1));
+            // return methods["_go"].call(this, a, 'replace', state);
+            return methods["_go"].apply(this, args);
         },
         //instance
         _ctor: function () {
@@ -232,6 +259,8 @@
     };
 
     $.changeFragment = function(hash, act, state, trhsevt) {
+	// console.log('changeFragment', 'hash', hash, 'act', act, 'state', state, 'trhsevt', trhsevt);
+
 	// force string
 	hash = hash ? String(hash) : '';
 
@@ -258,9 +287,12 @@
 
 	if (act in history) {
 	    // console.log('act '+ act +' in history');
-            history[act](state, "", loc.pathname + loc.search + hash);
-	    if (trhsevt)
-		$(window).trigger('popstate');
+            // history[act](trhsevt && {} || state, "", loc.pathname + loc.search + hash);
+            history[act]({}, "", loc.pathname + loc.search + hash);
+	    if (trhsevt) {
+		// console.log('History hashhandle triggering popstate');
+		$(window).trigger('popstate', [state]);
+	    }
 	} else {
 	    // console.log('act '+ act +' NOT in history');
             // Prevent scrolling by storing the page's current scroll offset
