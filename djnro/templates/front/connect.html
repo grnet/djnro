@@ -10,6 +10,18 @@
 {% block subcontent %}
 {% load tolocale %}
 {% load dict_lookup %}
+<noscript>
+<div class="row">
+  <div class="nojs-warning col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="alert alert-danger" style="margin-top:20px;margin-bottom:0px;"><p>
+	{% blocktrans trimmed with a_enablejs=' <a href="http://www.enable-javascript.com/" target="_blank" class="alert-link">' %}
+	For full functionality of this site it is necessary to enable JavaScript.
+	Here are the {{ a_enablejs }} instructions how to enable
+	JavaScript in your web browser{% endblocktrans %}</a>.
+    </p></div>
+  </div><!-- /.nojs-warning -->
+</div><!-- /.row -->
+</noscript>
 <div class="row">
 <div class="institution-search col-xs-12 col-sm-12 col-md-12 col-lg-12">
 <h1 class="h2">{% trans "Connect to eduroam" %}</h1>
