@@ -29,7 +29,7 @@ autofocus autocomplete="off">
   <ul class="inst-action" style="text-align: right">
     <li class="pull-left trigger-geolocate">
       <i class="fa fa-map-marker text-muted"></i>
-      <a role="button" href="javascript:geolocate();">
+      <a role="button" tabindex="0">
         <span class="gl-show">{% trans 'Show' %}</span><span class="gl-showing">{% trans 'Showing' %}</span> {% trans 'nearest' %} <span class="hidden-xs">{% trans 'institutions' %}</span>
       </a>
     </li>
@@ -391,8 +391,9 @@ if (typeof define === 'function' && define.amd) {
 	if (('CAT_UI' in cat_init) && ('initialized' in cat_init.CAT_UI)) {
 	    coords_d.push(cat_init.CAT_UI.initialized);
 	}
+	root.geolocate.init(); // geoip url goes here (in opts obj)
 	$.when.apply($, coords_d)
-	    .then(populate_geo_cb, populate_geo_cb);
+	    .then(root.geolocate.populate, root.geolocate.populate);
     }
 }));
 </script>
