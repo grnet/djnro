@@ -304,18 +304,6 @@ autofocus autocomplete="off">
 <script type="text/javascript">
     (function($){
 	$('.institution-search input').placeholder();
-	$('.has-clear input[type="search"]').on('input propertychange', function() {
-	    var $this = $(this);
-	    var visible = Boolean($this.val());
-	    $this.siblings('.form-control-clear').toggleClass('hidden', !visible);
-	}).trigger('propertychange');
-	$('.form-control-clear').click(function() {
-	    $(this).siblings('input[type="search"]').val('')
-		.trigger('propertychange').trigger('change').focus();
-	});
-
-	$('#catModal,.institution-list').tooltip({selector: '[data-toggle="tooltip"]'});
-
 	var coords_d = [ $.getJSON("{% url 'get-all-services' %}") ];
 	if (!!CAT_UI && ('initialized' in CAT_UI)) {
 	    coords_d.push(CAT_UI.initialized);

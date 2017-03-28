@@ -78,6 +78,31 @@ function inst_search(evt) {
 }
 $('#inst-search-input').on('keyup change', inst_search);
 
+    $('.has-clear input[type="search"]').on('input propertychange', function(evt) {
+	var $this = $(this);
+	var visible = Boolean($this.val());
+	$this.siblings('.form-control-clear').toggleClass('hidden', !visible);
+    }).trigger('propertychange');
+
+    if ('onselectionchange' in document) {
+	$(document).on('selectionchange', function(evt) {
+	    var activeElement =  ('activeElement' in evt.target) &&
+		$(evt.target.activeElement),
+		elementMatch = activeElement && (activeElement instanceof $) &&
+		activeElement.is('.has-clear input[type="search"]');
+	    if (elementMatch) {
+		activeElement.trigger('input').trigger('change');
+	    }
+	});
+    }
+
+    $('.form-control-clear').click(function() {
+	$(this).siblings('input[type="search"]').val('')
+	    .trigger('propertychange').trigger('change').focus();
+    });
+
+    $('#catModal,.institution-list').tooltip({selector: '[data-toggle="tooltip"]'});
+
 function insts_nav(evt) {
     var stop = true,
 	evtype = {
