@@ -393,7 +393,9 @@
 		(iid in geo)) {
 		_geo.coord_sets.push(geo[iid]);
 	    }
-	    if (_cidp instanceof root.CAT.IdentityProvider().constructor) {
+	    if (typeof _cidp !== 'undefined' &&
+		!!root.CAT && (root.CAT instanceof Object) &&
+		_cidp instanceof root.CAT.IdentityProvider().constructor) {
 		var getgeo_cb = function(ret) {
 		    if (Array.isArray(ret)) {
 			_geo.coord_sets.unshift(ret);
