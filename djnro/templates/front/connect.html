@@ -360,7 +360,8 @@ autofocus autocomplete="off">
 
 	return {
 	    CAT: root.CAT,
-	    CAT_UI: root.CAT_UI
+	    CAT_UI: root.CAT_UI,
+	    NProgress: root.NProgress
 	}
     }
 }));
@@ -390,6 +391,8 @@ if (typeof define === 'function' && define.amd) {
 		CAT: root.CAT,
 		CAT_UI: root.CAT_UI
 	    }
+	}
+	if (!('NProgress' in cat_init)) {
 	    // assume NProgress has not been configured yet
 	    root.NProgress = NProgress.configure({showSpinner: false});
 	}
