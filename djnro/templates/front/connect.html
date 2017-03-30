@@ -23,21 +23,20 @@
 </div><!-- /.row -->
 </noscript>
 <div class="row">
-<div class="institution-search col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="institution-search col-xs-12">
 <h1 class="h2">{% trans "Connect to eduroam" %}</h1>
 <hr style="margin-top:0px;margin-bottom:10px;">
 <p>{% trans "Find instructions, contacts and tools to help you securely connect to eduroam" %}</p>
 <div class="form-group has-feedback has-clear" style="margin-bottom:10px;">
     <i class="form-control-clear fa fa-remove form-control-feedback hidden"></i>
-    <!--<span class="form-control-clear glyphicon glyphicon-remove form-control-feedback hidden"></span>-->
     <input type="search" class="form-control" name="inst_search" id="inst-search-input"
-placeholder="{% blocktrans %}Search for your institution in {{ COUNTRY_NAME }}{% endblocktrans %}"
-autofocus autocomplete="off">
+	   placeholder="{% blocktrans %}Search for your institution in {{ COUNTRY_NAME }}{% endblocktrans %}"
+	   autofocus autocomplete="off">
     </div>
 </div><!-- /.institution-search -->
 </div><!-- /.row -->
 <div class="row">
-<div class="search-actions col-xs-12 col-sm-12 col-md-12 col-lg-12">
+<div class="search-actions col-xs-12">
   <ul class="inst-action" style="text-align: right">
     <li class="pull-left trigger-geolocate">
       <i class="fa fa-map-marker text-muted"></i>
@@ -53,7 +52,7 @@ autofocus autocomplete="off">
 </div><!-- /.search-actions -->
 </div><!-- /.row -->
 <div class="row">
-<div class="col-sm-12 col-md-12 col-lg-12 institution-list">
+<div class="col-xs-12 institution-list">
 	<ul class="insts">
 	{% for i in institutions %}
 	{% with catidp=institutions_cat|dict_lookup:i.institution.pk %}
@@ -66,7 +65,7 @@ autofocus autocomplete="off">
 	  <a class="btn" data-iid="{{ i.institution.pk }}"
 	     href="{% url 'participants' %}#!id={{ i.institution.pk }}" tabindex="0">
 	  {% endif %}
-	  <span class="title" {% if i.oper_name %}data-on="{{i.oper_name}}"{% endif %}>{% tolocale i.institution LANGUAGE_CODE %}</span><span class="small-small hidden">&nbsp;<span class="distance">xxx</span>&nbsp;Km</span>&nbsp;<i title="{% trans 'See info (instructions, contacts) for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-arrow-circle-right text-muted"></i>
+	  <span class="title" {% if i.oper_name %}data-on="{{i.oper_name}}"{% endif %}>{% tolocale i.institution LANGUAGE_CODE %}</span><span class="small-small hidden">&nbsp;<span class="distance"></span>&nbsp;Km</span>&nbsp;<i title="{% trans 'See info (instructions, contacts) for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-arrow-circle-right text-muted"></i>
 	  </a>
 	</li>
 	{% endwith %}
@@ -75,18 +74,18 @@ autofocus autocomplete="off">
 </div><!-- /.institution-list -->
 </div><!-- /.row -->
 {% if catexists %}
-<div class="modal fade" id="catModal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+<div class="modal fade" id="catModal" tabindex="-1" role="dialog" aria-labelledby="catModalTitle">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="gridSystemModalLabel" data-catui="institution">eduroam CAT</h4>
+        <h4 class="modal-title" id="catModalTitle" data-catui="institution">institution title</h4>
       </div><!-- /.modal-header -->
       <div class="modal-body">
 	<div class="row" data-catui="container">
 	  <div class="col-xs-12 col-sm-push-4 col-sm-8 col-md-push-3 col-md-9" data-catui="container-right">
 	    <ul class="nav nav-tabs hidden" role="tablist" data-catui="profile-select-container">
-	      <li role="presentation" class="active"><a href="#dummy" data-catprof="dummy" aria-controls="home" role="tab" data-toggle="tab">dummy</a></li>
+	      <li role="presentation" class="active"><a href="" data-catprof="" aria-controls="" role="tab" data-toggle="tab">profile selector</a></li>
 	    </ul>
 	    <div class="tab-content" data-catui="profiles-container">
 
@@ -121,7 +120,7 @@ autofocus autocomplete="off">
 	      <div role="tabpanel" class="tab-pane" id="0_profiletemplate" data-catui="profile-container-template" data-catui-panelrole="profile_template">
 		<div class="row">
 		  <div class="col-xs-12">
-		    <p class="lead" data-catui="profile-description"></p>
+		    <p class="lead" data-catui="profile-description">profile description</p>
 		    </div>
 		</div><!-- /.row -->
 		<div class="row" data-catui="devicebox">
@@ -142,11 +141,11 @@ autofocus autocomplete="off">
 		    </h4>
 		  </div><!-- /[data-catui="device-no-match"] -->
 		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-container">
-		    <h4 data-catui="device-display">platform placeholder</h4>
-		    <p data-catui="device-eapcustomtext">eapcustomtext placeholder</p>
+		    <h4 data-catui="device-display">device display</h4>
+		    <p data-catui="device-eapcustomtext">eap custom text</p>
 		    <div data-catui="device-message" class="well-sm alert-warning">
-		      <p role="message">message placeholder</p>
-		      <button class="btn btn-sm btn-primary">Continue</button>
+		      <p role="message">device message</p>
+		      <button type="button" class="btn btn-sm btn-primary">Continue</button>
 		    </div>
 		    <div data-catui="device-redirectmessage" class="well-sm alert-info">
 		      <p role="message">The institution administrator has
@@ -158,10 +157,10 @@ autofocus autocomplete="off">
 		      η συσκευή πρέπει να ρυθμιστεί με πόρους που
 		      παρέχονται σε άλλη σελίδα. Αν συνεχίσετε θα ανακατευθυνθείτε
 		      εκεί.--></p>
-		      <button class="btn btn-sm btn-primary">Continue</button>
+		      <button type="button" class="btn btn-sm btn-primary">Continue</button>
 		    </div>
 		    <div data-catui="device-download">
-		      <button class="btn btn-success btn-lg btn-block">
+		      <button type="button" class="btn btn-success btn-lg btn-block">
 			<span data-catui-dltxt="init">Download</span>
 			<span data-catui-dltxt="generate">Generating...</span>
 			<span data-catui-dltxt="download">Downloading</span>
@@ -172,14 +171,14 @@ autofocus autocomplete="off">
 			      title="{% block cat_signed_by %}{% trans 'The downloaded profile will be digitally signed by GÉANT Association' %}{% endblock %}" data-toggle="tooltip" data-placement="bottom">
 			  <i class="fa fa-check-square-o" aria-hidden="true"></i> Signed</span><!-- /.pull-left -->
 			<span class="pull-right" title="The downloaded profile will display messages in this language" data-toggle="tooltip" data-placement="bottom">
-			  <i class="fa fa-language" aria-hidden="true"></i> <span class="hidden" data-catui="device-language">language placeholder</span>
+			  <i class="fa fa-language" aria-hidden="true"></i> <span class="hidden" data-catui="device-language">language</span>
 			</span><!-- /.pull-right -->
 		      </p>
-		    </div><!-- /data-catui="device-download" -->
+		    </div><!-- /[data-catui="device-download"] -->
 		    <div class="well-sm alert-danger text-center" data-catui="device-downloadfailed-message">
 		      <a class="alert-link strong" href="javascript:location.reload();">Request failed, please reload the page</a>
 		    </div>
-		    <p data-catui="device-devicecustomtext">devicecustomtext placeholder</p>
+		    <p data-catui="device-devicecustomtext">device custom text</p>
 		    <p role="message" data-catui="device-defaulttext">Only install profiles that match your institution (and user
 		      group). When prompted for your username (inner identity) enter your fully qualified username@realm,
 		      unless specifically instructed by your institution.<!--Εγκαταστήστε μόνο προφίλ που ανήκει στο φορέα (και την ομάδα χρηστών) σας.
@@ -195,7 +194,7 @@ autofocus autocomplete="off">
 			  </h5><!-- /h5 -->
 			</div><!-- /.panel-heading -->
 			<div id="deviceinfo_{profile_container_id}_{device_id}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_deviceinfo_{profile_container_id}_{device_id}">
-			  <div class="panel-body">deviceinfo placeholder</div>
+			  <div class="panel-body">device info</div>
 			</div><!-- /.panel-collapse -->
 		      </div><!-- /.panel -->
 		    </div><!-- /.panel-group -->
@@ -219,7 +218,7 @@ autofocus autocomplete="off">
 			</div><!-- /.panel-heading -->
 			<div class="panel-collapse collapse" role="tabpanel" id="devicegroup_{cdev_group}" aria-labelledby="heading_devicegroup_{cdev_group}" aria-expanded="false">
 			  <ul class="list-group">
-			    <li class="list-group-item"><a data-catdev="dummy" href="#dummy">device</a></li>
+			    <li class="list-group-item"><a data-catdev="" href="">device selector</a></li>
 			  </ul><!-- /.list-group -->
 			</div><!-- /.panel-collapse.collapse -->
 		      </div><!-- /.panel.panel-default -->
@@ -240,7 +239,7 @@ autofocus autocomplete="off">
 	      <p data-catui="support-header" data-catui-support="no">If you encounter problems you can ask for help at your home institution.</p>
 	      <address class="cat-support-contact"
 		       data-catui="support-contact-container">
-		<span><i class="fa"></i> <a href="#">placeholder</a></span>
+		<span><i class="fa"></i> <a href="">support info</a></span>
 	      </address>
             {% block cat_mailing_list %}
 	      <p data-catui="support-header">You may also report or discuss issues related to CAT by posting to the <a href="//lists.geant.org/sympa/info/cat-users">users mailing list</a>.</p>
@@ -534,6 +533,11 @@ address.cat-support-contact {
 [data-catui="devicelist-container"] .panel .panel-heading:hover > a {
     text-decoration: underline;
     color: #23527c;
+}
+/* expanded devicelist group pushing bottom of .modal-body should maintain apparent
+   vertical space balanced around modal body/footer border */
+[data-catui="devicelist-container"] .panel-group {
+    margin-bottom: 10px;
 }
 /* the following ensure that a sequence of .panel-heading, .panel-collapse
    appear as a seamless accordion with a uniform 1px border */

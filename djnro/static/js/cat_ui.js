@@ -916,6 +916,10 @@
 		    .find('> {0}'
 			  .naive_format(selectors.toggles_tab_has_catprof_id)
 			 );
+		var profsel_href = '#cat-{0}'.naive_format(
+		    selector_encode({cidp: profiles[idx].getIdpID(),
+				     cprof: profiles[idx].getProfileID()})
+		);
 		$.when(
 		    profiles[idx].getDisplay()
 		).then(function(display) {
@@ -933,12 +937,8 @@
 			  selectors.target_catprofpane_with_cprof_id
 			  .naive_format({cprof: profiles[idx].getProfileID()})
 			 )
-		    .attr('href',
-			  '#cat-{0}'.naive_format(
-			      selector_encode({cidp: profiles[idx].getIdpID(),
-					       cprof: profiles[idx].getProfileID()})
-			  )
-			 );
+		    .attr({'href': profsel_href,
+			   'aria-controls': profsel_href.substr(1)});
 		$profsels.push($profsel_el);
 	    }
 	    self.$profsel_container
