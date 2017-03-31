@@ -1660,12 +1660,14 @@ def user_login(request):
                 )
             else:
                 status = _(
-                    "User account <strong>%s</strong> is pending activation."
-                    " Administrators have been notified and will activate"
-                    " this account within the next days. <br>If this account"
-                    " has remained inactive for a long time contact your "
-                    "technical coordinator or %s Helpdesk") % (user.username,
-                                                               get_nro_name(request.LANGUAGE_CODE))
+                    "User account <strong>%(username)s</strong> is pending"
+                    " activation. Administrators have been notified and will"
+                    " activate this account within the next days. <br>If this"
+                    " account has remained inactive for a long time contact"
+                    " your technical coordinator or %(nroname)s Helpdesk") % {
+                    'username': user.username,
+                    'nroname': get_nro_name(request.LANGUAGE_CODE)
+                    }
 
                 return render_to_response(
                     'status.html',
@@ -1761,12 +1763,14 @@ def selectinst(request):
             useradded.save()
             user_activation_notify(request, userprofile)
             error = _(
-                "User account <strong>%s</strong> is pending activation."
+                "User account <strong>%(username)s</strong> is pending activation."
                 " Administrators have been notified and will activate "
                 "this account within the next days. <br>If this account"
                 " has remained inactive for a long time contact your technical"
-                " coordinator or %s Helpdesk") % (userprofile.user.username,
-                                                  get_nro_name(request.LANGUAGE_CODE))
+                " coordinator or %(nroname)s Helpdesk") % {
+                'username': userprofile.user.username,
+                'nroname': get_nro_name(request.LANGUAGE_CODE)
+                }
             return render_to_response(
                 'status.html',
                 {'status': error, 'inactive': True},

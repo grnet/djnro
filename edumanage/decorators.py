@@ -20,7 +20,15 @@ def social_active_required(function):
             if profile.is_social_active is True:
                 return function(request, *args, **kw)
             else:
-                status = _("User account <strong>%s</strong> is pending activation. Administrators have been notified and will activate this account within the next days. <br>If this account has remained inactive for a long time contact your technical coordinator or %s Helpdesk") % ( user.username, edumanage.views.get_nro_name(request.LANGUAGE_CODE))
+                status = _(
+                    "User account <strong>%(username)s</strong> is pending"
+                    " activation. Administrators have been notified and will"
+                    " activate this account within the next days. <br>If this"
+                    " account has remained inactive for a long time contact"
+                    " your technical coordinator or %(nroname)s Helpdesk") % {
+                    'username': user.username,
+                    'nroname': edumanage.views.get_nro_name(request.LANGUAGE_CODE)
+                    }
                 return render(
                     request,
                     'status.html',
