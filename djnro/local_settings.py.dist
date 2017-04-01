@@ -1,5 +1,14 @@
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
+# vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 import os
-from django.utils.translation import ugettext_lazy as _
+# Marking local settings for translation is not practical, as in
+# principle such strings should not be committed to the source file
+# (locale/en/LC_MESSAGES/django.po).
+# As a workaround translations may be provided in place through a
+# dictionary keyed by language. This is applicable only for settings
+# to be rendered with 'tolocale' in templates (for example
+# NRO_DOMAIN_HELPDESK_DICT).
+#from django.utils.translation import ugettext_lazy as _
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
 
@@ -129,7 +138,7 @@ NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 # NRO federation name
 NRO_FEDERATION_NAME = "GRNET AAI federation"
 # "provided by" info for footer
-NRO_PROV_BY_DICT = {"name": "EXAMPLE NRO TEAM", "url": "http://noc.example.com"}
+NRO_PROV_BY_DICT = {"name": {'en': "EXAMPLE NRO TEAM"}, "url": "http://noc.example.com"}
 # social media contact (Use: // to preserve https)
 NRO_PROV_SOCIAL_MEDIA_CONTACT = [
     {"url": "//facebook.com/example.com", "fa_style":"fa-facebook", "name":"Facebook"},
@@ -137,7 +146,7 @@ NRO_PROV_SOCIAL_MEDIA_CONTACT = [
 ]
 
 # Helpdesk, used in base.html:
-NRO_DOMAIN_HELPDESK_DICT = {"name": _("Domain Helpdesk"), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
+NRO_DOMAIN_HELPDESK_DICT = {"name": {'en': "Domain Helpdesk"}, 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
 #Countries for Realm model:
 REALM_COUNTRIES = (

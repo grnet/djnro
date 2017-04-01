@@ -1,14 +1,15 @@
 {% load i18n %}
 {% load template_maybe %}
 {% load staticfiles %}
+{% load tolocale %}
 
 <footer class="stickyfooter">
     <div>
         <div class="container">
             {% if user.is_authenticated %}
-                {% trans "If you have any questions or need help, contact" %} {{ BRANDING.helpdesk.name }} (<a href="{{ BRANDING.helpdesk.uri}}">{{BRANDING.helpdesk.uri}}</a>) - {{BRANDING.helpdesk.phone}}<br>
+                {% trans "If you have any questions or need help, contact" %} {{ BRANDING.helpdesk.name|tolocale:LANGUAGE_CODE }} (<a href="{{ BRANDING.helpdesk.uri}}">{{BRANDING.helpdesk.uri}}</a>) - {{BRANDING.helpdesk.phone}}<br>
             {% endif %}
-            {% trans "This is a service provided by" %} <a href="{{ BRANDING.service_provider.url}}" target="_blank">{{BRANDING.service_provider.name}}</a>
+            {% trans "This is a service provided by" %} <a href="{{ BRANDING.service_provider.url}}" target="_blank">{{BRANDING.service_provider.name|tolocale:LANGUAGE_CODE}}</a>
             {% for media in BRANDING.social_media %}
                 <a href="{{media.url}}" target="_blank">
 		{% if media.local_image %}
