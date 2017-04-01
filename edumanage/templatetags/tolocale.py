@@ -18,6 +18,12 @@ class CurrentLocaleNode(template.Node):
     def render(self, context):
         objtrans = self.objtrans.resolve(context)
         translang = self.format_string.resolve(context)
-        return objtrans.get_name(lang=translang)
+        try:
+            return objtrans.get_name(lang=translang)
+        except AttributeError:
+            if isinstance(objtrans, dict):
+                return objtrans.get(translang, '')
+            else:
+                return objtrans
 
 register.tag('tolocale', do_tolocale)
