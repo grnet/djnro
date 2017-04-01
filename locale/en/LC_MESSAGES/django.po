@@ -974,7 +974,7 @@ msgid "eduroam is provided by the following instituitons/organizations"
 msgstr ""
 
 #: djnro/templates/front/world.html:284
-msgid "eduroam Worldwide"
+msgid "eduroam worldwide"
 msgstr ""
 
 #: djnro/templates/overview/index.html:42

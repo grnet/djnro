@@ -1026,7 +1026,7 @@ msgid "eduroam is provided by the following institutions/organizations"
 msgstr "το eduroam παρέχεται από τους ακόλουθους φορείς/οργανισμούς"
 
 #: djnro/templates/front/world.html:284
-msgid "eduroam Worldwide"
+msgid "eduroam worldwide"
 msgstr "eduroam Παγκοσμίως"
 
 #: djnro/templates/overview/index.html:42

@@ -1014,7 +1014,7 @@ msgid "eduroam is provided by the following instituitons/organizations"
 msgstr "A következő intézményeknél / szervezeteknél biztosított az eduroam."
 
 #: djnro/templates/front/world.html:284
-msgid "eduroam Worldwide"
+msgid "eduroam worldwide"
 msgstr "Világ eduroam"
 
 #: djnro/templates/overview/index.html:42
