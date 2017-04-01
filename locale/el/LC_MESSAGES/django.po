@@ -879,8 +879,8 @@ msgid "transp_proxy"
 msgstr ""
 
 #: djnro/templates/front/index.html:371
-msgid "Eduroam in"
-msgstr "Eduroam στην"
+msgid "eduroam in"
+msgstr "eduroam στην"
 
 #: djnro/templates/front/management.html:13
 msgid ""
@@ -1026,8 +1026,8 @@ msgid "eduroam is provided by the following institutions/organizations"
 msgstr "το eduroam παρέχεται από τους ακόλουθους φορείς/οργανισμούς"
 
 #: djnro/templates/front/world.html:284
-msgid "Eduroam Worldwide"
-msgstr "Eduroam Παγκοσμίως"
+msgid "eduroam Worldwide"
+msgstr "eduroam Παγκοσμίως"
 
 #: djnro/templates/overview/index.html:42
 msgid "users"
