@@ -17,7 +17,7 @@ def country_code(context):
         'VERSION': settings.SW_VERSION,
         'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY if hasattr(settings,"GOOGLE_MAPS_API_KEY") else None,
         'SHIB_AUTH_ENTITLEMENT': settings.SHIB_AUTH_ENTITLEMENT if hasattr(settings,"SHIB_AUTH_ENTITLEMENT") else None,
-        'SHIB_DOCUMENTATION_URL': settings.SHIB_DOCUMENTATION_URL if hasattr(settings,"SHIB_DOCUMENTATION_URL") else "http://aai.grnet.gr/documentation",
+        'FEDERATION_DOC_URL': settings.FEDERATION_DOC_URL if hasattr(settings,"FEDERATION_DOC_URL") else None,
     }
 
 
