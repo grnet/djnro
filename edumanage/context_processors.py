@@ -16,6 +16,8 @@ def country_code(context):
         'MAP_CENTER': settings.MAP_CENTER,
         'VERSION': settings.SW_VERSION,
         'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY if hasattr(settings,"GOOGLE_MAPS_API_KEY") else None,
+        'SHIB_AUTH_ENTITLEMENT': settings.SHIB_AUTH_ENTITLEMENT if hasattr(settings,"SHIB_AUTH_ENTITLEMENT") else None,
+        'FEDERATION_DOC_URL': settings.FEDERATION_DOC_URL if hasattr(settings,"FEDERATION_DOC_URL") else None,
     }
 
 
