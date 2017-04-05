@@ -13,7 +13,7 @@
 <noscript>
 <div class="row">
   <div class="nojs-warning col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="alert alert-danger" style="margin-top:20px;margin-bottom:0px;"><p>
+    <div class="alert alert-danger"><p>
 	{% blocktrans trimmed with a_enablejs=' <a href="http://www.enable-javascript.com/" target="_blank" class="alert-link">' %}
 	For full functionality of this site it is necessary to enable JavaScript.
 	Here are the {{ a_enablejs }}instructions how to enable
@@ -25,9 +25,8 @@
 <div class="row">
 <div class="institution-search col-xs-12">
 <h1 class="h2">{% trans "Connect to eduroam" %}</h1>
-<hr style="margin-top:0px;margin-bottom:10px;">
 <p>{% trans "Find instructions, contacts and tools to help you securely connect to eduroam" %}</p>
-<div class="form-group has-feedback has-clear" style="margin-bottom:10px;">
+<div class="form-group has-feedback has-clear">
     <i class="form-control-clear fa fa-remove form-control-feedback hidden"></i>
     <input type="search" class="form-control" name="inst_search" id="inst-search-input"
 	   placeholder="{% blocktrans with COUNTRY_NAME=COUNTRY_NAME|tolocale:LANGUAGE_CODE %}Search for your institution in {{ COUNTRY_NAME }}{% endblocktrans %}"
@@ -37,7 +36,7 @@
 </div><!-- /.row -->
 <div class="row">
 <div class="search-actions col-xs-12">
-  <ul class="inst-action" style="text-align: right">
+  <ul class="inst-action">
     <li class="pull-left trigger-geolocate">
       <i class="fa fa-map-marker text-muted"></i>
       <a role="button" tabindex="0">
@@ -104,7 +103,7 @@
 	      <div role="tabpanel" class="tab-pane active" id="0_loadingplaceholder" data-catui="profile-loading-placeholder" data-catui-panelrole="placeholder_loading">
 		<div class="row">
 		  <div class="col-xs-12 col-sm-6 col-md-8 align" data-catui="device-container">
-		    <p class="lead text-center" style="margin-top: 20px;">
+		    <p class="lead text-center">
 		      <i class="fa fa-cog fa-spin fa-3x fa-fw"></i><span class="sr-only">{% trans 'Loading...' %}</span>
 		    </p>
 		  </div><!-- /[data-catui="device-container"] -->
@@ -117,7 +116,7 @@
 	      <div role="tabpanel" class="tab-pane" id="0_loaderror" data-catui="profile-load-error" data-catui-panelrole="load_error">
 		<div class="row">
 		  <div class="col-xs-12 col-sm-6 col-md-8 align" data-catui="device-container">
-		    <p class="lead text-center" style="margin-top: 20px;">
+		    <p class="lead text-center">
 		      <i class="fa fa-exclamation-triangle fa-3x"></i><span class="sr-only">{% trans 'Error' %}</span><br>
 		      <a href="javascript:location.reload();">{% trans 'Request failed, please reload the page' %}</a>
 		    </p>
@@ -136,18 +135,18 @@
 		</div><!-- /.row -->
 		<div class="row" data-catui="devicebox">
 		  <div class="col-xs-8 col-sm-12 col-md-8 active" data-catui="device-loading-placeholder">
-		    <p class="lead text-center" style="margin-top: 20px;">
+		    <p class="lead text-center">
 		      <i class="fa fa-cog fa-spin fa-3x fa-fw"></i><span class="sr-only">{% trans 'Loading...' %}</span>
 		    </p>
 		  </div><!-- /[data-catui="device-loading-placeholder"] -->
 		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-load-error">
-		    <p class="lead text-center" style="margin-top: 20px;">
+		    <p class="lead text-center">
 		      <i class="fa fa-exclamation-triangle fa-3x"></i><span class="sr-only">{% trans 'Error' %}</span><br>
 		      <a href="javascript:location.reload();">{% trans 'Request failed, please reload the page' %}</a>
 		    </p>
 		  </div><!-- /[data-catui="device-load-error"] -->
 		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-no-match">
-		    <h4 class="alert alert-warning center-block text-center" style="margin-top: 20px; max-width: 300px;">
+		    <h4 class="alert alert-warning center-block text-center">
 		      {% trans 'No device match, please select a different platform' %}
 		    </h4>
 		  </div><!-- /[data-catui="device-no-match"] -->
@@ -179,14 +178,14 @@
 			<span data-catui-dltxt="download">{% trans 'Downloading' %}</span>
 			<span data-catui-dltxt="fail">{% trans 'Failed' %}</span>
 		      </button>
-		      <p style="line-height: 28px;">
-			<span class="pull-left" data-catui="device-signed"
+		      <ul class="dl-feats">
+			<li class="pull-left" data-catui="device-signed"
 			      title="{% block cat_signed_by %}{% trans 'The downloaded profile will be digitally signed by GÉANT Association' %}{% endblock %}" data-toggle="tooltip" data-placement="bottom">
-			  <i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'Signed' %}</span><!-- /.pull-left -->
-			<span class="pull-right" title="{% trans 'The downloaded profile will display messages in this language' %}" data-toggle="tooltip" data-placement="bottom">
+			  <i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'Signed' %}</li><!-- /.pull-left -->
+			<li class="pull-right" title="{% trans 'The downloaded profile will display messages in this language' %}" data-toggle="tooltip" data-placement="bottom">
 			  <i class="fa fa-language" aria-hidden="true"></i> <span class="hidden" data-catui="device-language">language</span>
-			</span><!-- /.pull-right -->
-		      </p>
+			</li><!-- /.pull-right -->
+		      </ul>
 		    </div><!-- /[data-catui="device-download"] -->
 		    <div class="well-sm alert-danger text-center" data-catui="device-downloadfailed-message">
 		      <a class="alert-link strong" href="javascript:location.reload();">{% trans 'Request failed, please reload the page' %}</a>
@@ -802,8 +801,9 @@ ul.insts .small-small {
     opacity: .75;
 }
 
-/* no list-style for institution list, actions below search[, attributes below download button?] */
-ul.insts, ul.inst-action {
+/* no list-style and default padding for institution list, actions below search, features
+   listed below download button */
+ul.insts, ul.inst-action, ul.dl-feats {
     padding: 0;
     list-style: none;
 }
@@ -950,6 +950,47 @@ ul.insts a i {
 }
 .trigger-geolocate:not([disabled]) span.gl-showing {
     display: none;
+}
+
+/* .nojs-warning appears first on page, needs space to separate it from .navbar-fixed-top;
+    also reset .alert bottom margin, let whatever heading follows handle spacing */
+.nojs-warning .alert {
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+
+/* all elements in .institution-search get a uniform bottom margin */
+.institution-search > * {
+    margin-bottom: 10px;
+}
+/* heading in .institution-search gets a hairline to separate it from following text */
+.institution-search > h1 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* loading "wheel", error alert and "no device match" warnings get top margin equal to
+   .lead bottom margin */
+/* perhaps add a class to complement .lead for such cases */
+[data-catui="device-container"] > .lead:first-child,
+[data-catui="device-loading-placeholder"] > .lead:first-child,
+[data-catui="device-load-error"] > .lead:first-child,
+[data-catui="device-no-match"] > :first-child {
+    margin-top: 20px;
+}
+
+/* no device match alert gets same width limit as download button */
+[data-catui="device-no-match"] > .alert {
+    max-width: 300px;
+}
+
+/* add space above and between features listed below dowload button*/
+ul.dl-feats > li {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+ul.dl-feats > li:first-child {
+    margin-left: 0px;
 }
 </style>
 {% endblock %}
