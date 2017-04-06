@@ -94,7 +94,6 @@
 	    var self = this,
 		history = typeof History != "undefined" ? History : root.history;
 	    if (history.emulate) {
-		console.log('running history.setup');
 		self.prefix = '/';
 		history.setup(undefined, '!');
 	    }
@@ -109,21 +108,8 @@
 		if (hash.indexOf(self.prefix) == 0) {
 		    hash = hash.substr(self.prefix.length);
 		}
-		console.log('fromFragment: hash before objecting ', hash);
-		// console.log('url, urlparts[1], frag ', url, urlparts[1], frag);
 	    } else {
 		location = root.location;
-		// var url = _hash || location.href;
-		// var urlparts = url.match(self.hashRegExp);
-		// var hash = '';
-		// if (urlparts[1]) {
-		//     if (urlparts[1].indexOf('!') == 0) {
-		// 	hash = urlparts[1].substr(1);
-		// 	self.prefix = '#!';
-		//     } else {
-		// 	hash = urlparts[1];
-		// 	self.prefix = '#';
-		//     }
 		var hash = _hash || location.hash;
 		if (hash) {
 		    var hashParts = hash.match(/^(#!?)(.*)$/);
@@ -135,21 +121,13 @@
 		    }
 		}
 	    }
-	    // console.log('url, urlparts[1], hash ', url, urlparts[1], hash);
 	    return getQueryParameters(hash);
 	},
 	toFragment: function(obj, act, trigger, $el) {
 	    var self = this,
 		history = typeof History != "undefined" ? History : root.history;
-	    console.log('hstate.toFragment ', 'obj ', obj, 'act ', act, 'trigger ', trigger,
-			'$el ', $el);
 
-	    // just initialize self.prefix properly
-	    // self.fromFragment();
 	    var hash = getQueryString(obj);
-	    // console.log(
-	    // 	'obj keys ', Object.keys(obj).join(' '), ' -- ',
-	    // 	'initial hash ', hash);
 	    hash = self.prefix + hash;
 
 	    if (act == 'replace') {
@@ -161,10 +139,6 @@
 	    // just force boolean
 	    trigger = Boolean(typeof trigger == "undefined" ? true : trigger);
 
-	    // if (!history.emulate && !(hash.indexOf('#') <= 0)) {
-	    // 	return false;
-	    // }
-
 	    var scrollV, scrollH,
 		location = history.emulate ? history.location : root.location;
 
@@ -172,15 +146,6 @@
 		location.pathname == hash :
 		location.hash == hash;
 	    if (same_hash) {
-		if (history.emulate) {
-		    console.log('location.pathname, hash, same_hash? ', location.pathname, ' ',
-				hash, ' ',
-				same_hash);
-		} else {
-		    console.log('location.hash, hash, same_hash? ', location.hash, ' ',
-				hash, ' ',
-				same_hash);
-		}
 		return false;
 	    }
 	    if (hash == self.prefix && !history.emulate) {
@@ -188,12 +153,6 @@
 	    }
 
 	    if (act in history) {
-		console.log('hstate.toFragment ',
-			    'emul ', history.emulate,
-			    act, ' ',
-			    'location.pathname ', location.pathname, ' ',
-			    'location.search ', location.search, ' ',
-			    'hash ', hash);
 		// emulated history state mgmt
 		if (history.emulate) {
 		    history[act](obj, null, hash);
@@ -208,7 +167,6 @@
 		scrollV = document.body.scrollTop;
 		scrollH = document.body.scrollLeft;
 
-		console.log('doing hashchange, location.hash -> hash ', location.hash, ' ', hash);
 		location.hash = hash;
 
 		// Restore the scroll offset, should be flicker free
@@ -217,153 +175,20 @@
 	    }
 
 	    if (trigger) {
-		// var triggerEvt = (act in history) ? 'popstate' : 'hashchange';
-		console.log('hstate.toFragment triggering ', events.history_change);
 		$(root).trigger(events.history_change, [$el]);
 	    }
 	    return true;
 	}
     }
 
-    // function getObjFromFrag(h) {
-    // 	var location = root.history.location || root.location;
-    // 	// var location = root.location;
-    // 	if (root.history.emulate) {
-    // 	    var bla = h || root.history.location.pathname.substr(1);
-    // 	    console.log('getObjFromFrag.emul ', bla);
-    // 	    return getQueryParameters(bla);
-    // 	    // var url = h || location.hash;
-    // 	    // var urlparts = url.match(/^(\/)(.*)$/);
-    // 	    // var frag = '';
-    // 	    // _hashbang = '/';
-    // 	    // if (urlparts[2]) {
-    // 	    // 	frag = urlparts[2];
-    // 	    // }
-    // 	    // console.log('getObjFromFrag.emul ', frag);
-    // 	    // return getQueryParameters(frag);
-    // 	} else {
-    //         var url = h || location.href;
-    // 	}
-    //     var urlparts = url.match(/^([^#]*)#?(.*)$/);
-    // 	console.log('url, urlparts[2] ', url, urlparts[2]);
-    // 	var frag = '';
-    // 	// if hash not empty
-    // 	if (urlparts[2]) {
-    // 	    // if hashbang = #!, chop first char of hash
-    // 	    if (urlparts[2].search('!') == 0) {
-    // 		frag = urlparts[2].substr(1);
-    // 		_hashbang = '#!';
-    // 	    } else if (h != url) {
-    // 		frag = urlparts[2];
-    // 		_hashbang = '#';
-    // 	    }
-    // 	}
-    // 	console.log('getObjFromFrag ', frag);
-    // 	return getQueryParameters(frag);
-    // }
-    // function changeFrag(obj, act, trhsevt, $el) {
-    // 	console.log('changeFrag', 'obj', obj, 'act', act, 'trhsevt', trhsevt, '$el', $el);
-
-    // 	var hash = getQueryString(obj);
-    // 	if (root.history.emulate) {
-    // 	    hash = '/' + hash;
-    // 	} else if (hash) {
-    // 	    hash = _hashbang + hash;
-    // 	}
-
-    // 	if (act == "replace") {
-    // 	    act = "replaceState";
-    // 	} else {
-    // 	    act = "pushState";
-    // 	}
-
-    // 	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
-
-    // 	if (!root.history.emulate && !(hash.indexOf('#') <= 0)) {
-    // 	    return false;
-    // 	}
-
-    // 	var scrollV, scrollH,
-    // 	    loc = root.history.location || root.location,
-    // 	    // loc = root.location,
-    // 	    history = root.history;
-
-    // 	if (root.history.emulate) {
-    // 	    console.log('loc.pathname, hash ', loc.pathname, hash);
-    // 	    if (loc.pathname == hash) {
-    // 		return true;
-    // 	    }
-    // 	} else {
-    // 	    console.log('loc.hash, hash ', loc.hash, hash);
-    // 	    if (loc.hash == hash) {
-    // 		return true;
-    // 	    }
-    // 	}
-
-    // 	if (act in history) {
-    // 	    console.log('changeFrag ', act, ' ', loc.pathname, ' ', loc.search, ' ', hash);
-    // 	    if (root.history.emulate) {
-    // 		history[act](obj, null, hash);
-    // 	    } else {
-    // 		history[act](obj, null, loc.pathname + loc.search + hash);
-    // 	    }
-    // 	    if (trhsevt) {
-    // 		console.log('History hashhandle triggering popstate');
-    // 		$(root).trigger('popstate', [$el]);
-    // 	    }
-    // 	} else {
-    //         // Prevent scrolling by storing the page's current scroll offset
-    //         scrollV = document.body.scrollTop;
-    //         scrollH = document.body.scrollLeft;
-
-    // 	    console.log('doing hashchange, loc.hash -> hash ', loc.hash, ' ', hash);
-    //         loc.hash = hash;
-
-    //         // Restore the scroll offset, should be flicker free
-    //         document.body.scrollTop = scrollV;
-    //         document.body.scrollLeft = scrollH;
-    // 	    if (trhsevt) {
-    // 		console.log('History hashhandle triggering hashchange');
-    // 		$(root).trigger('hashchange', [$el]);
-    // 	    }
-    // 	}
-    // 	return true;
-    // }
-
-    // function hashAct(key, val, hard, obj, trhsevt) {
-    // 	var state = $.fn.HashHandle('hash'),
-    // 	    hard = !!hard && 'Hard' || '';
-    // 	obj = !!obj && obj || {};
-    // 	trhsevt = Boolean(typeof trhsevt == "undefined" ? true : trhsevt);
-    // 	var act;
-    // 	if (key in state) {
-    // 	    if (state[key] == val || typeof val === 'undefined') {
-    // 		// console.log('hashAct', 1, 'remove' + hard, key, obj, trhsevt);
-    // 		$.fn.HashHandle('remove' + hard, key, obj, trhsevt);
-    // 		act = 'remove';
-    // 	    } else {
-    // 		// console.log('hashAct', 1, 'add' + hard, key, val, obj, trhsevt);
-    // 		$.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
-    // 		act = 'add';
-    // 	    }
-    // 	} else if (typeof val !== 'undefined') {
-    // 	    // console.log('hashAct', 2, 'add' + hard, key, val, obj, trhsevt);
-    // 	    $.fn.HashHandle('add' + hard, key, val, obj, trhsevt);
-    // 	    act = 'add';
-    // 	}
-    // 	console.log('hashAct', act + hard, key, val, trhsevt);
-    // }
-
     var controllers = {};
 
     controllers.tostate = function(evt, state, $el) {
-	// console.log('controllers.tostate arguments', arguments);
 	var trigger_popstate = true;
 	var hard;
 	if (typeof state === 'undefined') {
 	    state = {};
 	}
-	// var prev_state = getObjFromFrag();
 	var prev_state = hstate.fromFragment();
 	if ('_act' in state) {
 	    hard = (state._act == 'replace') && 'replace';
@@ -371,11 +196,7 @@
 	}
 	var implied_act = evt.type.split('_', 2);
 	var ordered_keys = pubsub_cats_ordered;
-	console.log('controllers.tostate state', state, implied_act);
 	if (implied_act.length > 1 && implied_act[1] == 'remove' && (implied_act[0] in state)) {
-	    // console.log('controllers.tostate', evt.type, 3, 'key', implied_act[0], 'val', undefined, 'hard', hard, $el);
-	    // hashAct(implied_act[0], undefined, hard, $el);
-	    // delete state[implied_act[0]];
             for (var _i=0; _i < ordered_keys.length && implied_act[0] != ordered_keys[_i];
 		 _i++); // empty statement
             if (_i < ordered_keys.length) {
@@ -387,17 +208,13 @@
             }
 	}
 	var _changed = false;
-	// console.log('controllers.tostate', evt.type, 'state', state, 'prev_state', prev_state, 'hard', hard, $el);
 	for (var k in state) {
 	    if (!(k in prev_state) || prev_state[k] != state[k]) {
-		// console.log('controllers.tostate', evt.type, 1, 'key', k, 'val', state[k], 'hard', hard, $el);
 		_changed = true;
 	    }
 	}
 	for (var _k in prev_state) {
 	    if (!(_k in state)) {
-		// console.log('controllers.tostate', evt.type, 2, 'key', _k, 'val', undefined, 'hard', hard, $el);
-		// _changed = true;
 		if (ordered_keys.indexOf(_k) == -1) {
 		    state[_k] = prev_state[_k];
 		} else {
@@ -406,7 +223,6 @@
 	    }
 	}
 	if (_changed) {
-	    // changeFrag(state, hard, trigger_popstate, $el);
 	    hstate.toFragment(state, hard, trigger_popstate, $el);
 	}
     }
@@ -483,36 +299,19 @@
 			    .naive_format(arguments[i_ps],
 					  triggers[i_t],
 					  directions[i_d]);
-			// switch (directions[i_d]) {
-			//     // case 'fromstate':
-			//     // $.subscribe(ret[arguments[i_ps]][triggers[i_t]][directions[i_d]],
-			//     // 		controllers.fromstate);
-			//     // break;
-			//     // case 'tostate':
-			//     // $.subscribe(ret[arguments[i_ps]][triggers[i_t]][directions[i_d]],
-			//     // 		controllers.tostate);
-			//     // break;
-			// }
 		    }
 		}
 	    }
 	    return ret;
 	}.apply(null, pubsub_cats_ordered);
-    // pubsubs.cidp.disable_noprofiles = 'cidp_disable_noprofiles.cat_ui';
 
     controllers.fromstate = function(evt, $el) {
-	// var state = $.fn.HashHandle("hash"),
-	// var state = getObjFromFrag(),
 	var state = hstate.fromFragment(),
 	    pairs = {
 		cidp:  { obj: views.cidp.obj  },
 		cprof: { obj: views.cprof.obj },
 		cdev:  { obj: views.cdev.obj  }
 	    }
-	console.log('controllers.fromstate init',
-		    'evt.type ', evt.type,
-		    'state', state, 'pairs', pairs,
-		    'evt.originalEvent', evt.originalEvent, '$el', $el);
 	for (var key in pairs) {
 	    var stateChange = 0;
 	    if (!(key in state)) {
@@ -531,7 +330,6 @@
 	    // 	    stateChange = 1;
 	    // 	}
 	    // }		     
-	    console.log('controllers.fromstate', key +' stateChange: '+ stateChange);
 	    if (stateChange === 0) {
 		continue;
 	    }
@@ -541,32 +339,25 @@
 		    views.cidp.obj = undefined;
 		    // delete state.cidp;
 		    $.publish(pubsubs.cidp.remove.fromstate, [state, $el]);
-		    // console.log('got here', 1);
 		} else {
 		    return $.publish(pubsubs.cidp.change.fromstate, [state, $el]);
 		}
 		// fallthrough if stateChange === 2
 	    case 'cprof':
 		if (stateChange === 2) {
-		    // console.log('got here', 2, 1);
 		    if (key != 'cprof') {
-			// console.log('got here', 2, 2);
 			// don't blindly set _catProf (last catProf), but push
 			// catProf.id in front of _catProf and add catProf to
 			// _catProfO
 			if (!!views.cprof.obj) {
-			    // console.log('got here', 2, 3);
 			    var idx;
 			    if ((idx = views.cprof.prev_stack.indexOf(views.cprof.obj.id)) != -1) {
-				// console.log('got here', 2, 3, 1);
 				views.cprof.prev_stack.splice(idx, 1);
 			    } else {
-				// console.log('got here', 2, 3, 2);
 				views.cprof.prev_obj[views.cprof.obj.id] = views.cprof.obj;
 			    }
 			    views.cprof.prev_stack.unshift(views.cprof.obj.id);
 			}
-			// hashAct('cprof', undefined, true);
 			// delete state.cprof;
 			state._act = 'replace';
 			$.publish(pubsubs.cprof.remove.tostate, [state, $el]);
@@ -574,7 +365,7 @@
 		    views.cprof.obj = undefined;
 		} else {
 		    if (!('cidp' in state)) {
-		    	console.log('have cprof but no cidp!!');
+		    	console.warn('have cprof but no cidp!!');
 			state._act = 'replace';
 		    	return $.publish(pubsubs.cprof.remove.tostate, [state, $el]);
 		    }
@@ -583,12 +374,9 @@
 		// fallthrough if stateChange === 2
 	    case 'cdev':
 		if (stateChange === 2) {
-		    // console.log('got here', 3, 1);
 		    if (key != 'cdev') {
-			// console.log('got here', 3, 2);
 			views.cdev.prev_obj = !!views.cdev.obj &&
 			    views.cdev.obj || views.cdev.prev_obj;
-			// hashAct('cdev', undefined, true);
 			// delete state.cdev;
 			state._act = 'replace';
 			$.publish(pubsubs.cdev.remove.tostate, [state, $el]);
@@ -596,7 +384,7 @@
 		    views.cdev.obj = undefined;
 		} else {
 		    if (!('cprof' in state)) {
-			console.log('have cdev but no cprof!!');
+			console.warn('have cdev but no cprof!!');
 			state._act = 'replace';
 			return $.publish(pubsubs.cdev.remove.tostate, [state, $el]);
 		    }
@@ -689,8 +477,6 @@
 	    return this;
 	},
 	bs_modal_hidden: function(evt) {
-	    // var state = $.fn.HashHandle("hash");
-	    // var state = getObjFromFrag();
 	    var state = hstate.fromFragment();
 	    $.publish(pubsubs.cidp.remove.tostate, [state]);
 	    // bootstrap transitions (.modal.fade) use timers (conditionally) which
@@ -713,18 +499,14 @@
 
     views.cidp = {
 	handle: function(evt) {
-	    // console.log('views.cidp.handle called!', evt, this);
 	    var self = views.cidp;
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
 		evt.preventDefault();
 		if (!('namespace' in evt) ||
 		    evt.namespace.indexOf('cat_ui') == -1) {
-		    // console.log('preventing non-jquery click!')
 		    break;
 		}
-		// var state = $.fn.HashHandle("hash"),
-		// var state = getObjFromFrag(),
 		var state = hstate.fromFragment(),
 		key = 'cidp',
 		val = $(this).attr('data-catidp');
@@ -733,21 +515,6 @@
 		return $.publish(pubsubs.cidp.change.tostate,
 				 [state, $(this)]);
 		break;
-	    // case strip_namespace(events.cidp_disable_selector):
-	    // 	// evt.preventDefault();
-	    // 	var $el = $(this);
-	    // 	// if (!($el instanceof $) || $el.length != 1) {
-	    // 	//     return false;
-	    // 	// }
-	    // 	var href = $el.data('idu');
-	    // 	$el.attr({'data-target': null,
-	    // 		  'data-toggle': null,
-	    // 		  'href': href,
-	    // 		  'data-idu': null,
-	    // 		  'data-catidp': null})
-	    // 	    .removeData('target toggle catidp idu')
-	    // 	    .off(events.click);
-	    // 	break;
 	    case strip_namespace(events.cidp_disable_selector):
 		var $el = $(this);
 		$el.trigger(events.cidp_unbind_selector);
@@ -772,7 +539,6 @@
 			 )
 			);
 		$el.on(events.click, views.cidp.handle);
-		// exthandlers.cidp_bind_selector($el);
 		exthandlers.cidp_bind_selector.call(this);
 		break;
 	    case strip_namespace(events.cidp_unbind_selector):
@@ -790,7 +556,6 @@
 		    $(this).attr('href', null);
 		}
 		$el.off(events.click);
-		// exthandlers.cidp_unbind_selector($el);
 		exthandlers.cidp_unbind_selector.call(this);
 		break;
 	    }
@@ -807,20 +572,6 @@
 		    $(self.element).focus();
 		}
 		break;
-	    // case strip_namespace(pubsubs.cidp.disable_noprofiles):
-	    // 	evt.preventDefault();
-	    // 	if (!($el instanceof $) || $el.length != 1) {
-	    // 	    return false;
-	    // 	}
-	    // 	var href = $el.data('idu');
-	    // 	$el.attr({'data-target': null,
-	    // 		  'data-toggle': null,
-	    // 		  'href': href,
-	    // 		  'data-idu': null,
-	    // 		  'data-catidp': null})
-	    // 	    .removeData('target toggle catidp idu')
-	    // 	    .off(events.click);
-	    // 	break;
 	    case strip_namespace(pubsubs.cidp.change.fromstate):
 		if (!(state instanceof Object)) {
 		    return false;
@@ -834,8 +585,6 @@
 		    }
 		    self.element = $el.get(0);
 		}
-		console.log('cidp subscriber', 'this', this, 'evt', evt, '$el', $el, 'self', self);
-		// self.evt = evt;
 		self.main();
 		break;
 	    }
@@ -863,13 +612,10 @@
 	    $(self.element).data('_catidp',
 				 self.obj);
 	    self.progress().start();
-		// self.obj.getDisplay(),
-		// self.obj.getIcon(),
 	    return $.when(
 		self.obj.getProfiles(true)
 	    ).then(self.main_cb, self.main_cb);
 	},
-	// main_cb: function(title, $icon, profiles) {
 	main_cb: function(profiles) {
 	    var self = views.cidp;
 	    if (!!!self.obj) {
@@ -878,21 +624,15 @@
 	    if (profiles === null ||
 		!Array.isArray(profiles) ||
 		profiles.length == 0) {
-		// $.publish(pubsubs.cidp.disable_noprofiles, [undefined, $(self.element)]);
 		$(self.element).trigger(events.cidp_disable_selector);
-		// avoid async self.obj.getEntityID() for now
-		// hashhandle removeHard cidp
-		// hashAct('cidp', self.obj.id, true);
 		$.publish(pubsubs.cidp.remove.tostate,
-			  [$.extend({}, hstate.FromFragment(), // getObjFromFrag(), // $.fn.HashHandle("hash"),
+			  [$.extend({}, hstate.FromFragment(),
 				    {_act: 'replace'})]);
-		// hashAct('cidp', undefined, true);
 		self.progress().done();
 		return false;
 	    }
 	    var profiles_byid = self.setup_profile_selectors(profiles);
 	    self.select_profile(profiles, profiles_byid);
-	    // self.setup_title_icon(title, $icon);
 	    $.when(
 		self.obj.getDisplay(),
 		self.obj.getIcon()
@@ -948,8 +688,6 @@
 	},
 	select_profile: function(profiles, profiles_byid) {
 	    var self = this;
-	    // var state = $.fn.HashHandle("hash");
-	    // var state = getObjFromFrag();
 	    var state = hstate.fromFragment();
 	    if (('cprof' in state) && (state.cprof in profiles_byid)) {
 		$.publish(pubsubs.cprof.change.fromstate, [state]);
@@ -960,14 +698,12 @@
 		     !(views.cprof.prev_stack[_idx] in profiles_byid);
 		     _idx++); // empty statement
 		if (_idx < views.cprof.prev_stack.length) {
-		    // hashAct('cprof', views.cprof.prev_stack[_idx], true);
 		    $.publish(pubsubs.cprof.change.tostate,
 			      [$.extend({}, state,
 					{cprof: views.cprof.prev_stack[_idx],
 					 _act: 'replace'})]);
 
 		} else {
-		    // hashAct('cprof', profiles[0].getProfileID(), true);
 		    $.publish(pubsubs.cprof.change.tostate,
 			      [$.extend({}, state,
 					{cprof: profiles[0].getProfileID(),
@@ -976,7 +712,6 @@
 	    }
 	},
 	setup_title_icon: function(title, $icon) {
-	    // var self = this;
 	    var self = views.cidp;
 	    if (!!!title) {
 		title = $(self.element).find('.title').text();
@@ -986,19 +721,6 @@
 		$(selectors.cat_modal)
 		    .find(selectors.catui_institution)
 		[(_title instanceof $) ? 'html' : 'text'](_title);
-		// if ($(self.element).data('idu')) {
-		//     var title_a = $('<a>');
-		//     title_a.attr('href', $(self.element).data('idu'))
-		// 	.text(title)
-		// 	.append($(self.element).children('i').clone());
-		//     $(selectors.cat_modal)
-		// 	.find(selectors.catui_institution)
-		// 	.html(title_a);
-		// } else {
-		//     $(selectors.cat_modal)
-		// 	.find(selectors.catui_institution)
-		// 	.text(title);
-		// }
 		if ($icon instanceof $) {
 		    $icon.attr({title: title, alt: title});
 		}
@@ -1052,23 +774,13 @@
 		}
 
     		var cb2 = function(ret) {
-		    // console.log('cb2', this, appear_self, arguments);
     	    	    if (!Array.isArray(ret) ||
     	    		ret.length == 0) {
-			// $.publish(pubsubs.cidp.disable_noprofiles, [undefined, $el]);
 			$el.trigger(events.cidp_disable_selector);
     	    	    } else {
 			$el.trigger(events.cidp_bind_selector);
 		    }
     		}
-		// var cb1 = function(ret) {
-		// 	// console.log('cb1', this, appear_self, arguments);
-		// 	if (!(ret instanceof Object) ||
-		// 	    !(catIdpID in ret)) {
-		// 	    lifo_queue_exec(cuopts.CAT.API.listProfiles(catIdpID), cb2, 2);
-		// 	}
-		// }
-		// lifo_queue_exec(cuopts.CAT.API.listAllIdentityProvidersByID(), cb1);
 
 		if (!!catIdpID && !!!_cidp) {
 		    lifo_queue_exec(
@@ -1092,25 +804,8 @@
 		var cidp = parseInt($(this).data('catidp'));
 		if (!!!cidp || ((valid_cidp_byid instanceof Object) &&
 				!(cidp in valid_cidp_byid))) {
-		    // if ($(this).data('_catidp')) {
-		    // 	$(this).removedata('_catidp');
-		    // }
-
-		    // $(this).trigger(events.cidp_unbind_selector);
 		    return null; // excludes this from .map return val
 		}
-		// if (!($(this).data('_catidp') instanceof
-		//       cuopts.CAT.IdentityProvider().constructor)) {
-		//     $(this).data('_catidp',
-		// 		 cuopts.CAT.IdentityProvider(cidp));
-		// }
-		// if (typeof $(this).attr('href') === 'undefined') {
-		//     $(this).attr('href',
-		// 		 '#cat-{0}'.naive_format(
-		// 		     selector_encode({cidp: cidp})
-		// 		 )
-		// 		);
-		// }
 		$(this).trigger(events.cidp_bind_selector);
 		return this;
 	    });
@@ -1118,9 +813,6 @@
 	// static method
 	unbind_selectors: function(valid_cidp_byid) {
 	    return $(selectors.toggles_modal_has_cidp_id).map(function() {
-		// if (!$(this).data('_catidp')) {
-		//     return null; //excludes this from .map return val
-		// }
 		if (valid_cidp_byid instanceof Object) {
 		    var cidp = parseInt($(this).data('catidp'));
 		    if (!!!cidp &&
@@ -1128,29 +820,14 @@
 			return null; //excludes this from .map return val
 		    }
 		}
-		// $(this).removeData('_catidp');
-		// var href = $(this).attr('href'),
-		//     new_href = $(this).data('idu') || null;
-		// if (href && href.indexOf('#cat-') == 0) {
-		//     // console.log('kokkala', href, new_href);
-		//     $(this).attr({'href': new_href,
-		// 		  'data-toggle': null});
-		// }
 		$(this).trigger(events.cidp_unbind_selector);
 		return this;
 	    });
 	}
     }
 
-    // var appear_params = {
-    // 	init: views.cidp.appear_init,
-    // 	elements: views.cidp.appear_elements,
-    // 	appear: views.cidp.appear_cb
-    // };
-
     views.cprof = {
 	handle: function(evt) {
-	    // console.log('views.cprof.handle called!', evt.type, this);
 	    var self = views.cprof;
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
@@ -1158,8 +835,6 @@
 		if ($(this).parent().hasClass('active')) {
 		    return this;
 		}
-		// var state = $.fn.HashHandle("hash"),
-		// var state = getObjFromFrag(),
 		var state = hstate.fromFragment(),
 		    key = 'cprof',
 		    val = $(this).attr('data-catprof');
@@ -1191,8 +866,6 @@
 		    }
 		    self.element = $el.get(0);
 		}
-		console.log('cprof subscriber', 'evt.type', evt.type, '$el', $el, 'self', self);
-		// self.evt = evt;
 		self.main();
 		break;
 	    }
@@ -1352,7 +1025,6 @@
 		    function() {
 			$profpane_container
 			    .append(self.$profpane);
-			// console.log('SUCCESS setup_profpanes');
 			return self.activate_profpane();
 		    },
 		    function() {
@@ -1360,7 +1032,6 @@
 			$profpane_error
 	    		    .addClass('active')
 	    		    .siblings().removeClass('active');
-			// console.log('FAIL setup_profpanes');
 			return null;
 		    }
 		);
@@ -1412,8 +1083,6 @@
 		return $.Deferred().reject(grouped_devices);
 	    }
 
-	    // console.log('cb2:', grouped_devices);
-	    // console.log('cb2 $profpane.selector:', self.$profpane);
 	    if (!!!grouped_devices) {
 		return $.Deferred().reject(grouped_devices);
 	    }
@@ -1431,7 +1100,6 @@
 		var $devgroup_heading = $devicegroup_heading_template.clone(true);
 		var devgroup_id_to = devgroup_id_from
 		    .naive_format({cdev_group: devgroup});
-		// console.log('devgroup_id_from -> devgroup_id_to', devgroup_id_from, devgroup_id_to);
 		$devgroup_heading
 		    .attr('id', function(idx, cur) {
 			// return cur.naive_format({cdev_group: devgroup});
@@ -1533,21 +1201,17 @@
 	},
 	select_cdev: function() {
 	    var self = this;
-	    // var state = $.fn.HashHandle("hash");
-	    // var state = getObjFromFrag();
 	    var state = hstate.fromFragment();
 	    if (('cdev' in state) && self.search_cdev(state.cdev).length == 1) {
 		$.publish(pubsubs.cdev.change.fromstate, [state]);
 	    } else if (!!views.cdev.prev_obj &&
 		       self.search_cdev(views.cdev.prev_obj.id).length == 1) {
-		// hashAct('cdev', views.cdev.prev_obj.id, true);
 		$.publish(pubsubs.cdev.change.tostate,
 			  [$.extend({}, state,
 				    {cdev: views.cdev.prev_obj.id,
 				     _act: 'replace'}),
 			  self.search_cdev(views.cdev.prev_obj.id)]);
 	    } else if (self.search_cdev(cuopts.catDeviceGuess).length == 1) {
-		// hashAct('cdev', cuopts.catDeviceGuess, true);
 		$.publish(pubsubs.cdev.change.tostate,
 			  [$.extend({}, state,
 				    {cdev: cuopts.catDeviceGuess,
@@ -1567,13 +1231,10 @@
 
     views.cdev = {
 	handle: function(evt) {
-	    // console.log('views.cdev.handle called!', evt.type, this);
 	    var self = views.cdev;
 	    switch (evt.type) {
 	    case strip_namespace(events.click):
 		evt.preventDefault();
-		// var state = $.fn.HashHandle("hash"),
-		// var state = getObjFromFrag(),
 		var state = hstate.fromFragment(),
 		    key = 'cdev',
 		    val = $(this).attr('data-catdev');
@@ -1611,8 +1272,6 @@
 		    }
 		    self.element = $el.get(0);
 		}
-		console.log('cdev subscriber', 'evt.type', evt.type, '$el', $el, 'self', self);
-		// self.evt = evt;
 		self.main();
 		break;
 	    }
@@ -1665,7 +1324,7 @@
 			return true;
 		    },
 		    function() {
-			console.log('catdevchange master promise failed!', this, arguments);
+			console.warn('catdevchange master promise failed!', this, arguments);
 			self.$device_container
 			    .siblings(selectors.catui_device_load_error)
 			    .addClass('active')
@@ -1681,14 +1340,11 @@
 		      .naive_format(data_catui_val));
 	    if (!!text) {
 		if (typeof text === 'string') {
-		    // console.log('setting text', $el, text);
 		    $el.removeClass('hidden').text(text);
 		} else if (typeof text === 'function') {
-		    // console.log('callback', $el, text);
 		    $el.removeClass('hidden').each(text);
 		}
 	    } else {
-		// console.log('hiding', $el);
 		$el.addClass('hidden').empty();
 	    }
 	    return $el;
@@ -1869,7 +1525,7 @@
 	    }
 	    var device = self.$download_button.data('_catdev') || self.obj;
 	    if (!(device instanceof cuopts.CAT.Device().constructor)) {
-		console.log('aborting! device is not a cuopts.CAT.Device', device);
+		console.warn('aborting! device is not a cuopts.CAT.Device', device);
 		return false;
 	    }
 	    self.$download_button
@@ -1978,7 +1634,6 @@
 	act = act ? 'subscribe' : 'unsubscribe';
 	$[act](pubsubs.cidp.change.fromstate, views.cidp.subscriber);
 	$[act](pubsubs.cidp.remove.fromstate, views.cidp.subscriber);
-	// $[act](pubsubs.cidp.disable_noprofiles, views.cidp.subscriber);
 	$[act](pubsubs.cprof.change.fromstate, views.cprof.subscriber);
 	$[act](pubsubs.cprof.remove.fromstate, views.cprof.subscriber);
 	$[act](pubsubs.cdev.change.fromstate, views.cdev.subscriber);
@@ -2018,7 +1673,6 @@
 	$(selectors.cat_modal)
 	[act]('hidden.bs.modal', handlers.bs_modal_hidden);
 
-	    // [act](events.click, views.cidp.handle)
 	$(selectors.toggles_modal_has_cidp_id)
 	    [act](events.cidp_bind_selector, views.cidp.handle)
 	    [act](events.cidp_unbind_selector, views.cidp.handle)
@@ -2035,7 +1689,6 @@
     	    [act](events.click, views.cdev.ack_device_msg);
     }
 
-    // var init = false;
 
     return function(_cuopts, overrides) {
 	var on = true,
@@ -2073,10 +1726,6 @@
 	    }(overrides, overridable));
 	}
 
-	// console.log('init was', init);
-	// init = true;
-
-
 	var init_ret = {
 	    opts: cuopts,
 	    selectors: selectors,
@@ -2089,8 +1738,6 @@
 	    initialized: init_d,
 	    appear: _appear,
 	    teardown: function() {
-		// console.log('init was', init);
-		// init = false;
 		if ((this.appear instanceof Object) &&
 		    typeof this.appear.destroy === 'function') {
 		    this.appear.destroy();
@@ -2114,9 +1761,6 @@
 	}
 
 	function init_success() {
-	    // if (typeof appear === 'function') {
-	    // 	init_ret.appear = appear(views.cidp.appear);
-	    // } else
 	    if (('appear' in root) &&
 		typeof root.appear === 'function') {
 		init_ret.appear = root.appear(views.cidp.appear);
@@ -2130,16 +1774,13 @@
 		});
 	    }
 	    init_d.resolve();
-	    // console.log('ok');
 	}
 
 	function init_fail() {
 	    init_ret.teardown();
 	    init_d.reject();
-	    // console.log('fail');
 	}
 
-	// console.log(controllers);
 	setup_subscribers(on);
 	setup_handlers(on);
 	cuopts.CAT.API.touCallBack(views.cidp.tou_cb);
@@ -2154,8 +1795,6 @@
 	    var wlh = root.location.hash;
 	    if (wlh.search(/#cat[-=]/) == 0) {
 		var dec_wlh = selector_decode(wlh.substr(5));
-		// $.fn.HashHandle('_goHard', dec_wlh);
-		// changeFrag(dec_wlh, 'replace', true);
 		hstate.toFragment(dec_wlh, 'replace', true);
 	    } else {
 		$(root).trigger(events.history_change);
