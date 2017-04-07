@@ -349,7 +349,6 @@
 	    });
 	    break;
 	case 'downloadInstaller':
-	    // console.log("wlh", directUri);
 	    root.location.href = directUri;
 	    return $.when().then(function(){
 		return directUri;
@@ -363,7 +362,6 @@
 	    });
 	    break;
 	case 'sendLogo':
-	    // console.log('imgSrc', directUri);
 	    // delete dtype;
 	    return $.when().then(function(){
 		return $('<img>').attr('src', directUri);
@@ -406,8 +404,6 @@
 		lang: undefined
 	    }
 	    var cb = function(ret) {
-		// console.log('cb0 this:', this);
-		// console.log('cb0 args:', arguments);
 		if (!!arguments[1] &&
 		    arguments[1] != 'success') {
 		    return null;
@@ -480,8 +476,6 @@
 		qro.lang = lang;
 	    }
 	    var cb = function(ret) {
-		// console.log('cb1 this:', this);
-		// console.log('cb1 args:', arguments);
 		if (!!arguments[1] &&
 		    arguments[1] != 'success') {
 		    return null;
@@ -571,8 +565,6 @@
 	    }
 	    qro[idname] = idval;
 	    var cb = function(ret) {
-		// console.log('cb2 this:', this);
-		// console.log('cb2 args:', arguments);
 		if (!!arguments[1] &&
 		    arguments[1] != 'success') {
 		    return null;
@@ -664,7 +656,6 @@
 	    qro[id1name] = id1val;
 	    qro[id2name] = id2val;
 	    var cb = function(ret) {
-		// console.log('cb3 args:', arguments);
 		if (!!arguments[1] &&
 		    arguments[1] != 'success') {
 		    return null;
@@ -740,7 +731,6 @@
 	    lang = this.lang();
 	}
 	var cb = function(languages_by_id) {
-	    // console.log('languages_by_id:', languages_by_id, lang);
 	    if (!!languages_by_id &&
 		(lang in languages_by_id) &&
 		('display' in languages_by_id[lang])) {
@@ -754,12 +744,10 @@
 	).then(cb, cb);
     }
     CAT.prototype._getEntitiesByID = function() {
-	// console.log('_getIdentityProvidersByID arguments:', arguments);
 	var args = Array.prototype.slice.call(arguments),
 	    act = args.shift(),
 	    _act = act + 'ByID',
 	    countryid;
-	// console.log('_getIdentityProvidersByID args:', args, act);
 	var langIdx = 0;
 	switch (act) {
 	case 'listLanguages':
@@ -786,8 +774,6 @@
 	    d.resolve(this._cache[_act][lang]);
 	} else {
 	    var cb = function(ret) {
-		// console.log('cbID this:', this);
-		// console.log('cbID args:', arguments);
 		if (Array.isArray(ret)) {
 		    if (!(_act in $cat._cache)) {
 			$cat._cache[_act] = {};
@@ -800,7 +786,6 @@
 			    $cat._cache[_act][lang] = {};
 			}
 			for (var idx = 0; idx < ret.length; idx++) {
-			    // console.log('ret[' + idx + ']:', ret[idx]);
 			    if ('id' in ret[idx]) {
 				$cat._cache[_act][lang][ret[idx].id] = ret[idx];
 			    }
@@ -812,7 +797,6 @@
 			    $cat._cache[_act][lang] = {};
 			}
 			for (var idx = 0; idx < ret.length; idx++) {
-			    // console.log('ret[' + idx + ']:', ret[idx]);
 			    if ('entityID' in ret[idx]) {
 				$cat._cache[_act][lang][ret[idx].entityID] = ret[idx];
 			    }
@@ -831,7 +815,6 @@
 			    $cat._cache[_act][countryid][lang] = {};
 			}
 			for (var idx = 0; idx < ret.length; idx++) {
-			    // console.log('ret[' + idx + ']:', ret[idx]);
 			    if ('id' in ret[idx]) {
 				$cat._cache[_act][countryid][lang][ret[idx].id] = ret[idx];
 			    }
@@ -949,7 +932,6 @@
     }
     CatIdentityProvider.prototype._getProp = function(rawFunc, prop) {
 	var cb = function(ret) {
-	    // console.log('getProp args:', arguments);
 	    if (typeof prop === 'undefined') {
 		return null;
 	    }
@@ -1062,7 +1044,6 @@
 		return false;
 	    }
 	    return keywords.reduce(function(carry, item) {
-		// console.log('reduce:', carry, item, (!item || ret.toLowerCase().indexOf(item) !== -1));
 		return carry && (!item || ret.toLowerCase().indexOf(item) !== -1);
 	    }, true);
 	}
@@ -1081,7 +1062,6 @@
     // not an instance method!
     CatProfile.getProfilesByIdPEntityID = function(cat, idpid, lang, returnArray) {
 	var cb = function(ret) {
-	    // console.log('prof.getProfilesByIdPID ret', ret);
 	    if (Array.isArray(ret)) {
 		var profiles = !!!returnArray ? {} : [];
 		for (var idx=0; idx < ret.length; idx++) {
@@ -1107,7 +1087,6 @@
     CatProfile.prototype.getRaw = function() {
 	var $prof = this;
 	var cb = function (ret) {
-	    // console.log('prof.getRaw ret', ret);
 	    if (Array.isArray(ret)) {
 		return ret.find(function(cur, idx) {
 		    return !!cur && parseInt(cur.id) === $prof.id;
@@ -1136,7 +1115,6 @@
     }
     CatProfile.prototype._getProp = function(rawFunc, prop) {
 	var cb = function(ret) {
-	    // console.log('getProp args:', arguments);
 	    if (typeof prop === 'undefined') {
 		return null;
 	    }
@@ -1196,18 +1174,6 @@
 	    if (Array.isArray(ret)) {
 		var devices = {};
 		ret.forEach(function(cur, idx) {
-		    // console.log('cur.id', cur.id,
-		    // 		'!!cur.redirect', !!cur.redirect,
-		    // 		'("status" in cur)', ('status' in cur),
-		    // 		'cur.status >= 0', (cur.status >= 0),
-		    // 		'("options" in cur)', ('options' in cur),
-		    // 		'(!("options" in cur) || !!!cur.options.hidden)',
-		    // 		(!("options" in cur) || !!!cur.options.hidden),
-		    // 		'final',
-		    // 		((!!cur.redirect ||
-		    // 		  (('status' in cur) &&
-		    // 		   (cur.status >= 0))) &&
-		    // 		 (!("options" in cur) || !!!cur.options.hidden)));
 		    if ((!!cur.redirect ||
 			 (('status' in cur) &&
 			  (cur.status >= 0))) &&
@@ -1232,7 +1198,6 @@
 	var cb = function(local_email,
 			  local_phone,
 			  local_url) {
-	    // console.log('hasSupport args:', arguments);
 	    return !!local_email ||
 		!!local_phone ||
 		!!local_url;
@@ -1313,7 +1278,6 @@
     CatDevice.loadDevices = function(cat, idpid, profid, lang) {
 	var cb = function(devices_augmented,
 			  devices) {
-	    // console.log('loadDevices.cb args:', arguments);
 	    var devs_array,
 		devs_obj = {};
 	    if (Array.isArray(devices_augmented) &&
@@ -1365,11 +1329,9 @@
 	}
 	var cb = function() {
 	    var args = Array.prototype.slice.call(arguments);
-	    // console.log('cb groupDevices:', args);
 	    for (var idx=0; idx < _devices.length; idx++) {
 		var group = devices[_devices[idx]].getGroup(),
 		    status = args[idx];
-		// console.log('dev, status, group', devices[_devices[idx]], status, group);
 		if (status != 0) {
 		    continue;
 		}
@@ -1414,7 +1376,6 @@
     CatDevice.prototype.getRaw = function() {
 	var $dev = this;
 	var cb = function(ret) {
-	    // console.log('getRaw.cb args:', arguments, $dev.id);
 	    if (!!ret &&
 		($dev.id in ret)) {
 		return ret[$dev.id];
@@ -1428,7 +1389,6 @@
     }
     CatDevice.prototype._getProp = function(rawFunc, prop, propNested) {
 	var cb = function(ret) {
-	    // console.log('getProp args:', arguments);
 	    if (typeof prop === 'undefined') {
 		return null;
 	    }
@@ -1454,7 +1414,6 @@
     CatDevice.prototype.getDisplay = function() {
 	var cb = function(is_profileredirect,
 			  device_display) {
-	    // console.log('getDisplay args:', arguments);
 	    if (is_profileredirect) {
 		return 'External';
 	    }
@@ -1483,7 +1442,6 @@
     CatDevice.prototype.getDeviceInfo = function() {
 	var $dev = this;
 	var cb = function(is_redirect) {
-	    // console.log('getDeviceInfo args:', arguments);
 	    if (is_redirect) {
 		// Seems like CAT doesn't answer this one on redirects...
 		return null;
@@ -1499,7 +1457,6 @@
 	    dryrun = !!dryrun;
 	var cb = function(is_redirect,
 			  device_redirect) {
-	    // console.log('getDownload args:', arguments);
 	    if (is_redirect) {
 		return device_redirect;
 	    }
@@ -1515,7 +1472,6 @@
     }
     CatDevice.prototype.isSigned = function() {
 	var cb = function(ret) {
-	    // console.log('isSigned done args:', arguments);
 	    return !!ret;
 	}
 	return this._getProp(this.getRaw, 'options', 'sign')
@@ -1523,7 +1479,6 @@
     }
     CatDevice.prototype.isRedirect = function() {
 	var cb = function(ret) {
-	    // console.log('isRedirect done args:', arguments);
 	    return !!ret;
 	}
 	return this._getProp(this.getRaw, 'redirect')
