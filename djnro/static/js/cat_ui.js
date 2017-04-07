@@ -26,6 +26,7 @@
 
     var root = this;
     var cuopts = {};
+    var CAT, catPrototypes = {};
 
     // pub/sub
     var o = $({});
@@ -39,10 +40,10 @@
 	o.trigger.apply(o, arguments);
     }
 
-    if (!String.prototype.naive_format) {
-    	Object.defineProperty(String.prototype, "naive_format", {
+    if (!String.prototype.nformat) {
+    	Object.defineProperty(String.prototype, "nformat", {
     	    value: function() {
-	// String.prototype.naive_format = function() {
+	// String.prototype.nformat = function() {
 		var args = Array.prototype.slice.call(arguments),
 		    kwargs = {};
 		if (args[0] instanceof Object) {
@@ -277,7 +278,7 @@
 
     var events = {
 	history_change: '{0}.cat_ui'
-	    .naive_format('onpopstate' in root ? 'popstate' : 'hashchange'),
+	    .nformat('onpopstate' in root ? 'popstate' : 'hashchange'),
 	click: 'click.cat_ui',
 	cidp_disable_selector: 'cidp_disable_selector.cat_ui',
 	cidp_bind_selector: 'cidp_bind_selector.cat_ui',
@@ -296,9 +297,9 @@
 		    for (var i_d=0; i_d < directions.length; i_d++) {
 			ret[arguments[i_ps]][triggers[i_t]][directions[i_d]] =
 			    '{0}_{1}.cat_ui.{2}'
-			    .naive_format(arguments[i_ps],
-					  triggers[i_t],
-					  directions[i_d]);
+			    .nformat(arguments[i_ps],
+				     triggers[i_t],
+				     directions[i_d]);
 		    }
 		}
 	    }
@@ -324,7 +325,7 @@
 		stateChange = 1;
 	    }
 	    // special case: device id (cdev) may be common across objects
-	    // else if (key == 'cdev' && (pairs[key].obj instanceof cuopts.CAT.Device().constructor)) {
+	    // else if (key == 'cdev' && (pairs[key].obj instanceof catPrototypes.Device)) {
 	    // 	if (('cprof' in state) &&
 	    // 	    state.cprof != pairs[key].obj.getProfileID()) {
 	    // 	    stateChange = 1;
@@ -416,7 +417,7 @@
 	// selectors from their container elements
 	bs_collapsible_click_propagate: function (evt) {
 	    var $that = $(this)
-		.find('{0},{1}'.naive_format(
+		.find('{0},{1}'.nformat(
 		    selectors.toggles_collapse_noanimation,
 		    selectors.changes_cdev_has_cdev_id)
 		     );
@@ -469,7 +470,7 @@
     		    var cidp = parseInt(buttonPressed.data('catidp'));
     		    if (!!cidp) {
     			// optimization: pre-fetching on mousedown/focus
-    			cuopts.CAT.API.listProfiles(cidp);
+    			CAT.API.listProfiles(cidp);
     		    }
 		}
     		break;
@@ -529,12 +530,12 @@
 		}
 		$el.attr({'data-toggle': 'modal',
 			  'data-target': 'catModal'});
-		if (!(_cidp instanceof cuopts.CAT.IdentityProvider().constructor)) {
-		    _cidp = cuopts.CAT.IdentityProvider(catIdpID);
+		if (!(_cidp instanceof catPrototypes.IdentityProvider)) {
+		    _cidp = CAT.IdentityProvider(catIdpID);
 		    $el.data('_catidp', _cidp);
 		}
 		$el.attr('href',
-			 '#cat-{0}'.naive_format(
+			 '#cat-{0}'.nformat(
 			     selector_encode({cidp: catIdpID})
 			 )
 			);
@@ -579,7 +580,7 @@
 		if ($el instanceof $) {
 		    self.element = $el.get(0);
 		} else {
-		    $el = $(selectors.toggles_modal_with_cidp_id.naive_format(state));
+		    $el = $(selectors.toggles_modal_with_cidp_id.nformat(state));
 		    if ($el.length != 1) {
 			return false;
 		    }
@@ -606,9 +607,9 @@
 	main: function() {
 	    var self = this;
 	    var cidp = $(self.element).data('_catidp');
-	    self.obj = (cidp instanceof cuopts.CAT.IdentityProvider().constructor) ?
+	    self.obj = (cidp instanceof catPrototypes.IdentityProvider) ?
 		cidp :
-		cuopts.CAT.IdentityProvider(parseInt($(self.element).data('catidp')));
+		CAT.IdentityProvider(parseInt($(self.element).data('catidp')));
 	    $(self.element).data('_catidp',
 				 self.obj);
 	    self.progress().start();
@@ -654,9 +655,9 @@
 		var $profsel_el = $profsel_template.clone(true),
 		    $profsel_a = $profsel_el
 		    .find('> {0}'
-			  .naive_format(selectors.toggles_tab_has_catprof_id)
+			  .nformat(selectors.toggles_tab_has_catprof_id)
 			 );
-		var profsel_href = '#cat-{0}'.naive_format(
+		var profsel_href = '#cat-{0}'.nformat(
 		    selector_encode({cidp: profiles[idx].getIdpID(),
 				     cprof: profiles[idx].getProfileID()})
 		);
@@ -675,7 +676,7 @@
 		    .data('_catprof', profiles[idx])
 		    .attr('data-target',
 			  selectors.target_catprofpane_with_cprof_id
-			  .naive_format({cprof: profiles[idx].getProfileID()})
+			  .nformat({cprof: profiles[idx].getProfileID()})
 			 )
 		    .attr({'href': profsel_href,
 			   'aria-controls': profsel_href.substr(1)});
@@ -784,7 +785,7 @@
 
 		if (!!catIdpID && !!!_cidp) {
 		    lifo_queue_exec(
-			function() { return cuopts.CAT.API.listProfiles(catIdpID); },
+			function() { return CAT.API.listProfiles(catIdpID); },
 			cb2, 2
 		    );
 		}
@@ -860,7 +861,7 @@
 		if ($el instanceof $) {
 		    self.element = $el.get(0);
 		} else {
-		    $el = $(selectors.toggles_tab_with_cprof_id.naive_format(state));
+		    $el = $(selectors.toggles_tab_with_cprof_id.nformat(state));
 		    if ($el.length != 1) {
 			return false;
 		    }
@@ -877,9 +878,9 @@
 	main: function() {
 	    var self = this;
 	    var cprof = $(self.element).data('_catprof');
-	    self.obj = (cprof instanceof cuopts.CAT.Profile().constructor) ?
+	    self.obj = (cprof instanceof catPrototypes.Profile) ?
 		cprof :
-		cuopts.CAT.Profile(views.cidp.obj.id,
+		CAT.Profile(views.cidp.obj.id,
 				    parseInt($(self.element).data('catprof')));
 
 	    $(self.element).parent('li')
@@ -991,7 +992,7 @@
 
 	    var $profpane = $profpane_container
 		.find(selectors.catui_profile_container_with_catprofpane_id
-		      .naive_format({cprof: self.obj.getProfileID()}));
+		      .nformat({cprof: self.obj.getProfileID()}));
 	    if ($profpane.length == 1) {
 		self.$profpane = $profpane;
 		self.activate_profpane();
@@ -1070,7 +1071,7 @@
 	    }
 
 	    if (!!devices) {
-		return cuopts.CAT.Device().constructor.groupDevices(devices);
+		return catPrototypes.Device.groupDevices(devices);
 	    } else {
 		return null;
 	    }
@@ -1099,30 +1100,30 @@
 	    for (var devgroup in grouped_devices) {
 		var $devgroup_heading = $devicegroup_heading_template.clone(true);
 		var devgroup_id_to = devgroup_id_from
-		    .naive_format({cdev_group: devgroup});
+		    .nformat({cdev_group: devgroup});
 		$devgroup_heading
 		    .attr('id', function(idx, cur) {
-			// return cur.naive_format({cdev_group: devgroup});
+			// return cur.nformat({cdev_group: devgroup});
 			// return cur.replace(devgroup_id_from, devgroup_id_to);
-			return '{0}_{1}'.naive_format(
+			return '{0}_{1}'.nformat(
 			    cur.replace(devgroup_id_from, devgroup_id_to),
 			    self.$profpane.attr('id')
 			);
 		    })
 		    .find('a')
-		    .attr({ 'data-target': '#{0}_{1}'.naive_format(devgroup_id_to,
-								   self.$profpane.attr('id')),
+		    .attr({ 'data-target': '#{0}_{1}'.nformat(devgroup_id_to,
+							      self.$profpane.attr('id')),
 			    'data-toggle': 'collapse-noanimation',
-			    'aria-controls': '#{0}_{1}'.naive_format(devgroup_id_to,
-								     self.$profpane.attr('id'))})
+			    'aria-controls': '#{0}_{1}'.nformat(devgroup_id_to,
+								self.$profpane.attr('id'))})
 		    .text(devgroup);
 		var $devgroup = $devicegroup_template.clone(true);
 		$devgroup
-		    .attr('id', '{0}_{1}'.naive_format(devgroup_id_to,
-						       self.$profpane.attr('id')))
+		    .attr('id', '{0}_{1}'.nformat(devgroup_id_to,
+						  self.$profpane.attr('id')))
 		    .attr('aria-labelledby', function(idx, cur) {
 			return cur.replace(devgroup_id_from,
-					   '{0}_{1}'.naive_format(
+					   '{0}_{1}'.nformat(
 					       devgroup_id_to,
 					       self.$profpane.attr('id'))
 					  );
@@ -1135,7 +1136,7 @@
 		    $device.children('a')
 			.data('_catdev', grouped_devices[devgroup][devidx])
 			.attr('href',
-			      '#cat-{0}'.naive_format(
+			      '#cat-{0}'.nformat(
 				  selector_encode({cidp: self.obj.getIdpID(),
 						   cprof: self.obj.getProfileID(),
 						   cdev: device_id}))
@@ -1261,10 +1262,10 @@
 		    self.element = $el.get(0);
 		} else {
 		    $el = $(selectors.changes_cdev_with_cprof_cdev_ids_ctx_catprofpane
-			    .naive_format(state));
+			    .nformat(state));
 		    if ($el.length != 1) {
 			$(selectors.changes_cdev_nomatch_with_cprof_id
-			  .naive_format({cprof: state.cprof}))
+			  .nformat({cprof: state.cprof}))
 		    	    .addClass('active')
 		    	    .siblings()
 		    	    .removeClass('active');
@@ -1282,9 +1283,9 @@
 	main: function() {
 	    var self = this;
 	    var cdev = $(self.element).data('_catdev');
-	    self.obj = (cdev instanceof cuopts.CAT.Device().constructor) ?
+	    self.obj = (cdev instanceof catPrototypes.Device) ?
 		cdev :
-		cuopts.CAT.Device(views.cidp.obj.id,
+		CAT.Device(views.cidp.obj.id,
 				   parseInt($(self.element).data('catprof')),
 				   parseInt($(self.element).data('catdev')));
 
@@ -1337,7 +1338,7 @@
 	    var self = this,
 		$el = self.$device_container
 		.find('[data-catui="{0}"]'
-		      .naive_format(data_catui_val));
+		      .nformat(data_catui_val));
 	    if (!!text) {
 		if (typeof text === 'string') {
 		    $el.removeClass('hidden').text(text);
@@ -1402,7 +1403,7 @@
 					  device_redirect : '//' + device_redirect;
 				      $(this)
 					  .find(
-					      'a{0}'.naive_format(
+					      'a{0}'.nformat(
 						  selectors.catui_device_redirecturl)
 					  )
 					  .attr('href', device_redirect_url)
@@ -1413,7 +1414,7 @@
 				      $(this)
 					  .addClass('hidden')
 					  .find(
-					      'a{0}'.naive_format(
+					      'a{0}'.nformat(
 						  selectors.catui_device_redirecturl)
 					  )
 					  .attr('href', null)
@@ -1473,7 +1474,7 @@
 	    }
 	    self.set_device_field('device-deviceinfo', function() {
 		var devinfo_id = 'deviceinfo_{0}_{1}'
-		    .naive_format(
+		    .nformat(
 			$(this)
 			    .closest(selectors.catui_profile_container)
 			    .attr('id'),
@@ -1524,8 +1525,8 @@
 		return false;
 	    }
 	    var device = self.$download_button.data('_catdev') || self.obj;
-	    if (!(device instanceof cuopts.CAT.Device().constructor)) {
-		console.warn('aborting! device is not a cuopts.CAT.Device', device);
+	    if (!(device instanceof catPrototypes.Device)) {
+		console.warn('aborting! device is not a CAT.Device', device);
 		return false;
 	    }
 	    self.$download_button
@@ -1656,14 +1657,14 @@
 		selectors.toggles_collapse_noanimation,
 		handlers.bs_collapsible_noanimation)
 	    [act](events.click,
-		'{0}, {1}, {2}'.naive_format(
-		    '{0} .panel-heading'.naive_format(selectors.catui_devicelist_container),
-		    '{0} .panel-heading'.naive_format(selectors.catui_device_deviceinfo),
-		    '{0} .list-group-item'.naive_format(selectors.catui_devicelist_container)
+		'{0}, {1}, {2}'.nformat(
+		    '{0} .panel-heading'.nformat(selectors.catui_devicelist_container),
+		    '{0} .panel-heading'.nformat(selectors.catui_device_deviceinfo),
+		    '{0} .list-group-item'.nformat(selectors.catui_devicelist_container)
 		),
 		handlers.bs_collapsible_click_propagate)
 	    [act](events.click,
-		'{0} {1}'.naive_format(
+		'{0} {1}'.nformat(
 		    selectors.catui_devicelist_container,
 		    selectors.toggles_collapse_noanimation
 		),
@@ -1681,11 +1682,11 @@
 	    [act](events.click, views.cprof.handle);
 	$(selectors.changes_cdev_has_cdev_id_ctx_devicelist_container)
 	    [act](events.click, views.cdev.handle);
-	$('{0} button'.naive_format(selectors.catui_device_download))
+	$('{0} button'.nformat(selectors.catui_device_download))
 	    [act](events.click, views.cdev.handle_download);
-	$('{0} button'.naive_format(selectors.catui_device_redirectmessage))
+	$('{0} button'.nformat(selectors.catui_device_redirectmessage))
 	    [act](events.click, views.cdev.ack_redirect);
-	$('{0} button'.naive_format(selectors.catui_device_message))
+	$('{0} button'.nformat(selectors.catui_device_message))
     	    [act](events.click, views.cdev.ack_device_msg);
     }
 
@@ -1704,10 +1705,18 @@
 	if (!('CAT' in cuopts)) {
 	    // throw something?
 	    return null;
+	} else {
+	    CAT = cuopts.CAT;
+	    (function() {
+		for (var o, k = 0; k < arguments.length; k++) {
+		    o = arguments[k];
+		    catPrototypes[o] = CAT[o]().constructor;
+		}
+	    }('IdentityProvider', 'Profile', 'Device'));
 	}
 	if (!('catDeviceGuess' in cuopts)) {
 	    cuopts.catDeviceGuess =
-		cuopts.CAT.Device().constructor.guessDeviceID(navigator.userAgent);
+		catPrototypes.Device.guessDeviceID(navigator.userAgent);
 	}
 
 	if (overrides instanceof Object) {
@@ -1746,7 +1755,7 @@
 		views.cidp.unbind_selectors();
 		setup_subscribers(off);
 		setup_handlers(off);
-		cuopts.CAT.API.touCallBack($.noop);
+		CAT.API.touCallBack($.noop);
 	    }
 	}
 
@@ -1783,10 +1792,10 @@
 
 	setup_subscribers(on);
 	setup_handlers(on);
-	cuopts.CAT.API.touCallBack(views.cidp.tou_cb);
+	CAT.API.touCallBack(views.cidp.tou_cb);
 
 	$.when(
-	    cuopts.CAT.API.listAllIdentityProvidersByID()
+	    CAT.API.listAllIdentityProvidersByID()
 	).then(init_cb, init_cb)
 	    .then(init_success, init_fail);
 
