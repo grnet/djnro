@@ -1761,6 +1761,8 @@ def connect(request):
             # only use first inst+CAT binding (per CAT instance), even if there
             # may be more
             dets_cat[i.pk] = catids[0]
+    if settings_dict_get('CAT_AUTH', cat_instance) is None:
+        cat_exists = False
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
         dets.sort(cmp=locale.strcoll,
                   key=lambda x: unicode(x.institution.

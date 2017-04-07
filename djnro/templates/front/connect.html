@@ -67,7 +67,7 @@
 	{% for i in institutions %}
 	{% with catidp=institutions_cat|dict_lookup:i.institution.pk %}
 	<li>
-	  {% if catidp %}
+	  {% if catidp and catexists %}
 	  <a class="btn" data-toggle="modal" data-target="catModal"
 	     data-idu="{% url 'participants' %}#!id={{ i.institution.pk }}"
 	     data-iid="{{ i.institution.pk }}" data-catidp="{{catidp}}" tabindex="0">
