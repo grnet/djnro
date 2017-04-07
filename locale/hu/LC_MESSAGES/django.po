@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-02 02:18+0300\n"
-"PO-Revision-Date: 2017-04-17 14:06+0300\n"
+"POT-Creation-Date: 2017-04-18 10:27+0300\n"
+"PO-Revision-Date: 2017-04-18 11:09+0300\n"
 "Last-Translator: Janos Mohacsi <mohacsi@niif.hu>, 2017\n"
 "Language-Team: Hungarian (https://www.transifex.com/eduroam_devel/teams/11799/hu/)\n"
 "MIME-Version: 1.0\n"
@@ -43,7 +43,7 @@ msgstr "Angol"
 msgid "Hungarian"
 msgstr "Magyar"
 
-#: djnro/templates/base.html:35
+#: djnro/templates/base.html:37
 #: djnro/templates/edumanage/server_details.html:4
 #: djnro/templates/edumanage/service_details.html:7
 #: djnro/templates/edumanage/welcome.html:17
@@ -54,47 +54,52 @@ msgstr "Magyar"
 msgid "Home"
 msgstr "Kezdőlap"
 
-#: djnro/templates/base.html:37
+#: djnro/templates/base.html:39
 #: djnro/templates/front/management_dropdown.html:4
 #: djnro/templates/front/management_dropdown.html:7
 msgid "Manage"
 msgstr "Kezelés"
 
-#: djnro/templates/base.html:41
+#: djnro/templates/base.html:43
 #: djnro/templates/edumanage/services_edit.html:66
 msgid "Language"
 msgstr "Nyelv"
 
-#: djnro/templates/base.html:56 djnro/templates/overview/index.html:38
+#: djnro/templates/base.html:58 djnro/templates/overview/index.html:38
 msgid "Institutions"
 msgstr "Intézmények"
 
-#: djnro/templates/base.html:58 djnro/templates/front/management.html:3
+#: djnro/templates/base.html:60 djnro/templates/front/management.html:3
 #: djnro/templates/front/management.html:9
 msgid "Management"
 msgstr "Menedzsment"
 
-#: djnro/templates/base.html:59 djnro/templates/front/participants.html:4
+#: djnro/templates/base.html:61 djnro/templates/front/participants.html:4
 msgid "Participants"
 msgstr "Résztvevők\t"
 
-#: djnro/templates/base.html:63 djnro/templates/edumanage/services.html:176
+#: djnro/templates/base.html:62 djnro/templates/front/connect.html:4
+#: djnro/templates/front/connect.html:28
+msgid "Connect to eduroam"
+msgstr ""
+
+#: djnro/templates/base.html:66 djnro/templates/edumanage/services.html:176
 msgid "Service"
 msgstr "Szolgáltatás"
 
-#: djnro/templates/base.html:65
+#: djnro/templates/base.html:68
 msgid "Closest eduroam"
 msgstr "Legközelebbi eduroam"
 
-#: djnro/templates/base.html:66
+#: djnro/templates/base.html:69
 msgid "World eduroam"
 msgstr "Világ eduroam"
 
-#: djnro/templates/base.html:67
+#: djnro/templates/base.html:70
 msgid "pebduroam"
 msgstr "pebduroam"
 
-#: djnro/templates/base.html:68
+#: djnro/templates/base.html:71
 msgid "Closest point api"
 msgstr "Legközelebbi pont API"
 
@@ -785,14 +790,14 @@ msgid ""
 "the closest eduroam service location."
 msgstr ""
 "Mivel információkkal rendelkezünk az eduroam.org-on a rendelkezésre álló "
-"eduroam helyszínekről, kifejlesztettük a legközelebbi pont szolgáltatás "
-"API-t, amely megmondja a legközelebb eduroam szolgáltatás helyét."
+"eduroam helyszínekről, kifejlesztettük a legközelebbi pont szolgáltatás API-"
+"t, amely megmondja a legközelebb eduroam szolgáltatás helyét."
 
 #: djnro/templates/front/api.html:14
 msgid ""
 "The API receives the current location coordinates in a GET request, "
-"calculates the closest point through server-side triangulation and returns a"
-" JSON reply with its’ coordinates and a detailed description."
+"calculates the closest point through server-side triangulation and returns a "
+"JSON reply with its’ coordinates and a detailed description."
 msgstr ""
 "Az API megkapja az aktuális hely koordinátái egy GET kéréssel és kiszámítja "
 "a legközelebbi pontot háromszögelési megoldással és visszatér egy JSON "
@@ -800,12 +805,12 @@ msgstr ""
 
 #: djnro/templates/front/api.html:16
 msgid ""
-"Based on this API, we developed the closest point web page that allows users"
-" to find the closest eduroam location or a location they search for."
+"Based on this API, we developed the closest point web page that allows users "
+"to find the closest eduroam location or a location they search for."
 msgstr ""
-"Ennek API-nak a segítségével, kifejlesztettük a legközelebbi pont weboldalt,"
-" amely lehetővé teszi a felhasználók számára, hogy megtalálják a "
-"legközelebbi eduroam helyszínt."
+"Ennek API-nak a segítségével, kifejlesztettük a legközelebbi pont weboldalt, "
+"amely lehetővé teszi a felhasználók számára, hogy megtalálják a legközelebbi "
+"eduroam helyszínt."
 
 #: djnro/templates/front/api.html:17
 msgid ""
@@ -815,38 +820,202 @@ msgstr ""
 "A lehetőségek korlátlanok! Lehet építeni saját alkalmazást Internet, mobil "
 "vagy hordható eszközhöz."
 
+#: djnro/templates/front/connect.html:18
+#, python-format
+msgid ""
+"For full functionality of this site it is necessary to enable JavaScript. "
+"Here are the %(a_enablejs)sinstructions how to enable JavaScript in your web "
+"browser"
+msgstr ""
+
+#: djnro/templates/front/connect.html:29
+msgid ""
+"Find instructions, contacts and tools to help you securely connect to eduroam"
+msgstr ""
+
+#: djnro/templates/front/connect.html:33
+#, python-format
+msgid "Search for your institution in %(COUNTRY_NAME)s"
+msgstr ""
+
+#: djnro/templates/front/connect.html:45
+#, python-format
+msgid "Show nearest %(span_hiddenxs)sinstitutions%(span_close)s"
+msgstr ""
+
+#: djnro/templates/front/connect.html:48
+#, python-format
+msgid "Showing nearest %(span_hiddenxs)sinstitutions%(span_close)s"
+msgstr ""
+
+#: djnro/templates/front/connect.html:57
+#, python-format
+msgid "Find %(span_hiddenxs)sinstitutions%(span_close)s worldwide"
+msgstr ""
+
+#: djnro/templates/front/connect.html:79
+msgid "See info (instructions, contacts) for this institution"
+msgstr ""
+
+#: djnro/templates/front/connect.html:108
+#: djnro/templates/front/connect.html:140
+msgid "Loading..."
+msgstr ""
+
+#: djnro/templates/front/connect.html:121
+#: djnro/templates/front/connect.html:145
+msgid "Error"
+msgstr ""
+
+#: djnro/templates/front/connect.html:122
+#: djnro/templates/front/connect.html:146
+#: djnro/templates/front/connect.html:192
+msgid "Request failed, please reload the page"
+msgstr ""
+
+#: djnro/templates/front/connect.html:151
+msgid "No device match, please select a different platform"
+msgstr ""
+
+#: djnro/templates/front/connect.html:159
+#: djnro/templates/front/connect.html:173
+msgid "Continue"
+msgstr ""
+
+#: djnro/templates/front/connect.html:164
+#, python-format
+msgid ""
+"The institution administrator has specified this device should be configured "
+"with resources provided on a local page: %(redirect_link)s If you continue "
+"you will be redirected there."
+msgstr ""
+
+#: djnro/templates/front/connect.html:177
+msgid "Download"
+msgstr ""
+
+#: djnro/templates/front/connect.html:178
+msgid "Generating..."
+msgstr ""
+
+#: djnro/templates/front/connect.html:179
+msgid "Downloading"
+msgstr ""
+
+#: djnro/templates/front/connect.html:180
+msgid "Failed"
+msgstr ""
+
+#: djnro/templates/front/connect.html:184
+msgid "The downloaded profile will be digitally signed by GÉANT Association"
+msgstr ""
+
+#: djnro/templates/front/connect.html:185
+msgid "Signed"
+msgstr ""
+
+#: djnro/templates/front/connect.html:186
+msgid "The downloaded profile will display messages in this language"
+msgstr ""
+
+#: djnro/templates/front/connect.html:196
+msgid ""
+"Only install profiles that match your institution (and user group). When "
+"prompted for your username, enter your fully qualified username@realm, "
+"unless specifically instructed by your institution."
+msgstr ""
+
+#: djnro/templates/front/connect.html:210
+msgid "Information &amp; Usage"
+msgstr ""
+
+#: djnro/templates/front/connect.html:221
+msgid ""
+"Once your system is successfully configured, and after you enter your "
+"credentials (when prompted, upon installation or first connection), the "
+"device will automatically connect whenever it is in the vicinity of an "
+"eduroam hotspot."
+msgstr ""
+
+#: djnro/templates/front/connect.html:232
+msgid "Other platforms"
+msgstr ""
+
+#: djnro/templates/front/connect.html:263
+msgid ""
+"If you encounter problems, you can obtain direct assistance from your home "
+"organisation:"
+msgstr ""
+
+#: djnro/templates/front/connect.html:271
+msgid ""
+"If you encounter problems you can ask for help at your home institution."
+msgstr ""
+
+#: djnro/templates/front/connect.html:283
+#, python-format
+msgid ""
+"You may also subscribe to the %(a_catuserslist)susers mailing list"
+"%(a_close)s to report (in English) issues related to %(link_eduroamcat)s."
+msgstr ""
+
+#: djnro/templates/front/connect.html:299
+#, python-format
+msgid "%(link_eduroamcat)s service is provided by %(linkimg_geant)s"
+msgstr ""
+
+#: djnro/templates/front/connect.html:303
+#, python-format
+msgid ""
+"This site provides access to CAT data with respect to the service "
+"%(a_catapitou)sterms of use"
+msgstr ""
+
 #: djnro/templates/front/geolocate.html:4
 msgid "Closest Access Point"
 msgstr "Legközelebbi Access Point"
 
 #: djnro/templates/front/index.html:22
 msgid ""
-"\n"
-"\t\t\t\t\t\t\tYou might be wondering about the location of the closest eduroam access points in order to be able to connect to eduroam. We provide a service and an api in order to help you find the closest eduroam access point.\n"
-"\t\t\t\t\t\t\t"
+"You might be wondering about the location of the closest eduroam access "
+"points in order to be able to connect to eduroam. We provide a service and "
+"an api in order to help you find the closest eduroam access point."
 msgstr ""
-"\n"
-"\t\t\t\t\t\t\tAmenyiben a legközelebbi eduroam hozzáférési pontot keresed jó helyen jársz. Szolgáltatunk és a szolgáltatási API-nk megmutatja a legközelebbi eduroam pontot.\n"
-"\t\t\t\t\t\t\t"
+"Amenyiben a legközelebbi eduroam hozzáférési pontot keresed jó helyen jársz. "
+"Szolgáltatunk és a szolgáltatási API-nk megmutatja a legközelebbi eduroam "
+"pontot."
 
 #: djnro/templates/front/index.html:41
 msgid ""
-"\n"
-"\t\t\t\t\t\t\teduroam (education roaming) is the secure, world-wide roaming access service developed for the international research and education community. It allows students, researchers and staff from participating institutions to obtain Internet connectivity across campus and when visiting other participating institutions by simply opening their laptop.\n"
-"\t\t\t\t\t\t"
+"eduroam (education roaming) is the secure, world-wide roaming access service "
+"developed for the international research and education community. It allows "
+"students, researchers and staff from participating institutions to obtain "
+"Internet connectivity across campus and when visiting other participating "
+"institutions by simply opening their laptop."
 msgstr ""
-"\n"
-"\t\t\t\t\t\t\teduroam (education roaming) egy biztonságos, világméretű roaming hozzáférési szolgáltatás, amelyet a nemzetközi kutatási és oktatási közösség fejlesztett ki. Lehetővé teszi a szövetségben réztvevő intézmények diákjainak, kutatóinak és dolgozóinak  az Internethez való hozzágférést anyaintézménük campusán és más résztvevő intézményekben a lehető legegyszerűbb módon, konfiguráció és beállítgatások nélkül."
+"eduroam (education roaming) egy biztonságos, világméretű roaming hozzáférési "
+"szolgáltatás, amelyet a nemzetközi kutatási és oktatási közösség fejlesztett "
+"ki. Lehetővé teszi a szövetségben réztvevő intézmények diákjainak, "
+"kutatóinak és dolgozóinak  az Internethez való hozzágférést anyaintézménük "
+"campusán és más résztvevő intézményekben a lehető legegyszerűbb módon, "
+"konfiguráció és beállítgatások nélkül."
 
 #: djnro/templates/front/index.html:54
 msgid ""
-"\n"
-"\t\t\t\t\t\t\t\tTo use eduroam wifi you will need to setup your laptop or smartphone. As end-user you will only be able to use eduroam if your institution provides electronic identity (e.g. account for network access). In that case you will need to contact your administrator and ask for an account. You (or your network administrator) will have to configure your computer to enable eduroam access.\n"
-"\t\t\t\t\t\t\t"
+"To use eduroam wifi you will need to setup your laptop or smartphone. As end-"
+"user you will only be able to use eduroam if your institution provides "
+"electronic identity (e.g. account for network access). In that case you will "
+"need to contact your administrator and ask for an account. You (or your "
+"network administrator) will have to configure your computer to enable "
+"eduroam access."
 msgstr ""
-"\n"
-"\t\t\t\t\t\t\t\tAzért,  hogy az eduroam-ot használni tudd egyszer be kell állítanod a laptopod vagy okostelefonod.  Végfelhaszmálóként akkor tudod használni az eduroam-ot ha az anyaintézményed (ahova be vagy iratkozva, vagy dolgozol) egy elektronikus azonosítót bizotsított számodra  (pl. hálózati/eduroam hozzáférési fiók). Ezt az azonosítót az anyaintézményed hálózati vagy felhasználói ügyfélszolgálatán igényelheted. Ennek birtokában te, vagy a rendszergazdád be tudja állítani az eszközeiden az eduroam hozzáférést.\n"
-"\t\t\t\t\t\t\t"
+"Azért,  hogy az eduroam-ot használni tudd egyszer be kell állítanod a "
+"laptopod vagy okostelefonod.  Végfelhaszmálóként akkor tudod használni az "
+"eduroam-ot ha az anyaintézményed (ahova be vagy iratkozva, vagy dolgozol) "
+"egy elektronikus azonosítót bizotsított számodra  (pl. hálózati/eduroam "
+"hozzáférési fiók). Ezt az azonosítót az anyaintézményed hálózati vagy "
+"felhasználói ügyfélszolgálatán igényelheted. Ennek birtokában te, vagy a "
+"rendszergazdád be tudja állítani az eszközeiden az eduroam hozzáférést."
 
 #: djnro/templates/front/management.html:12
 msgid ""
@@ -860,8 +1029,7 @@ msgstr ""
 
 #: djnro/templates/front/management.html:13
 msgid ""
-"Administrators can log in using either Social Networks or the AAI "
-"Federation:"
+"Administrators can log in using either Social Networks or the AAI Federation:"
 msgstr ""
 "A rendszergazdák eduID szövetségi azonosítás vagy szociális hálózatok "
 "segítségével tudnak bejelentkezni:"
@@ -875,10 +1043,10 @@ msgid ""
 "user can proceed with activation."
 msgstr ""
 "A felhasználók hitelesítésére engedélyezett szociális hálózatokat  "
-"<b>Kezelés</b> legördülő menüből elindulva lehet indítani. A hitelesítéshez,"
-" a felhasználónak meg kell adnia a hiányzó információkat, amelyek "
-"szükségesek ehhez alkalmazáshoz (például e-mail cím). Ezt követően, a "
-"felhasználó folytathatja aktiválást."
+"<b>Kezelés</b> legördülő menüből elindulva lehet indítani. A hitelesítéshez, "
+"a felhasználónak meg kell adnia a hiányzó információkat, amelyek szükségesek "
+"ehhez alkalmazáshoz (például e-mail cím). Ezt követően, a felhasználó "
+"folytathatja aktiválást."
 
 #: djnro/templates/front/management.html:19
 msgid "Authentication and authorization are carried out through a"
@@ -920,13 +1088,12 @@ msgstr ""
 "Egy karakterlánc, amellyel egyedileg azonosítja a rendszergazdát az "
 "alkalmazás."
 
-#: djnro/templates/front/management.html:25
+#: djnro/templates/front/management.html:26
 msgid "A specific URN value must be provided to authorize an administrator:"
 msgstr ""
-"Egy URN érték amelyet  be kell állítani, a rendszergazda számára (HEXAA-"
-"ból):"
+"Egy URN érték amelyet  be kell állítani, a rendszergazda számára (HEXAA-ból):"
 
-#: djnro/templates/front/management.html:26
+#: djnro/templates/front/management.html:28
 msgid ""
 "The e-mail address (one or more) of the administrator. It is used for "
 "notifications from the management application. It may also be used for "
@@ -936,15 +1103,15 @@ msgstr ""
 "üzenetek küldésére. További kommunikációra is hasznáható előzetes "
 "hozzájárulással."
 
-#: djnro/templates/front/management.html:27
+#: djnro/templates/front/management.html:29
 msgid "The person's first name."
 msgstr "Személy keresztneve"
 
-#: djnro/templates/front/management.html:28
+#: djnro/templates/front/management.html:30
 msgid "The person's last name."
 msgstr "A személy vezetékneve."
 
-#: djnro/templates/front/management.html:32
+#: djnro/templates/front/management.html:34
 msgid ""
 "Once attribute release is setup properly an administrator can login to the "
 "management application."
@@ -952,12 +1119,12 @@ msgstr ""
 "Miután attribútum kiadás rendesen be van állítva a  rendszergazda be fog "
 "tudni jelenkezni az alkalmazásba."
 
-#: djnro/templates/front/management.html:35
+#: djnro/templates/front/management.html:37
 msgid ""
 "After the first login, administrators are asked to associate their account "
-"with the institution they want to manage. Their choice must then be ratified"
-" by the operators of their management application. Following that, they will"
-" be notified through e-mail and they will then be able to start using the "
+"with the institution they want to manage. Their choice must then be ratified "
+"by the operators of their management application. Following that, they will "
+"be notified through e-mail and they will then be able to start using the "
 "management application."
 msgstr ""
 "Az első bejelentkezés után a rendszergazdának kérni kell, hogy "
@@ -965,7 +1132,7 @@ msgstr ""
 "felelős. Ezt az összekapcsolást a szövetség üzemeltetői erősítik meg. Ezt "
 "követően e-mail értesítést kap, hogy képes használni az alkalmazást."
 
-#: djnro/templates/front/management.html:38
+#: djnro/templates/front/management.html:40
 msgid ""
 "Among other things, the metadata provided by administrators through the "
 "management application are used to compile database data for the federation"
@@ -1065,13 +1232,13 @@ msgstr "Aktiválás"
 msgid "The user will be notified about his/her account activation"
 msgstr "A felhasználó értesítést kap a fiók aktiválásáról"
 
-#: edumanage/decorators.py:24 edumanage/views.py:1663 edumanage/views.py:1766
+#: edumanage/decorators.py:29 edumanage/views.py:1671 edumanage/views.py:1822
 #, python-format
 msgid ""
 "User account <strong>%(username)s</strong> is pending activation. "
 "Administrators have been notified and will activate this account within the "
-"next days. <br>If this account has remained inactive for a long time contact"
-" your technical coordinator or %(nroname)s Helpdesk"
+"next days. <br>If this account has remained inactive for a long time contact "
+"your technical coordinator or %(nroname)s Helpdesk"
 msgstr ""
 "Felhasználó hozzáférés <strong>%(username)s</strong> aktiválása függőben. A "
 "szövetség adminisztrátorai értesítve lettek, a következő a  napokban "
@@ -1145,8 +1312,7 @@ msgstr "Kiszolgáló: %(servername)s , Típus: %(ertype)s"
 #: edumanage/models.py:274
 #, python-format
 msgid ""
-"You cannot change this server to %(ertype)s (it is used by realms "
-"%(realms)s)"
+"You cannot change this server to %(ertype)s (it is used by realms %(realms)s)"
 msgstr ""
 "Nem tudod megváltoztatni ezt a szervert %(ertype)s (i%(realms)s realm "
 "használja)"
@@ -1170,17 +1336,17 @@ msgstr ""
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr "Intézmény: %(inst)s, Szolgáltatás helyszín: %(locname)s"
 
-#: edumanage/models.py:497
+#: edumanage/models.py:504
 msgid ""
-"The primary, registered domain name for your institution, eg. "
-"example.com.<br>This is used to derive the Operator-Name attribute according"
-" to RFC5580, par.4.1, using the REALM namespace."
+"The primary, registered domain name for your institution, eg. example.com."
+"<br>This is used to derive the Operator-Name attribute according to RFC5580, "
+"par.4.1, using the REALM namespace."
 msgstr ""
 "Az elsődleges, bejegyzett domain neve az intézménynek, pl. example.hu. <br> "
 "Ez  Operator-Name attribútum készítéséhez használjuk  RFC5580, par.4.1 "
 "alapján."
 
-#: edumanage/models.py:500
+#: edumanage/models.py:507
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -1188,7 +1354,7 @@ msgstr ""
 "A felhasználók száma (magánszemélyek), amelyek jogosultak részt venni "
 "eduroam szolgáltatásban"
 
-#: edumanage/models.py:501
+#: edumanage/models.py:508
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
@@ -1196,17 +1362,17 @@ msgstr ""
 "A kibocsátott azonosítók száma (hitelesítő adat) amelyet eduroam "
 "szolgáltatásra lehet használni"
 
-#: edumanage/models.py:509
+#: edumanage/models.py:516
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr "Intézmény: %(inst)s, Típus: %(ertype)s"
 
-#: edumanage/models.py:540
+#: edumanage/models.py:547
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr "Ország:%(country)s, NRO: %(orgname)s"
 
-#: edumanage/models.py:581
+#: edumanage/models.py:588
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
@@ -1217,7 +1383,7 @@ msgstr ""
 "%(idp)s,  SP: %(sp)s, IdPSPs: %(idpsp)s, felhasználók: %(numuser)s, "
 "identitások: %(numid)s"
 
-#: edumanage/views.py:1602
+#: edumanage/views.py:1610
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
@@ -1225,19 +1391,19 @@ msgstr ""
 "Az IdP-nek át kell adnia  a eduPersonPrincipalName attribútumot ezen "
 "szolgáltatásnak <br>"
 
-#: edumanage/views.py:1608
+#: edumanage/views.py:1616
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
-"IdP-nek át kell adnia eduPersonEntitlement attributumot ezen szolgáltatásnak"
-" <br>"
+"IdP-nek át kell adnia eduPersonEntitlement attributumot ezen szolgáltatásnak "
+"<br>"
 
-#: edumanage/views.py:1613
+#: edumanage/views.py:1621
 msgid "Your idP should release the mail attribute towards this service"
 msgstr "IdP-nek át kell adnia mail attributumot ezen szolgáltatásnak <br>"
 
-#: edumanage/views.py:1679
+#: edumanage/views.py:1687
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
@@ -1246,16 +1412,15 @@ msgstr ""
 "Valami elromlott a a felhasználói hitelesítéskor. Lépj kapcsolatba a "
 "rendszergazdával %s"
 
-#: edumanage/views.py:1688
+#: edumanage/views.py:1696
 #, python-format
 msgid "Invalid login procedure. Error: %s"
 msgstr "Érvénytelen bejelentkezési eljárás. Hiba:%s"
 
-#: edumanage/views.py:1748
+#: edumanage/views.py:1804
 msgid ""
-"Violation warning: User account is already associated with an "
-"institution.The event has been logged and our administrators will be "
-"notified about it"
+"Violation warning: User account is already associated with an institution."
+"The event has been logged and our administrators will be notified about it"
 msgstr ""
 "Figyelmeztetés: Felhasználói fiók már hozzá van rendelve egy intézményhez. "
 "Az esemény naplózásra került, és a rendszergazdát is értesítjük róla."

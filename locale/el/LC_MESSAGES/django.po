@@ -2,16 +2,17 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-02 02:18+0300\n"
-"PO-Revision-Date: 2017-04-17 14:06+0300\n"
+"POT-Creation-Date: 2017-04-18 10:27+0300\n"
+"PO-Revision-Date: 2017-04-18 11:05+0300\n"
 "Last-Translator: Vicky Kons <vickyk@admin.grnet.gr>, 2017\n"
-"Language-Team: Greek (https://www.transifex.com/eduroam_devel/teams/11799/el/)\n"
+"Language-Team: Greek (https://www.transifex.com/eduroam_devel/teams/11799/"
+"el/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -43,7 +44,7 @@ msgstr "Αγγλικά"
 msgid "Hungarian"
 msgstr "Ουγγρικά"
 
-#: djnro/templates/base.html:35
+#: djnro/templates/base.html:37
 #: djnro/templates/edumanage/server_details.html:4
 #: djnro/templates/edumanage/service_details.html:7
 #: djnro/templates/edumanage/welcome.html:17
@@ -54,47 +55,52 @@ msgstr "Ουγγρικά"
 msgid "Home"
 msgstr "Αρχική"
 
-#: djnro/templates/base.html:37
+#: djnro/templates/base.html:39
 #: djnro/templates/front/management_dropdown.html:4
 #: djnro/templates/front/management_dropdown.html:7
 msgid "Manage"
 msgstr "Διαχείριση"
 
-#: djnro/templates/base.html:41
+#: djnro/templates/base.html:43
 #: djnro/templates/edumanage/services_edit.html:66
 msgid "Language"
 msgstr "Γλώσσα"
 
-#: djnro/templates/base.html:56 djnro/templates/overview/index.html:38
+#: djnro/templates/base.html:58 djnro/templates/overview/index.html:38
 msgid "Institutions"
 msgstr "Φορείς"
 
-#: djnro/templates/base.html:58 djnro/templates/front/management.html:3
+#: djnro/templates/base.html:60 djnro/templates/front/management.html:3
 #: djnro/templates/front/management.html:9
 msgid "Management"
 msgstr "Διαχείριση"
 
-#: djnro/templates/base.html:59 djnro/templates/front/participants.html:4
+#: djnro/templates/base.html:61 djnro/templates/front/participants.html:4
 msgid "Participants"
 msgstr "Συμμετέχοντες"
 
-#: djnro/templates/base.html:63 djnro/templates/edumanage/services.html:176
+#: djnro/templates/base.html:62 djnro/templates/front/connect.html:4
+#: djnro/templates/front/connect.html:28
+msgid "Connect to eduroam"
+msgstr "Συνδεθείτε στο eduroam"
+
+#: djnro/templates/base.html:66 djnro/templates/edumanage/services.html:176
 msgid "Service"
 msgstr "Υπηρεσία"
 
-#: djnro/templates/base.html:65
+#: djnro/templates/base.html:68
 msgid "Closest eduroam"
 msgstr "Πλησιέστερο eduroam"
 
-#: djnro/templates/base.html:66
+#: djnro/templates/base.html:69
 msgid "World eduroam"
 msgstr "eduroam στον κόσμο"
 
-#: djnro/templates/base.html:67
+#: djnro/templates/base.html:70
 msgid "pebduroam"
 msgstr "pebduroam"
 
-#: djnro/templates/base.html:68
+#: djnro/templates/base.html:71
 msgid "Closest point api"
 msgstr "API για το κοντινότερο σημείο"
 
@@ -500,8 +506,7 @@ msgstr "Διαγραφή Παρακολουθούμενης Περιοχής"
 
 #: djnro/templates/edumanage/instrealmmons.html:206
 msgid "You are about to delete monitored realm parameters for "
-msgstr ""
-"Πρόκειται να διαγράψετε τις παραμέτρους παρακολουθούμενης περιοχής για"
+msgstr "Πρόκειται να διαγράψετε τις παραμέτρους παρακολουθούμενης περιοχής για"
 
 #: djnro/templates/edumanage/instrealmmons.html:207
 msgid "Delete Monitored Realm Parameters"
@@ -790,21 +795,21 @@ msgstr ""
 #: djnro/templates/front/api.html:14
 msgid ""
 "The API receives the current location coordinates in a GET request, "
-"calculates the closest point through server-side triangulation and returns a"
-" JSON reply with its’ coordinates and a detailed description."
+"calculates the closest point through server-side triangulation and returns a "
+"JSON reply with its’ coordinates and a detailed description."
 msgstr ""
 "Το API λαμβάνει τις συντεταγμένες μια τοποθεσίας σε ένα αίτημα GET, "
-"υπολογίζει το κοντινότερο σημείο πρόσβασης βάσει τριγωνισμού θέσης στη μεριά"
-" του εξυπηρετήτη και επιστρέφει μια απάντηση JSON με τις συντεταγμένες του "
-"σημείου πρόσβασης και μια αναλυτική περιγραφή. "
+"υπολογίζει το κοντινότερο σημείο πρόσβασης βάσει τριγωνισμού θέσης στη μεριά "
+"του εξυπηρετητή και επιστρέφει μια απάντηση JSON με τις συντεταγμένες του "
+"σημείου πρόσβασης και μια αναλυτική περιγραφή."
 
 #: djnro/templates/front/api.html:16
 msgid ""
-"Based on this API, we developed the closest point web page that allows users"
-" to find the closest eduroam location or a location they search for."
+"Based on this API, we developed the closest point web page that allows users "
+"to find the closest eduroam location or a location they search for."
 msgstr ""
-"Βασιζόμενοι σε αυτό το API, δημιουργήσαμε τη σελίδα εύρεσης του κοντινότερου"
-" σημείου που επιτρέπει τους χρήστες να βρίσκουν την τοποθεσία του "
+"Βασιζόμενοι σε αυτό το API, δημιουργήσαμε τη σελίδα εύρεσης του κοντινότερου "
+"σημείου που επιτρέπει τους χρήστες να βρίσκουν την τοποθεσία του "
 "κοντινότερου σημείου eduroam στην θέση που βρίσκονται ή σε άλλη τοποθεσία "
 "που αναζητούν."
 
@@ -816,39 +821,228 @@ msgstr ""
 "Οι δυνατότητες είναι απεριόριστες! Μπορείτε να δημιουργήσετε την δική σας "
 "εφαρμογή είτε είναι στο διαδίκτυο είτε σε κινητό είτε σε φορητή συσκευή."
 
+#: djnro/templates/front/connect.html:18
+#, python-format
+msgid ""
+"For full functionality of this site it is necessary to enable JavaScript. "
+"Here are the %(a_enablejs)sinstructions how to enable JavaScript in your web "
+"browser"
+msgstr ""
+"Για την πλήρη λειτουργικότητα αυτού του ιστότοπου απατείται η ενεργοποίηση "
+"JavaScript. Λάβετε %(a_enablejs)sοδηγίες πώς να ενεργοποιήσετε JavaScript "
+"στο φυλλομετρητή σας"
+
+#: djnro/templates/front/connect.html:29
+msgid ""
+"Find instructions, contacts and tools to help you securely connect to eduroam"
+msgstr ""
+"Βρείτε οδηγίες, στοιχεία επικοινωνίας και εργαλεία που θα σας βοηθήσουν να "
+"συνδεθείτε με ασφάλεια στο eduroam"
+
+#: djnro/templates/front/connect.html:33
+#, python-format
+msgid "Search for your institution in %(COUNTRY_NAME)s"
+msgstr "Αναζητήστε το φορέα σας σε %(COUNTRY_NAME)s"
+
+#: djnro/templates/front/connect.html:45
+#, python-format
+msgid "Show nearest %(span_hiddenxs)sinstitutions%(span_close)s"
+msgstr "Εμφάνιση κοντινότερων %(span_hiddenxs)sφορέων%(span_close)s"
+
+#: djnro/templates/front/connect.html:48
+#, python-format
+msgid "Showing nearest %(span_hiddenxs)sinstitutions%(span_close)s"
+msgstr "Εμφανίζονται οι κοντινότεροι %(span_hiddenxs)sφορείς%(span_close)s"
+
+#: djnro/templates/front/connect.html:57
+#, python-format
+msgid "Find %(span_hiddenxs)sinstitutions%(span_close)s worldwide"
+msgstr "Βρείτε %(span_hiddenxs)sφορείς%(span_close)s διεθνώς"
+
+#: djnro/templates/front/connect.html:79
+msgid "See info (instructions, contacts) for this institution"
+msgstr "Δείτε πληροφορίες (οδηγίες, στοιχεία επικοινωνίας) γι αυτό το φορέα"
+
+#: djnro/templates/front/connect.html:108
+#: djnro/templates/front/connect.html:140
+msgid "Loading..."
+msgstr "Φορτώνει..."
+
+#: djnro/templates/front/connect.html:121
+#: djnro/templates/front/connect.html:145
+msgid "Error"
+msgstr "Σφάλμα"
+
+#: djnro/templates/front/connect.html:122
+#: djnro/templates/front/connect.html:146
+#: djnro/templates/front/connect.html:192
+msgid "Request failed, please reload the page"
+msgstr "Το αίτημα απέτυχε, παρακαλώ επαναλάβετε τη φόρτωση της σελίδας"
+
+#: djnro/templates/front/connect.html:151
+msgid "No device match, please select a different platform"
+msgstr ""
+"Δε βρέθηκε συσκευή που ταιριάζει, παρακαλώ επιλέξτε διαφορετική πλατφόρμα"
+
+#: djnro/templates/front/connect.html:159
+#: djnro/templates/front/connect.html:173
+msgid "Continue"
+msgstr "Συνέχεια"
+
+#: djnro/templates/front/connect.html:164
+#, python-format
+msgid ""
+"The institution administrator has specified this device should be configured "
+"with resources provided on a local page: %(redirect_link)s If you continue "
+"you will be redirected there."
+msgstr ""
+"Ο διαχειριστής φορέα όρισε ότι αυτή η συσκευή πρέπει να ρυθμιστεί με πόρους "
+"που παρέχονται σε άλλη σελίδα: %(redirect_link)s Αν συνεχίσετε θα "
+"ανακατευθυνθείτε εκεί."
+
+#: djnro/templates/front/connect.html:177
+msgid "Download"
+msgstr "Μεταφόρτωση"
+
+#: djnro/templates/front/connect.html:178
+msgid "Generating..."
+msgstr "Παράγεται..."
+
+#: djnro/templates/front/connect.html:179
+msgid "Downloading"
+msgstr "Mεταφορτώνεται"
+
+#: djnro/templates/front/connect.html:180
+msgid "Failed"
+msgstr "Απέτυχε"
+
+#: djnro/templates/front/connect.html:184
+msgid "The downloaded profile will be digitally signed by GÉANT Association"
+msgstr "Το ληφθέν προφίλ θα φέρει ψηφιακή υπογραφή από το GÉANT Association"
+
+#: djnro/templates/front/connect.html:185
+msgid "Signed"
+msgstr "Υπογεγραμμένο"
+
+#: djnro/templates/front/connect.html:186
+msgid "The downloaded profile will display messages in this language"
+msgstr "Το ληφθέν προφίλ θα εμφανίζει μηνύματα σε αυτή τη γλώσσα"
+
+#: djnro/templates/front/connect.html:196
+msgid ""
+"Only install profiles that match your institution (and user group). When "
+"prompted for your username, enter your fully qualified username@realm, "
+"unless specifically instructed by your institution."
+msgstr ""
+"Εγκαταστήστε μόνο προφίλ που ανήκει στο φορέα (και την ομάδα χρηστών) σας. "
+"Όταν ερωτηθείτε για το όνομα χρήστη, εισάγετε το πλήρες username@realm, "
+"εκτός αν παρέχονται ειδικές οδηγίες από το φορέα σας."
+
+#: djnro/templates/front/connect.html:210
+msgid "Information &amp; Usage"
+msgstr "Πληροφορίες &amp; Χρήση"
+
+#: djnro/templates/front/connect.html:221
+msgid ""
+"Once your system is successfully configured, and after you enter your "
+"credentials (when prompted, upon installation or first connection), the "
+"device will automatically connect whenever it is in the vicinity of an "
+"eduroam hotspot."
+msgstr ""
+"Όταν ολοκληρωθεί με επιτυχία η ρύθμιση του συστήματός σας, και αφού εισάγετε "
+"τα διαπιστευτήρια χρήστη (μόλις ζητηθούν, κατά την εγκατάσταση ή την πρώτη "
+"σύνδεση), η συσκευή θα συνδέεται αυτόματα οποτεδήποτε βρίσκεται κοντά σε "
+"σημείο πρόσβασης στο eduroam."
+
+#: djnro/templates/front/connect.html:232
+msgid "Other platforms"
+msgstr "Άλλες πλατφόρμες"
+
+#: djnro/templates/front/connect.html:263
+msgid ""
+"If you encounter problems, you can obtain direct assistance from your home "
+"organisation:"
+msgstr ""
+"Αν συναντήσετε προβλήματα, μπορείτε να λάβετε απευθείας βοήθεια από τον "
+"οικείο φορέα σας:"
+
+#: djnro/templates/front/connect.html:271
+msgid ""
+"If you encounter problems you can ask for help at your home institution."
+msgstr ""
+"Αν συναντήσετε προβλήματα μπορείτε να ρωτήσετε για βοήθεια στον οικείο φορέα "
+"σας."
+
+#: djnro/templates/front/connect.html:283
+#, python-format
+msgid ""
+"You may also subscribe to the %(a_catuserslist)susers mailing list"
+"%(a_close)s to report (in English) issues related to %(link_eduroamcat)s."
+msgstr ""
+"Μπορείτε επίσης να εγγραφείτε στη %(a_catuserslist)sλίστα ηλεκτρονικής "
+"αλληλογραφίας χρηστών%(a_close)s για να αναφέρετε (στα Αγγλικά) ζητήματα που "
+"σχετίζονται με το %(link_eduroamcat)s."
+
+#: djnro/templates/front/connect.html:299
+#, python-format
+msgid "%(link_eduroamcat)s service is provided by %(linkimg_geant)s"
+msgstr "Η υπηρεσία %(link_eduroamcat)s παρέχεται από το %(linkimg_geant)s"
+
+#: djnro/templates/front/connect.html:303
+#, python-format
+msgid ""
+"This site provides access to CAT data with respect to the service "
+"%(a_catapitou)sterms of use"
+msgstr ""
+"Ο παρών ιστότοπος παρέχει πρόσβαση σε δεδομένα του CAT λαμβάνοντας υπόψη "
+"τους %(a_catapitou)sόρους χρήσης της υπηρεσίας"
+
 #: djnro/templates/front/geolocate.html:4
 msgid "Closest Access Point"
 msgstr "Πλησιέστερο Σημείο Πρόσβασης"
 
 #: djnro/templates/front/index.html:22
 msgid ""
-"\n"
-"\t\t\t\t\t\t\tYou might be wondering about the location of the closest eduroam access points in order to be able to connect to eduroam. We provide a service and an api in order to help you find the closest eduroam access point.\n"
-"\t\t\t\t\t\t\t"
+"You might be wondering about the location of the closest eduroam access "
+"points in order to be able to connect to eduroam. We provide a service and "
+"an api in order to help you find the closest eduroam access point."
 msgstr ""
-"\n"
-"⇥⇥⇥⇥⇥⇥⇥Ίσως να αναρωτιέστε για την τοποθεσία των πλησιέστερων σημείων πρόσβασης eduroam, ώστε να είστε σε θέση να συνδεθείτε στο eduroam. Παρέχουμε μια υπηρεσία και ένα API για να σας βοηθήσει να βρείτε το πλησιέστερο σημείο πρόσβασης eduroam.\n"
-"⇥⇥⇥⇥⇥⇥⇥"
+"Ίσως να αναρωτιέστε για την τοποθεσία των πλησιέστερων σημείων πρόσβασης "
+"eduroam, ώστε να είστε σε θέση να συνδεθείτε στο eduroam. Παρέχουμε μια "
+"υπηρεσία και ένα API για να σας βοηθήσει να βρείτε το πλησιέστερο σημείο "
+"πρόσβασης eduroam."
 
 #: djnro/templates/front/index.html:41
 msgid ""
-"\n"
-"\t\t\t\t\t\t\teduroam (education roaming) is the secure, world-wide roaming access service developed for the international research and education community. It allows students, researchers and staff from participating institutions to obtain Internet connectivity across campus and when visiting other participating institutions by simply opening their laptop.\n"
-"\t\t\t\t\t\t"
+"eduroam (education roaming) is the secure, world-wide roaming access service "
+"developed for the international research and education community. It allows "
+"students, researchers and staff from participating institutions to obtain "
+"Internet connectivity across campus and when visiting other participating "
+"institutions by simply opening their laptop."
 msgstr ""
-"\n"
-"⇥⇥⇥⇥⇥⇥⇥eduroam (education roaming) είναι η ασφαλής, παγκόσμια υπηρεσία πρόσβασης περιαγωγής που αναπτύχθηκε για τη διεθνή ερευνητική και εκπαιδευτική κοινότητα. Επιτρέπει σε φοιτητές, ερευνητές και προσωπικό από τα συμμετέχοντα ιδρύματα να αποκτήσουν σύνδεση στο Internet σε όλη την πανεπιστημιούπολη και όταν επισκέπτονται άλλα συμμετέχοντα ιδρύματα, απλά ανοίγοντας το laptop τους.\n"
-"⇥⇥⇥⇥⇥⇥"
+"eduroam (education roaming) είναι η ασφαλής, παγκόσμια υπηρεσία πρόσβασης "
+"περιαγωγής που αναπτύχθηκε για τη διεθνή ερευνητική και εκπαιδευτική "
+"κοινότητα. Επιτρέπει σε φοιτητές, ερευνητές και προσωπικό από τα "
+"συμμετέχοντα ιδρύματα να αποκτήσουν σύνδεση στο Internet σε όλη την "
+"πανεπιστημιούπολη και όταν επισκέπτονται άλλα συμμετέχοντα ιδρύματα, απλά "
+"ανοίγοντας το laptop τους."
 
 #: djnro/templates/front/index.html:54
 msgid ""
-"\n"
-"\t\t\t\t\t\t\t\tTo use eduroam wifi you will need to setup your laptop or smartphone. As end-user you will only be able to use eduroam if your institution provides electronic identity (e.g. account for network access). In that case you will need to contact your administrator and ask for an account. You (or your network administrator) will have to configure your computer to enable eduroam access.\n"
-"\t\t\t\t\t\t\t"
+"To use eduroam wifi you will need to setup your laptop or smartphone. As end-"
+"user you will only be able to use eduroam if your institution provides "
+"electronic identity (e.g. account for network access). In that case you will "
+"need to contact your administrator and ask for an account. You (or your "
+"network administrator) will have to configure your computer to enable "
+"eduroam access."
 msgstr ""
-"\n"
-"⇥⇥⇥⇥⇥⇥⇥⇥Για να χρησιμοποιήσετε το eduroam Wi-Fi θα πρέπει να ρυθμίσετε το laptop ή το smartphone σας. Ως τελικός χρήστης θα είστε σε θέση να χρησιμοποιήσετε το eduroam εφόσον το ίδρυμα σας παρέχει ηλεκτρονική ταυτότητα (π.χ. το λογαριασμό για πρόσβαση στο δίκτυο). Σε αυτή την περίπτωση θα πρέπει να επικοινωνήσετε με το διαχειριστή σας και να ζητήσετε ένα λογαριασμό. Εσείς (ή ο διαχειριστής του δικτύου σας) θα πρέπει να ρυθμίσετε τον υπολογιστή σας για να ενεργοποιήσετε την πρόσβαση σας μέσω eduroam.\n"
-"⇥⇥⇥⇥⇥⇥⇥"
+"Για να χρησιμοποιήσετε το eduroam Wi-Fi θα πρέπει να ρυθμίσετε το laptop ή "
+"το smartphone σας. Ως τελικός χρήστης θα είστε σε θέση να χρησιμοποιήσετε το "
+"eduroam εφόσον το ίδρυμα σας παρέχει ηλεκτρονική ταυτότητα (π.χ. το "
+"λογαριασμό για πρόσβαση στο δίκτυο). Σε αυτή την περίπτωση θα πρέπει να "
+"επικοινωνήσετε με το διαχειριστή σας και να ζητήσετε ένα λογαριασμό. Εσείς "
+"(ή ο διαχειριστής του δικτύου σας) θα πρέπει να ρυθμίσετε τον υπολογιστή σας "
+"για να ενεργοποιήσετε την πρόσβαση σας μέσω eduroam."
 
 #: djnro/templates/front/management.html:12
 msgid ""
@@ -862,8 +1056,7 @@ msgstr ""
 
 #: djnro/templates/front/management.html:13
 msgid ""
-"Administrators can log in using either Social Networks or the AAI "
-"Federation:"
+"Administrators can log in using either Social Networks or the AAI Federation:"
 msgstr ""
 "Οι διαχειριστές μπορούν να συνδεθούν χρησιμοποιώντας είτε Social Networks ή "
 "την Ομοσπονδία AAI:"
@@ -924,13 +1117,13 @@ msgstr ""
 "Παρέχει μια συμβολοσειρά κειμένου που χρησιμοποιείται ως μοναδικό "
 "αναγνωριστικό του διαχεριστή στην εφαρμογή διαχείρισης."
 
-#: djnro/templates/front/management.html:25
+#: djnro/templates/front/management.html:26
 msgid "A specific URN value must be provided to authorize an administrator:"
 msgstr ""
 "Μια συγκεκριμένη τιμή σε μορφή URN πρέπει να επιστρέφεται προκειμένου ένας "
 "χρήστης να εξουσιοδοτείται ως διαχειριστής:"
 
-#: djnro/templates/front/management.html:26
+#: djnro/templates/front/management.html:28
 msgid ""
 "The e-mail address (one or more) of the administrator. It is used for "
 "notifications from the management application. It may also be used for "
@@ -940,15 +1133,15 @@ msgstr ""
 "ειδοποιήσεις από την εφαρμογή διαχείρισης. Μπορεί επίσης να χρησιμοποιηθεί "
 "για περαιτέρω επικοινωνία με το διαχειριστή, με προηγούμενη συγκατάθεσή του."
 
-#: djnro/templates/front/management.html:27
+#: djnro/templates/front/management.html:29
 msgid "The person's first name."
 msgstr "Το όνομα του διαχειριστή."
 
-#: djnro/templates/front/management.html:28
+#: djnro/templates/front/management.html:30
 msgid "The person's last name."
 msgstr "Το επώνυμο του διαχειριστή."
 
-#: djnro/templates/front/management.html:32
+#: djnro/templates/front/management.html:34
 msgid ""
 "Once attribute release is setup properly an administrator can login to the "
 "management application."
@@ -956,28 +1149,28 @@ msgstr ""
 "Εφόσον απελευθερώνονται τα απαραίτητα ιδιοχαρακτηριστικά, ο διαχειριστής "
 "μπορεί να συνδεθεί στην εφαρμογή διαχείρισης."
 
-#: djnro/templates/front/management.html:35
+#: djnro/templates/front/management.html:37
 msgid ""
 "After the first login, administrators are asked to associate their account "
-"with the institution they want to manage. Their choice must then be ratified"
-" by the operators of their management application. Following that, they will"
-" be notified through e-mail and they will then be able to start using the "
+"with the institution they want to manage. Their choice must then be ratified "
+"by the operators of their management application. Following that, they will "
+"be notified through e-mail and they will then be able to start using the "
 "management application."
 msgstr ""
 "Μετά την πρώτη είσοδο, ζητείται από τους διαχειριστές να συνδέσουν το "
 "λογαριασμό τους με το φορέα που επιθυμούν να διαχειρίζονται. Η επιλογή τους "
-"θα πρέπει να επικυρωθεί από τους διαχειριστές της εφαρμογής. Στη συνέχεια οι"
-" διαχειριστές θα ενημερωθούν μέσω e-mail ότι μπορούν να ξεκινήσουν να "
+"θα πρέπει να επικυρωθεί από τους διαχειριστές της εφαρμογής. Στη συνέχεια οι "
+"διαχειριστές θα ενημερωθούν μέσω e-mail ότι μπορούν να ξεκινήσουν να "
 "χρησιμοποιούν την εφαρμογή διαχειρίσης."
 
-#: djnro/templates/front/management.html:38
+#: djnro/templates/front/management.html:40
 msgid ""
 "Among other things, the metadata provided by administrators through the "
 "management application are used to compile database data for the federation"
 msgstr ""
 "Μεταξύ άλλων, τα μεταδεδομένα που παρέχονται από τους διαχειριστές μέσω της "
-"εφαρμογής διαχείρισης χρησιμοποιούνται για την ενημέρωση της βάσης δεδομένων"
-" της ομοσπονδίας"
+"εφαρμογής διαχείρισης χρησιμοποιούνται για την ενημέρωση της βάσης δεδομένων "
+"της ομοσπονδίας"
 
 #: djnro/templates/front/participants.html:12
 msgid "Participating Institutions"
@@ -1069,13 +1262,13 @@ msgstr "Ενεργοποίηση"
 msgid "The user will be notified about his/her account activation"
 msgstr "Ο χρήστης θα ενημερωθεί για την ενεργοποίση του λογαριασμού του"
 
-#: edumanage/decorators.py:24 edumanage/views.py:1663 edumanage/views.py:1766
+#: edumanage/decorators.py:29 edumanage/views.py:1671 edumanage/views.py:1822
 #, python-format
 msgid ""
 "User account <strong>%(username)s</strong> is pending activation. "
 "Administrators have been notified and will activate this account within the "
-"next days. <br>If this account has remained inactive for a long time contact"
-" your technical coordinator or %(nroname)s Helpdesk"
+"next days. <br>If this account has remained inactive for a long time contact "
+"your technical coordinator or %(nroname)s Helpdesk"
 msgstr ""
 "Εκκρεμεί η ενεργοποίηση του λογαριασμού χρήστη <strong>%(username)s</ "
 "strong> . Οι διαχειριστές έχουν ειδοποιηθεί και θα ενεργοποιήσουν αυτόν τον "
@@ -1088,8 +1281,8 @@ msgid ""
 "Enter at least one e-mail address. Multiple email addresses Should be "
 "separated with semicolon (;)"
 msgstr ""
-"Πληκτρολογήστε τουλάχιστον μία διεύθυνση e-mail. Οι πολλαπλές διευθύνσεις "
-"e-mail πρέπει να διαχωρίζονται με ερωτηματικό (;)"
+"Πληκτρολογήστε τουλάχιστον μία διεύθυνση e-mail. Οι πολλαπλές διευθύνσεις e-"
+"mail πρέπει να διαχωρίζονται με ερωτηματικό (;)"
 
 #: edumanage/fields.py:20
 #, python-format
@@ -1149,8 +1342,7 @@ msgstr "Εξυπηρετητής: %(servername)s, Τύπος: %(ertype)s"
 #: edumanage/models.py:274
 #, python-format
 msgid ""
-"You cannot change this server to %(ertype)s (it is used by realms "
-"%(realms)s)"
+"You cannot change this server to %(ertype)s (it is used by realms %(realms)s)"
 msgstr ""
 "Δεν μπορείτε να αλλάξετε αυτό το διακομιστή σε %(ertype)s (Χρησιμοποιείται "
 "από τις περιοχές %(realms)s)"
@@ -1167,25 +1359,25 @@ msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
 "%(phase2)s, Username: %(username)s"
 msgstr ""
-"Παρακολουθούμενη Περιοχή: %(monrealm)s, Μέθοδος EAP: %(eapmethod)s, Phase 2:"
-" %(phase2)s, Όνομα Χρήστη: %(username)s"
+"Παρακολουθούμενη Περιοχή: %(monrealm)s, Μέθοδος EAP: %(eapmethod)s, Phase 2: "
+"%(phase2)s, Όνομα Χρήστη: %(username)s"
 
 #: edumanage/models.py:430
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr "Φορέας: %(inst)s, Υπηρεσία Τοποθεσίας: %(locname)s"
 
-#: edumanage/models.py:497
+#: edumanage/models.py:504
 msgid ""
-"The primary, registered domain name for your institution, eg. "
-"example.com.<br>This is used to derive the Operator-Name attribute according"
-" to RFC5580, par.4.1, using the REALM namespace."
+"The primary, registered domain name for your institution, eg. example.com."
+"<br>This is used to derive the Operator-Name attribute according to RFC5580, "
+"par.4.1, using the REALM namespace."
 msgstr ""
-"Το βασικό, κατοχυρωμένο όνομα χώρου του φορέα, π.χ. example.com.<br>Από αυτό"
-" παράγεται το ιδιοχαρακτηριστικό Operator-Name σύμφωνα με το RFC5580, "
+"Το βασικό, κατοχυρωμένο όνομα χώρου του φορέα, π.χ. example.com.<br>Από αυτό "
+"παράγεται το ιδιοχαρακτηριστικό Operator-Name σύμφωνα με το RFC5580, "
 "παρ.4.1, χρησιμοποιώντας το REALM namespace, π.χ. 1example.com"
 
-#: edumanage/models.py:500
+#: edumanage/models.py:507
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -1193,25 +1385,25 @@ msgstr ""
 "Συνολικός αριθμός χρηστών (προσώπων) που δύνανται να συμμετέχουν στην "
 "υπηρεσία eduroam"
 
-#: edumanage/models.py:501
+#: edumanage/models.py:508
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
 msgstr ""
-"Συνολικός αριθμός λογαριασμών που μπορούν να χρησιμοποιηθούν για ταυτοποίηση"
-" χρηστών στην υπηρεσία eduroam"
+"Συνολικός αριθμός λογαριασμών που μπορούν να χρησιμοποιηθούν για ταυτοποίηση "
+"χρηστών στην υπηρεσία eduroam"
 
-#: edumanage/models.py:509
+#: edumanage/models.py:516
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr "Φορέας:  %(inst)s, Τύπος: %(ertype)s"
 
-#: edumanage/models.py:540
+#: edumanage/models.py:547
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr "Χώρα: %(country)s, NRO: %(orgname)s"
 
-#: edumanage/models.py:581
+#: edumanage/models.py:588
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
@@ -1221,7 +1413,7 @@ msgstr ""
 "Χώρα: %(country)s, NRO: %(orgname)s, Φορείς: %(inst)s, IdPs: %(idp)s, SPs: "
 "%(sp)s, IdPSPs: %(idpsp)s, Χρήστες: %(numuser)s, Ταυτότητες: %(numid)s"
 
-#: edumanage/views.py:1602
+#: edumanage/views.py:1610
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
@@ -1229,7 +1421,7 @@ msgstr ""
 "Ο Πάροχος ταυτότητας θα πρέπει να απελευθερώνει το ιδιοχαρακτηριστικό "
 "eduPersonPrincipalName προς αυτήν την υπηρεσία<br>"
 
-#: edumanage/views.py:1608
+#: edumanage/views.py:1616
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
@@ -1237,13 +1429,13 @@ msgstr ""
 "Ο Πάροχος ταυτότητας θα πρέπει να απελευθερώνει το ιδιοχαρακτηριστικό "
 "eduPersonEntitlement με την κατάλληλη τιμή προς αυτήν την υπηρεσία<br>"
 
-#: edumanage/views.py:1613
+#: edumanage/views.py:1621
 msgid "Your idP should release the mail attribute towards this service"
 msgstr ""
 "Ο Πάροχος ταυτότητας θα πρέπει να παρέχει το ιδιοχαρακτηριστικό mail προς "
 "αυτήν την υπηρεσία"
 
-#: edumanage/views.py:1679
+#: edumanage/views.py:1687
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
@@ -1252,16 +1444,15 @@ msgstr ""
 "Κάτι δεν πήγε καλά κατά τον έλεγχο ταυτότητας χρήστη. Επικοινωνήστε με το "
 "διαχειριστή σας %s"
 
-#: edumanage/views.py:1688
+#: edumanage/views.py:1696
 #, python-format
 msgid "Invalid login procedure. Error: %s"
 msgstr "Μη έγκυρη διαδικασία σύνδεσης. Σφάλμα: %s"
 
-#: edumanage/views.py:1748
+#: edumanage/views.py:1804
 msgid ""
-"Violation warning: User account is already associated with an "
-"institution.The event has been logged and our administrators will be "
-"notified about it"
+"Violation warning: User account is already associated with an institution."
+"The event has been logged and our administrators will be notified about it"
 msgstr ""
 "Προειδοποίηση παραβίασης: Ο λογαριασμός του χρήστη έχει ήδη συσχετιστεί με "
 "έναν φορέα. Το γεγονός έχει καταγραφεί και οι διαχειριστές μας θα "
