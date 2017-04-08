@@ -104,7 +104,7 @@ Please note that `REALM_COUNTRIES` must contain an entry where the country code 
 
 Optionally, configure also the login methods that should be available for institutional administrators to log in.
 
-These are configured in the `MANAGE_LOGIN_METHODS` tuple - which contains a dictionary for each login method.  The default value `local_settings.py.dist` comes prepopulated with a list of popular social login providers supported by `python-social-auth`, plus the `shibboleth` and `locallogin` backends.  For each login method, the following fields are available:
+These are configured in the `MANAGE_LOGIN_METHODS` tuple - which contains a dictionary for each login method.  The default value in `local_settings.py.dist` comes prepopulated with a list of popular social login providers supported by `python-social-auth`, plus the `shibboleth` and `locallogin` backends.  For each login method, the following fields are available:
 * `backend`: the name of the backend in python-social-auth (or the special value of `shibboleth` or `locallogin`)
 * `enabled`: whether this login method is enabled
 * `class`: Backend class to load.  Gets added to `settings.AUTHENTICATION_BACKENDS` automatically for enabled login methods.
@@ -136,20 +136,22 @@ Django Social Auth parameters:
 	SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 
 
-DjNRO provides limited integration with eduroam CAT (Configuration Assistant Tool). Institution administrators can automatically provision their institution to CAT without the intervention of the federation (NRO) administrator.
+### eduroam CAT integration
 
-In order to enable this functionality, you must list at least one instance and the corresponding description in CAT_INSTANCES. Beware that pages accessible by end users currently only show CAT information
-for the instance named `production`.
+DjNRO provides integration with eduroam CAT (Configuration Assistant Tool):
 
-You must also set the following parameters for each CAT instance in CAT_AUTH:
+* Institution administrators can automatically provision their institution to CAT without the intervention of the federation (NRO) administrator.
+* End users can search for their institution at the _connect_ page and get direct access to the tools (profiles and installers) provisioned in eduroam CAT.
 
-* CAT_API_KEY: API key for authentication to CAT
+In order to enable this functionality, you must list at least one instance and the corresponding description under the `CAT_INSTANCES` setting. Pages accessible by end users currently only show CAT data for the instance named `production`.
 
-* CAT_API_URL: API endpoint URL
+You must also set the following parameters for each CAT instance in `CAT_AUTH`:
 
-* CAT_PROFILES_URL: Base URL for Intitution Download Area pages
-
-* CAT_IDPMGMT_URL: URL For IdP Overview page
+* `CAT_API_KEY`: Admin API key for authentication to CAT
+* `CAT_API_URL`: Admin API endpoint URL
+* `CAT_USER_API_URL`: User API endpoint URL
+* `CAT_PROFILES_URL`: Base URL for the intitution download area pages
+* `CAT_IDPMGMT_URL`: URL for the IdP overview page
 
 ```
 CAT_INSTANCES = (
@@ -161,19 +163,78 @@ CAT_AUTH = {
     'production': {
         "CAT_API_KEY": "<provided API key>",
         "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
+        "CAT_USER_API_URL": "https://cat.eduroam.org/user/API.php",
         "CAT_PROFILES_URL": "https://cat.eduroam.org/",
         "CAT_IDPMGMT_URL": "https://cat.eduroam.org/admin/overview_idp.php"
     },
     'testing': {
         "CAT_API_KEY": "<provided API key>",
         "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
+        "CAT_USER_API_URL": "https://cat-test.eduroam.org/test/user/API.php",
         "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_idp.php"
     },
 }
 ```
 
-For more information about eduroam CAT, you may read: [A guide to eduroam CAT for federation administrators](https://confluence.terena.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators).
+For more information about eduroam CAT, you may read [the guide to eduroam CAT for federation administrators](//wiki.geant.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators).
+
+Please note: The front-end integration requires that DjNRO has a record of the institution CAT ID. If an institution is manually invited to eduroam CAT, rather than enrolling automatically through DjNRO, then the federation administrator should fill in the ID assigned to the institution in CAT, for example using the Django admin interface.
+
+#### CAT User API proxy
+
+CAT front-end integration with DjNRO works through the CAT User API proxy, which
+
+* provides cross-origin access to the CAT instance User API endpoint URL,
+* normalizes responses, if necessary and
+* caches responses using a Django cache backend.
+
+Fine-grained control is provided over cache lifetime, per CAT instance and User API method. The cache backend and key prefix can also be configured.
+
+The proxy will redirect (rather than proxy) download requests to the backend CAT User API endpoint, for security, statistics and performance considerations; this can be changed.
+
+It is also possible to enable the proxy to serve [CORS](//en.wikipedia.org/wiki/Cross-origin_resource_sharing) headers, so as to permit cross-origin requests, for example to accommodate embedding a CAT front-end in a different site and pointing it to the User API proxy.
+
+The User API proxy is configured through settings `CAT_USER_API_CACHE_TIMEOUT` and `CAT_USER_API_PROXY_OPTIONS`. See the preceding comments in `local_settings.py.dist` for more details on all the above.
+
+### Connect page customization for different eduroam CAT instances
+
+The _connect_ page integrates a CAT user interface. All information provided therein is fetched from eduroam CAT, yet there are some static elements and text defined in the template, which include references specific to [cat.eduroam.org](//cat.eduroam.org/). Such parts are wrapped in template blocks whose names are prefixed with `cat_`. It is possible to extend this template and override such blocks, so as to customize the references for a different CAT instance:
+
+```
+{% extends "base.html" %}
+
+{% block cat_redirect_msg %}
+The message shown for CAT profiles/devices configured to redirect to a local page.
+It should include an <a data-catui="device-redirecturl"> element.
+{% endblock %}
+{% block cat_signed_by %}
+The tooltip message shown for digitally signed CAT downloads.
+{% endblock %}
+{% block cat_default_msg %}
+The default user message shown when no EAP or device custom text is configured.
+{% endblock %}
+{% block cat_postinstall_msg %}
+The message shown after device info.
+{% endblock %}
+{% block cat_support_header %}
+The text shown before support contacts defined in CAT.
+{% endblock %}
+{% block cat_nosupport_header %}
+The text shown when no support contacts are defined in CAT.
+{% endblock %}
+{% block cat_mailing_list %}
+The note about the cat-users mailing list, shown after support contacts.
+{% endblock %}
+{% block cat_attribution %}
+The footnote attributing the CAT service being used.
+It should include an <a data-catui="cat-api-tou"> element.
+{% endblock %}
+```
+
+The custom template should then be configured in the `CAT_CONNECT_TEMPLATE` setting, for the `production` instance. See the default template in `djnro/templates/front/connect.html` and the preceding comments in `local_settings.py.dist` for more details.
+
+Please note: In the default template, these blocks contain text marked for translation. While it is possible to follow suit in the customized template/blocks, it is not practical, since such custom text would have to be committed to the source file (`locale/en/LC_MESSAGES/django.po`). Unfortunately there is presently no solution for translating customized templates, other than overriding DjNRO-shipped PO/MO files and managing them on your own.
 
 ### Extra Apps
 In case one wants to extend some of the default settings (configured in `settings.py`), one can prepend *EXTRA_* on the attribute to be amended. For example:
