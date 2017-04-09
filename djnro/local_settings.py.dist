@@ -10,7 +10,7 @@ import os
 # NRO_DOMAIN_HELPDESK_DICT). Wrapping such a dictionary with
 # djnro.lldict.LazyLangDict ensures that an (arbitrary) string value
 # will be returned where a dict is not expected.
-from djnro.lldict import LazyLangDict as _
+from djnro.lldict import LazyLangDict as _ld
 #from django.utils.translation import ugettext_lazy as _
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
@@ -142,7 +142,7 @@ NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 # NRO federation name
 NRO_FEDERATION_NAME = "GRNET AAI federation"
 # "provided by" info for footer
-NRO_PROV_BY_DICT = {"name": _({'en': "EXAMPLE NRO TEAM"}), "url": "http://noc.example.com"}
+NRO_PROV_BY_DICT = {"name": _ld({'en': "EXAMPLE NRO TEAM"}), "url": "http://noc.example.com"}
 # social media contact (Use: // to preserve https)
 NRO_PROV_SOCIAL_MEDIA_CONTACT = [
     {"url": "//facebook.com/example.com", "fa_style":"fa-facebook", "name":"Facebook"},
@@ -150,11 +150,11 @@ NRO_PROV_SOCIAL_MEDIA_CONTACT = [
 ]
 
 # Helpdesk, used in base.html:
-NRO_DOMAIN_HELPDESK_DICT = {"name": _({'en': "Domain Helpdesk"}), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
+NRO_DOMAIN_HELPDESK_DICT = {"name": _ld({'en': "Domain Helpdesk"}), 'email':'helpdesk@example.com', 'phone': '12324567890', 'uri': 'helpdesk.example.com'}
 
 #Countries for Realm model:
 REALM_COUNTRIES = (
-    ('country_2letters', _({'en': 'Country'}) ),
+    ('country_2letters', _ld({'en': 'Country'}) ),
 )
 
 # List the login methods to be offered to users here.
