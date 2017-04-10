@@ -6,7 +6,7 @@ class LazyLangDict(SimpleLazyObject):
     def __init__(self, *args, **kwargs):
         def _setupfunc():
             dct = dict(*args, **kwargs)
-            for lang in dct:
+            for lang in list(dct):
                 if lang not in dict(settings.LANGUAGES):
                     del dct[lang]
             return dct
