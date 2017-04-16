@@ -336,7 +336,7 @@
     GL.populate = function() {
 	var self = GL;
 	var _this, _args, slocs_ret,
-	    geo = {};
+	    geo = {}, geo_rev = {};
 	if (Array.isArray(this)) {
 	    _this = this[0];
 	    _args = arguments[0];
@@ -358,16 +358,19 @@
 		var coords = {
 		    lat: parseFloat(cur.lat),
 		    lon: parseFloat(cur.lng)
-		}
+		};
+		var coords_key =
+		    JSON.stringify($.extend({inst: inst_key}, coords));
 		if (!(inst_key in geo)) {
 		    geo[inst_key] = [coords];
-		} else if (geo[inst_key].find(function(cur) {
-		    return (JSON.stringify(cur) === JSON.stringify(coords));
-		}) === undefined) {
+		    geo_rev[coords_key] = inst_key;
+		} else if (!(coords_key in geo_rev)) {
 		    geo[inst_key].push(coords);
+		    geo_rev[coords_key] = inst_key;
 		}
 	    });
 	}
+	delete geo_rev;
 
 	$('ul.insts > li > a').each(function() {
 	    var that = this,
