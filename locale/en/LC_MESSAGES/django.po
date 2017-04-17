@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-17 14:43+0300\n"
+"POT-Creation-Date: 2017-04-17 20:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -77,23 +77,28 @@ msgstr ""
 msgid "Participants"
 msgstr ""
 
-#: djnro/templates/base.html:65 djnro/templates/edumanage/services.html:176
+#: djnro/templates/base.html:62 djnro/templates/front/connect.html:4
+#: djnro/templates/front/connect.html:28
+msgid "Connect to eduroam"
+msgstr ""
+
+#: djnro/templates/base.html:66 djnro/templates/edumanage/services.html:176
 msgid "Service"
 msgstr ""
 
-#: djnro/templates/base.html:67
+#: djnro/templates/base.html:68
 msgid "Closest eduroam"
 msgstr ""
 
-#: djnro/templates/base.html:68
+#: djnro/templates/base.html:69
 msgid "World eduroam"
 msgstr ""
 
-#: djnro/templates/base.html:69
+#: djnro/templates/base.html:70
 msgid "pebduroam"
 msgstr ""
 
-#: djnro/templates/base.html:70
+#: djnro/templates/base.html:71
 msgid "Closest point api"
 msgstr ""
 
@@ -801,11 +806,7 @@ msgid ""
 "web or mobile or a widget for a wearable device."
 msgstr ""
 
-#: djnro/templates/front/connect.html:4 djnro/templates/front/connect.html:27
-msgid "Connect to eduroam"
-msgstr ""
-
-#: djnro/templates/front/connect.html:17
+#: djnro/templates/front/connect.html:18
 #, python-format
 msgid ""
 "For full functionality of this site it is necessary to enable JavaScript. "
@@ -813,61 +814,61 @@ msgid ""
 "browser"
 msgstr ""
 
-#: djnro/templates/front/connect.html:28
+#: djnro/templates/front/connect.html:29
 msgid ""
 "Find instructions, contacts and tools to help you securely connect to eduroam"
 msgstr ""
 
-#: djnro/templates/front/connect.html:32
+#: djnro/templates/front/connect.html:33
 #, python-format
 msgid "Search for your institution in %(COUNTRY_NAME)s"
 msgstr ""
 
-#: djnro/templates/front/connect.html:44
+#: djnro/templates/front/connect.html:45
 #, python-format
 msgid "Show nearest %(span_hiddenxs)sinstitutions%(span_close)s"
 msgstr ""
 
-#: djnro/templates/front/connect.html:47
+#: djnro/templates/front/connect.html:48
 #, python-format
 msgid "Showing nearest %(span_hiddenxs)sinstitutions%(span_close)s"
 msgstr ""
 
-#: djnro/templates/front/connect.html:56
+#: djnro/templates/front/connect.html:57
 #, python-format
 msgid "Find %(span_hiddenxs)sinstitutions%(span_close)s worldwide"
 msgstr ""
 
-#: djnro/templates/front/connect.html:78
+#: djnro/templates/front/connect.html:79
 msgid "See info (instructions, contacts) for this institution"
 msgstr ""
 
-#: djnro/templates/front/connect.html:107
-#: djnro/templates/front/connect.html:139
+#: djnro/templates/front/connect.html:108
+#: djnro/templates/front/connect.html:140
 msgid "Loading..."
-msgstr ""
-
-#: djnro/templates/front/connect.html:120
-#: djnro/templates/front/connect.html:144
-msgid "Error"
 msgstr ""
 
 #: djnro/templates/front/connect.html:121
 #: djnro/templates/front/connect.html:145
-#: djnro/templates/front/connect.html:191
+msgid "Error"
+msgstr ""
+
+#: djnro/templates/front/connect.html:122
+#: djnro/templates/front/connect.html:146
+#: djnro/templates/front/connect.html:192
 msgid "Request failed, please reload the page"
 msgstr ""
 
-#: djnro/templates/front/connect.html:150
+#: djnro/templates/front/connect.html:151
 msgid "No device match, please select a different platform"
 msgstr ""
 
-#: djnro/templates/front/connect.html:158
-#: djnro/templates/front/connect.html:172
+#: djnro/templates/front/connect.html:159
+#: djnro/templates/front/connect.html:173
 msgid "Continue"
 msgstr ""
 
-#: djnro/templates/front/connect.html:163
+#: djnro/templates/front/connect.html:164
 #, python-format
 msgid ""
 "The institution administrator has specified this device should be configured "
@@ -875,46 +876,46 @@ msgid ""
 "you will be redirected there."
 msgstr ""
 
-#: djnro/templates/front/connect.html:176
+#: djnro/templates/front/connect.html:177
 msgid "Download"
 msgstr ""
 
-#: djnro/templates/front/connect.html:177
+#: djnro/templates/front/connect.html:178
 msgid "Generating..."
 msgstr ""
 
-#: djnro/templates/front/connect.html:178
+#: djnro/templates/front/connect.html:179
 msgid "Downloading"
 msgstr ""
 
-#: djnro/templates/front/connect.html:179
+#: djnro/templates/front/connect.html:180
 msgid "Failed"
 msgstr ""
 
-#: djnro/templates/front/connect.html:183
+#: djnro/templates/front/connect.html:184
 msgid "The downloaded profile will be digitally signed by GÉANT Association"
 msgstr ""
 
-#: djnro/templates/front/connect.html:184
+#: djnro/templates/front/connect.html:185
 msgid "Signed"
 msgstr ""
 
-#: djnro/templates/front/connect.html:185
+#: djnro/templates/front/connect.html:186
 msgid "The downloaded profile will display messages in this language"
 msgstr ""
 
-#: djnro/templates/front/connect.html:195
+#: djnro/templates/front/connect.html:196
 msgid ""
 "Only install profiles that match your institution (and user group). When "
 "prompted for your username, enter your fully qualified username@realm, "
 "unless specifically instructed by your institution."
 msgstr ""
 
-#: djnro/templates/front/connect.html:209
+#: djnro/templates/front/connect.html:210
 msgid "Information &amp; Usage"
 msgstr ""
 
-#: djnro/templates/front/connect.html:220
+#: djnro/templates/front/connect.html:221
 msgid ""
 "Once your system is successfully configured, and after you enter your "
 "credentials (when prompted, upon installation or first connection), the "
@@ -922,34 +923,34 @@ msgid ""
 "eduroam hotspot."
 msgstr ""
 
-#: djnro/templates/front/connect.html:231
+#: djnro/templates/front/connect.html:232
 msgid "Other platforms"
 msgstr ""
 
-#: djnro/templates/front/connect.html:262
+#: djnro/templates/front/connect.html:263
 msgid ""
 "If you encounter problems, you can obtain direct assistance from your home "
 "organisation:"
 msgstr ""
 
-#: djnro/templates/front/connect.html:270
+#: djnro/templates/front/connect.html:271
 msgid ""
 "If you encounter problems you can ask for help at your home institution."
 msgstr ""
 
-#: djnro/templates/front/connect.html:282
+#: djnro/templates/front/connect.html:283
 #, python-format
 msgid ""
 "You may also subscribe to the %(a_catuserslist)susers mailing list"
 "%(a_close)s to report (in English) issues related to %(link_eduroamcat)s."
 msgstr ""
 
-#: djnro/templates/front/connect.html:298
+#: djnro/templates/front/connect.html:299
 #, python-format
 msgid "%(link_eduroamcat)s service is provided by %(linkimg_geant)s"
 msgstr ""
 
-#: djnro/templates/front/connect.html:302
+#: djnro/templates/front/connect.html:303
 #, python-format
 msgid ""
 "This site provides access to CAT data with respect to the service "
