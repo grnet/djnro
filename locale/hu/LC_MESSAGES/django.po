@@ -2,809 +2,771 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
+# 
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-16 14:01+1300\n"
-"PO-Revision-Date: 2017-02-01 18:43+0100\n"
+"POT-Creation-Date: 2017-04-02 02:18+0300\n"
+"PO-Revision-Date: 2017-04-17 14:06+0300\n"
+"Last-Translator: Janos Mohacsi <mohacsi@niif.hu>, 2017\n"
+"Language-Team: Hungarian (https://www.transifex.com/eduroam_devel/teams/11799/hu/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language-Team: \n"
-"X-Generator: Poedit 1.8.11\n"
-"Last-Translator: Janos Mohacsi <mohacsi@niif.hu>\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: hu\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: accounts/views.py:79
+#: accounts/models.py:29
+msgid "user"
+msgstr "felhasználó"
+
+#: accounts/models.py:30 djnro/templates/overview/index.html:144
+msgid "users"
+msgstr "felhasználók"
+
+#: accounts/views.py:106
 #, python-format
 msgid "%sUser account activated"
 msgstr "%sUser fiók aktivált"
 
 #: djnro/settings.py:38
 msgid "Greek"
-msgstr "görög"
+msgstr "Görög"
 
 #: djnro/settings.py:39
 msgid "English"
 msgstr "Angol"
 
-#: djnro/templates/404.html:6 djnro/templates/500.html:6
-#: djnro/templates/base.html:81 djnro/templates/base.html.py:124
-#: djnro/templates/status.html:6 djnro/templates/edumanage/catenroll.html:4
-#: djnro/templates/edumanage/contacts.html:4
-#: djnro/templates/edumanage/contacts_edit.html:4
-#: djnro/templates/edumanage/institution.html:12
-#: djnro/templates/edumanage/institution_edit.html:5
-#: djnro/templates/edumanage/instrealmmon_edit.html:4
-#: djnro/templates/edumanage/instrealmmons.html:4
-#: djnro/templates/edumanage/monlocauthpar_edit.html:4
-#: djnro/templates/edumanage/realms.html:4
-#: djnro/templates/edumanage/realms_edit.html:4
+#: djnro/settings.py:40
+msgid "Hungarian"
+msgstr "Magyar"
+
+#: djnro/templates/base.html:35
 #: djnro/templates/edumanage/server_details.html:4
-#: djnro/templates/edumanage/servers.html:4
-#: djnro/templates/edumanage/servers_edit.html:4
-#: djnro/templates/edumanage/service_details.html:5
-#: djnro/templates/edumanage/services.html:4
-#: djnro/templates/edumanage/services_edit.html:5
-#: djnro/templates/edumanage/welcome.html:186
-#: djnro/templates/edumanage/welcome.html:198
-#: djnro/templates/edumanage/welcome.html:244
-#: djnro/templates/front/index.html:3
+#: djnro/templates/edumanage/service_details.html:7
+#: djnro/templates/edumanage/welcome.html:17
+#: djnro/templates/edumanage/welcome.html:61
+#: djnro/templates/front/index.html:4
 #: djnro/templates/registration/activate.html:7
 #: djnro/templates/registration/activation_complete.html:7
-#: djnro/templates/registration/select_institution.html:6
 msgid "Home"
 msgstr "Kezdőlap"
 
-#: djnro/templates/base.html:94
-#: djnro/templates/edumanage/services_edit.html:378
+#: djnro/templates/base.html:37
+#: djnro/templates/front/management_dropdown.html:4
+#: djnro/templates/front/management_dropdown.html:7
+msgid "Manage"
+msgstr "Kezelés"
+
+#: djnro/templates/base.html:41
+#: djnro/templates/edumanage/services_edit.html:66
 msgid "Language"
 msgstr "Nyelv"
 
-#: djnro/templates/base.html:125
-msgid "USERS"
-msgstr "FELHASZNÁLÓK"
+#: djnro/templates/base.html:56 djnro/templates/overview/index.html:38
+msgid "Institutions"
+msgstr "Intézmények"
 
-#: djnro/templates/base.html:126
-msgid "The service"
-msgstr "A szolgáltatás."
-
-#: djnro/templates/base.html:128
-msgid "INSTITUTIONS"
-msgstr "INTÉZMÉNYEK"
-
-#: djnro/templates/base.html:129 djnro/templates/front/management.html:3
-#: djnro/templates/front/management.html:10
+#: djnro/templates/base.html:58 djnro/templates/front/management.html:3
+#: djnro/templates/front/management.html:9
 msgid "Management"
 msgstr "Menedzsment"
 
-#: djnro/templates/base.html:130
-msgid "SERVICE"
-msgstr "SZOLGÁLTATÁS"
-
-#: djnro/templates/base.html:131
-msgid "Closest eduroam"
-msgstr "Legközelebbi eduroam"
-
-#: djnro/templates/base.html:132
-msgid "World eduroam"
-msgstr "Világ eduroam"
-
-#: djnro/templates/base.html:133 djnro/templates/front/participants.html:3
+#: djnro/templates/base.html:59 djnro/templates/front/participants.html:4
 msgid "Participants"
 msgstr "Résztvevők\t"
 
-#: djnro/templates/base.html:134
+#: djnro/templates/base.html:63 djnro/templates/edumanage/services.html:176
+msgid "Service"
+msgstr "Szolgáltatás"
+
+#: djnro/templates/base.html:65
+msgid "Closest eduroam"
+msgstr "Legközelebbi eduroam"
+
+#: djnro/templates/base.html:66
+msgid "World eduroam"
+msgstr "Világ eduroam"
+
+#: djnro/templates/base.html:67
 msgid "pebduroam"
 msgstr "pebduroam"
 
-#: djnro/templates/base.html:135
-msgid "API"
-msgstr "API"
-
-#: djnro/templates/base.html:136
-msgid "Closest point"
-msgstr "Legközelebbi pont"
-
-#: djnro/templates/footer.html:5
-msgid "If you have any questions or need help, contact"
-msgstr ""
-"Ha bármilyen kérdése van, vagy segítségre van szüksége, lépjen kapcsolatba"
-
-#: djnro/templates/footer.html:7
-msgid "This is a service provided by"
-msgstr "Ezt a szolgáltatást biztosította:"
+#: djnro/templates/base.html:68
+msgid "Closest point api"
+msgstr "Legközelebbi pont API"
 
 #: djnro/templates/edumanage/add_user.html:6
-#: djnro/templates/edumanage/contacts.html:114
-#: djnro/templates/edumanage/contacts_edit.html:32
-#: djnro/templates/edumanage/institution.html:35
-#: djnro/templates/edumanage/institution_edit.html:87
-#: djnro/templates/edumanage/servers.html:118
-#: djnro/templates/edumanage/services.html:114
-#: djnro/templates/edumanage/services_edit.html:378
-#: djnro/templates/front/index.html:183 djnro/templates/overview/index.html:170
-#: djnro/templates/overview/index.html:194
+#: djnro/templates/edumanage/contacts.html:22
+#: djnro/templates/edumanage/contacts_edit.html:21
+#: djnro/templates/edumanage/institution.html:22
+#: djnro/templates/edumanage/institution_edit.html:23
+#: djnro/templates/edumanage/servers.html:25
+#: djnro/templates/edumanage/services.html:28
+#: djnro/templates/edumanage/services_edit.html:66
+#: djnro/templates/overview/index.html:49
+#: djnro/templates/overview/index.html:81
 msgid "Name"
 msgstr "Név"
 
 #: djnro/templates/edumanage/add_user.html:14
-#: djnro/templates/edumanage/contacts.html:115
-#: djnro/templates/edumanage/contacts_edit.html:40
-#: djnro/templates/overview/index.html:169
-#: djnro/templates/registration/select_institution.html:48
+#: djnro/templates/edumanage/contacts.html:23
+#: djnro/templates/edumanage/contacts_edit.html:29
+#: djnro/templates/overview/index.html:48
+#: djnro/templates/registration/select_institution.html:26
 msgid "Email"
 msgstr "Email"
 
 #: djnro/templates/edumanage/add_user.html:22
-#: djnro/templates/edumanage/contacts.html:116
-#: djnro/templates/edumanage/contacts_edit.html:48
+#: djnro/templates/edumanage/contacts.html:24
+#: djnro/templates/edumanage/contacts_edit.html:37
 msgid "Phone"
 msgstr "Tel.:"
 
-#: djnro/templates/edumanage/catenroll.html:5
-msgid "CAT Enroll"
-msgstr "CAT igénylés"
+#: djnro/templates/edumanage/catenroll.html:9
+msgid "CAT enroll"
+msgstr "CAT jelentkezés"
 
-#: djnro/templates/edumanage/catenroll.html:34
+#: djnro/templates/edumanage/catenroll.html:24
 msgid "CAT Institution ID"
 msgstr "CAT Intézmény azonosító"
 
-#: djnro/templates/edumanage/catenroll.html:35
+#: djnro/templates/edumanage/catenroll.html:25
 msgid "CAT configuration profiles"
 msgstr "CAT konfigurációs profilok"
 
-#: djnro/templates/edumanage/catenroll.html:36
+#: djnro/templates/edumanage/catenroll.html:26
 msgid "URL/Status"
 msgstr "URL/Status"
 
-#: djnro/templates/edumanage/catenroll.html:37
-#: djnro/templates/edumanage/catenroll.html:63
+#: djnro/templates/edumanage/catenroll.html:27
+#: djnro/templates/edumanage/catenroll.html:54
 msgid "CAT instance"
 msgstr "CAT példány"
 
-#: djnro/templates/edumanage/catenroll.html:38
+#: djnro/templates/edumanage/catenroll.html:28
 msgid "Applier"
 msgstr "Igénylő"
 
-#: djnro/templates/edumanage/catenroll.html:75
-#: djnro/templates/edumanage/contacts_edit.html:58
-#: djnro/templates/edumanage/institution_edit.html:172
-#: djnro/templates/edumanage/instrealmmon_edit.html:48
-#: djnro/templates/edumanage/monlocauthpar_edit.html:76
-#: djnro/templates/edumanage/realms_edit.html:58
-#: djnro/templates/edumanage/servers_edit.html:118
-#: djnro/templates/edumanage/services_edit.html:504
-#: djnro/templates/registration/select_institution.html:72
+#: djnro/templates/edumanage/catenroll.html:66
+#: djnro/templates/edumanage/contacts_edit.html:47
+#: djnro/templates/edumanage/institution_edit.html:111
+#: djnro/templates/edumanage/instrealmmon_edit.html:41
+#: djnro/templates/edumanage/monlocauthpar_edit.html:60
+#: djnro/templates/edumanage/realms_edit.html:49
+#: djnro/templates/edumanage/servers_edit.html:129
+#: djnro/templates/edumanage/services_edit.html:229
+#: djnro/templates/registration/select_institution.html:50
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: djnro/templates/edumanage/contacts.html:5
-#: djnro/templates/edumanage/contacts.html:99
-#: djnro/templates/edumanage/contacts_edit.html:5
-#: djnro/templates/edumanage/institution.html:59
-#: djnro/templates/edumanage/institution_edit.html:115
-#: djnro/templates/edumanage/service_details.html:137
-#: djnro/templates/edumanage/services_edit.html:417
-#: djnro/templates/edumanage/welcome.html:219
-#: djnro/templates/overview/index.html:196
+#: djnro/templates/edumanage/catenroll.html:79
+#: djnro/templates/overview/index.html:50
+msgid "Status"
+msgstr "Státusz"
+
+#: djnro/templates/edumanage/catenroll.html:81
+msgid "Response"
+msgstr "Válasz"
+
+#: djnro/templates/edumanage/catenroll.html:83
+msgid "Institution Id"
+msgstr "Intézmény azonosító"
+
+#: djnro/templates/edumanage/catenroll.html:84
+msgid "CAT url"
+msgstr "CAT URL"
+
+#: djnro/templates/edumanage/contacts.html:9
+#: djnro/templates/edumanage/institution.html:46
+#: djnro/templates/edumanage/institution_edit.html:51
+#: djnro/templates/edumanage/service_details.html:138
+#: djnro/templates/edumanage/services_edit.html:113
+#: djnro/templates/edumanage/welcome.html:40
+#: djnro/templates/overview/index.html:83
 msgid "Contacts"
 msgstr "Elérhetőségek"
 
-#: djnro/templates/edumanage/contacts.html:35
-#: djnro/templates/edumanage/instrealmmons.html:39
-#: djnro/templates/edumanage/realms.html:32
-#: djnro/templates/edumanage/servers.html:38
-#: djnro/templates/edumanage/services.html:41
-#: djnro/templates/overview/index.html:42
-#: djnro/templates/overview/index.html:86
-msgid "Display"
-msgstr "Kijelző"
-
-#: djnro/templates/edumanage/contacts.html:35
-#: djnro/templates/edumanage/instrealmmons.html:39
-#: djnro/templates/edumanage/realms.html:32
-#: djnro/templates/edumanage/servers.html:38
-#: djnro/templates/edumanage/services.html:41
-#: djnro/templates/overview/index.html:42
-#: djnro/templates/overview/index.html:86
-msgid "All"
-msgstr "Minden"
-
-#: djnro/templates/edumanage/contacts.html:35
-msgid "contacts"
-msgstr "elérhetőségek"
-
-#: djnro/templates/edumanage/contacts.html:37
-#: djnro/templates/edumanage/instrealmmons.html:41
-#: djnro/templates/edumanage/realms.html:34
-#: djnro/templates/edumanage/servers.html:40
-#: djnro/templates/edumanage/services.html:43
-#: djnro/templates/overview/index.html:44
-#: djnro/templates/overview/index.html:88
-msgid "No records to display"
-msgstr "Nincs megjeleníthető adat"
-
-#: djnro/templates/edumanage/contacts.html:39
-#: djnro/templates/edumanage/instrealmmons.html:43
-#: djnro/templates/edumanage/realms.html:36
-#: djnro/templates/edumanage/servers.html:42
-#: djnro/templates/edumanage/services.html:45
-#: djnro/templates/overview/index.html:46
-#: djnro/templates/overview/index.html:90
-msgid "Showing 0 to 0 of 0 entries"
-msgstr "A következő 0-0 0 bejegyzés"
-
-#: djnro/templates/edumanage/contacts.html:42
-#: djnro/templates/edumanage/instrealmmons.html:46
-#: djnro/templates/edumanage/realms.html:39
-#: djnro/templates/edumanage/servers.html:45
-#: djnro/templates/edumanage/services.html:48
-#: djnro/templates/overview/index.html:49
-#: djnro/templates/overview/index.html:93
-msgid "Search:"
-msgstr "Keresés:"
-
-#: djnro/templates/edumanage/contacts.html:45
-#: djnro/templates/edumanage/instrealmmons.html:49
-#: djnro/templates/edumanage/realms.html:42
-#: djnro/templates/edumanage/servers.html:48
-#: djnro/templates/edumanage/services.html:51
-#: djnro/templates/overview/index.html:52
-#: djnro/templates/overview/index.html:96
-msgid "First"
-msgstr "Első"
-
-#: djnro/templates/edumanage/contacts.html:46
-#: djnro/templates/edumanage/instrealmmons.html:50
-#: djnro/templates/edumanage/realms.html:43
-#: djnro/templates/edumanage/servers.html:49
-#: djnro/templates/edumanage/services.html:52
-#: djnro/templates/overview/index.html:53
-#: djnro/templates/overview/index.html:97
-msgid "Previous"
-msgstr "Előző"
-
-#: djnro/templates/edumanage/contacts.html:47
-#: djnro/templates/edumanage/instrealmmons.html:51
-#: djnro/templates/edumanage/realms.html:44
-#: djnro/templates/edumanage/servers.html:50
-#: djnro/templates/edumanage/services.html:53
-#: djnro/templates/overview/index.html:54
-#: djnro/templates/overview/index.html:98
-msgid "Next"
-msgstr "Következő"
-
-#: djnro/templates/edumanage/contacts.html:48
-#: djnro/templates/edumanage/instrealmmons.html:52
-#: djnro/templates/edumanage/realms.html:45
-#: djnro/templates/edumanage/servers.html:51
-#: djnro/templates/edumanage/services.html:54
-#: djnro/templates/overview/index.html:55
-#: djnro/templates/overview/index.html:99
-msgid "Last"
-msgstr "Utolsó"
-
-#: djnro/templates/edumanage/contacts.html:58
-msgid "You are about to delete contact"
-msgstr "Arra készül, hogy törli az elérhetőséget"
-
-#: djnro/templates/edumanage/contacts.html:58
-#: djnro/templates/edumanage/instrealmmons.html:62
-#: djnro/templates/edumanage/instrealmmons.html:92
-#: djnro/templates/edumanage/services.html:63
-msgid "Press Delete to proceed or Cancel to cancel deletion"
-msgstr "Nyomja meg a Töröl gombot a folytatáshoz vagy a Mégse gombot"
-
-#: djnro/templates/edumanage/contacts.html:59
-#: djnro/templates/edumanage/contacts.html:136
-msgid "Delete contact"
-msgstr "Névjegy törlése"
-
-#: djnro/templates/edumanage/contacts.html:108
-msgid "Add new contact"
-msgstr "Új Kapcsolat Hozzáadása"
-
-#: djnro/templates/edumanage/contacts.html:117
-#: djnro/templates/edumanage/instrealmmons.html:151
-#: djnro/templates/edumanage/realms.html:115
-#: djnro/templates/edumanage/servers.html:122
+#: djnro/templates/edumanage/contacts.html:25
+#: djnro/templates/edumanage/instrealmmons.html:29
+#: djnro/templates/edumanage/realms.html:26
+#: djnro/templates/edumanage/servers.html:29
 msgid "Action"
 msgstr "Műveletek"
 
-#: djnro/templates/edumanage/contacts.html:127
-#: djnro/templates/edumanage/contacts_edit.html:6
-#: djnro/templates/edumanage/contacts_edit.html:19
-#: djnro/templates/edumanage/institution.html:104
-#: djnro/templates/edumanage/instrealmmon_edit.html:6
-#: djnro/templates/edumanage/instrealmmon_edit.html:19
-#: djnro/templates/edumanage/instrealmmons.html:167
-#: djnro/templates/edumanage/instrealmmons.html:186
-#: djnro/templates/edumanage/monlocauthpar_edit.html:6
-#: djnro/templates/edumanage/monlocauthpar_edit.html:25
-#: djnro/templates/edumanage/realms.html:124
-#: djnro/templates/edumanage/realms_edit.html:6
-#: djnro/templates/edumanage/realms_edit.html:19
-#: djnro/templates/edumanage/servers.html:133
-#: djnro/templates/edumanage/servers_edit.html:6
-#: djnro/templates/edumanage/servers_edit.html:21
-#: djnro/templates/edumanage/services.html:130
-#: djnro/templates/edumanage/services_edit.html:7
-#: djnro/templates/edumanage/services_edit.html:334
+#: djnro/templates/edumanage/contacts.html:35
+#: djnro/templates/edumanage/contacts_edit.html:8
+#: djnro/templates/edumanage/institution.html:94
+#: djnro/templates/edumanage/instrealmmon_edit.html:12
+#: djnro/templates/edumanage/instrealmmons.html:45
+#: djnro/templates/edumanage/instrealmmons.html:64
+#: djnro/templates/edumanage/monlocauthpar_edit.html:9
+#: djnro/templates/edumanage/realms.html:34
+#: djnro/templates/edumanage/realms_edit.html:10
+#: djnro/templates/edumanage/servers.html:40
+#: djnro/templates/edumanage/servers_edit.html:9
+#: djnro/templates/edumanage/services.html:44
+#: djnro/templates/edumanage/services_edit.html:13
 msgid "edit"
 msgstr "szerkesztés"
 
-#: djnro/templates/edumanage/contacts.html:127
-#: djnro/templates/edumanage/instrealmmons.html:168
-#: djnro/templates/edumanage/instrealmmons.html:187
-#: djnro/templates/edumanage/realms.html:124
-#: djnro/templates/edumanage/servers.html:133
-#: djnro/templates/edumanage/services.html:130
+#: djnro/templates/edumanage/contacts.html:35
+#: djnro/templates/edumanage/instrealmmons.html:46
+#: djnro/templates/edumanage/instrealmmons.html:65
+#: djnro/templates/edumanage/realms.html:34
+#: djnro/templates/edumanage/servers.html:40
+#: djnro/templates/edumanage/services.html:44
 msgid "delete"
 msgstr "törlés"
 
-#: djnro/templates/edumanage/contacts.html:142
-#: djnro/templates/edumanage/instrealmmons.html:213
-#: djnro/templates/edumanage/instrealmmons.html:227
-#: djnro/templates/edumanage/realms.html:140
-#: djnro/templates/edumanage/servers.html:148
-#: djnro/templates/edumanage/services.html:146
+#: djnro/templates/edumanage/contacts.html:41
+msgid "Add new contact"
+msgstr "Új Kapcsolat Hozzáadása"
+
+#: djnro/templates/edumanage/contacts.html:47
+#: djnro/templates/edumanage/contacts.html:116
+msgid "Delete contact"
+msgstr "Névjegy törlése"
+
+#: djnro/templates/edumanage/contacts.html:51
+#: djnro/templates/edumanage/instrealmmons.html:94
+#: djnro/templates/edumanage/instrealmmons.html:111
+#: djnro/templates/edumanage/realms.html:53
+#: djnro/templates/edumanage/servers.html:57
+#: djnro/templates/edumanage/services.html:62
 msgid "Cancel"
 msgstr "Mégsem"
 
-#: djnro/templates/edumanage/contacts.html:143
-#: djnro/templates/edumanage/instrealmmons.html:214
-#: djnro/templates/edumanage/instrealmmons.html:228
-#: djnro/templates/edumanage/realms.html:141
-#: djnro/templates/edumanage/servers.html:149
-#: djnro/templates/edumanage/services.html:147
+#: djnro/templates/edumanage/contacts.html:52
+#: djnro/templates/edumanage/instrealmmons.html:95
+#: djnro/templates/edumanage/instrealmmons.html:112
+#: djnro/templates/edumanage/realms.html:54
+#: djnro/templates/edumanage/servers.html:58
+#: djnro/templates/edumanage/services.html:63
 msgid "Delete"
 msgstr "Törlés"
 
-#: djnro/templates/edumanage/contacts_edit.html:6
-#: djnro/templates/edumanage/contacts_edit.html:19
+#: djnro/templates/edumanage/contacts.html:92
+#: djnro/templates/edumanage/instrealmmons.html:153
+#: djnro/templates/edumanage/realms.html:91
+#: djnro/templates/edumanage/servers.html:101
+#: djnro/templates/edumanage/services.html:135
+#: djnro/templates/overview/index.html:144
+#: djnro/templates/overview/index.html:192
+msgid "Display"
+msgstr "Kijelző"
+
+#: djnro/templates/edumanage/contacts.html:92
+#: djnro/templates/edumanage/instrealmmons.html:153
+#: djnro/templates/edumanage/realms.html:91
+#: djnro/templates/edumanage/servers.html:101
+#: djnro/templates/edumanage/services.html:135
+#: djnro/templates/overview/index.html:144
+#: djnro/templates/overview/index.html:192
+msgid "All"
+msgstr "Minden"
+
+#: djnro/templates/edumanage/contacts.html:92
+msgid "contacts"
+msgstr "elérhetőségek"
+
+#: djnro/templates/edumanage/contacts.html:94
+#: djnro/templates/edumanage/instrealmmons.html:155
+#: djnro/templates/edumanage/realms.html:93
+#: djnro/templates/edumanage/servers.html:103
+#: djnro/templates/edumanage/services.html:137
+#: djnro/templates/overview/index.html:146
+#: djnro/templates/overview/index.html:194
+msgid "No records to display"
+msgstr "Nincs megjeleníthető adat"
+
+#: djnro/templates/edumanage/contacts.html:96
+#: djnro/templates/edumanage/instrealmmons.html:157
+#: djnro/templates/edumanage/realms.html:95
+#: djnro/templates/edumanage/servers.html:105
+#: djnro/templates/edumanage/services.html:139
+#: djnro/templates/overview/index.html:148
+#: djnro/templates/overview/index.html:196
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "A következő 0-0 0 bejegyzés"
+
+#: djnro/templates/edumanage/contacts.html:99
+#: djnro/templates/edumanage/instrealmmons.html:160
+#: djnro/templates/edumanage/realms.html:98
+#: djnro/templates/edumanage/servers.html:108
+#: djnro/templates/edumanage/services.html:142
+#: djnro/templates/overview/index.html:151
+#: djnro/templates/overview/index.html:199
+msgid "Search:"
+msgstr "Keresés:"
+
+#: djnro/templates/edumanage/contacts.html:102
+#: djnro/templates/edumanage/instrealmmons.html:163
+#: djnro/templates/edumanage/realms.html:101
+#: djnro/templates/edumanage/servers.html:111
+#: djnro/templates/edumanage/services.html:145
+#: djnro/templates/overview/index.html:154
+#: djnro/templates/overview/index.html:202
+msgid "First"
+msgstr "Első"
+
+#: djnro/templates/edumanage/contacts.html:103
+#: djnro/templates/edumanage/instrealmmons.html:164
+#: djnro/templates/edumanage/realms.html:102
+#: djnro/templates/edumanage/servers.html:112
+#: djnro/templates/edumanage/services.html:146
+#: djnro/templates/overview/index.html:155
+#: djnro/templates/overview/index.html:203
+msgid "Previous"
+msgstr "Előző"
+
+#: djnro/templates/edumanage/contacts.html:104
+#: djnro/templates/edumanage/instrealmmons.html:165
+#: djnro/templates/edumanage/realms.html:103
+#: djnro/templates/edumanage/servers.html:113
+#: djnro/templates/edumanage/services.html:147
+#: djnro/templates/overview/index.html:156
+#: djnro/templates/overview/index.html:204
+msgid "Next"
+msgstr "Következő"
+
+#: djnro/templates/edumanage/contacts.html:105
+#: djnro/templates/edumanage/instrealmmons.html:166
+#: djnro/templates/edumanage/realms.html:104
+#: djnro/templates/edumanage/servers.html:114
+#: djnro/templates/edumanage/services.html:148
+#: djnro/templates/overview/index.html:157
+#: djnro/templates/overview/index.html:205
+msgid "Last"
+msgstr "Utolsó"
+
+#: djnro/templates/edumanage/contacts.html:115
+msgid "You are about to delete contact"
+msgstr "Arra készül, hogy törli az elérhetőséget"
+
+#: djnro/templates/edumanage/contacts.html:115
+#: djnro/templates/edumanage/instrealmmons.html:176
+#: djnro/templates/edumanage/instrealmmons.html:206
+#: djnro/templates/edumanage/services.html:157
+msgid "Press Delete to proceed or Cancel to cancel deletion"
+msgstr "Nyomja meg a Töröl gombot a folytatáshoz vagy a Mégse gombot"
+
+#: djnro/templates/edumanage/contacts_edit.html:8
 msgid "Add Contact"
 msgstr "Névjegy hozzáadása"
 
-#: djnro/templates/edumanage/institution.html:13
-#: djnro/templates/edumanage/institution.html:18
-#: djnro/templates/edumanage/institution_edit.html:6
-#: djnro/templates/edumanage/welcome.html:202
-#: djnro/templates/overview/index.html:172
+#: djnro/templates/edumanage/institution.html:8
+#: djnro/templates/edumanage/welcome.html:21
+#: djnro/templates/overview/index.html:51
 #: djnro/templates/registration/activate_edit.html:36
-#: djnro/templates/registration/select_institution.html:61
+#: djnro/templates/registration/select_institution.html:39
 msgid "Institution"
 msgstr "Intézmény"
 
-#: djnro/templates/edumanage/institution.html:41
-#: djnro/templates/edumanage/institution_edit.html:93
-#: djnro/templates/edumanage/instrealmmons.html:148
-#: djnro/templates/edumanage/server_details.html:31
-#: djnro/templates/edumanage/servers.html:119
-#: djnro/templates/edumanage/servers_edit.html:34
-#: djnro/templates/overview/index.html:195
+#: djnro/templates/edumanage/institution.html:28
+#: djnro/templates/edumanage/institution_edit.html:29
+#: djnro/templates/edumanage/instrealmmons.html:26
+#: djnro/templates/edumanage/server_details.html:26
+#: djnro/templates/edumanage/servers.html:26
+#: djnro/templates/edumanage/servers_edit.html:25
+#: djnro/templates/overview/index.html:82
 msgid "Type"
 msgstr "Tipus"
 
-#: djnro/templates/edumanage/institution.html:47
-#: djnro/templates/edumanage/institution_edit.html:99
-#: djnro/templates/edumanage/services_edit.html:393
+#: djnro/templates/edumanage/institution.html:34
+#: djnro/templates/edumanage/institution_edit.html:35
+#: djnro/templates/edumanage/services_edit.html:83
 msgid "Address Street"
 msgstr "Cím: utca"
 
-#: djnro/templates/edumanage/institution.html:53
-#: djnro/templates/edumanage/institution_edit.html:107
-#: djnro/templates/edumanage/services_edit.html:401
+#: djnro/templates/edumanage/institution.html:40
+#: djnro/templates/edumanage/institution_edit.html:43
+#: djnro/templates/edumanage/services_edit.html:93
 msgid "Address City"
 msgstr "Cím: település"
 
-#: djnro/templates/edumanage/institution.html:67
-#: djnro/templates/edumanage/institution_edit.html:123
-#: djnro/templates/edumanage/service_details.html:192
-#: djnro/templates/edumanage/services_edit.html:481
+#: djnro/templates/edumanage/institution.html:54
+#: djnro/templates/edumanage/institution_edit.html:62
+#: djnro/templates/edumanage/service_details.html:193
+#: djnro/templates/edumanage/services_edit.html:193
 msgid "Urls"
 msgstr "URL-ek"
 
-#: djnro/templates/edumanage/institution.html:77
-#: djnro/templates/edumanage/institution_edit.html:144
+#: djnro/templates/edumanage/institution.html:64
+#: djnro/templates/edumanage/institution_edit.html:83
 msgid "Domain Name"
 msgstr "Domain név"
 
-#: djnro/templates/edumanage/institution.html:85
+#: djnro/templates/edumanage/institution.html:72
 msgid "Number User"
 msgstr "Felhasználószám:"
 
-#: djnro/templates/edumanage/institution.html:92
-#: djnro/templates/edumanage/institution_edit.html:163
+#: djnro/templates/edumanage/institution.html:79
+#: djnro/templates/edumanage/institution_edit.html:102
 msgid "Number of IDs"
 msgstr "Azonosítók száma"
 
-#: djnro/templates/edumanage/institution.html:99
-#: djnro/templates/edumanage/institution_edit.html:7
-#: djnro/templates/edumanage/institution_edit.html:74
-#: djnro/templates/edumanage/server_details.html:88
-#: djnro/templates/edumanage/service_details.html:201
-#: djnro/templates/edumanage/welcome.html:248
+#: djnro/templates/edumanage/institution.html:89
+#: djnro/templates/edumanage/institution_edit.html:9
+#: djnro/templates/edumanage/server_details.html:83
+#: djnro/templates/edumanage/service_details.html:202
+#: djnro/templates/edumanage/welcome.html:75
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: djnro/templates/edumanage/institution.html:104
+#: djnro/templates/edumanage/institution.html:94
 msgid "No institution details defined yet for"
 msgstr "Az intézmény adatai nincsenek definiálva: "
 
-#: djnro/templates/edumanage/institution.html:107
+#: djnro/templates/edumanage/institution.html:97
 msgid "No institution defined"
 msgstr "Nincsen definiált intézmény"
 
-#: djnro/templates/edumanage/institution_edit.html:154
+#: djnro/templates/edumanage/institution_edit.html:93
 msgid "Number of Users"
 msgstr "Felhasználók száma"
 
-#: djnro/templates/edumanage/institution_edit.html:179
-#: djnro/templates/edumanage/services_edit.html:512
+#: djnro/templates/edumanage/institution_edit.html:123
+#: djnro/templates/edumanage/services_edit.html:239
 msgid "Add User"
 msgstr "Felhasználó hozzáadása"
 
-#: djnro/templates/edumanage/institution_edit.html:185
-#: djnro/templates/edumanage/services.html:160
-#: djnro/templates/edumanage/services_edit.html:518
+#: djnro/templates/edumanage/institution_edit.html:129
+#: djnro/templates/edumanage/services.html:85
+#: djnro/templates/edumanage/services_edit.html:245
 msgid "Close"
 msgstr "Bezárás"
 
-#: djnro/templates/edumanage/institution_edit.html:186
+#: djnro/templates/edumanage/institution_edit.html:130
 msgid "Save changes"
 msgstr "Változtatások mentése"
 
-#: djnro/templates/edumanage/instrealmmon_edit.html:5
-#: djnro/templates/edumanage/instrealmmons.html:5
-#: djnro/templates/edumanage/instrealmmons.html:131
-#: djnro/templates/edumanage/monlocauthpar_edit.html:5
-#: djnro/templates/edumanage/welcome.html:216
-msgid "Monitored Realms"
-msgstr "Felügyelt Realmek"
+#: djnro/templates/edumanage/instrealmmon_edit.html:12
+msgid "Monitored realm"
+msgstr "Felügyelt realm"
 
-#: djnro/templates/edumanage/instrealmmon_edit.html:6
-#: djnro/templates/edumanage/instrealmmon_edit.html:19
+#: djnro/templates/edumanage/instrealmmon_edit.html:12
 msgid "Add Monitored Realm"
 msgstr "Felügyelt Realm hozzáadása"
 
-#: djnro/templates/edumanage/instrealmmon_edit.html:30
-#: djnro/templates/edumanage/instrealmmons.html:147
-#: djnro/templates/edumanage/monlocauthpar_edit.html:36
-#: djnro/templates/edumanage/realms_edit.html:40
+#: djnro/templates/edumanage/instrealmmon_edit.html:23
+#: djnro/templates/edumanage/instrealmmons.html:25
+#: djnro/templates/edumanage/monlocauthpar_edit.html:20
+#: djnro/templates/edumanage/realms.html:24
+#: djnro/templates/edumanage/realms_edit.html:31
 msgid "Realm"
 msgstr "Realm:"
 
-#: djnro/templates/edumanage/instrealmmon_edit.html:38
+#: djnro/templates/edumanage/instrealmmon_edit.html:31
 msgid "Monitoring Method"
 msgstr "Felügyeleti eljárás\t"
 
-#: djnro/templates/edumanage/instrealmmons.html:39
-#: djnro/templates/edumanage/realms.html:32
+#: djnro/templates/edumanage/instrealmmons.html:9
+#: djnro/templates/edumanage/welcome.html:37
+msgid "Monitored Realms"
+msgstr "Felügyelt Realmek"
+
+#: djnro/templates/edumanage/instrealmmons.html:31
+msgid "Parameters"
+msgstr "Paraméterek"
+
+#: djnro/templates/edumanage/instrealmmons.html:71
+msgid "add"
+msgstr "hozzáadás"
+
+#: djnro/templates/edumanage/instrealmmons.html:82
+msgid "Add monitored realm"
+msgstr "Felügyelt Realm hozzáadása"
+
+#: djnro/templates/edumanage/instrealmmons.html:89
+#: djnro/templates/edumanage/instrealmmons.html:106
+msgid "Delete monitored realm"
+msgstr "Felügyelt Realm törlése"
+
+#: djnro/templates/edumanage/instrealmmons.html:153
+#: djnro/templates/edumanage/realms.html:91
 msgid "realms"
 msgstr "realmek"
 
-#: djnro/templates/edumanage/instrealmmons.html:62
+#: djnro/templates/edumanage/instrealmmons.html:176
 msgid "You are about to delete monitored realm (and its parameters if any)"
 msgstr ""
 "Arra készül, hogy törölje felügyelt realm-et (és annak paramétereit, ha van "
 "ilyen)"
 
-#: djnro/templates/edumanage/instrealmmons.html:63
+#: djnro/templates/edumanage/instrealmmons.html:177
 msgid "Delete Monitored Realm"
 msgstr "Felügyelt Realm törlése"
 
-#: djnro/templates/edumanage/instrealmmons.html:92
+#: djnro/templates/edumanage/instrealmmons.html:206
 msgid "You are about to delete monitored realm parameters for "
 msgstr "Arra készül, hogy törölje felügyelt realm-et paramétereit"
 
-#: djnro/templates/edumanage/instrealmmons.html:93
+#: djnro/templates/edumanage/instrealmmons.html:207
 msgid "Delete Monitored Realm Parameters"
 msgstr "Felügyelt Realm paraméterek törlése"
 
-#: djnro/templates/edumanage/instrealmmons.html:141
-msgid "Add monitored realm"
-msgstr "Felügyelt Realm hozzáadása"
+#: djnro/templates/edumanage/monlocauthpar_edit.html:9
+msgid "parameters"
+msgstr "paraméterek"
 
-#: djnro/templates/edumanage/instrealmmons.html:153
-msgid "Parameters"
-msgstr "Paraméterek"
-
-#: djnro/templates/edumanage/instrealmmons.html:193
-msgid "add"
-msgstr "hozzáadás"
-
-#: djnro/templates/edumanage/instrealmmons.html:207
-#: djnro/templates/edumanage/instrealmmons.html:221
-msgid "Delete monitored realm"
-msgstr "Felügyelt Realm törlése"
-
-#: djnro/templates/edumanage/monlocauthpar_edit.html:6
-#: djnro/templates/edumanage/monlocauthpar_edit.html:25
+#: djnro/templates/edumanage/monlocauthpar_edit.html:9
 msgid "Add Monitored Realm Parameters"
 msgstr "Felügyelt Realm paraméterek hozzáadása\t"
 
-#: djnro/templates/edumanage/monlocauthpar_edit.html:42
+#: djnro/templates/edumanage/monlocauthpar_edit.html:26
 msgid "EAP Method"
 msgstr "EAP típusa"
 
-#: djnro/templates/edumanage/monlocauthpar_edit.html:50
+#: djnro/templates/edumanage/monlocauthpar_edit.html:34
 msgid "EAP2 Method"
 msgstr "EAP2 típusa"
 
-#: djnro/templates/edumanage/monlocauthpar_edit.html:58
-#: djnro/templates/overview/index.html:168
+#: djnro/templates/edumanage/monlocauthpar_edit.html:42
+#: djnro/templates/overview/index.html:47
 msgid "Username"
 msgstr "Felhasználónév"
 
-#: djnro/templates/edumanage/monlocauthpar_edit.html:66
+#: djnro/templates/edumanage/monlocauthpar_edit.html:50
 msgid "Password"
 msgstr "Jelszó"
 
-#: djnro/templates/edumanage/realms.html:5
-#: djnro/templates/edumanage/realms_edit.html:5
-#: djnro/templates/edumanage/welcome.html:213
+#: djnro/templates/edumanage/realms.html:9
+#: djnro/templates/edumanage/welcome.html:34
 msgid "Realms"
 msgstr "Realmek"
 
-#: djnro/templates/edumanage/realms.html:106
+#: djnro/templates/edumanage/realms.html:25
+msgid "Server(s)"
+msgstr "Szerver(ek)"
+
+#: djnro/templates/edumanage/realms.html:41
 msgid "Add new realm"
 msgstr "Új Realm hozzáadása"
 
-#: djnro/templates/edumanage/realms.html:134
+#: djnro/templates/edumanage/realms.html:48
 msgid "Delete Realm"
 msgstr "Realm törlése"
 
-#: djnro/templates/edumanage/realms_edit.html:6
-#: djnro/templates/edumanage/realms_edit.html:19
+#: djnro/templates/edumanage/realms_edit.html:10
 msgid "Add Realm"
 msgstr "Realm hozzáadása"
 
-#: djnro/templates/edumanage/realms_edit.html:48
+#: djnro/templates/edumanage/realms_edit.html:39
 msgid "Proxy to Servers"
 msgstr "A használt proxy"
 
-#: djnro/templates/edumanage/realms_edit.html:52 edumanage/forms.py:135
-#: edumanage/models.py:210
+#: djnro/templates/edumanage/realms_edit.html:43 edumanage/forms.py:157
+#: edumanage/models.py:205
 msgid "Only IdP and IdP/SP server types are allowed"
 msgstr "Csak IdP és IdP / SP szerver típusok engedélyezettek"
 
 #: djnro/templates/edumanage/server_details.html:5
-#: djnro/templates/edumanage/servers.html:5
-#: djnro/templates/edumanage/servers.html:103
-#: djnro/templates/edumanage/servers_edit.html:5
-#: djnro/templates/edumanage/welcome.html:210
+#: djnro/templates/edumanage/servers.html:12
+#: djnro/templates/edumanage/welcome.html:31
 msgid "Servers"
 msgstr "Szerverek"
 
-#: djnro/templates/edumanage/server_details.html:37
-#: djnro/templates/edumanage/servers_edit.html:58
+#: djnro/templates/edumanage/server_details.html:32
+#: djnro/templates/edumanage/servers_edit.html:55
 msgid "Label"
 msgstr "Címke"
 
-#: djnro/templates/edumanage/server_details.html:43
-#: djnro/templates/edumanage/servers_edit.html:42
+#: djnro/templates/edumanage/server_details.html:38
+#: djnro/templates/edumanage/servers_edit.html:35
 msgid "Address Family"
 msgstr "Cím család"
 
-#: djnro/templates/edumanage/server_details.html:49
+#: djnro/templates/edumanage/server_details.html:44
 msgid "Host"
 msgstr "hoszt"
 
-#: djnro/templates/edumanage/server_details.html:56
-#: djnro/templates/edumanage/servers_edit.html:67
+#: djnro/templates/edumanage/server_details.html:51
+#: djnro/templates/edumanage/servers_edit.html:66
 msgid "RADIUS Packet Types"
 msgstr "RADIUS csomag típusai"
 
-#: djnro/templates/edumanage/server_details.html:62
-#: djnro/templates/edumanage/servers.html:120
-#: djnro/templates/edumanage/servers_edit.html:75
+#: djnro/templates/edumanage/server_details.html:57
+#: djnro/templates/edumanage/servers.html:27
+#: djnro/templates/edumanage/servers_edit.html:76
 msgid "Authentication Port"
 msgstr "Azonosítási Port"
 
-#: djnro/templates/edumanage/server_details.html:68
-#: djnro/templates/edumanage/servers_edit.html:83
+#: djnro/templates/edumanage/server_details.html:63
+#: djnro/templates/edumanage/servers_edit.html:86
 msgid "Accounting Port"
 msgstr "Accounting Port"
 
-#: djnro/templates/edumanage/server_details.html:75
+#: djnro/templates/edumanage/server_details.html:70
 msgid "Status Server"
 msgstr "Állapot szerver"
 
-#: djnro/templates/edumanage/server_details.html:81
-#: djnro/templates/edumanage/servers.html:121
-#: djnro/templates/edumanage/servers_edit.html:108
+#: djnro/templates/edumanage/server_details.html:76
+#: djnro/templates/edumanage/servers.html:28
+#: djnro/templates/edumanage/servers_edit.html:117
 msgid "Protocol"
 msgstr "Protokoll"
 
-#: djnro/templates/edumanage/servers.html:38
-msgid "servers"
-msgstr "Szerverek"
-
-#: djnro/templates/edumanage/servers.html:112
+#: djnro/templates/edumanage/servers.html:46
 msgid "Add new server"
 msgstr "Új kiszolgáló hozzáadása"
 
-#: djnro/templates/edumanage/servers.html:142
+#: djnro/templates/edumanage/servers.html:52
 msgid "Delete Server"
 msgstr "Kiszolgáló törlése"
 
-#: djnro/templates/edumanage/servers_edit.html:6
-#: djnro/templates/edumanage/servers_edit.html:21
+#: djnro/templates/edumanage/servers.html:101
+msgid "servers"
+msgstr "Szerverek"
+
+#: djnro/templates/edumanage/servers_edit.html:9
 msgid "Add Server"
 msgstr "Kiszolgáló hozzáadása"
 
-#: djnro/templates/edumanage/servers_edit.html:50
+#: djnro/templates/edumanage/servers_edit.html:45
 msgid "Hostname"
 msgstr "Hoszt név"
 
-#: djnro/templates/edumanage/servers_edit.html:92
+#: djnro/templates/edumanage/servers_edit.html:97
 msgid "Status-Server"
 msgstr "Állapot szerver"
 
-#: djnro/templates/edumanage/servers_edit.html:100
+#: djnro/templates/edumanage/servers_edit.html:107
 msgid "Secret"
 msgstr "Titkos kulcs"
 
-#: djnro/templates/edumanage/service_details.html:6
-#: djnro/templates/edumanage/services.html:5
-#: djnro/templates/edumanage/services.html:96
-#: djnro/templates/edumanage/services_edit.html:6
-#: djnro/templates/edumanage/welcome.html:207
+#: djnro/templates/edumanage/service_details.html:8
+#: djnro/templates/edumanage/services.html:14
+#: djnro/templates/edumanage/welcome.html:27
 msgid "Locations"
 msgstr "Helyszínek"
 
-#: djnro/templates/edumanage/service_details.html:104
-#: djnro/templates/edumanage/services_edit.html:347
+#: djnro/templates/edumanage/service_details.html:105
+#: djnro/templates/edumanage/services_edit.html:31
 msgid "Location"
 msgstr "Helyszín"
 
-#: djnro/templates/edumanage/service_details.html:113
-#: djnro/templates/edumanage/services_edit.html:373
+#: djnro/templates/edumanage/service_details.html:114
+#: djnro/templates/edumanage/services_edit.html:61
 msgid "Location Name"
 msgstr "A helyszín megnevezése"
 
-#: djnro/templates/edumanage/service_details.html:122
-#: djnro/templates/edumanage/services.html:115
-#: djnro/templates/front/index.html:186 djnro/templates/overview/index.html:197
+#: djnro/templates/edumanage/service_details.html:123
+#: djnro/templates/edumanage/services.html:29
+#: djnro/templates/overview/index.html:84
 msgid "Address"
 msgstr "Cím"
 
-#: djnro/templates/edumanage/service_details.html:145
-#: djnro/templates/edumanage/services.html:117
-#: djnro/templates/edumanage/services_edit.html:425
+#: djnro/templates/edumanage/service_details.html:146
+#: djnro/templates/edumanage/services.html:31
+#: djnro/templates/edumanage/services_edit.html:123
 msgid "Encryption Level"
 msgstr "Titkosítási szint:"
 
-#: djnro/templates/edumanage/service_details.html:151
-#: djnro/templates/edumanage/services_edit.html:433
-#: djnro/templates/front/index.html:201
+#: djnro/templates/edumanage/service_details.html:152
+#: djnro/templates/edumanage/services_edit.html:133
 msgid "Port Restrict"
 msgstr "port korlátozások"
 
-#: djnro/templates/edumanage/service_details.html:158
-#: djnro/templates/edumanage/services_edit.html:441
+#: djnro/templates/edumanage/service_details.html:159
+#: djnro/templates/edumanage/services_edit.html:143
 msgid "Transparent Proxy"
 msgstr "átlátszó Proxy"
 
-#: djnro/templates/edumanage/service_details.html:179
-#: djnro/templates/edumanage/services_edit.html:465
+#: djnro/templates/edumanage/service_details.html:180
+#: djnro/templates/edumanage/services_edit.html:173
 msgid "AP number"
 msgstr "AP szám"
 
-#: djnro/templates/edumanage/service_details.html:186
-#: djnro/templates/edumanage/services_edit.html:473
-#: djnro/templates/front/index.html:213
+#: djnro/templates/edumanage/service_details.html:187
+#: djnro/templates/edumanage/services_edit.html:183
 msgid "Wired"
 msgstr "Vezetékes"
 
-#: djnro/templates/edumanage/services.html:41
-msgid "locations"
-msgstr "helyszínek"
-
-#: djnro/templates/edumanage/services.html:63
-msgid "You are about to delete location"
-msgstr "Arra készül, hogy törölje helyszínt"
-
-#: djnro/templates/edumanage/services.html:64
-#: djnro/templates/edumanage/services.html:140
-msgid "Delete Location"
-msgstr "Helyszín törlése"
-
-#: djnro/templates/edumanage/services.html:82
-msgid "Service"
-msgstr "Szolgáltatás"
-
-#: djnro/templates/edumanage/services.html:82
-msgid "successfully deleted"
-msgstr "Törlés sikerült"
-
-#: djnro/templates/edumanage/services.html:106
-msgid "Add location"
-msgstr "Helyszín hozzáadása"
-
-#: djnro/templates/edumanage/services.html:116
-#: djnro/templates/front/index.html:192
+#: djnro/templates/edumanage/services.html:30
 msgid "SSID"
 msgstr "SSID"
 
-#: djnro/templates/edumanage/services.html:118
+#: djnro/templates/edumanage/services.html:32
 msgid "AP no"
 msgstr "AP-k száma"
 
-#: djnro/templates/edumanage/services.html:119
+#: djnro/templates/edumanage/services.html:33
 msgid "Actions"
 msgstr "Műveletek"
 
-#: djnro/templates/edumanage/services.html:154
+#: djnro/templates/edumanage/services.html:57
+#: djnro/templates/edumanage/services.html:158
+msgid "Delete Location"
+msgstr "Helyszín törlése"
+
+#: djnro/templates/edumanage/services.html:71
+msgid "Add a new location"
+msgstr "Új helyszín hozzáadása"
+
+#: djnro/templates/edumanage/services.html:80
 msgid "Location Details"
 msgstr "Helyszín adatok"
 
-#: djnro/templates/edumanage/services_edit.html:7
-#: djnro/templates/edumanage/services_edit.html:334
+#: djnro/templates/edumanage/services.html:135
+msgid "locations"
+msgstr "helyszínek"
+
+#: djnro/templates/edumanage/services.html:157
+msgid "You are about to delete location"
+msgstr "Arra készül, hogy törölje helyszínt"
+
+#: djnro/templates/edumanage/services.html:176
+msgid "successfully deleted"
+msgstr "Törlés sikerült"
+
+#: djnro/templates/edumanage/services_edit.html:15
 msgid "Add Location"
 msgstr "Helyszín hozzáadása"
 
-#: djnro/templates/edumanage/services_edit.html:355
+#: djnro/templates/edumanage/services_edit.html:38
 msgid "Search location"
 msgstr "Helyszín keresése"
 
-#: djnro/templates/edumanage/services_edit.html:360
+#: djnro/templates/edumanage/services_edit.html:45
 msgid "Update Map"
 msgstr "Térkép frissítés"
 
-#: djnro/templates/edumanage/services_edit.html:363
+#: djnro/templates/edumanage/services_edit.html:48
 msgid "Current Location"
 msgstr "Jelenlegi tartózkodási hely"
 
-#: djnro/templates/edumanage/services_edit.html:486
+#: djnro/templates/edumanage/services_edit.html:201
 msgid "url"
 msgstr "url"
 
-#: djnro/templates/edumanage/services_edit.html:486
+#: djnro/templates/edumanage/services_edit.html:202
 msgid "type"
 msgstr "Tipus"
 
-#: djnro/templates/edumanage/services_edit.html:486
+#: djnro/templates/edumanage/services_edit.html:203
 msgid "language"
 msgstr "nyelv"
 
-#: djnro/templates/edumanage/services_edit.html:519
+#: djnro/templates/edumanage/services_edit.html:246
 msgid "Save Changes"
 msgstr "Változtatások mentése"
 
-#: djnro/templates/edumanage/welcome.html:107
-#: djnro/templates/front/index.html:177
-msgid "Info"
-msgstr "Információ"
-
-#: djnro/templates/edumanage/welcome.html:108
-#: djnro/templates/front/index.html:178
-msgid "More..."
-msgstr "Továbbiak"
-
-#: djnro/templates/edumanage/welcome.html:189
-#: djnro/templates/overview/index.html:122
-#: djnro/templates/overview/index.html:134
-msgid "Logout"
-msgstr "Kijelentkezés"
-
-#: djnro/templates/edumanage/welcome.html:223
+#: djnro/templates/edumanage/welcome.html:44
 msgid "eduroam CAT"
 msgstr "eduroam CAT"
 
-#: djnro/templates/edumanage/welcome.html:244
+#: djnro/templates/edumanage/welcome.html:61
 msgid "Service Locations"
 msgstr "Szolgálratási helyszínek"
 
-#: djnro/templates/edumanage/welcome.html:248
+#: djnro/templates/edumanage/welcome.html:69
 msgid "No services defined yet"
 msgstr "Nincsen még szolgáltatás definiálva"
 
-#: djnro/templates/edumanage/welcome.html:248
+#: djnro/templates/edumanage/welcome.html:71
 msgid "Add new service"
 msgstr "Új szolgáltatás hozzáadása"
 
@@ -823,14 +785,14 @@ msgid ""
 "the closest eduroam service location."
 msgstr ""
 "Mivel információkkal rendelkezünk az eduroam.org-on a rendelkezésre álló "
-"eduroam helyszínekről, kifejlesztettük a legközelebbi pont szolgáltatás API-"
-"t, amely megmondja a legközelebb eduroam szolgáltatás helyét."
+"eduroam helyszínekről, kifejlesztettük a legközelebbi pont szolgáltatás "
+"API-t, amely megmondja a legközelebb eduroam szolgáltatás helyét."
 
 #: djnro/templates/front/api.html:14
 msgid ""
 "The API receives the current location coordinates in a GET request, "
-"calculates the closest point through server-side triangulation and returns a "
-"JSON reply with its’ coordinates and a detailed description."
+"calculates the closest point through server-side triangulation and returns a"
+" JSON reply with its’ coordinates and a detailed description."
 msgstr ""
 "Az API megkapja az aktuális hely koordinátái egy GET kéréssel és kiszámítja "
 "a legközelebbi pontot háromszögelési megoldással és visszatér egy JSON "
@@ -838,12 +800,12 @@ msgstr ""
 
 #: djnro/templates/front/api.html:16
 msgid ""
-"Based on this API, we developed the closest point web page that allows users "
-"to find the closest eduroam location or a location they search for."
+"Based on this API, we developed the closest point web page that allows users"
+" to find the closest eduroam location or a location they search for."
 msgstr ""
-"Ennek API-nak a segítségével, kifejlesztettük a legközelebbi pont weboldalt, "
-"amely lehetővé teszi a felhasználók számára, hogy megtalálják a legközelebbi "
-"eduroam helyszínt."
+"Ennek API-nak a segítségével, kifejlesztettük a legközelebbi pont weboldalt,"
+" amely lehetővé teszi a felhasználók számára, hogy megtalálják a "
+"legközelebbi eduroam helyszínt."
 
 #: djnro/templates/front/api.html:17
 msgid ""
@@ -853,27 +815,40 @@ msgstr ""
 "A lehetőségek korlátlanok! Lehet építeni saját alkalmazást Internet, mobil "
 "vagy hordható eszközhöz."
 
-#: djnro/templates/front/geolocate.html:6
-msgid "Closest"
-msgstr "Legközelebbi"
+#: djnro/templates/front/geolocate.html:4
+msgid "Closest Access Point"
+msgstr "Legközelebbi Access Point"
 
-#: djnro/templates/front/index.html:189
-msgid "Encryption"
-msgstr "Titkosítás"
+#: djnro/templates/front/index.html:22
+msgid ""
+"\n"
+"\t\t\t\t\t\t\tYou might be wondering about the location of the closest eduroam access points in order to be able to connect to eduroam. We provide a service and an api in order to help you find the closest eduroam access point.\n"
+"\t\t\t\t\t\t\t"
+msgstr ""
+"\n"
+"\t\t\t\t\t\t\tAmenyiben a legközelebbi eduroam hozzáférési pontot keresed jó helyen jársz. Szolgáltatunk és a szolgáltatási API-nk megmutatja a legközelebbi eduroam pontot.\n"
+"\t\t\t\t\t\t\t"
 
-#: djnro/templates/front/index.html:195
-msgid "Number of APs"
-msgstr "AP-k száma"
+#: djnro/templates/front/index.html:41
+msgid ""
+"\n"
+"\t\t\t\t\t\t\teduroam (education roaming) is the secure, world-wide roaming access service developed for the international research and education community. It allows students, researchers and staff from participating institutions to obtain Internet connectivity across campus and when visiting other participating institutions by simply opening their laptop.\n"
+"\t\t\t\t\t\t"
+msgstr ""
+"\n"
+"\t\t\t\t\t\t\teduroam (education roaming) egy biztonságos, világméretű roaming hozzáférési szolgáltatás, amelyet a nemzetközi kutatási és oktatási közösség fejlesztett ki. Lehetővé teszi a szövetségben réztvevő intézmények diákjainak, kutatóinak és dolgozóinak  az Internethez való hozzágférést anyaintézménük campusán és más résztvevő intézményekben a lehető legegyszerűbb módon, konfiguráció és beállítgatások nélkül."
 
-#: djnro/templates/front/index.html:204
-msgid "transp_proxy"
-msgstr "transp_proxy"
+#: djnro/templates/front/index.html:54
+msgid ""
+"\n"
+"\t\t\t\t\t\t\t\tTo use eduroam wifi you will need to setup your laptop or smartphone. As end-user you will only be able to use eduroam if your institution provides electronic identity (e.g. account for network access). In that case you will need to contact your administrator and ask for an account. You (or your network administrator) will have to configure your computer to enable eduroam access.\n"
+"\t\t\t\t\t\t\t"
+msgstr ""
+"\n"
+"\t\t\t\t\t\t\t\tAzért,  hogy az eduroam-ot használni tudd egyszer be kell állítanod a laptopod vagy okostelefonod.  Végfelhaszmálóként akkor tudod használni az eduroam-ot ha az anyaintézményed (ahova be vagy iratkozva, vagy dolgozol) egy elektronikus azonosítót bizotsított számodra  (pl. hálózati/eduroam hozzáférési fiók). Ezt az azonosítót az anyaintézményed hálózati vagy felhasználói ügyfélszolgálatán igényelheted. Ennek birtokában te, vagy a rendszergazdád be tudja állítani az eszközeiden az eduroam hozzáférést.\n"
+"\t\t\t\t\t\t\t"
 
-#: djnro/templates/front/index.html:371
-msgid "eduroam in"
-msgstr "eduroam a"
-
-#: djnro/templates/front/management.html:13
+#: djnro/templates/front/management.html:12
 msgid ""
 "The management application provides an interface for administrators of "
 "federation member institutions to maintain the data that is necessary for "
@@ -883,14 +858,15 @@ msgstr ""
 "tagintézmények rendszergazdáinak, hogy a szövetség üzemeltetéséhez és a "
 "szövetségben való részvételhez  szükséges  adatokat kezelni tudják."
 
-#: djnro/templates/front/management.html:14
+#: djnro/templates/front/management.html:13
 msgid ""
-"Administrators can log in using either Social Networks or the AAI Federation:"
+"Administrators can log in using either Social Networks or the AAI "
+"Federation:"
 msgstr ""
 "A rendszergazdák eduID szövetségi azonosítás vagy szociális hálózatok "
 "segítségével tudnak bejelentkezni:"
 
-#: djnro/templates/front/management.html:17
+#: djnro/templates/front/management.html:16
 msgid ""
 "Social networks that have been enabled for authenticating users to the "
 "management application are listed under the <b>Manage</b> drop-down menu. "
@@ -899,16 +875,16 @@ msgid ""
 "user can proceed with activation."
 msgstr ""
 "A felhasználók hitelesítésére engedélyezett szociális hálózatokat  "
-"<b>Kezelés</b> legördülő menüből elindulva lehet indítani. A hitelesítéshez, "
-"a felhasználónak meg kell adnia a hiányzó információkat, amelyek szükségesek "
-"ehhez alkalmazáshoz (például e-mail cím). Ezt követően, a felhasználó "
-"folytathatja aktiválást."
+"<b>Kezelés</b> legördülő menüből elindulva lehet indítani. A hitelesítéshez,"
+" a felhasználónak meg kell adnia a hiányzó információkat, amelyek "
+"szükségesek ehhez alkalmazáshoz (például e-mail cím). Ezt követően, a "
+"felhasználó folytathatja aktiválást."
 
-#: djnro/templates/front/management.html:20
+#: djnro/templates/front/management.html:19
 msgid "Authentication and authorization are carried out through a"
 msgstr "Hitelesítés és engedélyezés "
 
-#: djnro/templates/front/management.html:21
+#: djnro/templates/front/management.html:20
 msgid ""
 "The following attributes are required for administrators and must be "
 "released by their home IdPs to the SP"
@@ -916,27 +892,27 @@ msgstr ""
 "Az alábbi attributumok szükségesek a rendszergazdáktól amelyeket a "
 "anyaintézmény IdP-jének kell kiadnia ennek alkalmazásnak"
 
-#: djnro/templates/front/management.html:21
+#: djnro/templates/front/management.html:20
 msgid "according to the"
 msgstr "szerint a"
 
-#: djnro/templates/front/management.html:21
+#: djnro/templates/front/management.html:20
 msgid "policy and procedures documentation"
 msgstr "pollicy és eljárások dokumentációja"
 
-#: djnro/templates/front/management.html:21
-msgid "provided by the GRNET AAI federation"
-msgstr "által biztosított eduID szövetség"
+#: djnro/templates/front/management.html:20
+msgid "provided by the"
+msgstr "által biztosított"
 
-#: djnro/templates/front/management.html:23
+#: djnro/templates/front/management.html:22
 msgid "Attribute"
 msgstr "Attribútum"
 
-#: djnro/templates/front/management.html:23
+#: djnro/templates/front/management.html:22
 msgid "Description"
 msgstr "Leírás"
 
-#: djnro/templates/front/management.html:25
+#: djnro/templates/front/management.html:24
 msgid ""
 "Provides a string that uniquely identifies an administrator in the "
 "management application."
@@ -944,12 +920,13 @@ msgstr ""
 "Egy karakterlánc, amellyel egyedileg azonosítja a rendszergazdát az "
 "alkalmazás."
 
-#: djnro/templates/front/management.html:26
+#: djnro/templates/front/management.html:25
 msgid "A specific URN value must be provided to authorize an administrator:"
 msgstr ""
-"Egy URN érték amelyet  be kell állítani, a rendszergazda számára (HEXAA-ból):"
+"Egy URN érték amelyet  be kell állítani, a rendszergazda számára (HEXAA-"
+"ból):"
 
-#: djnro/templates/front/management.html:27
+#: djnro/templates/front/management.html:26
 msgid ""
 "The e-mail address (one or more) of the administrator. It is used for "
 "notifications from the management application. It may also be used for "
@@ -959,15 +936,15 @@ msgstr ""
 "üzenetek küldésére. További kommunikációra is hasznáható előzetes "
 "hozzájárulással."
 
-#: djnro/templates/front/management.html:28
+#: djnro/templates/front/management.html:27
 msgid "The person's first name."
 msgstr "Személy keresztneve"
 
-#: djnro/templates/front/management.html:29
+#: djnro/templates/front/management.html:28
 msgid "The person's last name."
 msgstr "A személy vezetékneve."
 
-#: djnro/templates/front/management.html:33
+#: djnro/templates/front/management.html:32
 msgid ""
 "Once attribute release is setup properly an administrator can login to the "
 "management application."
@@ -975,12 +952,12 @@ msgstr ""
 "Miután attribútum kiadás rendesen be van állítva a  rendszergazda be fog "
 "tudni jelenkezni az alkalmazásba."
 
-#: djnro/templates/front/management.html:36
+#: djnro/templates/front/management.html:35
 msgid ""
 "After the first login, administrators are asked to associate their account "
-"with the institution they want to manage. Their choice must then be ratified "
-"by the operators of their management application. Following that, they will "
-"be notified through e-mail and they will then be able to start using the "
+"with the institution they want to manage. Their choice must then be ratified"
+" by the operators of their management application. Following that, they will"
+" be notified through e-mail and they will then be able to start using the "
 "management application."
 msgstr ""
 "Az első bejelentkezés után a rendszergazdának kérni kell, hogy "
@@ -988,7 +965,7 @@ msgstr ""
 "felelős. Ezt az összekapcsolást a szövetség üzemeltetői erősítik meg. Ezt "
 "követően e-mail értesítést kap, hogy képes használni az alkalmazást."
 
-#: djnro/templates/front/management.html:39
+#: djnro/templates/front/management.html:38
 msgid ""
 "Among other things, the metadata provided by administrators through the "
 "management application are used to compile database data for the federation"
@@ -997,70 +974,66 @@ msgstr ""
 "karbantartott adatokat használjuk a szövetség adatbázisának "
 "karbantartásához. "
 
-#: djnro/templates/front/management_dropdown.html:3
-msgid "Manage"
-msgstr "Kezelés"
-
-#: djnro/templates/front/participants.html:18
+#: djnro/templates/front/participants.html:12
 msgid "Participating Institutions"
 msgstr "A résztvevő intézmények"
 
-#: djnro/templates/front/participants.html:20
+#: djnro/templates/front/participants.html:14
 msgid "In"
 msgstr "Azokban"
 
-#: djnro/templates/front/participants.html:20
-msgid "eduroam is provided by the following instituitons/organizations"
-msgstr "A következő intézményeknél / szervezeteknél biztosított az eduroam."
+#: djnro/templates/front/participants.html:14
+msgid "eduroam is provided by the following institutions/organizations"
+msgstr "eduroam-ot a következő intézmények/szervezetek nyújtanak"
 
-#: djnro/templates/front/world.html:284
+#: djnro/templates/front/world.html:11
 msgid "eduroam worldwide"
 msgstr "Világ eduroam"
 
-#: djnro/templates/overview/index.html:42
-msgid "users"
-msgstr "felhasználók"
-
-#: djnro/templates/overview/index.html:86
-msgid "institutions"
-msgstr "intézmények"
-
-#: djnro/templates/overview/index.html:119
-#: djnro/templates/overview/index.html:131
+#: djnro/templates/overview/index.html:17
 msgid "Overview"
 msgstr "Áttekintés"
 
-#: djnro/templates/overview/index.html:150
+#: djnro/templates/overview/index.html:20
+msgid "Logout"
+msgstr "Kijelentkezés"
+
+#: djnro/templates/overview/index.html:34
 msgid "Users - Institutions"
 msgstr "Felhasználók - Intézmények"
 
-#: djnro/templates/overview/index.html:157
+#: djnro/templates/overview/index.html:37
 msgid "Users"
 msgstr "Feljhasználók"
 
-#: djnro/templates/overview/index.html:158
-msgid "Institutions"
-msgstr "Intézmények"
-
-#: djnro/templates/overview/index.html:171
-msgid "Status"
-msgstr "Státusz"
-
-#: djnro/templates/overview/index.html:181
+#: djnro/templates/overview/index.html:63
 msgid "Active"
 msgstr "Aktív"
 
-#: djnro/templates/overview/index.html:181
+#: djnro/templates/overview/index.html:65
 msgid "Inactive"
 msgstr "Inaktív"
 
-#: djnro/templates/overview/index.html:181
+#: djnro/templates/overview/index.html:65
 msgid "Key Expired"
 msgstr "Lejárt"
 
-#: djnro/templates/overview/index.html:198
+#: djnro/templates/overview/index.html:85
 msgid "Admin Users"
 msgstr "Rendszergazdai felhasználók:"
+
+#: djnro/templates/overview/index.html:192
+msgid "institutions"
+msgstr "intézmények"
+
+#: djnro/templates/partial/footer.html:10
+msgid "If you have any questions or need help, contact"
+msgstr ""
+"Ha bármilyen kérdése van, vagy segítségre van szüksége, lépjen kapcsolatba"
+
+#: djnro/templates/partial/footer.html:12
+msgid "This is a service provided by"
+msgstr "Ezt a szolgáltatást biztosította:"
 
 #: djnro/templates/registration/activate.html:3
 #: djnro/templates/registration/activation_complete.html:3
@@ -1092,67 +1065,98 @@ msgstr "Aktiválás"
 msgid "The user will be notified about his/her account activation"
 msgstr "A felhasználó értesítést kap a fiók aktiválásáról"
 
-#: edumanage/decorators.py:18 edumanage/views.py:1583 edumanage/views.py:1677
+#: edumanage/decorators.py:24 edumanage/views.py:1663 edumanage/views.py:1766
 #, python-format
 msgid ""
-"User account <strong>%s</strong> is pending activation. Administrators have "
-"been notified and will activate this account within the next days. <br>If "
-"this account has remained inactive for a long time contact your technical "
-"coordinator or GRNET Helpdesk"
+"User account <strong>%(username)s</strong> is pending activation. "
+"Administrators have been notified and will activate this account within the "
+"next days. <br>If this account has remained inactive for a long time contact"
+" your technical coordinator or %(nroname)s Helpdesk"
 msgstr ""
-"Felhasználó hozzáférés <strong>%s</strong> aktiválása függőben. A szövetség "
-"adminisztrátorai értesítve lettek, a következő a  napokban aktiválják ezt a "
-"fiokót. <br> Ha ez a fiók sokáig inaktív maradt, forduljon az NIIF Program "
+"Felhasználó hozzáférés <strong>%(username)s</strong> aktiválása függőben. A "
+"szövetség adminisztrátorai értesítve lettek, a következő a  napokban "
+"aktiválják ezt a fiokót. <br> Ha ez a fiók sokáig inaktív maradt, forduljon "
+"az eduroam szövetség technikai koordinátorához vagy a %(nroname)s "
 "ügyfélszolgálatához."
 
-#: edumanage/forms.py:79 edumanage/forms.py:88 edumanage/forms.py:97
-#: edumanage/forms.py:116 edumanage/forms.py:138
+#: edumanage/fields.py:13
+msgid ""
+"Enter at least one e-mail address. Multiple email addresses Should be "
+"separated with semicolon (;)"
+msgstr ""
+"Legalább egy e-mail címet adj meg. Több e-mail címet pontosvesszővel (;) "
+"elv'lasytva edj meg. "
+
+#: edumanage/fields.py:20
+#, python-format
+msgid "%s is not a valid e-mail address."
+msgstr "%s nem egy valós e-mail cím."
+
+#: edumanage/forms.py:88 edumanage/forms.py:99 edumanage/forms.py:110
+msgid "The Type field is required to validate this field."
+msgstr "A Type mező szükséges az ellnörzéshez."
+
+#: edumanage/forms.py:94 edumanage/forms.py:105 edumanage/forms.py:116
+#: edumanage/forms.py:135 edumanage/forms.py:160
 msgid "This field is required."
 msgstr "A mező kitöltése kötelező."
 
-#: edumanage/forms.py:113
+#: edumanage/forms.py:132
 msgid "Invalid network address/hostname format"
 msgstr "Érvénytelen hálózati cím / hostname formátum"
 
-#: edumanage/forms.py:163 edumanage/forms.py:165
+#: edumanage/forms.py:183 edumanage/forms.py:185
 msgid "Fill in at least one location name in English"
 msgstr "Tölts ki legalább egy helyszín nevet angolul"
 
-#: edumanage/forms.py:190 edumanage/forms.py:192
+#: edumanage/forms.py:211 edumanage/forms.py:213
 msgid "Fill in at least the info url"
 msgstr "Töltse ki legalább az info url-t"
 
-#: edumanage/models.py:236 edumanage/models.py:305
+#: edumanage/management/commands/importcsv.py:50
+msgid "Error in usage. See help"
+msgstr "Hiba a használatban. Lásd segítséget"
+
+#: edumanage/models.py:232 edumanage/models.py:321
 msgid "Descriptive label"
 msgstr "leíró címke"
 
-#: edumanage/models.py:239 edumanage/models.py:307
+#: edumanage/models.py:235 edumanage/models.py:328
 msgid "IP address | FQDN hostname"
 msgstr "IP-cím | FQDN hostname"
 
-#: edumanage/models.py:243
+#: edumanage/models.py:239
 msgid "Default for RADIUS: 1812"
 msgstr "Alapértelmezett RADIUS: 1812"
 
-#: edumanage/models.py:244
+#: edumanage/models.py:240
 msgid "Default for RADIUS: 1813"
 msgstr "Alapértelmezett RADIUS: 1813"
 
-#: edumanage/models.py:245
+#: edumanage/models.py:241
 msgid "Do you accept Status-Server requests?"
 msgstr "Elfogadja Status-szerver kéréseket?"
 
-#: edumanage/models.py:256
+#: edumanage/models.py:252
 #, python-format
 msgid "Server: %(servername)s, Type: %(ertype)s"
 msgstr "Kiszolgáló: %(servername)s , Típus: %(ertype)s"
 
-#: edumanage/models.py:318
+#: edumanage/models.py:274
+#, python-format
+msgid ""
+"You cannot change this server to %(ertype)s (it is used by realms "
+"%(realms)s)"
+msgstr ""
+"Nem tudod megváltoztatni ezt a szervert %(ertype)s (i%(realms)s realm "
+"használja)"
+
+#: edumanage/models.py:340
 #, python-format
 msgid "Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s"
 msgstr "Felügylet Realm: %(monrealm)s, Proxyback Ügyfél: %(servername)s"
 
-#: edumanage/models.py:360
+#: edumanage/models.py:383
 #, python-format
 msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
@@ -1161,22 +1165,22 @@ msgstr ""
 "Felügyelt Realm: %(monrealm)s, EAP-módszer: %(eapmethod)s, 2. fázis: "
 "%(phase2)s, név: %(username)s"
 
-#: edumanage/models.py:406
+#: edumanage/models.py:430
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr "Intézmény: %(inst)s, Szolgáltatás helyszín: %(locname)s"
 
-#: edumanage/models.py:471
+#: edumanage/models.py:497
 msgid ""
-"The primary, registered domain name for your institution, eg. example.com."
-"<br>This is used to derive the Operator-Name attribute according to RFC5580, "
-"par.4.1, using the REALM namespace."
+"The primary, registered domain name for your institution, eg. "
+"example.com.<br>This is used to derive the Operator-Name attribute according"
+" to RFC5580, par.4.1, using the REALM namespace."
 msgstr ""
 "Az elsődleges, bejegyzett domain neve az intézménynek, pl. example.hu. <br> "
 "Ez  Operator-Name attribútum készítéséhez használjuk  RFC5580, par.4.1 "
 "alapján."
 
-#: edumanage/models.py:473
+#: edumanage/models.py:500
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -1184,7 +1188,7 @@ msgstr ""
 "A felhasználók száma (magánszemélyek), amelyek jogosultak részt venni "
 "eduroam szolgáltatásban"
 
-#: edumanage/models.py:474
+#: edumanage/models.py:501
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
@@ -1192,17 +1196,17 @@ msgstr ""
 "A kibocsátott azonosítók száma (hitelesítő adat) amelyet eduroam "
 "szolgáltatásra lehet használni"
 
-#: edumanage/models.py:482
+#: edumanage/models.py:509
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr "Intézmény: %(inst)s, Típus: %(ertype)s"
 
-#: edumanage/models.py:513
+#: edumanage/models.py:540
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr "Ország:%(country)s, NRO: %(orgname)s"
 
-#: edumanage/models.py:543
+#: edumanage/models.py:581
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
@@ -1213,7 +1217,7 @@ msgstr ""
 "%(idp)s,  SP: %(sp)s, IdPSPs: %(idpsp)s, felhasználók: %(numuser)s, "
 "identitások: %(numid)s"
 
-#: edumanage/views.py:1531
+#: edumanage/views.py:1602
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
@@ -1221,19 +1225,19 @@ msgstr ""
 "Az IdP-nek át kell adnia  a eduPersonPrincipalName attribútumot ezen "
 "szolgáltatásnak <br>"
 
-#: edumanage/views.py:1537
+#: edumanage/views.py:1608
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
-"IdP-nek át kell adnia eduPersonEntitlement attributumot ezen szolgáltatásnak "
-"<br>"
+"IdP-nek át kell adnia eduPersonEntitlement attributumot ezen szolgáltatásnak"
+" <br>"
 
-#: edumanage/views.py:1542
+#: edumanage/views.py:1613
 msgid "Your idP should release the mail attribute towards this service"
 msgstr "IdP-nek át kell adnia mail attributumot ezen szolgáltatásnak <br>"
 
-#: edumanage/views.py:1595
+#: edumanage/views.py:1679
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
@@ -1242,56 +1246,16 @@ msgstr ""
 "Valami elromlott a a felhasználói hitelesítéskor. Lépj kapcsolatba a "
 "rendszergazdával %s"
 
-#: edumanage/views.py:1604
+#: edumanage/views.py:1688
 #, python-format
 msgid "Invalid login procedure. Error: %s"
 msgstr "Érvénytelen bejelentkezési eljárás. Hiba:%s"
 
-#: edumanage/views.py:1659
+#: edumanage/views.py:1748
 msgid ""
-"Violation warning: User account is already associated with an institution."
-"The event has been logged and our administrators will be notified about it"
+"Violation warning: User account is already associated with an "
+"institution.The event has been logged and our administrators will be "
+"notified about it"
 msgstr ""
 "Figyelmeztetés: Felhasználói fiók már hozzá van rendelve egy intézményhez. "
 "Az esemény naplózásra került, és a rendszergazdát is értesítjük róla."
-
-#: edumanage/management/commands/importcsv.py:50
-msgid "Error in usage. See help"
-msgstr "Hiba a használatban. Lásd segítséget"
-
-#: longerusername/forms.py:11
-#, python-format
-msgid ""
-"Required, %s characters or fewer. Only letters, numbers, and characters such "
-"as @.+_- are allowed."
-msgstr ""
-"Szükséges %s karakter nem megfelelő. Csak betűk, számok és a következő "
-"karakterek lehetségesek @. + _-."
-
-#: longerusername/models.py:18
-#, python-format
-msgid ""
-"Required, %s characters or fewer. Only letters, numbers, and @, ., +, -, or "
-"_ characters."
-msgstr ""
-"Szükséges %s karakter nem megfelelő. Csak betűk, számok és a következő "
-"karakterek lehetségesek @. + _-."
-
-#: social_auth/exceptions.py:14
-#, python-format
-msgid "Incorrect authentication service \"%s\""
-msgstr "Hibás hitelesítés szolgáltatás \"%s\""
-
-#: social_auth/exceptions.py:42
-msgid "Authentication process was cancelled"
-msgstr "Hitelesítési folyamatot törölve lett"
-
-#: social_auth/exceptions.py:44
-#, python-format
-msgid "Authentication failed: %s"
-msgstr "A hitelesítés nem sikerült: %s"
-
-#: social_auth/backends/pipeline/social.py:17
-#, python-format
-msgid "This %(provider)s account is already in use."
-msgstr "Ez a %(provider)s azonosító már használatban van."
