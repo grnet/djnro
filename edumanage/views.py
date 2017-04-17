@@ -1761,19 +1761,34 @@ def connect(request):
             # only use first inst+CAT binding (per CAT instance), even if there
             # may be more
             dets_cat[i.pk] = catids[0]
-    if settings_dict_get('CAT_AUTH', cat_instance) is None:
-        cat_exists = False
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
         dets.sort(cmp=locale.strcoll,
                   key=lambda x: unicode(x.institution.
                                         get_name(lang=request.LANGUAGE_CODE)))
+    if settings_dict_get('CAT_AUTH', cat_instance) is None:
+        cat_exists = False
+        cat_api_direct = None
+        cat_api_ldlbase = None
+    else:
+        cat_api_direct = settings_dict_get('CAT_AUTH', cat_instance,
+                                           'CAT_USER_API_URL')
+        if cat_api_direct is None:
+            cat_exists = False
+            cat_api_ldlbase = None
+        else:
+            cat_api_ldlbase = settings_dict_get('CAT_AUTH', cat_instance,
+                                                'CAT_USER_API_LOCAL_DOWNLOADS')
+            if not cat_api_ldlbase and cat_api_direct:
+                cat_api_ldlbase = cat_api_direct.replace('user/API.php', '')
     template = settings_dict_get('CAT_CONNECT_TEMPLATE', cat_instance)
     return render_to_response(
         template or 'front/connect.html',
         {
             'institutions': dets,
             'institutions_cat': dets_cat,
-            'catexists': cat_exists
+            'catexists': cat_exists,
+            'cat_api_direct': cat_api_direct,
+            'cat_api_ldlbase': cat_api_ldlbase
         },
         context_instance=RequestContext(request)
     )
