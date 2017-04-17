@@ -1,0 +1,1565 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Valeriu Vraciu <valeriu@roedu.net>, 2020
+# Raul Opruta <raul.opruta@roedu.net>, 2020
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-26 01:05+0200\n"
+"PO-Revision-Date: 2017-04-01 23:40+0000\n"
+"Last-Translator: Raul Opruta <raul.opruta@roedu.net>, 2020\n"
+"Language-Team: Romanian (https://www.transifex.com/eduroam_devel/teams/11799/ro/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ro\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+
+#: accounts/models.py:31
+msgid "user"
+msgstr "utilizator"
+
+#: accounts/models.py:32 djnro/templates/overview/index.html:144
+msgid "users"
+msgstr "utilizatori"
+
+#: accounts/views.py:106
+#, python-format
+msgid "%sUser account activated"
+msgstr "%sContul de utilizator este activat"
+
+#: djnro/settings.py:39
+msgid "Greek"
+msgstr "Greacă"
+
+#: djnro/settings.py:40
+msgid "English"
+msgstr "Engleză"
+
+#: djnro/settings.py:41
+msgid "Spanish"
+msgstr "Spaniolă"
+
+#: djnro/settings.py:42
+msgid "Hungarian"
+msgstr "Maghiară"
+
+#: djnro/templates/base.html:37
+#: djnro/templates/edumanage/server_details.html:4
+#: djnro/templates/edumanage/service_details.html:7
+#: djnro/templates/edumanage/welcome.html:18
+#: djnro/templates/edumanage/welcome.html:73
+#: djnro/templates/front/index.html:4
+#: djnro/templates/registration/activate.html:7
+#: djnro/templates/registration/activation_complete.html:7
+msgid "Home"
+msgstr "Acasă"
+
+#: djnro/templates/base.html:39
+#: djnro/templates/front/management_dropdown.html:4
+#: djnro/templates/front/management_dropdown.html:7
+msgid "Manage"
+msgstr "Administrare"
+
+#: djnro/templates/base.html:43
+#: djnro/templates/edumanage/institution_edit.html:44
+#: djnro/templates/edumanage/services_edit.html:96
+#: djnro/templates/edumanage/services_edit.html:118
+msgid "Language"
+msgstr "Limbă"
+
+#: djnro/templates/base.html:58 djnro/templates/overview/index.html:38
+msgid "Institutions"
+msgstr "Instituții"
+
+#: djnro/templates/base.html:60 djnro/templates/front/management.html:4
+#: djnro/templates/front/management.html:10
+msgid "Management"
+msgstr "Administrare"
+
+#: djnro/templates/base.html:61 djnro/templates/front/participants.html:4
+msgid "Participants"
+msgstr "Participanți"
+
+#: djnro/templates/base.html:62 djnro/templates/front/connect.html:4
+#: djnro/templates/front/connect.html:28
+msgid "Connect to eduroam"
+msgstr "Conectare la eduroam"
+
+#: djnro/templates/base.html:66 djnro/templates/edumanage/services.html:174
+msgid "Service"
+msgstr "Serviciu"
+
+#: djnro/templates/base.html:68
+msgid "Closest eduroam"
+msgstr "eduroam în apropiere"
+
+#: djnro/templates/base.html:69
+msgid "World eduroam"
+msgstr "eduroam la nivel mondial"
+
+#: djnro/templates/base.html:70
+msgid "pebduroam"
+msgstr "pebduroam"
+
+#: djnro/templates/base.html:71
+msgid "Closest point api"
+msgstr "Cel mai apropiat punct API"
+
+#: djnro/templates/edumanage/add_user.html:7
+#: djnro/templates/edumanage/contacts.html:20
+#: djnro/templates/edumanage/contacts_edit.html:20
+#: djnro/templates/edumanage/institution.html:20
+#: djnro/templates/edumanage/institution_edit.html:22
+#: djnro/templates/edumanage/servers.html:23
+#: djnro/templates/edumanage/services.html:25
+#: djnro/templates/edumanage/services_edit.html:96
+#: djnro/templates/overview/index.html:49
+#: djnro/templates/overview/index.html:81
+msgid "Name"
+msgstr "Nume"
+
+#: djnro/templates/edumanage/add_user.html:15
+#: djnro/templates/edumanage/contacts.html:21
+#: djnro/templates/edumanage/contacts_edit.html:28
+#: djnro/templates/overview/index.html:48
+#: djnro/templates/registration/select_institution.html:26
+msgid "Email"
+msgstr "Adresă e-mail"
+
+#: djnro/templates/edumanage/add_user.html:23
+#: djnro/templates/edumanage/contacts.html:22
+#: djnro/templates/edumanage/contacts_edit.html:36
+msgid "Phone"
+msgstr "Telefon"
+
+#: djnro/templates/edumanage/add_user.html:31
+#: djnro/templates/edumanage/institution.html:26
+#: djnro/templates/edumanage/institution_edit.html:28
+#: djnro/templates/edumanage/instrealmmons.html:24
+#: djnro/templates/edumanage/server_details.html:24
+#: djnro/templates/edumanage/servers.html:24
+#: djnro/templates/edumanage/servers_edit.html:24
+#: djnro/templates/overview/index.html:82
+msgid "Type"
+msgstr "Tip"
+
+#: djnro/templates/edumanage/add_user.html:39
+msgid "Privacy"
+msgstr "Confidențialitate"
+
+#: djnro/templates/edumanage/catenroll.html:6
+msgid "CAT enroll"
+msgstr "Aderare la CAT"
+
+#: djnro/templates/edumanage/catenroll.html:21
+msgid "CAT Institution ID"
+msgstr "ID Instituție în CAT"
+
+#: djnro/templates/edumanage/catenroll.html:22
+msgid "CAT configuration profiles"
+msgstr "Profile de configurare în CAT"
+
+#: djnro/templates/edumanage/catenroll.html:23
+msgid "URL/Status"
+msgstr "Stare/URL"
+
+#: djnro/templates/edumanage/catenroll.html:24
+#: djnro/templates/edumanage/catenroll.html:51
+msgid "CAT instance"
+msgstr "Instanță CAT"
+
+#: djnro/templates/edumanage/catenroll.html:25
+msgid "Applier"
+msgstr "Solicitant"
+
+#: djnro/templates/edumanage/catenroll.html:63
+#: djnro/templates/edumanage/contacts_edit.html:46
+#: djnro/templates/edumanage/institution_edit.html:128
+#: djnro/templates/edumanage/instrealmmon_edit.html:40
+#: djnro/templates/edumanage/monlocauthpar_edit.html:58
+#: djnro/templates/edumanage/realms_edit.html:47
+#: djnro/templates/edumanage/servers_edit.html:128
+#: djnro/templates/edumanage/services_edit.html:262
+#: djnro/templates/registration/select_institution.html:50
+msgid "Apply"
+msgstr "Aplică"
+
+#: djnro/templates/edumanage/catenroll.html:76
+#: djnro/templates/overview/index.html:50
+msgid "Status"
+msgstr "Stare"
+
+#: djnro/templates/edumanage/catenroll.html:78
+msgid "Response"
+msgstr "Răspuns"
+
+#: djnro/templates/edumanage/catenroll.html:80
+msgid "Institution Id"
+msgstr "Identificator Instituție"
+
+#: djnro/templates/edumanage/catenroll.html:81
+msgid "CAT url"
+msgstr "URL CAT"
+
+#: djnro/templates/edumanage/contacts.html:7
+#: djnro/templates/edumanage/institution.html:51
+#: djnro/templates/edumanage/institution_edit.html:60
+#: djnro/templates/edumanage/service_details.html:150
+#: djnro/templates/edumanage/services_edit.html:136
+#: djnro/templates/edumanage/welcome.html:50
+#: djnro/templates/overview/index.html:83
+msgid "Contacts"
+msgstr "Contacte"
+
+#: djnro/templates/edumanage/contacts.html:23
+#: djnro/templates/edumanage/instrealmmons.html:27
+#: djnro/templates/edumanage/realms.html:23
+#: djnro/templates/edumanage/servers.html:27
+msgid "Action"
+msgstr "Acțiune"
+
+#: djnro/templates/edumanage/contacts.html:33
+#: djnro/templates/edumanage/contacts_edit.html:7
+#: djnro/templates/edumanage/institution.html:105
+#: djnro/templates/edumanage/instrealmmon_edit.html:11
+#: djnro/templates/edumanage/instrealmmons.html:43
+#: djnro/templates/edumanage/instrealmmons.html:62
+#: djnro/templates/edumanage/monlocauthpar_edit.html:7
+#: djnro/templates/edumanage/realms.html:31
+#: djnro/templates/edumanage/realms_edit.html:8
+#: djnro/templates/edumanage/servers.html:38
+#: djnro/templates/edumanage/servers_edit.html:8
+#: djnro/templates/edumanage/services.html:42
+#: djnro/templates/edumanage/services_edit.html:11
+msgid "edit"
+msgstr "editează"
+
+#: djnro/templates/edumanage/contacts.html:33
+#: djnro/templates/edumanage/instrealmmons.html:44
+#: djnro/templates/edumanage/instrealmmons.html:63
+#: djnro/templates/edumanage/realms.html:31
+#: djnro/templates/edumanage/servers.html:38
+#: djnro/templates/edumanage/services.html:42
+msgid "delete"
+msgstr "șterge"
+
+#: djnro/templates/edumanage/contacts.html:39
+msgid "Add new contact"
+msgstr "Adaugă contact nou"
+
+#: djnro/templates/edumanage/contacts.html:45
+#: djnro/templates/edumanage/contacts.html:114
+msgid "Delete contact"
+msgstr "Șterge contact"
+
+#: djnro/templates/edumanage/contacts.html:49
+#: djnro/templates/edumanage/instrealmmons.html:92
+#: djnro/templates/edumanage/instrealmmons.html:109
+#: djnro/templates/edumanage/realms.html:50
+#: djnro/templates/edumanage/servers.html:55
+#: djnro/templates/edumanage/services.html:60
+msgid "Cancel"
+msgstr "Anulare"
+
+#: djnro/templates/edumanage/contacts.html:50
+#: djnro/templates/edumanage/instrealmmons.html:93
+#: djnro/templates/edumanage/instrealmmons.html:110
+#: djnro/templates/edumanage/realms.html:51
+#: djnro/templates/edumanage/servers.html:56
+#: djnro/templates/edumanage/services.html:61
+msgid "Delete"
+msgstr "Șterge"
+
+#: djnro/templates/edumanage/contacts.html:90
+#: djnro/templates/edumanage/instrealmmons.html:151
+#: djnro/templates/edumanage/realms.html:88
+#: djnro/templates/edumanage/servers.html:99
+#: djnro/templates/edumanage/services.html:133
+#: djnro/templates/overview/index.html:144
+#: djnro/templates/overview/index.html:192
+msgid "Display"
+msgstr "Afișare"
+
+#: djnro/templates/edumanage/contacts.html:90
+#: djnro/templates/edumanage/instrealmmons.html:151
+#: djnro/templates/edumanage/realms.html:88
+#: djnro/templates/edumanage/servers.html:99
+#: djnro/templates/edumanage/services.html:133
+#: djnro/templates/overview/index.html:144
+#: djnro/templates/overview/index.html:192
+msgid "All"
+msgstr "Tot/Toate"
+
+#: djnro/templates/edumanage/contacts.html:90
+msgid "contacts"
+msgstr "contacte"
+
+#: djnro/templates/edumanage/contacts.html:92
+#: djnro/templates/edumanage/instrealmmons.html:153
+#: djnro/templates/edumanage/realms.html:90
+#: djnro/templates/edumanage/servers.html:101
+#: djnro/templates/edumanage/services.html:135
+#: djnro/templates/overview/index.html:146
+#: djnro/templates/overview/index.html:194
+msgid "No records to display"
+msgstr "Nimic de afișat"
+
+#: djnro/templates/edumanage/contacts.html:94
+#: djnro/templates/edumanage/instrealmmons.html:155
+#: djnro/templates/edumanage/realms.html:92
+#: djnro/templates/edumanage/servers.html:103
+#: djnro/templates/edumanage/services.html:137
+#: djnro/templates/overview/index.html:148
+#: djnro/templates/overview/index.html:196
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Afișare de la 0 la 0 din 0 intrări"
+
+#: djnro/templates/edumanage/contacts.html:97
+#: djnro/templates/edumanage/instrealmmons.html:158
+#: djnro/templates/edumanage/realms.html:95
+#: djnro/templates/edumanage/servers.html:106
+#: djnro/templates/edumanage/services.html:140
+#: djnro/templates/overview/index.html:151
+#: djnro/templates/overview/index.html:199
+msgid "Search:"
+msgstr "Căutare:"
+
+#: djnro/templates/edumanage/contacts.html:100
+#: djnro/templates/edumanage/instrealmmons.html:161
+#: djnro/templates/edumanage/realms.html:98
+#: djnro/templates/edumanage/servers.html:109
+#: djnro/templates/edumanage/services.html:143
+#: djnro/templates/overview/index.html:154
+#: djnro/templates/overview/index.html:202
+msgid "First"
+msgstr "Primul/Prima"
+
+#: djnro/templates/edumanage/contacts.html:101
+#: djnro/templates/edumanage/instrealmmons.html:162
+#: djnro/templates/edumanage/realms.html:99
+#: djnro/templates/edumanage/servers.html:110
+#: djnro/templates/edumanage/services.html:144
+#: djnro/templates/overview/index.html:155
+#: djnro/templates/overview/index.html:203
+msgid "Previous"
+msgstr "Anterior"
+
+#: djnro/templates/edumanage/contacts.html:102
+#: djnro/templates/edumanage/instrealmmons.html:163
+#: djnro/templates/edumanage/realms.html:100
+#: djnro/templates/edumanage/servers.html:111
+#: djnro/templates/edumanage/services.html:145
+#: djnro/templates/overview/index.html:156
+#: djnro/templates/overview/index.html:204
+msgid "Next"
+msgstr "Următor"
+
+#: djnro/templates/edumanage/contacts.html:103
+#: djnro/templates/edumanage/instrealmmons.html:164
+#: djnro/templates/edumanage/realms.html:101
+#: djnro/templates/edumanage/servers.html:112
+#: djnro/templates/edumanage/services.html:146
+#: djnro/templates/overview/index.html:157
+#: djnro/templates/overview/index.html:205
+msgid "Last"
+msgstr "Ultimul"
+
+#: djnro/templates/edumanage/contacts.html:113
+msgid "You are about to delete contact"
+msgstr "Datele de contact vor fi șterse"
+
+#: djnro/templates/edumanage/contacts.html:113
+#: djnro/templates/edumanage/instrealmmons.html:174
+#: djnro/templates/edumanage/instrealmmons.html:204
+#: djnro/templates/edumanage/services.html:155
+msgid "Press Delete to proceed or Cancel to cancel deletion"
+msgstr "Apăsați Ștergere pentru a continua sau Anulare pentru a renunța"
+
+#: djnro/templates/edumanage/contacts_edit.html:7
+msgid "Add Contact"
+msgstr "Adăugare Contact"
+
+#: djnro/templates/edumanage/institution.html:6
+#: djnro/templates/edumanage/welcome.html:22
+#: djnro/templates/overview/index.html:51
+#: djnro/templates/registration/activate_edit.html:36
+#: djnro/templates/registration/select_institution.html:39
+#: edumanage/management/commands/contacts.py:42
+msgid "Institution"
+msgstr "instituție"
+
+#: djnro/templates/edumanage/institution.html:32
+#: djnro/templates/edumanage/institution_edit.html:34
+#: djnro/templates/edumanage/service_details.html:112
+#: djnro/templates/edumanage/services_edit.html:63
+msgid "ID"
+msgstr "ID"
+
+#: djnro/templates/edumanage/institution.html:39
+#: djnro/templates/edumanage/institution_edit.html:44
+#: djnro/templates/edumanage/services_edit.html:118
+msgid "Street"
+msgstr "Strada"
+
+#: djnro/templates/edumanage/institution.html:45
+#: djnro/templates/edumanage/institution_edit.html:44
+#: djnro/templates/edumanage/services_edit.html:118
+msgid "City"
+msgstr "Oraș"
+
+#: djnro/templates/edumanage/institution.html:59
+#: djnro/templates/edumanage/institution_edit.html:71
+#: djnro/templates/edumanage/service_details.html:208
+#: djnro/templates/edumanage/services_edit.html:226
+msgid "Urls"
+msgstr "URLs"
+
+#: djnro/templates/edumanage/institution.html:68
+#: djnro/templates/edumanage/institution_edit.html:91
+msgid "Institution Type"
+msgstr "Tipul instituției"
+
+#: djnro/templates/edumanage/institution.html:75
+#: djnro/templates/edumanage/institution_edit.html:100
+msgid "Domain Name"
+msgstr "Nume de domeniu"
+
+#: djnro/templates/edumanage/institution.html:83
+msgid "Number User"
+msgstr "Număr Utilizator"
+
+#: djnro/templates/edumanage/institution.html:90
+#: djnro/templates/edumanage/institution_edit.html:119
+msgid "Number of IDs"
+msgstr "Număr de ID-uri"
+
+#: djnro/templates/edumanage/institution.html:100
+#: djnro/templates/edumanage/institution_edit.html:8
+#: djnro/templates/edumanage/server_details.html:81
+#: djnro/templates/edumanage/service_details.html:217
+#: djnro/templates/edumanage/welcome.html:87
+msgid "Edit"
+msgstr "Editare"
+
+#: djnro/templates/edumanage/institution.html:105
+msgid "No institution details defined yet for"
+msgstr "Deocamdată nu există detalii instituționale pentru"
+
+#: djnro/templates/edumanage/institution.html:108
+msgid "No institution defined"
+msgstr "Nu este definită nicio instituție"
+
+#: djnro/templates/edumanage/institution_edit.html:40
+#: djnro/templates/edumanage/service_details.html:142
+#: djnro/templates/edumanage/services.html:26
+#: djnro/templates/edumanage/services_edit.html:113
+#: djnro/templates/overview/index.html:84
+msgid "Address"
+msgstr "Adresă"
+
+#: djnro/templates/edumanage/institution_edit.html:110
+msgid "Number of Users"
+msgstr "Număr de Utilizatori"
+
+#: djnro/templates/edumanage/institution_edit.html:140
+#: djnro/templates/edumanage/services_edit.html:272
+msgid "Add User"
+msgstr "Adăugare Utilizator"
+
+#: djnro/templates/edumanage/institution_edit.html:146
+#: djnro/templates/edumanage/services.html:83
+#: djnro/templates/edumanage/services_edit.html:278
+msgid "Close"
+msgstr "Închide"
+
+#: djnro/templates/edumanage/institution_edit.html:147
+msgid "Save changes"
+msgstr "Salvare modificări"
+
+#: djnro/templates/edumanage/instrealmmon_edit.html:11
+msgid "Monitored realm"
+msgstr "Realm/domeniu monitorizat"
+
+#: djnro/templates/edumanage/instrealmmon_edit.html:11
+msgid "Add Monitored Realm"
+msgstr "Adăugare realm monitorizat"
+
+#: djnro/templates/edumanage/instrealmmon_edit.html:22
+#: djnro/templates/edumanage/instrealmmons.html:23
+#: djnro/templates/edumanage/monlocauthpar_edit.html:18
+#: djnro/templates/edumanage/realms.html:21
+#: djnro/templates/edumanage/realms_edit.html:29
+msgid "Realm"
+msgstr "Realm/Domeniu"
+
+#: djnro/templates/edumanage/instrealmmon_edit.html:30
+msgid "Monitoring Method"
+msgstr "Metoda de monitorizare"
+
+#: djnro/templates/edumanage/instrealmmons.html:7
+#: djnro/templates/edumanage/welcome.html:46
+msgid "Monitored Realms"
+msgstr "Realm/Domenii monitorizate"
+
+#: djnro/templates/edumanage/instrealmmons.html:29
+msgid "Parameters"
+msgstr "Parametri"
+
+#: djnro/templates/edumanage/instrealmmons.html:69
+msgid "add"
+msgstr "adaugă"
+
+#: djnro/templates/edumanage/instrealmmons.html:80
+msgid "Add monitored realm"
+msgstr "Adăugare realm monitorizat"
+
+#: djnro/templates/edumanage/instrealmmons.html:87
+#: djnro/templates/edumanage/instrealmmons.html:104
+msgid "Delete monitored realm"
+msgstr "Ștergere realm monitorizat"
+
+#: djnro/templates/edumanage/instrealmmons.html:151
+#: djnro/templates/edumanage/realms.html:88
+msgid "realms"
+msgstr "realms/domenii"
+
+#: djnro/templates/edumanage/instrealmmons.html:174
+msgid "You are about to delete monitored realm (and its parameters if any)"
+msgstr ""
+"Realm/domeniul monitorizat va fi șters (inclusiv parametrii acestuia, dacă "
+"există)"
+
+#: djnro/templates/edumanage/instrealmmons.html:175
+msgid "Delete Monitored Realm"
+msgstr "Ștergere realm monitorizat"
+
+#: djnro/templates/edumanage/instrealmmons.html:204
+msgid "You are about to delete monitored realm parameters for "
+msgstr "Parametrii realm/domeniului monitorizat vor fi șterși"
+
+#: djnro/templates/edumanage/instrealmmons.html:205
+msgid "Delete Monitored Realm Parameters"
+msgstr "Ștergere parametri realm monitorizat"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:7
+msgid "parameters"
+msgstr "parametri"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:7
+msgid "Add Monitored Realm Parameters"
+msgstr "Adăugare parametri realm monitorizat"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:24
+msgid "EAP Method"
+msgstr "Metoda EAP"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:32
+msgid "EAP2 Method"
+msgstr "Metoda EAP2"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:40
+#: djnro/templates/overview/index.html:47
+msgid "Username"
+msgstr "Nume de utilizator"
+
+#: djnro/templates/edumanage/monlocauthpar_edit.html:48
+msgid "Password"
+msgstr "Parolă"
+
+#: djnro/templates/edumanage/realms.html:6
+#: djnro/templates/edumanage/welcome.html:42
+msgid "Realms"
+msgstr "Realms/Domenii"
+
+#: djnro/templates/edumanage/realms.html:22
+msgid "Server(s)"
+msgstr "Server(e)"
+
+#: djnro/templates/edumanage/realms.html:38
+msgid "Add new realm"
+msgstr "Adăugare realm nou"
+
+#: djnro/templates/edumanage/realms.html:45
+msgid "Delete Realm"
+msgstr "Ștergere Realm"
+
+#: djnro/templates/edumanage/realms_edit.html:8
+msgid "Add Realm"
+msgstr "Adăugare Realm"
+
+#: djnro/templates/edumanage/realms_edit.html:37
+msgid "Proxy to Servers"
+msgstr "Proxy spre servere"
+
+#: djnro/templates/edumanage/realms_edit.html:41 edumanage/forms.py:212
+#: edumanage/models.py:455
+msgid "Only IdP and IdP/SP server types are allowed"
+msgstr "Sunt permise numai servere de tip IdP sau IdP/SP"
+
+#: djnro/templates/edumanage/server_details.html:5
+#: djnro/templates/edumanage/servers.html:10
+#: djnro/templates/edumanage/welcome.html:38
+msgid "Servers"
+msgstr "Servere"
+
+#: djnro/templates/edumanage/server_details.html:30
+#: djnro/templates/edumanage/servers_edit.html:54
+msgid "Label"
+msgstr "Etichetă"
+
+#: djnro/templates/edumanage/server_details.html:36
+#: djnro/templates/edumanage/servers_edit.html:34
+msgid "Address Family"
+msgstr "Tip adresă"
+
+#: djnro/templates/edumanage/server_details.html:42
+msgid "Host"
+msgstr "Gazdă/Host"
+
+#: djnro/templates/edumanage/server_details.html:49
+#: djnro/templates/edumanage/servers_edit.html:65
+msgid "RADIUS Packet Types"
+msgstr "Tipuri de pachet RADIUS"
+
+#: djnro/templates/edumanage/server_details.html:55
+#: djnro/templates/edumanage/servers.html:25
+#: djnro/templates/edumanage/servers_edit.html:75
+msgid "Authentication Port"
+msgstr "Port pentru autentificare"
+
+#: djnro/templates/edumanage/server_details.html:61
+#: djnro/templates/edumanage/servers_edit.html:85
+msgid "Accounting Port"
+msgstr "Port contabil/contabilitate"
+
+#: djnro/templates/edumanage/server_details.html:68
+msgid "Status Server"
+msgstr "Stare server"
+
+#: djnro/templates/edumanage/server_details.html:74
+#: djnro/templates/edumanage/servers.html:26
+#: djnro/templates/edumanage/servers_edit.html:116
+msgid "Protocol"
+msgstr "Protocol"
+
+#: djnro/templates/edumanage/servers.html:44
+msgid "Add new server"
+msgstr "Adăugare server nou"
+
+#: djnro/templates/edumanage/servers.html:50
+msgid "Delete Server"
+msgstr "Ștergere server"
+
+#: djnro/templates/edumanage/servers.html:99
+msgid "servers"
+msgstr "servere"
+
+#: djnro/templates/edumanage/servers_edit.html:8
+msgid "Add Server"
+msgstr "Adăugare Server"
+
+#: djnro/templates/edumanage/servers_edit.html:44
+msgid "Hostname"
+msgstr "Nume de host"
+
+#: djnro/templates/edumanage/servers_edit.html:96
+msgid "Status-Server"
+msgstr "Stare Server"
+
+#: djnro/templates/edumanage/servers_edit.html:106
+msgid "Secret"
+msgstr "Secret"
+
+#: djnro/templates/edumanage/service_details.html:8
+#: djnro/templates/edumanage/services.html:11
+#: djnro/templates/edumanage/welcome.html:33
+msgid "Locations"
+msgstr "Locații"
+
+#: djnro/templates/edumanage/service_details.html:103
+#: djnro/templates/edumanage/services_edit.html:29
+msgid "Location"
+msgstr "Locație"
+
+#: djnro/templates/edumanage/service_details.html:119
+#: djnro/templates/edumanage/services_edit.html:71
+msgid "Stage"
+msgstr "Stadiu"
+
+#: djnro/templates/edumanage/service_details.html:126
+#: djnro/templates/edumanage/services_edit.html:81
+msgid "Geo Type"
+msgstr "Tip Geo"
+
+#: djnro/templates/edumanage/service_details.html:133
+#: djnro/templates/edumanage/services_edit.html:91
+msgid "Location Name"
+msgstr "Numele locației"
+
+#: djnro/templates/edumanage/service_details.html:158
+#: djnro/templates/edumanage/services_edit.html:146
+msgid "Physical Availability"
+msgstr "Disponibilitate fizică"
+
+#: djnro/templates/edumanage/service_details.html:164
+#: djnro/templates/edumanage/services_edit.html:156
+msgid "Operation Hours"
+msgstr "Orar de operare"
+
+#: djnro/templates/edumanage/service_details.html:170
+#: djnro/templates/edumanage/services_edit.html:166
+msgid "Location Type"
+msgstr "Tipul locației"
+
+#: djnro/templates/edumanage/service_details.html:182
+#: djnro/templates/edumanage/services.html:28
+#: djnro/templates/edumanage/services_edit.html:186
+msgid "Encryption Level"
+msgstr "Nivel de criptare"
+
+#: djnro/templates/edumanage/service_details.html:188
+#: djnro/templates/edumanage/services_edit.html:196
+msgid "Tags"
+msgstr "Etichete"
+
+#: djnro/templates/edumanage/service_details.html:194
+#: djnro/templates/edumanage/services_edit.html:206
+msgid "AP number"
+msgstr "Număr de AP-uri"
+
+#: djnro/templates/edumanage/service_details.html:201
+#: djnro/templates/edumanage/services_edit.html:216
+msgid "Wired number"
+msgstr "Număr de conexiuni cablate"
+
+#: djnro/templates/edumanage/services.html:27
+msgid "SSID"
+msgstr "SSID"
+
+#: djnro/templates/edumanage/services.html:29
+msgid "AP no"
+msgstr "Numărul AP"
+
+#: djnro/templates/edumanage/services.html:30
+msgid "Actions"
+msgstr "Acțiuni"
+
+#: djnro/templates/edumanage/services.html:55
+#: djnro/templates/edumanage/services.html:156
+msgid "Delete Location"
+msgstr "Ștergere Locație"
+
+#: djnro/templates/edumanage/services.html:69
+msgid "Add a new location"
+msgstr "Adăugare Locație nouă"
+
+#: djnro/templates/edumanage/services.html:78
+msgid "Location Details"
+msgstr "Detalii despre locație"
+
+#: djnro/templates/edumanage/services.html:133
+msgid "locations"
+msgstr "locații"
+
+#: djnro/templates/edumanage/services.html:155
+msgid "You are about to delete location"
+msgstr "Locația va fi ștearsă"
+
+#: djnro/templates/edumanage/services.html:174
+msgid "successfully deleted"
+msgstr "ștergerea a fost efectuată"
+
+#: djnro/templates/edumanage/services_edit.html:13
+msgid "Add Location"
+msgstr "Adăugare Locație"
+
+#: djnro/templates/edumanage/services_edit.html:35
+msgid "Search location"
+msgstr "Căutare Locație"
+
+#: djnro/templates/edumanage/services_edit.html:51
+msgid "Update Map"
+msgstr "Actualizare hartă"
+
+#: djnro/templates/edumanage/services_edit.html:54
+msgid "Current Location"
+msgstr "Locația curentă"
+
+#: djnro/templates/edumanage/services_edit.html:234
+msgid "url"
+msgstr "URL"
+
+#: djnro/templates/edumanage/services_edit.html:235
+msgid "type"
+msgstr "tip"
+
+#: djnro/templates/edumanage/services_edit.html:236
+msgid "language"
+msgstr "limbă"
+
+#: djnro/templates/edumanage/services_edit.html:279
+msgid "Save Changes"
+msgstr "Salvează modificările"
+
+#: djnro/templates/edumanage/welcome.html:55
+msgid "eduroam CAT"
+msgstr "CAT eduroam"
+
+#: djnro/templates/edumanage/welcome.html:73
+msgid "Service Locations"
+msgstr "Locații în care este disponibil serviciul"
+
+#: djnro/templates/edumanage/welcome.html:81
+msgid "No services defined yet"
+msgstr "Deocamdată nu au fost definite servicii"
+
+#: djnro/templates/edumanage/welcome.html:83
+msgid "Add new service"
+msgstr "Adăugare serviciu nou"
+
+#: djnro/templates/front/api.html:3
+msgid "Closest Point API"
+msgstr "Cel mai apropiat punct API"
+
+#: djnro/templates/front/api.html:10
+msgid "Closest point API"
+msgstr "Cel mai apropiat punct API"
+
+#: djnro/templates/front/api.html:13
+msgid ""
+"Since we collect information from eduroam.org about the available eduroam "
+"points, we developed the closest point service API, which handles locating "
+"the closest eduroam service location."
+msgstr ""
+"Întrucât colectăm informații despre punctele de acces edurom existente de la"
+" eduroam.org, am dezvoltat API pentru localizarea rapidă a celor mai "
+"apropiate puncte de acces eduroam. "
+
+#: djnro/templates/front/api.html:14
+msgid ""
+"The API receives the current location coordinates in a GET request, "
+"calculates the closest point through server-side triangulation and returns a"
+" JSON reply with its’ coordinates and a detailed description."
+msgstr ""
+"API primește localizarea curentă într-o cerere de tip GET, calculează cel "
+"mai aproiat punct prin triangulație pe server și returnează un răspuns de "
+"tip JSON care conține coordonatele sale și o descriere detaliată."
+
+#: djnro/templates/front/api.html:16
+msgid ""
+"Based on this API, we developed the closest point web page that allows users"
+" to find the closest eduroam location or a location they search for."
+msgstr ""
+"În baza acestui API, am dezvoltat o pagină web care permite utilizatorilor "
+"să găsească cel mai apropiat punct de acces eduroam sau o anumită locație pe"
+" care o caută."
+
+#: djnro/templates/front/api.html:17
+msgid ""
+"Potentials are limitless! You can build your own application either it is "
+"web or mobile or a widget for a wearable device."
+msgstr ""
+"Potențialul este nelimitat ! Puteți construi aplicația dumneavoastră, fie că"
+" este web, mobilă sau widget pentru un dispozitiv purtabil."
+
+#: djnro/templates/front/connect.html:18
+#, python-format
+msgid ""
+"For full functionality of this site it is necessary to enable JavaScript. "
+"Here are the %(a_enablejs)sinstructions how to enable JavaScript in your web"
+" browser"
+msgstr ""
+"Pentru ca toate funcționalitățile acestui site să fie disponibile, este "
+"necesar să activați JavaScript. Aici aveți instrucțiunile %(a_enablejs)s "
+"pentru activarea JavaScript în browserul dumneavoastră web"
+
+#: djnro/templates/front/connect.html:29
+msgid ""
+"Find instructions, contacts and tools to help you securely connect to "
+"eduroam"
+msgstr ""
+"Găsiți instrucțiuni, date de contact și unelte care vă vor ajuta în "
+"conectarea securizată la eduroam."
+
+#: djnro/templates/front/connect.html:33
+#, python-format
+msgid "Search for your institution in %(COUNTRY_NAME)s"
+msgstr "Căutați instituția dumneavoastră în %(COUNTRY_NAME)s"
+
+#: djnro/templates/front/connect.html:45
+#, python-format
+msgid "Show nearest %(span_hiddenxs)sinstitutions%(span_close)s"
+msgstr "Arată cele mai apropiate %(span_hiddenxs)sinstituții%(span_close)s"
+
+#: djnro/templates/front/connect.html:48
+#, python-format
+msgid "Showing nearest %(span_hiddenxs)sinstitutions%(span_close)s"
+msgstr "Cele mai apropiate %(span_hiddenxs)sinstituții%(span_close)s"
+
+#: djnro/templates/front/connect.html:57
+#, python-format
+msgid "Find %(span_hiddenxs)sinstitutions%(span_close)s worldwide"
+msgstr "Caută %(span_hiddenxs)sinstituții%(span_close)s la nivel mondial"
+
+#: djnro/templates/front/connect.html:80
+msgid "See info (instructions, contacts) for this institution"
+msgstr ""
+"Verificați informațiile (instrucțiuni, contacte) pentru această instituție"
+
+#: djnro/templates/front/connect.html:110
+#: djnro/templates/front/connect.html:142
+msgid "Loading..."
+msgstr "Se încarcă ..."
+
+#: djnro/templates/front/connect.html:123
+#: djnro/templates/front/connect.html:147
+msgid "Error"
+msgstr "Eroare"
+
+#: djnro/templates/front/connect.html:124
+#: djnro/templates/front/connect.html:148
+#: djnro/templates/front/connect.html:194
+msgid "Request failed, please reload the page"
+msgstr "Cererea a eșuat, vă rugăm să reîncărcați pagina "
+
+#: djnro/templates/front/connect.html:153
+msgid "No device match, please select a different platform"
+msgstr ""
+"Nu a fost găsit un dispozitiv asemănător, vă rugăm să selectați altă "
+"platformă"
+
+#: djnro/templates/front/connect.html:161
+#: djnro/templates/front/connect.html:175
+msgid "Continue"
+msgstr "Continuare"
+
+#: djnro/templates/front/connect.html:166
+#, python-format
+msgid ""
+"The institution administrator has specified this device should be configured"
+" with resources provided on a local page: %(redirect_link)s If you continue "
+"you will be redirected there."
+msgstr ""
+"Administratorul instituției a specificat că acest dispozitiv va fi "
+"configurat folosind resursele furnizate la o pagină locală: "
+"%(redirect_link)s Dacă continuați veți fi redirectat acolo."
+
+#: djnro/templates/front/connect.html:179
+msgid "Download"
+msgstr "Descărcare/Download"
+
+#: djnro/templates/front/connect.html:180
+msgid "Generating..."
+msgstr "În curs de generare ..."
+
+#: djnro/templates/front/connect.html:181
+msgid "Downloading"
+msgstr "Se descarcă"
+
+#: djnro/templates/front/connect.html:182
+msgid "Failed"
+msgstr "Eroare"
+
+#: djnro/templates/front/connect.html:186
+msgid "The downloaded profile will be digitally signed by GÉANT Association"
+msgstr "Profilul descărcat va fi semnat digital de GÉANT Association"
+
+#: djnro/templates/front/connect.html:187
+msgid "Signed"
+msgstr "Semnat"
+
+#: djnro/templates/front/connect.html:188
+msgid "The downloaded profile will display messages in this language"
+msgstr "Profilul descărcat va afișa mesajele în această limbă"
+
+#: djnro/templates/front/connect.html:198
+msgid ""
+"Only install profiles that match your institution (and user group). When "
+"prompted for your username, enter your fully qualified username@realm, "
+"unless specifically instructed by your institution."
+msgstr ""
+"Instalați numai profilele corespunzătoare instituției dumneavoastră (și "
+"grupului de utilizatori). Pentru câmpul cu numele de utilizator introduceți "
+"datele in formatul nume_utilizator@realm, dacă nu există alte instrucțiuni "
+"din partea instituției dumneavoastră."
+
+#: djnro/templates/front/connect.html:212
+msgid "Information &amp; Usage"
+msgstr "Informații &amp; Utilizare"
+
+#: djnro/templates/front/connect.html:223
+msgid ""
+"Once your system is successfully configured, and after you enter your "
+"credentials (when prompted, upon installation or first connection), the "
+"device will automatically connect whenever it is in the vicinity of an "
+"eduroam hotspot."
+msgstr ""
+"După ce sistemul dumenavoastră va fi configurat cu succes și după ce veți "
+"introduce credențialele necesare (la instalare sau la prima conectare), "
+"dispozitivul se va conecta automat de fiecarre dată când va fi în apropiere "
+"de un punct de acces eduroam."
+
+#: djnro/templates/front/connect.html:234
+msgid "Other platforms"
+msgstr "Alte platforme"
+
+#: djnro/templates/front/connect.html:265
+msgid ""
+"If you encounter problems, you can obtain direct assistance from your home "
+"organisation:"
+msgstr "Dacă întâmpinați probleme, apelați la instituția dumneavoastră:"
+
+#: djnro/templates/front/connect.html:273
+msgid ""
+"If you encounter problems you can ask for help at your home institution."
+msgstr ""
+"Dacă întâmpinați probleme puteți găsi ajutor la instituția dumneavoastră."
+
+#: djnro/templates/front/connect.html:285
+#, python-format
+msgid ""
+"You may also subscribe to the %(a_catuserslist)susers mailing "
+"list%(a_close)s to report (in English) issues related to "
+"%(link_eduroamcat)s."
+msgstr ""
+"De asemenea, vă puteți înscrie pe lista de utilizatori "
+"%(a_catuserslist)s%(a_close)s pentru a raporta (în limba engleză) problemele"
+" despre %(link_eduroamcat)s."
+
+#: djnro/templates/front/connect.html:301
+#, python-format
+msgid "%(link_eduroamcat)s service is provided by %(linkimg_geant)s"
+msgstr "Serviciul %(link_eduroamcat)s este furnizat de %(linkimg_geant)s"
+
+#: djnro/templates/front/connect.html:305
+#, python-format
+msgid ""
+"This site provides access to CAT data with respect to the service "
+"%(a_catapitou)sterms of use"
+msgstr ""
+"Acest site ofera acces la datele CAT cu respectarea serviciilor "
+"%(a_catapitou)s și a termenilor de folosință"
+
+#: djnro/templates/front/geolocate.html:4
+msgid "Closest Access Point"
+msgstr "Punctul de Acces cel mai apropiat"
+
+#: djnro/templates/front/index.html:22
+msgid ""
+"You might be wondering about the location of the closest eduroam access "
+"points in order to be able to connect to eduroam. We provide a service and "
+"an api in order to help you find the closest eduroam access point."
+msgstr ""
+"Dacă vă întrebați unde este cel mai apropiat punct de acces eduroam, vă "
+"furnizăm un serviciu și API necesare pentru a vă ajuta să îl găsiți."
+
+#: djnro/templates/front/index.html:41
+msgid ""
+"eduroam (education roaming) is the secure, world-wide roaming access service"
+" developed for the international research and education community. It allows"
+" students, researchers and staff from participating institutions to obtain "
+"Internet connectivity across campus and when visiting other participating "
+"institutions by simply opening their laptop."
+msgstr ""
+"eduroam (education roaming) este un serviciu securizat de roaming disponibil"
+" la nivel mondial, dezvoltat pentru comunitatea din educație și cercetare. "
+"Acest serviciu permite studenților, cercetătorilor și personalului academic "
+"să primească acces la Internet în campus dar și în instituțiile vizitate "
+"care au aderat la acest serviciu prin simpla deschidere a laptop-ului."
+
+#: djnro/templates/front/index.html:54
+msgid ""
+"To use eduroam wifi you will need to setup your laptop or smartphone. As "
+"end-user you will only be able to use eduroam if your institution provides "
+"electronic identity (e.g. account for network access). In that case you will"
+" need to contact your administrator and ask for an account. You (or your "
+"network administrator) will have to configure your computer to enable "
+"eduroam access."
+msgstr ""
+"Pentru a utiliza eduroam trebuie să vă configurați laptop-ul sau telefonul. "
+"Veți putea utiliza eduroam numai dacă instituția dumneavoastră furnizează un"
+" serviciu de identitate electronică (cont de acces). In acest caz va trebui "
+"să contactați administratorul de rețea de la instituția dumneavoastră. "
+"Dumneavoastră (sau administratorul de la instituția dumneavoastră), veți "
+"configura dispozitivul pentru a permite accesul la eduroam."
+
+#: djnro/templates/front/management.html:13
+msgid ""
+"The management application provides an interface for administrators of "
+"federation member institutions to maintain the data that is necessary for "
+"participating in the federation."
+msgstr ""
+"Aplicația de management furnizează o interfață pentru administratorii "
+"instituțiilor membre ale federației care permite întreținerea datelor "
+"necesare pentru a participa în federație."
+
+#: djnro/templates/front/management.html:14
+msgid ""
+"Administrators can log in using either Social Networks or the AAI "
+"Federation:"
+msgstr ""
+"Administratorii se pot autentifica fie utilizând federația RoEduNetID, fie "
+"prin rețelele de socializare."
+
+#: djnro/templates/front/management.html:17
+msgid ""
+"Social networks that have been enabled for authenticating users to the "
+"management application are listed under the <b>Manage</b> drop-down menu. "
+"Once authenticated, a user may need to assert any missing information that "
+"is required by the application (such as an e-mail address). After that, the "
+"user can proceed with activation."
+msgstr ""
+"Rețelele de socializare care au fost activate pentru autentificarea "
+"utilizatorilor în sistemul de management pot fi găsite în meniul "
+"<b>Administrare</b>. Dupa autentificare, utilizatorul trebuie să completeze "
+"orice informație lipsă necesară (cum ar fi adresa e-mail). După această "
+"operațiune, utilizatorul poate continua cu activarea contului."
+
+#: djnro/templates/front/management.html:20
+msgid "Authentication and authorization are carried out through a"
+msgstr "Autentificarea și autorizarea sunt realizate prin"
+
+#: djnro/templates/front/management.html:21
+msgid ""
+"The following attributes are required for administrators and must be "
+"released by their home IdPs to the SP"
+msgstr ""
+"Următoarele atribute sunt necesare pentru administratori și trebuie să fie "
+"furnizate de IdP de la instituția-mamă către SP"
+
+#: djnro/templates/front/management.html:21
+msgid "according to the"
+msgstr "conform cu"
+
+#: djnro/templates/front/management.html:21
+msgid "policy and procedures documentation"
+msgstr "documentația despre politici și proceduri"
+
+#: djnro/templates/front/management.html:21
+msgid "provided by the"
+msgstr "furnizate de"
+
+#: djnro/templates/front/management.html:23
+msgid "Attribute"
+msgstr "Atribut"
+
+#: djnro/templates/front/management.html:23
+msgid "Description"
+msgstr "Descriere"
+
+#: djnro/templates/front/management.html:25
+msgid ""
+"Provides a string that uniquely identifies an administrator in the "
+"management application."
+msgstr ""
+"Oferă un șir care identifică în mod unic un administrator in aplicația de "
+"management."
+
+#: djnro/templates/front/management.html:27
+msgid "A specific URN value must be provided to authorize an administrator:"
+msgstr ""
+"Pentru a autoriza un administrator, este necesară furnizarea unei valoari "
+"specifice pentru URN."
+
+#: djnro/templates/front/management.html:29
+msgid ""
+"The e-mail address (one or more) of the administrator. It is used for "
+"notifications from the management application. It may also be used for "
+"further communication, with prior consent."
+msgstr ""
+"Adresa e-mail (una sau mai multe) a administratorului. Va fi utilizată "
+"pentru notificări venite din aplicația de management. De asemenea, va fi "
+"utilizată pentru diverse comunicări, cu acord prealabil."
+
+#: djnro/templates/front/management.html:30
+msgid "The person's first name."
+msgstr "Prenumele persoanei."
+
+#: djnro/templates/front/management.html:31
+msgid "The person's last name."
+msgstr "Numele persoanei."
+
+#: djnro/templates/front/management.html:35
+msgid ""
+"Once attribute release is setup properly an administrator can login to the "
+"management application."
+msgstr ""
+"După ce furnizarea atributului va fi configurată corect, administratorul se "
+"va putea conecta la aplicația de management."
+
+#: djnro/templates/front/management.html:38
+msgid ""
+"After the first login, administrators are asked to associate their account "
+"with the institution they want to manage. Their choice must then be ratified"
+" by the operators of their management application. Following that, they will"
+" be notified through e-mail and they will then be able to start using the "
+"management application."
+msgstr ""
+"După prima conectare/autentificare, administratorii sunt rugați să asocieze "
+"contul lor cu instituția pe care o administrează. Alegerea lor trebuie să "
+"fie confirmată de operatorii aplicației de management. Ulterior, "
+"administratorii vor fi notificați prin e-mail și vor avea acces la aplicația"
+" de management."
+
+#: djnro/templates/front/management.html:41
+msgid ""
+"Among other things, the metadata provided by administrators through the "
+"management application are used to compile database data for the federation"
+msgstr ""
+"Metadatele furnizate de administratori prin intermediul aplicației de "
+"management sunt folosite pentru a genera baza de date necesară pentru "
+"federație"
+
+#: djnro/templates/front/participants.html:12
+msgid "Participating Institutions"
+msgstr "Instituții participante"
+
+#: djnro/templates/front/participants.html:14
+msgid "In"
+msgstr "în"
+
+#: djnro/templates/front/participants.html:14
+msgid "eduroam is provided by the following institutions/organizations"
+msgstr "Următoarele instituții/organizații oferă eduroam"
+
+#: djnro/templates/front/world.html:11
+msgid "eduroam worldwide"
+msgstr "eduroam la nivel mondial"
+
+#: djnro/templates/overview/index.html:17
+msgid "Overview"
+msgstr "Generalități"
+
+#: djnro/templates/overview/index.html:20
+msgid "Logout"
+msgstr "Logout/Deconectare"
+
+#: djnro/templates/overview/index.html:34
+msgid "Users - Institutions"
+msgstr "Utilizatori - Instituții"
+
+#: djnro/templates/overview/index.html:37
+msgid "Users"
+msgstr "Utilizatori"
+
+#: djnro/templates/overview/index.html:63
+msgid "Active"
+msgstr "Activ"
+
+#: djnro/templates/overview/index.html:65
+msgid "Inactive"
+msgstr "Inactiv"
+
+#: djnro/templates/overview/index.html:65
+msgid "Key Expired"
+msgstr "Cheie expirată"
+
+#: djnro/templates/overview/index.html:85
+msgid "Admin Users"
+msgstr "Utilizatori cu drept de administrare"
+
+#: djnro/templates/overview/index.html:192
+msgid "institutions"
+msgstr "instituții"
+
+#: djnro/templates/partial/footer.html:10
+msgid "If you have any questions or need help, contact"
+msgstr "Dacă aveți întrebări sau nevoie de ajutor, contactați"
+
+#: djnro/templates/partial/footer.html:12
+msgid "This is a service provided by"
+msgstr "Acest serviciu este funrizat de "
+
+#: djnro/templates/registration/activate.html:3
+#: djnro/templates/registration/activation_complete.html:3
+#: djnro/templates/registration/activation_complete.html:25
+msgid "Activation Complete"
+msgstr "Activare completă"
+
+#: djnro/templates/registration/activate.html:25
+msgid "Activation Status"
+msgstr "Starea activării"
+
+#: djnro/templates/registration/activate.html:30
+msgid "succesfully activated"
+msgstr "activate cu succes"
+
+#: djnro/templates/registration/activate.html:32
+msgid "The user has probably been already activated."
+msgstr "Probabil utilizatorul a fost deja activat."
+
+#: djnro/templates/registration/activate_edit.html:28
+msgid "User"
+msgstr "Utilizator"
+
+#: djnro/templates/registration/activate_edit.html:47
+msgid "Activate"
+msgstr "Activare"
+
+#: djnro/templates/registration/activation_complete.html:29
+msgid "The user will be notified about his/her account activation"
+msgstr "Utilizatorul va fi informat despre activarea contului său"
+
+#: edumanage/decorators.py:35 edumanage/views.py:1605 edumanage/views.py:1777
+#, python-format
+msgid ""
+"User account <strong>%(username)s</strong> is pending activation. "
+"Administrators have been notified and will activate this account within the "
+"next days. <br>If this account has remained inactive for a long time contact"
+" your technical coordinator or %(nroname)s Helpdesk"
+msgstr ""
+"Contul utilizatorului <strong>%(username)s</strong> așteaptă activarea. "
+"Administratorii au fost notificați și vor activa contul în următoarele zile."
+" <br>Dacă contul a fost inactiv pentru o perioadă mai îndelungată, vă rugăm "
+"să contactați coordonatorul dumenavoastră tehnic sau %(nroname)s Helpdesk"
+
+#: edumanage/fields.py:13
+msgid ""
+"Enter at least one e-mail address. Multiple email addresses Should be "
+"separated with semicolon (;)"
+msgstr ""
+"Introduceți cel puțin o adresă e-mail. Dacă vor fi mai multe adrese e-mail, "
+"acestea vor fi separate folosind (;)"
+
+#: edumanage/fields.py:20
+#, python-format
+msgid "%s is not a valid e-mail address."
+msgstr "%s nu este o adresă e-mail validă."
+
+#: edumanage/forms.py:113
+msgid "Invalid domain name format."
+msgstr "Formatul domeniului nu este corect."
+
+#: edumanage/forms.py:116 edumanage/forms.py:149 edumanage/forms.py:160
+#: edumanage/forms.py:171 edumanage/forms.py:190 edumanage/forms.py:215
+msgid "This field is required."
+msgstr "Acest câmp este necesar."
+
+#: edumanage/forms.py:143 edumanage/forms.py:154 edumanage/forms.py:165
+msgid "The Type field is required to validate this field."
+msgstr "Câmpul Tip este necesar pentru validare acestui câmp"
+
+#: edumanage/forms.py:187
+msgid "Invalid network address/hostname format"
+msgstr "Format nevalid pentru adresa de rețea sau numele de host"
+
+#: edumanage/forms.py:274
+#, python-format
+msgid "%(prev_descr)s and %(attr_descr)s"
+msgstr "%(prev_descr)s și %(attr_descr)s"
+
+#: edumanage/forms.py:279
+#, python-format
+msgid "Fill in at least one %(obj_type)s with %(msg)s"
+msgstr "Completați cel puțin un %(obj_type)s cu %(msg)s"
+
+#: edumanage/management/commands/contacts.py:43
+msgid "Administrator"
+msgstr "Administrator"
+
+#: edumanage/management/commands/importcsv.py:50
+msgid "Error in usage. See help"
+msgstr "Eroare la utilizare. Verificați secțiunea Ajutor/Help"
+
+#: edumanage/models.py:26
+msgid ""
+"IEEE 802.11-2012, clause 8.4.1.34 Venue Info. This is a pair of integers, "
+"each between 0 and 255, separated with \",\"."
+msgstr ""
+"IEEE 802.11-2012, clause 8.4.1.34 Venue Info. Acesta este o pereche de "
+"numere întregi, fiecare între 0 și 255, separate prin virgulă."
+
+#: edumanage/models.py:345
+msgid "Longitude in decimal degrees, up to 8 decimal places"
+msgstr "Longitudine în grade zecimale, cu până la 8 cifre zecimale"
+
+#: edumanage/models.py:349
+msgid "Latitude in decimal degrees, up to 8 decimal places"
+msgstr "Latitudinea în grade zecimale, cu până la 8 cifre zecimale"
+
+#: edumanage/models.py:353
+msgid "Altitude, up to 9999 meters with millimeter precision"
+msgstr "Altitudinea, până la 9999 m, cu precizie milimetrică"
+
+#: edumanage/models.py:483 edumanage/models.py:574
+msgid "Descriptive label"
+msgstr "Etichetă descriptivă"
+
+#: edumanage/models.py:486 edumanage/models.py:581
+msgid "IP address | FQDN hostname"
+msgstr "Adresă IP / nume FQDN"
+
+#: edumanage/models.py:490
+msgid "Default for RADIUS: 1812"
+msgstr "Implicit pentru RADIUS: 1812"
+
+#: edumanage/models.py:491
+msgid "Default for RADIUS: 1813"
+msgstr "Implicit pentru RADIUS: 1813"
+
+#: edumanage/models.py:492
+msgid "Do you accept Status-Server requests?"
+msgstr "Acceptați cererile de tip Status-Server ?"
+
+#: edumanage/models.py:503
+#, python-format
+msgid "Server: %(servername)s, Type: %(ertype)s"
+msgstr "Server: %(servername)s, Tip: %(ertype)s"
+
+#: edumanage/models.py:525
+#, python-format
+msgid ""
+"You cannot change this server to %(ertype)s (it is used by realms "
+"%(realms)s)"
+msgstr ""
+"Nu puteți modifica acest server în %(ertype)s (este utilizat pentru "
+"realms/domeniile %(realms)s)"
+
+#: edumanage/models.py:593
+#, python-format
+msgid "Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s"
+msgstr "Realm monitorizat: %(monrealm)s, Client Proxyback: %(servername)s"
+
+#: edumanage/models.py:637
+#, python-format
+msgid ""
+"Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
+"%(phase2)s, Username: %(username)s"
+msgstr ""
+"Realm Monitorizat: %(monrealm)s, Metoda EAP: %(eapmethod)s, Faza 2: "
+"%(phase2)s, Nume de utilizator: %(username)s"
+
+#: edumanage/models.py:714
+msgid "Restrictions regarding physical access to the service area"
+msgstr "Restricții pentru accesul fizic la zona de acoperire a serviciului"
+
+#: edumanage/models.py:718
+msgid ""
+"Free text description of opening hours, if service is not available 24 hours"
+" per day"
+msgstr ""
+"Descrierea programului de lucru, dacă serviciul nu este disponibil 24 h/zi"
+
+#: edumanage/models.py:730
+#, python-format
+msgid "Institution: %(inst)s, Service Location: %(locname)s"
+msgstr "Instituție: %(inst)s, Localizarea Serviciului: %(locname)s"
+
+#: edumanage/models.py:834
+msgid ""
+"The primary, registered domain name for your institution, eg. "
+"example.com.<br>This is used to derive the Operator-Name attribute according"
+" to RFC5580, par.4.1, using the REALM namespace."
+msgstr ""
+"Numele de domeniu primar, înregistrat, pentru instituția dumneavoastră, de "
+"exemplu domeniu.ro.<br>Acesta este utilizat pentru a deduce atributul "
+"Operator-Name, conform cu RFC5580, par.4.1, folosind spațiul de nume REALM."
+
+#: edumanage/models.py:844
+msgid ""
+"Number of users (individuals) that are eligible to participate in eduroam "
+"service"
+msgstr ""
+"Numărul de utilizatori (persoane) eligibili pentru acces la serviciul "
+"eduroam"
+
+#: edumanage/models.py:845
+msgid ""
+"Number of issued e-identities (credentials) that may be used for "
+"authentication in eduroam service"
+msgstr ""
+"Numărul de e-identities (credențiale) emise care pot fi utilizate pentru "
+"autentificare în cadrul serviciului eduroam"
+
+#: edumanage/models.py:856
+#, python-format
+msgid "Institution: %(inst)s, Type: %(ertype)s"
+msgstr "Instituție: %(inst)s, Tip: %(ertype)s"
+
+#: edumanage/models.py:907
+#, python-format
+msgid "Country: %(country)s, NRO: %(orgname)s"
+msgstr "Țară: %(country)s, NRO: %(orgname)s"
+
+#: edumanage/models.py:940
+#, python-format
+msgid ""
+"Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
+"%(idp)s, SPs: %(sp)s, IdPSPs: %(idpsp)s, Users: %(numuser)s, Identities: "
+"%(numid)s"
+msgstr ""
+"Țara: %(country)s, NRO: %(orgname)s, Instituții: %(inst)s, IdP: %(idp)s, SP:"
+" %(sp)s, IdPSP: %(idpsp)s, Utilizatori: %(numuser)s, Identități: %(numid)s"
+
+#: edumanage/signals.py:103
+msgid "Coordinates may not be linked to more than one ServiceLoc"
+msgstr "Coordonatele nu pot fi asociate cu mai mult de un ServiceLoc"
+
+#: edumanage/signals.py:130
+msgid "Only one set of coordinates per ServiceLoc is allowed"
+msgstr "Este permis doar un singur set de coordonate per ServiceLoc"
+
+#: edumanage/views.py:228
+msgid "institution URL"
+msgstr "URL Instituție"
+
+#: edumanage/views.py:234 edumanage/views.py:412
+msgid "institution address"
+msgstr "Adresă Instituție"
+
+#: edumanage/views.py:407
+msgid "location name"
+msgstr "numele locației"
+
+#: edumanage/views.py:1543
+msgid ""
+"Your idP should release the eduPersonPrincipalName attribute towards this "
+"service<br>"
+msgstr ""
+"IdP-ul dumneavoastă ar trebui să furnizeze atributul eduPersonPrincipalName "
+"către acest serviciu<br>"
+
+#: edumanage/views.py:1549
+msgid ""
+"Your idP should release an appropriate eduPersonEntitlement attribute "
+"towards this service<br>"
+msgstr ""
+"IdP-ul dumneavoastă ar trebui să furnizeze un atribut eduPersonEntitlement "
+"corespunzător către acest serviciu<br>"
+
+#: edumanage/views.py:1554
+msgid "Your idP should release the mail attribute towards this service"
+msgstr ""
+"IdP-ul dumneavoastră ar trebui să furnizeze către acest serviciu atributul "
+"\"mail\""
+
+#: edumanage/views.py:1621
+#, python-format
+msgid ""
+"Something went wrong during user authentication. Contact your administrator "
+"%s"
+msgstr ""
+"Autentificarea utilizatorului a eșuat. Contactați administratorul "
+"dumneavoastră %s"
+
+#: edumanage/views.py:1630
+#, python-format
+msgid "Invalid login procedure. Error: %s"
+msgstr "Procedură de acces nevalidă. Eroare: %s"
+
+#: edumanage/views.py:1759
+msgid ""
+"Violation warning: User account is already associated with an "
+"institution.The event has been logged and our administrators will be "
+"notified about it"
+msgstr ""
+"Atenționare: Contul de utilizator este asociat deja cu o instituție. "
+"Evenimentul a fost înregistrat și administratorii noștri vor fi notificați."
