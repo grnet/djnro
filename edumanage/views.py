@@ -6,6 +6,8 @@ import math
 import datetime
 from xml.etree import ElementTree
 import locale
+from localectxmgr import setlocale
+import requests
 
 from django.shortcuts import render_to_response, redirect, render
 from django.http import (
@@ -63,7 +65,12 @@ from edumanage.forms import (
     InstServerForm
 )
 from registration.models import RegistrationProfile
-from edumanage.decorators import social_active_required
+from edumanage.decorators import (social_active_required,
+                                  cache_page_ifreq)
+from django.utils.cache import (
+    get_max_age, patch_response_headers, patch_vary_headers
+)
+from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
 
 
@@ -1562,6 +1569,7 @@ def get_all_services(request):
             response_location['enc'] = u"-"
         response_location['AP_no'] = u"%s" % (sl.AP_no)
         response_location['inst'] = get_i18n_name(sl.institutionid.org_name, lang, 'en', 'unknown')
+        response_location['inst_key'] = u"%s" % sl.institutionid.pk
         response_location['name'] = get_i18n_name(sl.loc_name, lang, 'en', 'unknown')
         response_location['port_restrict'] = u"%s" % (sl.port_restrict)
         response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
@@ -1715,24 +1723,72 @@ def api(request):
 def participants(request):
     institutions = Institution.objects.filter(institutiondetails__isnull=False).\
       select_related('institutiondetails')
+    cat_instance = 'production'
     dets = []
     cat_exists = False
     for i in institutions:
         dets.append(i.institutiondetails)
-        if i.get_active_cat_enrl():
+        if i.get_active_cat_enrl(cat_instance):
             cat_exists = True
-    try:
-        locale.setlocale(locale.LC_COLLATE, [request.LANGUAGE_CODE, 'UTF-8'])
-    except locale.Error:
-        pass
-    dets.sort(cmp=locale.strcoll,
-              key=lambda x: unicode(x.institution.
-                                    get_name(lang=request.LANGUAGE_CODE)))
+    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+        dets.sort(cmp=locale.strcoll,
+                  key=lambda x: unicode(x.institution.
+                                        get_name(lang=request.LANGUAGE_CODE)))
     return render_to_response(
         'front/participants.html',
         {
             'institutions': dets,
             'catexists': cat_exists
+        },
+        context_instance=RequestContext(request)
+    )
+
+
+@never_cache
+def connect(request):
+    institutions = Institution.objects.filter(ertype__in=[1,3],
+                                              institutiondetails__isnull=False).\
+        select_related('institutiondetails')
+    cat_instance = 'production'
+    dets = []
+    dets_cat = {}
+    cat_exists = False
+    for i in institutions:
+        dets.append(i.institutiondetails)
+        catids = i.get_active_cat_ids(cat_instance)
+        if len(catids):
+            cat_exists = True
+            # only use first inst+CAT binding (per CAT instance), even if there
+            # may be more
+            dets_cat[i.pk] = catids[0]
+    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+        dets.sort(cmp=locale.strcoll,
+                  key=lambda x: unicode(x.institution.
+                                        get_name(lang=request.LANGUAGE_CODE)))
+    if settings_dict_get('CAT_AUTH', cat_instance) is None:
+        cat_exists = False
+        cat_api_direct = None
+        cat_api_ldlbase = None
+    else:
+        cat_api_direct = settings_dict_get('CAT_AUTH', cat_instance,
+                                           'CAT_USER_API_URL')
+        if cat_api_direct is None:
+            cat_exists = False
+            cat_api_ldlbase = None
+        else:
+            cat_api_ldlbase = settings_dict_get('CAT_AUTH', cat_instance,
+                                                'CAT_USER_API_LOCAL_DOWNLOADS')
+            if not cat_api_ldlbase and cat_api_direct:
+                cat_api_ldlbase = cat_api_direct.replace('user/API.php', '')
+    template = settings_dict_get('CAT_CONNECT_TEMPLATE', cat_instance)
+    return render_to_response(
+        template or 'front/connect.html',
+        {
+            'institutions': dets,
+            'institutions_cat': dets_cat,
+            'catexists': cat_exists,
+            'cat_api_direct': cat_api_direct,
+            'cat_api_ldlbase': cat_api_ldlbase
         },
         context_instance=RequestContext(request)
     )
@@ -2330,6 +2386,109 @@ def adminlist(request):
                         content_type="text/plain; charset=utf-8")
 
 
+def _cat_api_cache_action(request, cat_instance):
+    if cat_instance is None:
+        cat_instance = 'production'
+    action = request.GET.get('action', None)
+    if not action:
+        return None
+    # by default we only cache large/expensive API calls for 10 mins
+    timeouts_default = {
+        'listAllIdentityProviders': 600,
+        'listIdentityProviders':    600,
+        'orderIdentityProviders':   600,
+        'listCountries':            600,
+        'sendLogo':                 600,
+        }
+    timeouts_settings = getattr(settings, 'CAT_USER_API_CACHE_TIMEOUT', {})
+    timeouts = timeouts_settings.get(cat_instance, timeouts_default)
+    try:
+        timeout = timeouts[action]
+    # no-cache if action not found in timeout settings
+    except KeyError:
+        return None
+    cache_kwargs = {}
+    # no cache key prefix by default
+    cache_prefix = settings_dict_get('CAT_USER_API_PROXY_OPTIONS',
+                                     cat_instance, 'cache_prefix',
+                                     default='')
+    if cache_prefix:
+        cache_kwargs['key_prefix'] = cache_prefix
+    # cache alias: True means use default, None means no-cache
+    cache_alias = settings_dict_get('CAT_USER_API_PROXY_OPTIONS',
+                                    cat_instance, 'cache',
+                                    default=True)
+    if cache_alias is None:
+        return None
+    if cache_alias is not True:
+        cache_kwargs['cache'] = cache_alias
+    return (timeout, cache_kwargs)
+
+@cache_page_ifreq(_cat_api_cache_action)
+@dont_vary_on('Cookie')
+def cat_user_api_proxy(request, cat_instance):
+    if cat_instance is None:
+        cat_instance = 'production'
+    cat_instance_name = cat_instance
+    cat_instance = settings_dict_get('CAT_AUTH', cat_instance)
+    if cat_instance is None:
+        return HttpResponseNotFound('<h1>CAT instance not found</h1>')
+    cat_api_url = cat_instance.get('CAT_USER_API_URL', None)
+    if cat_api_url is None:
+        return HttpResponseNotFound('<h1>CAT user API URL not found</h1>')
+    if request.method != 'GET':
+        return HttpResponseBadRequest('<h1>Only GET requests are allowed</h1>')
+    qs = request.META['QUERY_STRING']
+    qs = '?%s' % qs if qs else ''
+    cat_api_url += qs
+    cat_api_action = request.GET.get('action', None)
+    if not cat_api_action:
+        return HttpResponseBadRequest('<h1>Invalid or no action specified</h1>')
+    if cat_api_action == 'downloadInstaller' and \
+      settings_dict_get('CAT_USER_API_PROXY_OPTIONS',
+                        cat_instance_name, 'redirect_downloads',
+                        default=True):
+        return HttpResponseRedirect(cat_api_url)
+    headers = {
+        'X-Forwarded-For': request.META['REMOTE_ADDR'],
+        'X-Forwarded-Host': request.META['HTTP_HOST'],
+        'X-Forwarded-Server': request.META['SERVER_NAME']
+        }
+    for h in ['CONTENT_TYPE', 'HTTP_ACCEPT', 'HTTP_X_REQUESTED_WITH',
+              'HTTP_REFERER', 'HTTP_USER_AGENT']:
+        if h in request.META:
+            hh = h.replace('HTTP_', '') if h.startswith('HTTP_') else h
+            hh = '-'.join([w.capitalize() for w in hh.split('_')])
+            headers[hh] = request.META[h]
+    r = requests.get(cat_api_url, headers=headers)
+    cc = r.headers.get('cache-control', '')
+    ct = r.headers.get('content-type', 'text/plain')
+    cl = r.headers.get('content-length', None)
+    cd = r.headers.get('content-disposition', None)
+    if ct.startswith('text/html') and cl != '0' and r.content[0] in ['{', '[']:
+        ct = ct.replace('text/html', 'application/json')
+    resp = HttpResponse(r.content, content_type=ct)
+    resp.status_code = r.status_code
+    resp.reason_phrase = r.reason
+    allow_cors = settings_dict_get('CAT_USER_API_PROXY_OPTIONS',
+                                   cat_instance_name, 'allow_cross_origin',
+                                   default=False)
+    if allow_cors:
+        origin = '*'
+        if allow_cors is 'origin' and 'HTTP_ORIGIN' in request.META:
+            origin = request.META['HTTP_ORIGIN']
+            patch_vary_headers(resp, ['Origin'])
+        resp.setdefault('Access-Control-Allow-Origin', origin)
+        resp.setdefault('Access-Control-Allow-Method', 'GET')
+    if cd is not None:
+        resp.setdefault('Content-Disposition', cd)
+    resp.setdefault('Cache-Control', cc)
+    max_age = get_max_age(resp) or 0
+    del resp['Cache-Control']
+    if max_age > 0:
+        patch_response_headers(resp, max_age)
+    return resp
+    
 def to_xml(ele, encoding="UTF-8"):
     '''
     Convert and return the XML for an *ele*
@@ -2404,3 +2563,11 @@ def get_nro_name(lang):
     return Realm.objects.\
         get(country=settings.NRO_COUNTRY_CODE).\
         get_name(lang=lang)
+
+def settings_dict_get(setting, *keys, **opts):
+    dct = getattr(settings, setting, {})
+    for k in keys:
+        dct = dct.get(k, {})
+    if dct == {}:
+        dct = opts.get('default', None)
+    return dct

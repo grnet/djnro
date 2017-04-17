@@ -7,4 +7,5 @@ djnro/static/img/logo_holder.png
 djnro/static/img/logo_small.png
 djnro/static/img/right_logo_small.png
 djnro/templates/partial/extra.footer.html
+djnro/templates/front/cat_connect/
 /static/

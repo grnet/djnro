@@ -6,6 +6,8 @@
 <title>{% block title %}eduroam | {{COUNTRY_CODE}}{% endblock %} : {% block currentpagetitle %}{% endblock %}</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <link REL="shortcut icon" HREF="{% static 'img/favicon.ico' %}">
 <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{% static 'img/edu144-icon.png' %}">
 <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{% static 'img/edu114-icon.png' %}">
@@ -86,6 +88,7 @@
         {% endblock %}
 	{% include "partial/footer.html" %}
 	</div>
+    {% block extrajs_pre %}{% endblock %}
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>

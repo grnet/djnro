@@ -1,0 +1,541 @@
+/* 85% * 85% = 72.25% */
+.small-small {
+    font-size: 72.25%;
+}
+
+/* class equiv of the element strong/b */
+.strong {
+    font-weight: 700;
+}
+
+
+/* .nojs-warning appears first on page, needs space to separate it from .navbar-fixed-top;
+    also reset .alert bottom margin, let whatever heading follows handle spacing */
+.nojs-warning .alert {
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+
+
+/* all elements in .institution-search get a uniform bottom margin */
+.institution-search > * {
+    margin-bottom: 10px;
+}
+/* heading in .institution-search gets a hairline to separate it from following text */
+.institution-search > h1 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* jquery.placeholder simulate bootstrap .form-control::-*-placeholder */
+.institution-search .placeholder {
+    color: #999;
+}
+
+/* simulate .input-lg for > 470px */
+@media (min-width: 471px) {
+    .institution-search input {
+	height: 46px;
+	padding: 10px 16px;
+	font-size: 18px;
+	line-height: 1.3333333;
+	border-radius: 6px;
+    }
+    .institution-search .form-group .form-control-feedback {
+	width: 46px;
+	height: 46px;
+	line-height: 46px;
+	font-size: 150%;
+    }
+}
+
+/* we have our own clear-input control, don't show IE's widget */
+::-ms-clear {
+  display: none;
+}
+
+/* style tweaks for clear-input control */
+.form-control-clear {
+  z-index: 10;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* reset bootstrap input padding if .form-control-clear hidden */
+.has-feedback .form-control-clear.hidden ~ .form-control {
+    padding-right: 12px;
+}
+
+/* geolocate trigger button/container style tweaks */
+/* (1) dim to show it is disabled */
+.trigger-geolocate[disabled] {
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    opacity: .65;
+}
+/* (2) reset cursor (and pointer-events, but js should also stop clicks) */
+.trigger-geolocate[disabled] a {
+    pointer-events: none;
+    cursor: default;
+    text-decoration: none;
+}
+
+/* "Show"/"Showing" toggles depending on geolocate disabled attr */
+.trigger-geolocate[disabled] span.gl-show {
+    display: none;
+}
+.trigger-geolocate:not([disabled]) span.gl-showing {
+    display: none;
+}
+
+
+/* no list-style and default padding for:
+   - institution list
+   - actions below search
+   - features listed below download button */
+ul.insts, ul.inst-action, ul.dl-feats {
+    padding: 0;
+    list-style: none;
+}
+
+
+/* spacing before institution list
+   center text, effective when list element goes full-width (under 767px) */
+.institution-list {
+    margin: 1em 0 0 0;
+    text-align: center;
+}
+
+/* large spacing between lines of institutions by default */
+ul.insts {
+    line-height: 4em;
+}
+
+/* institution list elements are blocks */
+ul.insts li {
+    display: inline-block;
+}
+
+/* override institution list element a.btn styles:
+   - contents of ul.insts list elements should (carefully) wrap
+     * page layout (.stickyfooter-container) does not allow for (text-)overflow anyway
+   - when parent list element goes full-width (under 768px), a.btn should fill up this space */
+ul.insts li a.btn {
+    white-space: normal;
+    width: 100%;
+}
+
+/* let distance suffix (when visible) be visually distinct from inst name */
+ul.insts .small-small {
+    opacity: .75;
+}
+
+/* apply the same tweaks for institution list below 768px, as for filtered inst list (except for padding and larger text) */
+@media screen and (max-width: 767px) {
+    ul.insts li {
+	width: 100%;
+	border-top: 1px solid #eee;
+    }
+    ul.insts {
+	line-height: 2em;
+	border-bottom: 1px solid #eee;
+    }
+}
+
+/* filtered institution list tweaks */
+/* (1) list elements go full width, get padding and are separated with hairlines */
+ul.insts.filtered li {
+    width: 100%;
+    border-top: 1px solid #eee;
+    padding: 1em;
+}
+/* (2) they also get slightly larger text */
+ul.insts.filtered a {
+    font-size: 120%;
+}
+/* (3) half spacing between lines/institutions, hairline after last inst */
+ul.insts.filtered {
+    line-height: 2em;
+    border-bottom: 1px solid #eee;
+}
+
+/* the single matching element in the institution list or a list element with focus get
+   (1) quite larger text and green color */
+ul.insts.match li a,
+ul.insts li a:focus {
+    font-size: 140%;
+    color: #0a6;
+}
+/* (2) large <return> key icon to follow */
+ul.insts.match li a:after,
+ul.insts li a:focus:after {
+    content: "\21B5";
+    border: .1rem solid gray;
+    background: #eee;
+    color: black;
+    border-radius: .5rem;
+    padding: .2em .25em 0;
+    margin-left: 1em;
+    display: inline-block;
+    text-decoration: none;
+}
+
+/* non-matching institution list elements should be hidden */
+ul.insts.match li:not(.match),
+ul.insts.filtered li:not(.match) {
+    display: none;
+}
+
+/* when an institution selector is CAT-bound, the following arrow
+   (visual distinction) should be hidden */
+ul.insts a[data-toggle="modal"] i {
+    display: none;
+  }
+/* otherwise it should be displayed inline */
+ul.insts a i {
+    display: inline;
+}
+
+/* xxxxxxxx CAT UI xxxxxxxx */
+
+/* CAT UI modal title/header style tweaks */
+/* (1) title is a heading, no link underline */
+[data-catui="institution"] a {
+    text-decoration: none;
+}
+/* (2) the arrow that follows (cloned "visual distinction") displays inline,
+       gets some space to separate it from preceding text */
+[data-catui="institution"] i {
+    margin-left: 5px;
+    display: inline;
+}
+/* (3) modal close button grows and gets some space to separate it
+       from text (that may wrap around it) */
+.modal-header .close {
+    font-size: 24px;
+    margin-left: 5px;
+}
+
+
+/* "loading" cog, error alert and "no device match" warning get top margin equal to
+   .lead bottom margin */
+[data-catui="device-container"] .lead.top-lead,
+[data-catui="devicebox"] .lead.top-lead,
+[data-catui="devicebox"] .alert.top-lead {
+    margin-top: 20px;
+}
+
+/* no device match alert gets same width limit as download button */
+[data-catui="device-no-match"] > .alert {
+    max-width: 300px;
+}
+
+
+/* under 470px container-left columns go full-width again (like
+   col-sm-12) */
+@media (max-width: 470px) {
+    div[data-catui="container-left"] > .row > div {
+	width: 100%;
+    }
+}
+
+/* under 768px container-left gets top border/padding/margin to
+   separate it from container-right stacked on top of it */
+@media (max-width: 767px) {
+    [data-catui="container-left"].col-xs-12 {
+	border-top: 1px solid #e5e5e5;
+	margin-top: 15px;
+	padding-top: 15px;
+    }
+/* when the 1st col (container-logo) in container-left is hidden, the last col
+   (col-xs-9) should go full width */
+    div[data-catui="container-left"] > .row > .hidden + div.col-xs-9:last-child {
+	width: 100%;
+    }
+}
+
+/* no double-padding when two columns align: remove half the gutter so
+   that padding across the edges and between columns is the same (15px) */
+/* applies to [data-catui="container-support"] only when it floats after
+   [data-catui="container-logo"] */
+@media (min-width: 471px) and (max-width: 767px) {
+    :not(.hidden) + [data-catui="container-support"]:not(.align) {
+	padding-left: 0px;
+    }
+}
+/* applies to [data-catui="devicelist-container"] only when it does not stack */
+@media (min-width: 471px) and (max-width: 767px), (min-width: 992px) {
+    [data-catui="devicelist-container"]:not(.align) {
+	padding-left: 0px;
+    }
+}
+/* applies to [data-catui="container-right"] only when it does not stack */
+@media (min-width: 768px) {
+    [data-catui="container-right"]:not(.align) {
+	padding-left: 0px;
+    }
+}
+
+
+/* inst logo max-width, height and centered
+   (emulating bootstrap .img-responsive.center-block) */
+div[data-catui="container-logo"] > * {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    max-height: 10em;
+    margin-bottom: 10px;
+}
+
+/* contacts container gets a bottom margin like a paragraph */
+address.cat-support-contact {
+    margin-bottom: 10px;
+}
+
+/* limit the screen space for contacts text
+   http://asdfasfd... */
+.cat-support-contact > span {
+    display: block;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* IE9 workaround for garbled text-overflow:ellipsis with fontawesome */
+.cat-support-contact > span:before {
+    content: "";
+}
+
+
+/* align top edge of leading elements in middle/right with left column */
+[data-catui="devicelist-container"] > h4:first-child,
+[data-catui="device-container"] > h4:first-child {
+    margin-top: 0px;
+}
+/* let profile selectors (and profile-description, see next) make up for
+   subtracted margin-bottom on leading elements */
+[data-catui="profile-select-container"].nav {
+    margin-bottom: 10px;
+}
+
+/* profile description looks like a lightweight h4 */
+[data-catui="profile-description"].lead {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+
+/* device{,list}-container elements stacked+centered below 471px... */
+@media (max-width: 470px) {
+    .tab-pane.active [data-catui="devicebox"] > div[data-catui] {
+	width: 80%;
+	left: 10%;
+    }
+}
+/* ... and full-width below 351px */
+@media (max-width: 350px) {
+    .tab-pane.active [data-catui="devicebox"] > div[data-catui] {
+	width: 100%;
+	left: 0%;
+    }
+}
+
+/* devicelist (collapsible list-group accordions) style tweaks: device groups */
+/* (1) reset font-size in .panel-title */
+[data-catui="devicelist-container"] .panel .panel-title {
+    font-size: inherit;
+}
+/* (2) use cursor pointer on .panel-heading, since we propagate clicks to
+       child .panel-title (i.e. a[data-toggle="collapse-noanimation"]) */
+[data-catui="devicelist-container"] .panel .panel-heading {
+    cursor: pointer;
+}
+/* (3) likewise apply child .panel-title:hover styles to parent .panel-heading:hover */
+[data-catui="devicelist-container"] .panel .panel-heading:hover > a {
+    text-decoration: underline;
+    color: #23527c;
+}
+/* (4) an expanded devicelist pushing its' container bottom should not effectively add
+       more vertical space than other elements */
+[data-catui="devicelist-container"] .panel-group {
+    margin-bottom: 10px;
+}
+
+/* the following ensure that a sequence of .panel-heading, .panel-collapse
+   appear as a seamless accordion with a uniform 1px border */
+[data-catui="devicelist-container"] .panel-group .panel-heading {
+    border-bottom: 1px solid #ddd;
+}
+[data-catui="devicelist-container"] .panel-group .panel-heading+.panel-collapse>.list-group {
+    border-bottom: 1px solid #ddd;
+    border-top: 0px;
+}
+[data-catui="devicelist-container"] .panel-group .panel.panel-default {
+    border-bottom: 0px;
+}
+
+/* devices per group count badge: not implemented: */
+/* [data-catui="devicelist-container"] .panel-group .panel-heading span.badge { */
+/*     float: right; */
+/* } */
+
+/* devicelist (collapsible list-group accordions) style tweaks: devices */
+/* (1) use cursor pointer on parent .list-group-item since we propagate clicks to
+       child a[data-catdev] */
+[data-catui="devicelist-container"] .panel-group .panel-heading+.panel-collapse>.list-group>.list-group-item {
+    cursor: pointer;
+}
+/* (2) likewise apply child a:hover styles to parent .list-group-item:hover */
+[data-catui="devicelist-container"] .panel-group .panel-heading+.panel-collapse>.list-group>.list-group-item:hover>a {
+    text-decoration: underline;
+    color: #23527c;
+}
+/* (3) CAT UI wraps custom device text in device list with <small>; insert line break before it */
+[data-catui="devicelist-container"] .panel-group .panel-heading+.panel-collapse>.list-group>.list-group-item>a>small:before {
+    content: "\A";
+    white-space: pre;
+}
+
+/* emulate .tab-pane.active for toggling [catui="devicebox"] child elements (.active-exempt always visible) */
+[data-catui="devicebox"] > .active,
+[data-catui="devicebox"] > .active-exempt {
+    display: block;
+}
+[data-catui="devicebox"] > :not(.active):not(.active-exempt) {
+    display: none;
+}
+
+/* let div and p inside device-container have the same margin-bottom */
+[data-catui="device-container"] > * {
+    margin-bottom: 10px;
+}
+
+/* hyphenate word-wrap user content for better flow.. fails miserably */
+/* [data-catui="device-container"] > [data-catui="device-eapcustomtext"], */
+/* [data-catui="device-container"] > [data-catui="device-devicecustomtext"], */
+/* [data-catui="device-container"] > p { */
+/*       -ms-word-break: break-word; */
+/*       word-break: break-word; */
+/*       -webkit-hyphens: auto; */
+/*       -moz-hyphens: auto; */
+/*       hyphens: auto; */
+/* } */
+
+/* pull right device message buttons */
+[data-catui="device-container"] button.btn-sm {
+    display: block;
+    margin-left: auto;
+}
+
+/* limit the screen space for redirect url
+   http://asdfasfd... */
+[data-catui="device-redirectmessage"] span {
+    display: block;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/* IE9 workaround for garbled text-overflow:ellipsis with fontawesome */
+[data-catui="device-redirectmessage"] span:before {
+    content: "";
+}
+
+/* download button gets padding to stand out from surrounding elements
+   it also gets max-width so as not to grow too big */
+[data-catui="device-download"] {
+    padding: 20px;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+}
+@media (max-width: 350px) {
+    [data-catui="device-download"] {
+	padding-left: 10px;
+	padding-right: 10px;
+    }
+}
+
+/* add space above and between features listed below dowload button */
+ul.dl-feats > li {
+    margin-top: 5px;
+    margin-left: 5px;
+}
+ul.dl-feats > li:first-child {
+    margin-left: 0px;
+}
+
+/* downloadfailed message is hidden until download block is marked as failed */
+[data-catui="device-download"]:not(.download-failed) + [data-catui="device-downloadfailed-message"] {
+    display: none;
+}
+[data-catui="device-download"].download-failed + [data-catui="device-downloadfailed-message"] {
+    display: block;
+}
+
+/* download button gets hidden when redirect block is active */
+[data-catui="device-redirectmessage"]:not(.hidden) ~ [data-catui="device-download"] {
+    display: none;
+}
+
+/* download button gets hidden while device message is not hidden and not acknowledged */
+[data-catui="device-message"]:not(.hidden):not(.catui-message-acknowledged) ~ [data-catui="device-download"] {
+    display: none;
+}
+
+/* button inside device message hidden when clicked = device message acknowledged */
+[data-catui="device-message"].catui-message-acknowledged button {
+    display: none;
+}
+
+/* device default text hidden when device/eap custom text shown */
+[data-catui="device-container"] > [data-catui="device-eapcustomtext"]:not(.hidden) ~ [data-catui="device-defaulttext"],
+[data-catui="device-container"] > [data-catui="device-devicecustomtext"]:not(.hidden) ~ [data-catui="device-defaulttext"],
+[data-catui="device-message"]:not(.hidden):not(.catui-message-acknowledged) ~ [data-catui="device-defaulttext"],
+[data-catui="device-redirectmessage"]:not(.hidden) ~ [data-catui="device-defaulttext"] {
+    display: none;
+}
+
+/* device postinstall msg hidden when redirect message shown */
+[data-catui="device-redirectmessage"]:not(.hidden) ~ [data-catui="device-postinstall"] {
+    display: none;
+}
+
+/* deviceinfo (collapsible list-group accordion) style tweaks */
+/* (1) use cursor pointer on .panel-heading, since we propagate clicks to
+       child .panel-title (i.e. a[data-toggle="collapse-noanimation"]) */
+[data-catui="device-deviceinfo"] .panel .panel-heading {
+    cursor: pointer;
+}
+/* (2) neither parent nor child get link :hover styles
+       (BS resets link color for .panel-heading) */
+[data-catui="device-deviceinfo"] .panel .panel-heading:hover a,
+[data-catui="device-deviceinfo"] .panel .panel-heading a:hover {
+    text-decoration: none;
+}
+
+/* symbol like >>/<< that toggles together with deviceinfo panel */
+[data-catui="device-deviceinfo"] .panel-heading a.collapsed i.fa-angle-double-down,
+[data-catui="device-deviceinfo"] .panel-heading a:not(.collapsed) i.fa-angle-double-up {
+    display: block;
+}
+[data-catui="device-deviceinfo"] .panel-heading a.collapsed i.fa-angle-double-up,
+[data-catui="device-deviceinfo"] .panel-heading a:not(.collapsed) i.fa-angle-double-down {
+    display: none;
+}
+
+
+/* centered text in modal footer */
+#catModal .modal-footer {
+    text-align: center;
+}
+
+/* GEANT logo h.align with text */
+img[data-catui="geant-logo"] {
+    vertical-align: baseline;
+    max-height: 20px;
+}

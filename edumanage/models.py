@@ -470,13 +470,20 @@ class Institution(models.Model):
             except Exception:
                 return name
 
-    def get_active_cat_enrl(self):
+    def get_active_cat_enrl(self, cat_instance='production'):
         urls = []
-        active_cat_enrl = self.catenrollment_set.filter(url='ACTIVE', cat_instance='production')
+        active_cat_enrl = self.catenrollment_set.filter(url='ACTIVE', cat_instance=cat_instance)
         for catenrl in active_cat_enrl:
             if catenrl.cat_configuration_url:
                 urls.append(catenrl.cat_configuration_url)
         return urls
+
+    def get_active_cat_ids(self, cat_instance='production'):
+        ids = []
+        active_cat_enrl = self.catenrollment_set.filter(url='ACTIVE', cat_instance=cat_instance)
+        for catenrl in active_cat_enrl:
+            ids.append(catenrl.cat_inst_id)
+        return ids
 
 
 class InstitutionDetails(models.Model):

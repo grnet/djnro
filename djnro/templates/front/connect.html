@@ -1,0 +1,468 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% block currentpagetitle %}{% trans "Connect to eduroam" %}{% endblock %}
+{% block homepage %}{% endblock %}
+{% block hometop %}{% endblock %}
+{% block participants %}active{% endblock %}
+
+
+{% block subcontent %}
+{% load tolocale %}
+{% load dict_lookup %}
+<noscript>
+<div class="row">
+  <div class="nojs-warning col-xs-12 col-sm-12 col-md-12 col-lg-12">
+    <div class="alert alert-danger"><p>
+	{% blocktrans trimmed with a_enablejs=' <a href="http://www.enable-javascript.com/" target="_blank" class="alert-link">' %}
+	For full functionality of this site it is necessary to enable JavaScript.
+	Here are the {{ a_enablejs }}instructions how to enable
+	JavaScript in your web browser{% endblocktrans %}</a>.
+    </p></div>
+  </div><!-- /.nojs-warning -->
+</div><!-- /.row -->
+</noscript>
+<div class="row">
+<div class="institution-search col-xs-12">
+<h1 class="h2">{% trans "Connect to eduroam" %}</h1>
+<p>{% trans "Find instructions, contacts and tools to help you securely connect to eduroam" %}</p>
+<div class="form-group has-feedback has-clear">
+    <i class="form-control-clear fa fa-remove form-control-feedback hidden"></i>
+    <input type="search" class="form-control" name="inst_search" id="inst-search-input"
+	   placeholder="{% blocktrans with COUNTRY_NAME=COUNTRY_NAME|tolocale:LANGUAGE_CODE %}Search for your institution in {{ COUNTRY_NAME }}{% endblocktrans %}"
+	   autofocus autocomplete="off">
+    </div>
+</div><!-- /.institution-search -->
+</div><!-- /.row -->
+<div class="row">
+<div class="search-actions col-xs-12">
+  <ul class="inst-action">
+    <li class="pull-left trigger-geolocate">
+      <i class="fa fa-map-marker text-muted"></i>
+      <a role="button" tabindex="0">
+	{% with span_hiddenxs='<span class="hidden-xs">' span_close='</span>' %}
+	<span class="gl-show">{% blocktrans trimmed %}
+          Show nearest {{span_hiddenxs}}institutions{{span_close}}
+        {% endblocktrans %}</span>
+	<span class="gl-showing">{% blocktrans trimmed %}
+          Showing nearest {{span_hiddenxs}}institutions{{span_close}}
+        {% endblocktrans %}</span>
+	{% endwith %}
+      </a>
+    </li>
+    <li class="pull-right">
+      <i class="fa fa-globe text-muted"></i>
+      <a href="//cat.eduroam.org/">
+        {% blocktrans trimmed with span_close='</span>' span_hiddenxs='<span class="hidden-xs">' %}
+          Find {{span_hiddenxs}}institutions{{span_close}} worldwide
+        {% endblocktrans %}
+      </a>
+    </li>
+  </ul><!-- /.inst-action -->
+</div><!-- /.search-actions -->
+</div><!-- /.row -->
+<div class="row">
+<div class="col-xs-12 institution-list">
+	<ul class="insts">
+	{% for i in institutions %}
+	{% with catidp=institutions_cat|dict_lookup:i.institution.pk %}
+	<li>
+	  {% if catidp and catexists %}
+	  <a class="btn" data-toggle="modal" data-target="catModal"
+	     data-idu="{% url 'participants' %}#!id={{ i.institution.pk }}"
+	     data-iid="{{ i.institution.pk }}" data-catidp="{{catidp}}" tabindex="0">
+	  {% else %}
+	  <a class="btn" data-iid="{{ i.institution.pk }}"
+	     href="{% url 'participants' %}#!id={{ i.institution.pk }}" tabindex="0">
+	  {% endif %}
+	  <span class="title" {% if i.oper_name %}data-on="{{i.oper_name}}"{% endif %}>{% tolocale i.institution LANGUAGE_CODE %}</span><span class="small-small hidden">&nbsp;<span class="distance"></span>&nbsp;Km</span>&nbsp;<i title="{% trans 'See info (instructions, contacts) for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-arrow-circle-right text-muted"></i>
+	  </a>
+	</li>
+	{% endwith %}
+	{% endfor %}
+	</ul>
+</div><!-- /.institution-list -->
+</div><!-- /.row -->
+{% if catexists %}
+<div class="modal fade" id="catModal" tabindex="-1" role="dialog" aria-labelledby="catModalTitle">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="catModalTitle" data-catui="institution">institution title</h4>
+      </div><!-- /.modal-header -->
+      <div class="modal-body">
+	<div class="row" data-catui="container">
+	  <div class="col-xs-12 col-sm-push-4 col-sm-8 col-md-push-3 col-md-9" data-catui="container-right">
+	    <ul class="nav nav-tabs hidden" role="tablist" data-catui="profile-select-container">
+	      <li role="presentation" class="active"><a href="" data-catprof="" aria-controls="" role="tab" data-toggle="tab">profile selector</a></li>
+	    </ul>
+	    <div class="tab-content" data-catui="profiles-container">
+
+
+	      <div role="tabpanel" class="tab-pane active" id="0_loadingplaceholder" data-catui="profile-loading-placeholder" data-catui-panelrole="placeholder_loading">
+		<div class="row">
+		  <div class="col-xs-12 col-sm-6 col-md-8 align" data-catui="device-container">
+		    <p class="lead top-lead text-center">
+		      <i class="fa fa-cog fa-spin fa-3x fa-fw"></i><span class="sr-only">{% trans 'Loading...' %}</span>
+		    </p>
+		  </div><!-- /[data-catui="device-container"] -->
+		  <div class="hidden-xs col-sm-6 col-md-4 align" data-catui="devicelist-container">
+		  </div><!-- /[data-catui="devicelist-container"] -->
+		</div><!-- /.row -->
+	      </div><!-- /[data-catui="profile-loading-placeholder"].tab-pane -->
+
+
+	      <div role="tabpanel" class="tab-pane" id="0_loaderror" data-catui="profile-load-error" data-catui-panelrole="load_error">
+		<div class="row">
+		  <div class="col-xs-12 col-sm-6 col-md-8 align" data-catui="device-container">
+		    <p class="lead top-lead text-center">
+		      <i class="fa fa-exclamation-triangle fa-3x"></i><span class="sr-only">{% trans 'Error' %}</span><br>
+		      <a href="javascript:location.reload();">{% trans 'Request failed, please reload the page' %}</a>
+		    </p>
+		  </div><!-- /[data-catui="device-container"] -->
+		  <div class="hidden-xs col-sm-6 col-md-4 align" data-catui="devicelist-container">
+		  </div><!-- /[data-catui="devicelist-container"] -->
+		</div><!-- /.row -->
+	      </div><!-- /[data-catui="profile-loading-container"].tab-pane -->
+
+
+	      <div role="tabpanel" class="tab-pane" id="0_profiletemplate" data-catui="profile-container-template" data-catui-panelrole="profile_template">
+		<div class="row">
+		  <div class="col-xs-12">
+		    <p class="lead" data-catui="profile-description">profile description</p>
+		    </div>
+		</div><!-- /.row -->
+		<div class="row" data-catui="devicebox">
+		  <div class="col-xs-8 col-sm-12 col-md-8 active" data-catui="device-loading-placeholder">
+		    <p class="lead top-lead text-center">
+		      <i class="fa fa-cog fa-spin fa-3x fa-fw"></i><span class="sr-only">{% trans 'Loading...' %}</span>
+		    </p>
+		  </div><!-- /[data-catui="device-loading-placeholder"] -->
+		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-load-error">
+		    <p class="lead top-lead text-center">
+		      <i class="fa fa-exclamation-triangle fa-3x"></i><span class="sr-only">{% trans 'Error' %}</span><br>
+		      <a href="javascript:location.reload();">{% trans 'Request failed, please reload the page' %}</a>
+		    </p>
+		  </div><!-- /[data-catui="device-load-error"] -->
+		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-no-match">
+		    <h4 class="alert alert-warning center-block top-lead text-center">
+		      {% trans 'No device match, please select a different platform' %}
+		    </h4>
+		  </div><!-- /[data-catui="device-no-match"] -->
+		  <div class="col-xs-8 col-sm-12 col-md-8" data-catui="device-container">
+		    <h4 data-catui="device-display">device display</h4>
+		    <p data-catui="device-eapcustomtext">eap custom text</p>
+		    <div data-catui="device-message" class="well-sm alert-warning">
+		      <p role="message">device message</p>
+		      <button type="button" class="btn btn-sm btn-primary">{% trans 'Continue' %}</button>
+		    </div>
+		    <div data-catui="device-redirectmessage" class="well-sm alert-info">
+		    {% block cat_redirect_msg %}
+		      <p role="message">
+                      {% blocktrans trimmed with redirect_link='<span><a class="alert-link strong" target="_blank" data-catui="device-redirecturl"></a></span>' %}
+			The institution administrator has specified
+			this device should be configured with
+			resources provided on a local page:
+			{{redirect_link}}
+			If you continue you will be redirected there.
+		      {% endblocktrans %}
+		      </p>
+		      {% endblock %}
+		      <button type="button" class="btn btn-sm btn-primary">{% trans 'Continue' %}</button>
+		    </div>
+		    <div data-catui="device-download">
+		      <button type="button" class="btn btn-success btn-lg btn-block">
+			<span data-catui-dltxt="init">{% trans 'Download' %}</span>
+			<span data-catui-dltxt="generate">{% trans 'Generating...' %}</span>
+			<span data-catui-dltxt="download">{% trans 'Downloading' %}</span>
+			<span data-catui-dltxt="fail">{% trans 'Failed' %}</span>
+		      </button>
+		      <ul class="dl-feats">
+			<li class="pull-left" data-catui="device-signed"
+			      title="{% block cat_signed_by %}{% trans 'The downloaded profile will be digitally signed by GÉANT Association' %}{% endblock %}" data-toggle="tooltip" data-placement="bottom">
+			  <i class="fa fa-check-square-o" aria-hidden="true"></i> {% trans 'Signed' %}</li><!-- /.pull-left -->
+			<li class="pull-right" title="{% trans 'The downloaded profile will display messages in this language' %}" data-toggle="tooltip" data-placement="bottom">
+			  <i class="fa fa-language" aria-hidden="true"></i> <span class="hidden" data-catui="device-language">language</span>
+			</li><!-- /.pull-right -->
+		      </ul>
+		    </div><!-- /[data-catui="device-download"] -->
+		    <div class="well-sm alert-danger text-center" data-catui="device-downloadfailed-message">
+		      <a class="alert-link strong" href="javascript:location.reload();">{% trans 'Request failed, please reload the page' %}</a>
+		    </div>
+		    <p data-catui="device-devicecustomtext">device custom text</p>
+		    {% block cat_default_msg %}
+		    <p role="message" data-catui="device-defaulttext">{% blocktrans trimmed %}
+		      Only install profiles that match your
+		      institution (and user group). When prompted for
+		      your username, enter your fully qualified
+		      username@realm, unless specifically instructed
+		      by your institution.
+		    {% endblocktrans %}
+		    </p>
+		    {% endblock %}
+		    <div class="panel-group" role="tablist" aria-multiselectable="false" data-catui="device-deviceinfo">
+		      <div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="heading_deviceinfo_{profile_container_id}_{device_id}">
+			  <h5 class="panel-title">
+			    <a role="button" class="collapsed" data-toggle="collapse-noanimation" data-target="#deviceinfo_{profile_container_id}_{device_id}" aria-expanded="false" aria-controls="deviceinfo_{profile_container_id}_{device_id}">
+			      {% trans 'Information &amp; Usage' %}<span class="pull-right"><i class="fa fa-angle-double-down" aria-hidden="true"></i><i class="fa fa-angle-double-up" aria-hidden="true"></i></span>
+			    </a>
+			  </h5><!-- /h5 -->
+			</div><!-- /.panel-heading -->
+			<div id="deviceinfo_{profile_container_id}_{device_id}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_deviceinfo_{profile_container_id}_{device_id}">
+			  <div class="panel-body">device info</div>
+			</div><!-- /.panel-collapse -->
+		      </div><!-- /.panel -->
+		    </div><!-- /.panel-group -->
+		    {% block cat_postinstall_msg %}
+		    <p role="message" data-catui="device-postinstall">
+		    {% blocktrans trimmed %}
+		      Once your system is successfully configured, and
+		      after you enter your credentials (when prompted,
+		      upon installation or first connection), the device will automatically
+		      connect whenever it is in the vicinity of an
+		      eduroam hotspot.
+		    {% endblocktrans %}
+		    </p>
+		    {% endblock %}
+		  </div><!-- /[data-catui="device-container"] -->
+		  <div class="col-xs-4 col-sm-7 col-md-4 active-exempt" data-catui="devicelist-container">
+		    <h4>{% trans 'Other platforms' %}</h4>
+		    <div class="panel-group" role="tablist" aria-multiselectable="false">
+		      <div class="panel panel-default">
+			<div class="panel-heading" role="tab" id="heading_devicegroup_{cdev_group}">
+			  <a class="collapsed panel-title"
+			     role="button"
+			     data-toggle="collapse-noanimation"
+			     data-target="#devicegroup_{cdev_group}"
+			     aria-expanded="false" aria-controls="devicegroup_{cdev_group}">device group</a>
+			</div><!-- /.panel-heading -->
+			<div class="panel-collapse collapse" role="tabpanel" id="devicegroup_{cdev_group}" aria-labelledby="heading_devicegroup_{cdev_group}" aria-expanded="false">
+			  <ul class="list-group">
+			    <li class="list-group-item"><a data-catdev="" href="">device selector</a></li>
+			  </ul><!-- /.list-group -->
+			</div><!-- /.panel-collapse.collapse -->
+		      </div><!-- /.panel.panel-default -->
+		    </div><!-- /.panel-group -->
+		  </div><!-- /[data-catui="devicelist-container"] -->
+		</div><!-- /.row -->
+	      </div><!-- /[data-catui="profile-container-template"].tab-pane -->
+
+
+	    </div><!-- /[data-catui="profiles-container"].tab-content -->
+	  </div><!-- /[data-catui="container-right"] -->
+
+	  <div class="col-xs-12 col-sm-pull-8 col-sm-4 col-md-pull-9 col-md-3" data-catui="container-left">
+	    <div class="row">
+	    <div class="col-xs-3 col-sm-12" data-catui="container-logo"></div><!-- /[data-catui="container-logo"] -->
+	    <div class="col-xs-9 col-sm-12" data-catui="container-support">
+              {% block cat_support_header %}
+	      <p data-catui="support-header" data-catui-support="yes">
+              {% blocktrans trimmed %}
+		If you encounter problems, you can obtain direct
+		assistance from your home organisation:
+	      {% endblocktrans %}
+	      </p>
+              {% endblock %}
+              {% block cat_nosupport_header %}
+	      <p data-catui="support-header" data-catui-support="no">
+              {% blocktrans trimmed %}
+		If you encounter problems you can ask for help at your
+		home institution.
+	      {% endblocktrans %}
+	      </p>
+              {% endblock %}
+	      <address class="cat-support-contact"
+		       data-catui="support-contact-container">
+		<span><i class="fa"></i> <a href="">support info</a></span>
+	      </address>
+            {% block cat_mailing_list %}
+	      <p data-catui="support-header">
+		{% blocktrans trimmed with a_catuserslist='<a href="//lists.geant.org/sympa/info/cat-users">' a_close='</a>' link_eduroamcat='<a href="//cat.eduroam.org/">eduroam <span data-toggle="tooltip" data-placement="top" title="Configuration Assistant Tool">CAT</span></a>' %}
+		You may also subscribe to the {{a_catuserslist}}users
+		mailing list{{a_close}} to report (in English) issues related to
+		{{link_eduroamcat}}.
+		{% endblocktrans %}
+	      </p>
+	    {% endblock %}
+	    </div><!-- /[data-catui="container-support"] -->
+	    </div><!-- /.row -->
+	  </div><!-- /[data-catui="container-left"] -->
+
+	</div><!-- /.row -->
+      </div><!-- /.modal-body -->
+      <div class="modal-footer">
+	<small>
+	  {% block cat_attribution %}
+	  {% blocktrans trimmed with link_eduroamcat='<a href="//cat.eduroam.org/">eduroam <span data-toggle="tooltip" data-placement="top" title="Configuration Assistant Tool">CAT</span></a>' linkimg_geant='<a href="//geant.org"><img data-catui="geant-logo" src="//cat.eduroam.org/resources/images/dante.png" title="GÉANT" alt="GÉANT"></a>' %}
+	  {{link_eduroamcat}} service is provided by {{linkimg_geant}}
+	  {% endblocktrans %}
+	  <br class="vixible-xs hidden-md hidden-lg">
+	  {% blocktrans trimmed with a_catapitou='<a href="#" data-catui="cat-api-tou">' %}
+	  This site provides access to CAT data with respect to the service {{a_catapitou}}terms of use
+	  {% endblocktrans %}</a>.
+	  {% endblock %}
+	</small>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+{% endif %}
+{% endblock %}
+
+{% block extrajs_pre %}
+<script type="text/javascript">
+    var require = {
+	"baseUrl": "{% static 'js/' %}",
+	"paths": {
+	    'jquery.xdomainrequest': '//cdnjs.cloudflare.com/ajax/libs/jquery-ajaxtransport-xdomainrequest/1.0.3/jquery.xdomainrequest.min',
+	    'history': '//cdnjs.cloudflare.com/ajax/libs/html5-history-api/4.2.8/history.min',
+	    'jquery.placeholder': '//cdnjs.cloudflare.com/ajax/libs/jquery-placeholder/2.3.1/jquery.placeholder.min',
+	    'nprogress': '//cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min',
+	    // polyfill and feature plugins both defined in same file
+	    'polyfill': 'feature'
+	},
+	"feature_preempt": true,
+	"feature_implementations": "impl.feature",
+	"polyfill_preempt": true,
+	"polyfill_implementations": "impl.polyfill",
+	// the following modules actually declare dependencies on their own, irrespective of those listed here
+	// feature and polyfill plugins preempt the definition of these dependencies, affecting what the modules
+	// receive for their own declared (not plugin prefixed) dependencies
+	// huge hack, but this is the only no-frills dependency injection mechanism that currently works
+	// note that depending on timing and resource ordering, preempted definitions may not work for
+	// other calls to unprefixed dependencies
+	"shim": {
+	    "cat_ui": [
+		'feature!history',
+		'feature!jquery.base64',
+		'polyfill!Array.isArray'
+	    ],
+	    "cat_api": [
+		'polyfill!Array.prototype.find',
+		'polyfill!Array.prototype.reduce',
+		'polyfill!Array.prototype.forEach',
+		'polyfill!String.prototype.trim',
+		'polyfill!Array.isArray',
+		'polyfill!Object.keys'
+	    ],
+	    "querystring": [
+		'polyfill!Array.prototype.forEach',
+		'polyfill!Array.prototype.map',
+		'polyfill!Array.prototype.filter',
+		'polyfill!Array.isArray',
+		'polyfill!String.prototype.trim',
+		'polyfill!Object.keys'
+	    ]
+	}
+    }
+</script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.3/require.min.js"></script>
+{% endblock %}
+{% block extrajs %}
+{% if catexists %}
+<script type="text/javascript" src="{% static 'js/appear.min.js' %}"></script>
+<script type="text/javascript">
+(function(root, factory) {
+    if (typeof define === 'function' && define.amd) {
+	define('cat_init', ['jquery', 'cat_api', 'cat_ui', 'nprogress'], factory(root));
+    } else {
+	factory(root)(root.jQuery, root.ConfigurationAssistantTool, root.ConfigurationAssistantToolUI, root.NProgress);
+    }
+}(this, function(root) {
+    return function($, ConfigurationAssistantTool, ConfigurationAssistantToolUI, NProgress) {
+	var overrides = {
+	    exthandlers: {
+		cidp_unbind_selector: function() {
+		    var $el = $(this),
+			idu_href = $el.data('idu');
+		    if (idu_href) {
+			$el.attr('href', idu_href);
+		    }
+		    return this;
+		},
+		modal_title: function(title) {
+		    var idu_href = $(this).data('idu');
+		    if (idu_href) {
+			var $el = $('<a>');
+			$el.attr('href', idu_href);
+			$el.text(title);
+			if ($(this).children('i').length > 0) {
+			    $el.append($(this).children('i').clone());
+			}
+			return $el;
+		    }
+		    return title;
+		}
+	    }
+	}
+	root.CAT = new ConfigurationAssistantTool({
+	    apiBase: "{% url 'cat-api' %}",
+	    apiBaseD: "{{cat_api_direct}}",
+	    localDownloadBase: "{{cat_api_ldlbase}}",
+	    lang: "{{LANGUAGE_CODE}}"
+	});
+	root.NProgress = NProgress.configure({showSpinner: false});
+	root.CAT_UI = ConfigurationAssistantToolUI({CAT: root.CAT}, overrides);
+
+	return {
+	    CAT: root.CAT,
+	    CAT_UI: root.CAT_UI,
+	    NProgress: root.NProgress
+	}
+    }
+}));
+</script>
+{% else %}
+<script type="text/javascript">
+if (typeof define === 'function' && define.amd) {
+    define('cat_init', {});
+}
+</script>
+{% endif %}
+<script type="text/javascript" src="{% static 'js/connect.js' %}"></script>
+<script type="text/javascript">
+(function(root, factory) {
+    if (typeof define === 'function' && define.amd &&
+	typeof require === 'function') {
+	require(['jquery', 'nprogress', 'cat_init',
+		 'feature!jquery.placeholder',
+		 'feature!jquery.xdomainrequest'], factory(root));
+    } else {
+	factory(root)(root.jQuery, root.NProgress);
+    }
+}(this, function(root) {
+    return function($, NProgress, cat_init) {
+	if (typeof cat_init === 'undefined') {
+	    cat_init = {
+		CAT: root.CAT,
+		CAT_UI: root.CAT_UI
+	    }
+	}
+	if (!('NProgress' in cat_init)) {
+	    // assume NProgress has not been configured yet
+	    root.NProgress = NProgress.configure({showSpinner: false});
+	}
+	if (typeof $.fn.placeholder === 'function') {
+	    $('.institution-search input').placeholder();
+	}
+	// if (!('autofocus' in document.createElement('input'))) {
+	// 	$('.institution-search input').focus();
+	// }
+	var coords_d = [ $.getJSON("{% url 'get-all-services' %}") ];
+	if (('CAT_UI' in cat_init) && ('initialized' in cat_init.CAT_UI)) {
+	    coords_d.push(cat_init.CAT_UI.initialized);
+	}
+	root.geolocate.init(); // geoip url goes here (in opts obj)
+	$.when.apply($, coords_d)
+	    .then(root.geolocate.populate, root.geolocate.populate);
+    }
+}));
+</script>
+{% endblock %}
+
+{% block extrahead %}
+<link rel='stylesheet' href="{% static 'css/nprogress.css' %}">
+<link rel='stylesheet' href="{% static 'css/connect.css' %}">
+{% endblock %}
