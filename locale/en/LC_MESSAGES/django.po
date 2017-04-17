@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-04-02 02:18+0300\n"
+"POT-Creation-Date: 2017-04-17 14:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,7 @@ msgstr ""
 msgid "Hungarian"
 msgstr ""
 
-#: djnro/templates/base.html:35
+#: djnro/templates/base.html:37
 #: djnro/templates/edumanage/server_details.html:4
 #: djnro/templates/edumanage/service_details.html:7
 #: djnro/templates/edumanage/welcome.html:17
@@ -53,47 +53,47 @@ msgstr ""
 msgid "Home"
 msgstr ""
 
-#: djnro/templates/base.html:37
+#: djnro/templates/base.html:39
 #: djnro/templates/front/management_dropdown.html:4
 #: djnro/templates/front/management_dropdown.html:7
 msgid "Manage"
 msgstr ""
 
-#: djnro/templates/base.html:41
+#: djnro/templates/base.html:43
 #: djnro/templates/edumanage/services_edit.html:66
 msgid "Language"
 msgstr ""
 
-#: djnro/templates/base.html:56 djnro/templates/overview/index.html:38
+#: djnro/templates/base.html:58 djnro/templates/overview/index.html:38
 msgid "Institutions"
 msgstr ""
 
-#: djnro/templates/base.html:58 djnro/templates/front/management.html:3
+#: djnro/templates/base.html:60 djnro/templates/front/management.html:3
 #: djnro/templates/front/management.html:9
 msgid "Management"
 msgstr ""
 
-#: djnro/templates/base.html:59 djnro/templates/front/participants.html:4
+#: djnro/templates/base.html:61 djnro/templates/front/participants.html:4
 msgid "Participants"
 msgstr ""
 
-#: djnro/templates/base.html:63 djnro/templates/edumanage/services.html:176
+#: djnro/templates/base.html:65 djnro/templates/edumanage/services.html:176
 msgid "Service"
 msgstr ""
 
-#: djnro/templates/base.html:65
+#: djnro/templates/base.html:67
 msgid "Closest eduroam"
 msgstr ""
 
-#: djnro/templates/base.html:66
+#: djnro/templates/base.html:68
 msgid "World eduroam"
 msgstr ""
 
-#: djnro/templates/base.html:67
+#: djnro/templates/base.html:69
 msgid "pebduroam"
 msgstr ""
 
-#: djnro/templates/base.html:68
+#: djnro/templates/base.html:70
 msgid "Closest point api"
 msgstr ""
 
@@ -801,6 +801,161 @@ msgid ""
 "web or mobile or a widget for a wearable device."
 msgstr ""
 
+#: djnro/templates/front/connect.html:4 djnro/templates/front/connect.html:27
+msgid "Connect to eduroam"
+msgstr ""
+
+#: djnro/templates/front/connect.html:17
+#, python-format
+msgid ""
+"For full functionality of this site it is necessary to enable JavaScript. "
+"Here are the %(a_enablejs)sinstructions how to enable JavaScript in your web "
+"browser"
+msgstr ""
+
+#: djnro/templates/front/connect.html:28
+msgid ""
+"Find instructions, contacts and tools to help you securely connect to eduroam"
+msgstr ""
+
+#: djnro/templates/front/connect.html:32
+#, python-format
+msgid "Search for your institution in %(COUNTRY_NAME)s"
+msgstr ""
+
+#: djnro/templates/front/connect.html:44
+#, python-format
+msgid "Show nearest %(span_hiddenxs)sinstitutions%(span_close)s"
+msgstr ""
+
+#: djnro/templates/front/connect.html:47
+#, python-format
+msgid "Showing nearest %(span_hiddenxs)sinstitutions%(span_close)s"
+msgstr ""
+
+#: djnro/templates/front/connect.html:56
+#, python-format
+msgid "Find %(span_hiddenxs)sinstitutions%(span_close)s worldwide"
+msgstr ""
+
+#: djnro/templates/front/connect.html:78
+msgid "See info (instructions, contacts) for this institution"
+msgstr ""
+
+#: djnro/templates/front/connect.html:107
+#: djnro/templates/front/connect.html:139
+msgid "Loading..."
+msgstr ""
+
+#: djnro/templates/front/connect.html:120
+#: djnro/templates/front/connect.html:144
+msgid "Error"
+msgstr ""
+
+#: djnro/templates/front/connect.html:121
+#: djnro/templates/front/connect.html:145
+#: djnro/templates/front/connect.html:191
+msgid "Request failed, please reload the page"
+msgstr ""
+
+#: djnro/templates/front/connect.html:150
+msgid "No device match, please select a different platform"
+msgstr ""
+
+#: djnro/templates/front/connect.html:158
+#: djnro/templates/front/connect.html:172
+msgid "Continue"
+msgstr ""
+
+#: djnro/templates/front/connect.html:163
+#, python-format
+msgid ""
+"The institution administrator has specified this device should be configured "
+"with resources provided on a local page: %(redirect_link)s If you continue "
+"you will be redirected there."
+msgstr ""
+
+#: djnro/templates/front/connect.html:176
+msgid "Download"
+msgstr ""
+
+#: djnro/templates/front/connect.html:177
+msgid "Generating..."
+msgstr ""
+
+#: djnro/templates/front/connect.html:178
+msgid "Downloading"
+msgstr ""
+
+#: djnro/templates/front/connect.html:179
+msgid "Failed"
+msgstr ""
+
+#: djnro/templates/front/connect.html:183
+msgid "The downloaded profile will be digitally signed by GÉANT Association"
+msgstr ""
+
+#: djnro/templates/front/connect.html:184
+msgid "Signed"
+msgstr ""
+
+#: djnro/templates/front/connect.html:185
+msgid "The downloaded profile will display messages in this language"
+msgstr ""
+
+#: djnro/templates/front/connect.html:195
+msgid ""
+"Only install profiles that match your institution (and user group). When "
+"prompted for your username, enter your fully qualified username@realm, "
+"unless specifically instructed by your institution."
+msgstr ""
+
+#: djnro/templates/front/connect.html:209
+msgid "Information &amp; Usage"
+msgstr ""
+
+#: djnro/templates/front/connect.html:220
+msgid ""
+"Once your system is successfully configured, and after you enter your "
+"credentials (when prompted, upon installation or first connection), the "
+"device will automatically connect whenever it is in the vicinity of an "
+"eduroam hotspot."
+msgstr ""
+
+#: djnro/templates/front/connect.html:231
+msgid "Other platforms"
+msgstr ""
+
+#: djnro/templates/front/connect.html:262
+msgid ""
+"If you encounter problems, you can obtain direct assistance from your home "
+"organisation:"
+msgstr ""
+
+#: djnro/templates/front/connect.html:270
+msgid ""
+"If you encounter problems you can ask for help at your home institution."
+msgstr ""
+
+#: djnro/templates/front/connect.html:282
+#, python-format
+msgid ""
+"You may also subscribe to the %(a_catuserslist)susers mailing list"
+"%(a_close)s to report (in English) issues related to %(link_eduroamcat)s."
+msgstr ""
+
+#: djnro/templates/front/connect.html:298
+#, python-format
+msgid "%(link_eduroamcat)s service is provided by %(linkimg_geant)s"
+msgstr ""
+
+#: djnro/templates/front/connect.html:302
+#, python-format
+msgid ""
+"This site provides access to CAT data with respect to the service "
+"%(a_catapitou)sterms of use"
+msgstr ""
+
 #: djnro/templates/front/geolocate.html:4
 msgid "Closest Access Point"
 msgstr ""
@@ -895,32 +1050,32 @@ msgid ""
 "management application."
 msgstr ""
 
-#: djnro/templates/front/management.html:25
+#: djnro/templates/front/management.html:26
 msgid "A specific URN value must be provided to authorize an administrator:"
 msgstr ""
 
-#: djnro/templates/front/management.html:26
+#: djnro/templates/front/management.html:28
 msgid ""
 "The e-mail address (one or more) of the administrator. It is used for "
 "notifications from the management application. It may also be used for "
 "further communication, with prior consent."
 msgstr ""
 
-#: djnro/templates/front/management.html:27
+#: djnro/templates/front/management.html:29
 msgid "The person's first name."
 msgstr ""
 
-#: djnro/templates/front/management.html:28
+#: djnro/templates/front/management.html:30
 msgid "The person's last name."
 msgstr ""
 
-#: djnro/templates/front/management.html:32
+#: djnro/templates/front/management.html:34
 msgid ""
 "Once attribute release is setup properly an administrator can login to the "
 "management application."
 msgstr ""
 
-#: djnro/templates/front/management.html:35
+#: djnro/templates/front/management.html:37
 msgid ""
 "After the first login, administrators are asked to associate their account "
 "with the institution they want to manage. Their choice must then be ratified "
@@ -929,7 +1084,7 @@ msgid ""
 "management application."
 msgstr ""
 
-#: djnro/templates/front/management.html:38
+#: djnro/templates/front/management.html:40
 msgid ""
 "Among other things, the metadata provided by administrators through the "
 "management application are used to compile database data for the federation"
@@ -1025,7 +1180,7 @@ msgstr ""
 msgid "The user will be notified about his/her account activation"
 msgstr ""
 
-#: edumanage/decorators.py:24 edumanage/views.py:1663 edumanage/views.py:1766
+#: edumanage/decorators.py:29 edumanage/views.py:1671 edumanage/views.py:1822
 #, python-format
 msgid ""
 "User account <strong>%(username)s</strong> is pending activation. "
@@ -1118,36 +1273,36 @@ msgstr ""
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr ""
 
-#: edumanage/models.py:497
+#: edumanage/models.py:504
 msgid ""
 "The primary, registered domain name for your institution, eg. example.com."
 "<br>This is used to derive the Operator-Name attribute according to RFC5580, "
 "par.4.1, using the REALM namespace."
 msgstr ""
 
-#: edumanage/models.py:500
+#: edumanage/models.py:507
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
 msgstr ""
 
-#: edumanage/models.py:501
+#: edumanage/models.py:508
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
 msgstr ""
 
-#: edumanage/models.py:509
+#: edumanage/models.py:516
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:540
+#: edumanage/models.py:547
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr ""
 
-#: edumanage/models.py:581
+#: edumanage/models.py:588
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
@@ -1155,35 +1310,35 @@ msgid ""
 "%(numid)s"
 msgstr ""
 
-#: edumanage/views.py:1602
+#: edumanage/views.py:1610
 msgid ""
 "Your idP should release the eduPersonPrincipalName attribute towards this "
 "service<br>"
 msgstr ""
 
-#: edumanage/views.py:1608
+#: edumanage/views.py:1616
 msgid ""
 "Your idP should release an appropriate eduPersonEntitlement attribute "
 "towards this service<br>"
 msgstr ""
 
-#: edumanage/views.py:1613
+#: edumanage/views.py:1621
 msgid "Your idP should release the mail attribute towards this service"
 msgstr ""
 
-#: edumanage/views.py:1679
+#: edumanage/views.py:1687
 #, python-format
 msgid ""
 "Something went wrong during user authentication. Contact your administrator "
 "%s"
 msgstr ""
 
-#: edumanage/views.py:1688
+#: edumanage/views.py:1696
 #, python-format
 msgid "Invalid login procedure. Error: %s"
 msgstr ""
 
-#: edumanage/views.py:1748
+#: edumanage/views.py:1804
 msgid ""
 "Violation warning: User account is already associated with an institution."
 "The event has been logged and our administrators will be notified about it"
