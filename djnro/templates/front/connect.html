@@ -4,7 +4,8 @@
 {% block currentpagetitle %}{% trans "Connect to eduroam" %}{% endblock %}
 {% block homepage %}{% endblock %}
 {% block hometop %}{% endblock %}
-{% block participants %}active{% endblock %}
+{% block participants %}{% endblock %}
+{% block connect %}active{% endblock %}
 
 
 {% block subcontent %}
@@ -69,11 +70,11 @@
 	<li>
 	  {% if catidp and catexists %}
 	  <a class="btn" data-toggle="modal" data-target="catModal"
-	     data-idu="{% url 'participants' %}#!id={{ i.institution.pk }}"
+	     data-idu="{% url 'participants' %}"
 	     data-iid="{{ i.institution.pk }}" data-catidp="{{catidp}}" tabindex="0">
 	  {% else %}
 	  <a class="btn" data-iid="{{ i.institution.pk }}"
-	     href="{% url 'participants' %}#!id={{ i.institution.pk }}" tabindex="0">
+	     href="{% url 'participants' %}" tabindex="0">
 	  {% endif %}
 	  <span class="title" {% if i.oper_name %}data-on="{{i.oper_name}}"{% endif %}>{% tolocale i.institution LANGUAGE_CODE %}</span><span class="small-small hidden">&nbsp;<span class="distance"></span>&nbsp;Km</span>&nbsp;<i title="{% trans 'See info (instructions, contacts) for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-arrow-circle-right text-muted"></i>
 	  </a>
