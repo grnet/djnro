@@ -209,6 +209,11 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 
+# SENTRY = {
+#     'activate': False,
+#     'sentry_dsn': ''
+# }
+
 ###### eduroam CAT integration ###########
 # In order to enable provisioning to CAT, you must list at least one instance and the
 # corresponding description in CAT_INSTANCES. Beware that pages accessible by end users
@@ -244,11 +249,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 #         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_idp.php"
 #     },
 # }
-
-SENTRY = {
-    'activate': False,
-    'sentry_dsn': ''
-}
 
 # CAT User API proxy can optionally cache responses using a Django
 # cache backend. By default only expensive API actions (where responses
