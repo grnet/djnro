@@ -450,12 +450,12 @@ schema.''')
                     url_obj = \
                       self.parse_and_create_url(instdetails_obj, url_element)
 
-        for idx, instrealm_element in enumerate(parameters['inst_realm']):
+        for idx, instrealm_element in enumerate(parameters.get('inst_realm', [])):
             parameters['inst_realm'][idx] = \
               self.parse_and_create_instrealm(institution_obj,
                                               instrealm_element)
 
-        for idx, serviceloc_element in enumerate(parameters['location']):
+        for idx, serviceloc_element in enumerate(parameters.get('location', [])):
             parameters['location'][idx] = \
               self.parse_and_create_serviceloc(institution_obj,
                                                serviceloc_element)
