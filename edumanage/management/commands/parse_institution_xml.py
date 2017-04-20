@@ -82,7 +82,7 @@ class Command(BaseCommand):
         try:
             parameters = {
                 'lang': element.attrib['lang'],
-                'name': element.text.strip()
+                'name': self.parse_text_node(element)
                 }
         except:
             self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
@@ -117,7 +117,7 @@ class Command(BaseCommand):
         try:
             parameters = {
                 'lang':    element.attrib['lang'],
-                'url':     element.text,
+                'url':     self.parse_text_node(element),
                 'urltype': element.tag.replace('_URL', ''),
                 }
         except:
@@ -142,7 +142,7 @@ class Command(BaseCommand):
     def parse_and_create_instrealm(self, institution_obj, element):
         self.stdout.write_maybe('Parsing %s' % element.tag)
         parameters = {
-            'realm': element.text,
+            'realm': self.parse_text_node(element),
             'instid': institution_obj
             }
         if not parameters['realm']:
@@ -160,11 +160,9 @@ class Command(BaseCommand):
         parameters = {}
         for child_element in element.getchildren():
             if child_element.tag in ['name', 'email', 'phone']:
-                if child_element.tag == 'name':
-                    parameters[child_element.tag] = child_element.text.strip()
-                else:
-                    parameters[child_element.tag] = child_element.text
-        if not 'name' in parameters and not parameters['name']:
+                parameters[child_element.tag] = \
+                    self.parse_text_node(child_element)
+        if not 'name' in parameters or not parameters['name']:
             self.stdout.write_maybe('Skipping %s: invalid name' % element.tag)
             return None
         if isinstance(relobj, Institution):
@@ -206,7 +204,7 @@ class Command(BaseCommand):
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
             if tag in ['longitude', 'latitude', 'SSID']:
-                parameters[tag] = child_element.text
+                parameters[tag] = self.parse_text_node(child_element)
                 continue
             if tag == 'loc_name':
                 name_elements.append(child_element)
@@ -218,11 +216,11 @@ class Command(BaseCommand):
                 for sub_element in child_element.getchildren():
                     if sub_element.tag in ['street', 'city']:
                         parameters['address_' + sub_element.tag] = \
-                          sub_element.text.strip()
+                            self.parse_text_node(sub_element)
                 continue
             if tag == 'enc_level':
                 parameters['enc_level'] = \
-                  re.split(r'\s*,\s*', child_element.text.strip())
+                  re.split(r'\s*,\s*', self.parse_text_node(child_element))
                 continue
             if tag in ['port_restrict', 'transp_proxy',
                        'IPv6', 'NAT', 'wired']:
@@ -253,7 +251,7 @@ class Command(BaseCommand):
         # as it may find existing Name_i18n objects by the same name, but
         # unrelated to this location; also we'd rather not create Name_i18n
         # objects that may go away after all
-        names_new = set([name_element.text.strip()
+        names_new = set([self.parse_text_node(name_element)
                          for name_element in name_elements])
         # No ServiceLoc objects matching these parameters
         if not existing_obj.exists():
@@ -331,7 +329,7 @@ class Command(BaseCommand):
                 for sub_element in child_element.getchildren():
                     if sub_element.tag in ['street', 'city']:
                         parameters['address_' + sub_element.tag] = \
-                          sub_element.text.strip()
+                          self.parse_text_node(sub_element)
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
@@ -453,6 +451,16 @@ class Command(BaseCommand):
                                                serviceloc_element)
 
         return institution_obj
+
+    def parse_text_node(self, node, **kwargs):
+        return_none_on_empty = kwargs.get('strict') if 'strict' in kwargs \
+            else self.strict_empty_text_nodes
+        if hasattr(node.text, 'strip') and callable(node.text.strip):
+            return node.text.strip()
+        elif node.text is None and not return_none_on_empty:
+            return ''
+        else:
+            return None
 
 def type_str(obj):
     return type(obj).__name__
