@@ -22,6 +22,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from edumanage.models import *
 from lxml.etree import parse
+import argparse
 import sys
 import traceback
 import re
@@ -32,24 +33,33 @@ class Command(BaseCommand):
     Parses an institution XML file and creates institution,
     institution realm, contact and service location entries
     '''
-    args = '<file>'
-
     # leave_locale_alone = True
+
+    def add_arguments(self, parser):
+        parser.add_argument('file', type=argparse.FileType('r'),
+                            nargs='?', default=sys.stdin)
+        parser.add_argument('--strict-empty-text-nodes',
+                            dest='strict',
+                            action='store_true',
+                            default=False,
+                            help='''Parse empty text nodes as None instead of an
+empty string. This will break if a target field does not accept null values, but
+it is useful if you want to enforce that the input XML aligns with the database
+schema.''')
 
     def handle(self, *args, **options):
         '''
         Handle command
         '''
 
-        if args is None or len(args) != 1:
-            raise CommandError('You must supply a file name')
-
         if int(options['verbosity']) > 0:
             self.stdout.write_maybe = self.stdout.write
         else:
             self.stdout.write_maybe = lambda *args: None
 
-        self.parse_and_create(args[0])
+        self.strict_empty_text_nodes = options['strict']
+
+        self.parse_and_create(options['file'])
 
     def parse_and_create(self, instxmlfile):
         try:
@@ -82,7 +92,7 @@ class Command(BaseCommand):
         try:
             parameters = {
                 'lang': element.attrib['lang'],
-                'name': element.text.strip()
+                'name': self.parse_text_node(element)
                 }
         except:
             self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
@@ -117,7 +127,7 @@ class Command(BaseCommand):
         try:
             parameters = {
                 'lang':    element.attrib['lang'],
-                'url':     element.text,
+                'url':     self.parse_text_node(element),
                 'urltype': element.tag.replace('_URL', ''),
                 }
         except:
@@ -142,7 +152,7 @@ class Command(BaseCommand):
     def parse_and_create_instrealm(self, institution_obj, element):
         self.stdout.write_maybe('Parsing %s' % element.tag)
         parameters = {
-            'realm': element.text,
+            'realm': self.parse_text_node(element),
             'instid': institution_obj
             }
         if not parameters['realm']:
@@ -160,11 +170,9 @@ class Command(BaseCommand):
         parameters = {}
         for child_element in element.getchildren():
             if child_element.tag in ['name', 'email', 'phone']:
-                if child_element.tag == 'name':
-                    parameters[child_element.tag] = child_element.text.strip()
-                else:
-                    parameters[child_element.tag] = child_element.text
-        if not 'name' in parameters and not parameters['name']:
+                parameters[child_element.tag] = \
+                    self.parse_text_node(child_element)
+        if not 'name' in parameters or not parameters['name']:
             self.stdout.write_maybe('Skipping %s: invalid name' % element.tag)
             return None
         if isinstance(relobj, Institution):
@@ -206,7 +214,7 @@ class Command(BaseCommand):
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
             if tag in ['longitude', 'latitude', 'SSID']:
-                parameters[tag] = child_element.text
+                parameters[tag] = self.parse_text_node(child_element)
                 continue
             if tag == 'loc_name':
                 name_elements.append(child_element)
@@ -218,11 +226,11 @@ class Command(BaseCommand):
                 for sub_element in child_element.getchildren():
                     if sub_element.tag in ['street', 'city']:
                         parameters['address_' + sub_element.tag] = \
-                          sub_element.text.strip()
+                            self.parse_text_node(sub_element)
                 continue
             if tag == 'enc_level':
                 parameters['enc_level'] = \
-                  re.split(r'\s*,\s*', child_element.text.strip())
+                  re.split(r'\s*,\s*', self.parse_text_node(child_element))
                 continue
             if tag in ['port_restrict', 'transp_proxy',
                        'IPv6', 'NAT', 'wired']:
@@ -253,7 +261,7 @@ class Command(BaseCommand):
         # as it may find existing Name_i18n objects by the same name, but
         # unrelated to this location; also we'd rather not create Name_i18n
         # objects that may go away after all
-        names_new = set([name_element.text.strip()
+        names_new = set([self.parse_text_node(name_element)
                          for name_element in name_elements])
         # No ServiceLoc objects matching these parameters
         if not existing_obj.exists():
@@ -331,7 +339,7 @@ class Command(BaseCommand):
                 for sub_element in child_element.getchildren():
                     if sub_element.tag in ['street', 'city']:
                         parameters['address_' + sub_element.tag] = \
-                          sub_element.text.strip()
+                          self.parse_text_node(sub_element)
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
@@ -442,17 +450,27 @@ class Command(BaseCommand):
                     url_obj = \
                       self.parse_and_create_url(instdetails_obj, url_element)
 
-        for idx, instrealm_element in enumerate(parameters['inst_realm']):
+        for idx, instrealm_element in enumerate(parameters.get('inst_realm', [])):
             parameters['inst_realm'][idx] = \
               self.parse_and_create_instrealm(institution_obj,
                                               instrealm_element)
 
-        for idx, serviceloc_element in enumerate(parameters['location']):
+        for idx, serviceloc_element in enumerate(parameters.get('location', [])):
             parameters['location'][idx] = \
               self.parse_and_create_serviceloc(institution_obj,
                                                serviceloc_element)
 
         return institution_obj
+
+    def parse_text_node(self, node, **kwargs):
+        return_none_on_empty = kwargs.get('strict') if 'strict' in kwargs \
+            else self.strict_empty_text_nodes
+        if hasattr(node.text, 'strip') and callable(node.text.strip):
+            return node.text.strip()
+        elif node.text is None and not return_none_on_empty:
+            return ''
+        else:
+            return None
 
 def type_str(obj):
     return type(obj).__name__
