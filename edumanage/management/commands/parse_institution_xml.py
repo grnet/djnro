@@ -22,6 +22,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from edumanage.models import *
 from lxml.etree import parse
+import argparse
 import sys
 import traceback
 import re
@@ -32,24 +33,33 @@ class Command(BaseCommand):
     Parses an institution XML file and creates institution,
     institution realm, contact and service location entries
     '''
-    args = '<file>'
-
     # leave_locale_alone = True
+
+    def add_arguments(self, parser):
+        parser.add_argument('file', type=argparse.FileType('r'),
+                            nargs='?', default=sys.stdin)
+        parser.add_argument('--strict-empty-text-nodes',
+                            dest='strict',
+                            action='store_true',
+                            default=False,
+                            help='''Parse empty text nodes as None instead of an
+empty string. This will break if a target field does not accept null values, but
+it is useful if you want to enforce that the input XML aligns with the database
+schema.''')
 
     def handle(self, *args, **options):
         '''
         Handle command
         '''
 
-        if args is None or len(args) != 1:
-            raise CommandError('You must supply a file name')
-
         if int(options['verbosity']) > 0:
             self.stdout.write_maybe = self.stdout.write
         else:
             self.stdout.write_maybe = lambda *args: None
 
-        self.parse_and_create(args[0])
+        self.strict_empty_text_nodes = options['strict']
+
+        self.parse_and_create(options['file'])
 
     def parse_and_create(self, instxmlfile):
         try:
