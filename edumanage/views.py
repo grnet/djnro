@@ -1991,6 +1991,115 @@ def getPoints():
         return json.loads(points)
 
 
+def ourPoints(institution=None, cache_flush=False):
+    # make this configurable
+    cache_timeout = 60 * 60
+
+    def cache_key(inst_key):
+        # make this configurable
+        return 'ourpoints:%d' % int(inst_key)
+
+    if not isinstance(institution, Institution):
+        institution = None
+
+    cache_keys = {}
+    institutions = {}
+
+    if institution is not None:
+        cache_keys[institution.pk] = cache_key(institution.pk)
+        institutions[institution.pk] = institution
+        # not really necessary, formally introduced in Django 1.10
+        # from django.db.models.query import prefetch_related_objects
+        # prefetch_related_objects([institution], ['org_name'])
+    else:
+        for i in Institution.objects.all().prefetch_related('org_name'):
+            cache_keys[i.pk] = cache_key(i.pk)
+            institutions[i.pk] = i
+
+    points = {}
+
+    if cache_flush:
+        cache.delete_many(cache_keys.values())
+    else:
+        points = cache.get_many(cache_keys.values())
+
+    points_ret = []
+    keys_tocache = []
+
+    for inst_pk in institutions:
+        cache_key = cache_keys[inst_pk]
+        try:
+            # points_ret.extend(json.loads(bz2.decompress(points[cache_key])))
+            points_ret.extend(json.loads(points[cache_key]))
+            continue
+        except KeyError:
+            keys_tocache.append(cache_key)
+
+        servicelocs = ServiceLoc.objects\
+          .filter(institutionid=institutions[inst_pk])\
+          .prefetch_related('loc_name')
+          # .prefetch_related('loc_name', 'contact')
+        inst_names = { name.lang: name.name for name in
+                           institutions[inst_pk].org_name.all() }
+
+        points[cache_key] = []
+
+        for sl in servicelocs:
+            point = {}
+            point['lat'] = u"%s" % sl.latitude
+            point['lng'] = u"%s" % sl.longitude
+            point['address'] = u"%s<br>%s" % (
+                sl.address_street, sl.address_city
+                )
+            if len(sl.enc_level[0]) != 0:
+                point['enc'] = u"%s" % (
+                    ','.join(sl.enc_level)
+                    )
+            else:
+                point['enc'] = u"-"
+            point['AP_no'] = u"%s" % (sl.AP_no)
+            point['inst'] = inst_names
+            point['inst_key'] = u"%s" % inst_pk
+            point['name'] = { name.lang: name.name for name in
+                                  sl.loc_name.all() }
+            # point['contacts'] = [
+            #     { attr: getattr(contact, attr, '')
+            #       for attr in ['name', 'phone', 'email'] }
+            #     for contact in sl.contact.all()
+            #     ]
+            point['port_restrict'] = u"%s" % (sl.port_restrict)
+            point['transp_proxy'] = u"%s" % (sl.transp_proxy)
+            point['IPv6'] = u"%s" % (sl.IPv6)
+            point['NAT'] = u"%s" % (sl.NAT)
+            point['wired'] = u"%s" % (sl.wired)
+            point['SSID'] = u"%s" % (sl.SSID)
+            point['key'] = u"%s" % sl.pk
+            points[cache_key].append(point)
+
+        points_ret.extend(points[cache_key])
+
+    if len(keys_tocache):
+        # cache.set_many({key: bz2.compress(json.dumps(points[key]))
+        #                     for key in keys_tocache},
+        #                    cache_timeout)
+        cache.set_many({key: json.dumps(points[key]) for key in keys_tocache},
+                           cache_timeout)
+
+    return points_ret
+
+
+def localizePointNames(points, lang='en'):
+    for point in points:
+        for key in ['inst', 'name']:
+            if key not in point:
+                continue
+            try:
+                point[key] = point[key][lang]
+            except KeyError:
+                point[key] = point[key].get('en', 'unknown')
+    return points
+
+
 @never_cache
 def instxml(request):
     ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
