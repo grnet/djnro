@@ -47,7 +47,7 @@ empty string. This will break if a target field does not accept null values, but
 it is useful if you want to enforce that the input XML aligns with the database
 schema.''')
 
-    def handle(self, *args, **options):
+    def handle(self, **options):
         '''
         Handle command
         '''
