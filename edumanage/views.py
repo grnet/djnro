@@ -1937,7 +1937,8 @@ def getPoints():
                 }
                 point_list.append(marker)
         points = json.dumps(point_list)
-        cache.set('points', bz2.compress(points), 60 * 3600 * 24)
+        # make timeout configurable
+        cache.set('points', bz2.compress(points), 60 * 60 * 24)
         return json.loads(points)
 
 
