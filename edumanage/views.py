@@ -1499,32 +1499,8 @@ def get_service_points(request):
         except UserProfile.DoesNotExist:
             inst = False
             return HttpResponseNotFound('<h1>Something went really wrong</h1>')
-        servicelocs = ServiceLoc.objects.filter(institutionid=inst)
-
-        locs = []
-        for sl in servicelocs:
-            response_location = {}
-            response_location['lat'] = u"%s" % sl.latitude
-            response_location['lng'] = u"%s" % sl.longitude
-            response_location['address'] = u"%s<br>%s" % (
-                sl.address_street,
-                sl.address_city
-            )
-            if len(sl.enc_level[0]) != 0:
-                response_location['enc'] = u"%s" % (','.join(sl.enc_level))
-            else:
-                response_location['enc'] = u"-"
-            response_location['AP_no'] = u"%s" % (sl.AP_no)
-            response_location['name'] = get_i18n_name(sl.loc_name, lang, 'en', 'unknown')
-            response_location['port_restrict'] = u"%s" % (sl.port_restrict)
-            response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
-            response_location['IPv6'] = u"%s" % (sl.IPv6)
-            response_location['NAT'] = u"%s" % (sl.NAT)
-            response_location['wired'] = u"%s" % (sl.wired)
-            response_location['SSID'] = u"%s" % (sl.SSID)
-            response_location['key'] = u"%s" % sl.pk
-            locs.append(response_location)
-        return HttpResponse(json.dumps(locs), content_type='application/json')
+        servicelocs = localizePointNames(ourPoints(institution=inst), lang)
+        return HttpResponse(json.dumps(servicelocs), content_type='application/json')
     else:
         return HttpResponseNotFound('<h1>Something went really wrong</h1>')
 
@@ -1552,33 +1528,7 @@ def overview(request):
 @never_cache
 def get_all_services(request):
     lang = request.LANGUAGE_CODE
-    servicelocs = ServiceLoc.objects.all()
-    locs = []
-    for sl in servicelocs:
-        response_location = {}
-        response_location['lat'] = u"%s" % sl.latitude
-        response_location['lng'] = u"%s" % sl.longitude
-        response_location['address'] = u"%s<br>%s" % (
-            sl.address_street, sl.address_city
-        )
-        if len(sl.enc_level[0]) != 0:
-            response_location['enc'] = u"%s" % (
-                ','.join(sl.enc_level)
-            )
-        else:
-            response_location['enc'] = u"-"
-        response_location['AP_no'] = u"%s" % (sl.AP_no)
-        response_location['inst'] = get_i18n_name(sl.institutionid.org_name, lang, 'en', 'unknown')
-        response_location['inst_key'] = u"%s" % sl.institutionid.pk
-        response_location['name'] = get_i18n_name(sl.loc_name, lang, 'en', 'unknown')
-        response_location['port_restrict'] = u"%s" % (sl.port_restrict)
-        response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
-        response_location['IPv6'] = u"%s" % (sl.IPv6)
-        response_location['NAT'] = u"%s" % (sl.NAT)
-        response_location['wired'] = u"%s" % (sl.wired)
-        response_location['SSID'] = u"%s" % (sl.SSID)
-        response_location['key'] = u"%s" % sl.pk
-        locs.append(response_location)
+    locs = localizePointNames(ourPoints(), lang)
     return HttpResponse(json.dumps(locs), content_type='application/json')
 
 
@@ -1987,8 +1937,118 @@ def getPoints():
                 }
                 point_list.append(marker)
         points = json.dumps(point_list)
-        cache.set('points', bz2.compress(points), 60 * 3600 * 24)
+        # make timeout configurable
+        cache.set('points', bz2.compress(points), 60 * 60 * 24)
         return json.loads(points)
+
+
+def ourPoints(institution=None, cache_flush=False):
+    # make this configurable
+    cache_timeout = 60 * 60
+
+    def cache_key(inst_key):
+        # make this configurable
+        return 'ourpoints:%d' % int(inst_key)
+
+    if not isinstance(institution, Institution):
+        institution = None
+
+    cache_keys = {}
+    institutions = {}
+
+    if institution is not None:
+        cache_keys[institution.pk] = cache_key(institution.pk)
+        institutions[institution.pk] = institution
+        # not really necessary, formally introduced in Django 1.10
+        # from django.db.models.query import prefetch_related_objects
+        # prefetch_related_objects([institution], ['org_name'])
+    else:
+        for i in Institution.objects.all().prefetch_related('org_name'):
+            cache_keys[i.pk] = cache_key(i.pk)
+            institutions[i.pk] = i
+
+    points = {}
+
+    if cache_flush:
+        cache.delete_many(cache_keys.values())
+    else:
+        points = cache.get_many(cache_keys.values())
+
+    points_ret = []
+    keys_tocache = []
+
+    for inst_pk in institutions:
+        cache_key = cache_keys[inst_pk]
+        try:
+            # points_ret.extend(json.loads(bz2.decompress(points[cache_key])))
+            points_ret.extend(json.loads(points[cache_key]))
+            continue
+        except KeyError:
+            keys_tocache.append(cache_key)
+
+        servicelocs = ServiceLoc.objects\
+          .filter(institutionid=institutions[inst_pk])\
+          .prefetch_related('loc_name')
+          # .prefetch_related('loc_name', 'contact')
+        inst_names = { name.lang: name.name for name in
+                           institutions[inst_pk].org_name.all() }
+
+        points[cache_key] = []
+
+        for sl in servicelocs:
+            point = {}
+            point['lat'] = u"%s" % sl.latitude
+            point['lng'] = u"%s" % sl.longitude
+            point['address'] = u"%s<br>%s" % (
+                sl.address_street, sl.address_city
+                )
+            if len(sl.enc_level[0]) != 0:
+                point['enc'] = u"%s" % (
+                    ','.join(sl.enc_level)
+                    )
+            else:
+                point['enc'] = u"-"
+            point['AP_no'] = u"%s" % (sl.AP_no)
+            point['inst'] = inst_names
+            point['inst_key'] = u"%s" % inst_pk
+            point['name'] = { name.lang: name.name for name in
+                                  sl.loc_name.all() }
+            # point['contacts'] = [
+            #     { attr: getattr(contact, attr, '')
+            #       for attr in ['name', 'phone', 'email'] }
+            #     for contact in sl.contact.all()
+            #     ]
+            point['port_restrict'] = u"%s" % (sl.port_restrict)
+            point['transp_proxy'] = u"%s" % (sl.transp_proxy)
+            point['IPv6'] = u"%s" % (sl.IPv6)
+            point['NAT'] = u"%s" % (sl.NAT)
+            point['wired'] = u"%s" % (sl.wired)
+            point['SSID'] = u"%s" % (sl.SSID)
+            point['key'] = u"%s" % sl.pk
+            points[cache_key].append(point)
+
+        points_ret.extend(points[cache_key])
+
+    if len(keys_tocache):
+        # cache.set_many({key: bz2.compress(json.dumps(points[key]))
+        #                     for key in keys_tocache},
+        #                    cache_timeout)
+        cache.set_many({key: json.dumps(points[key]) for key in keys_tocache},
+                           cache_timeout)
+
+    return points_ret
+
+
+def localizePointNames(points, lang='en'):
+    for point in points:
+        for key in ['inst', 'name']:
+            if key not in point:
+                continue
+            try:
+                point[key] = point[key][lang]
+            except KeyError:
+                point[key] = point[key].get('en', 'unknown')
+    return points
 
 
 @never_cache
@@ -2549,15 +2609,15 @@ def lookupShibAttr(attrmap, requestMeta):
                 return requestMeta[attr]
     return ''
 
-def get_i18n_name(i18n_name, lang, default_lang='en', default_name='unknown'):
-    names = i18n_name.filter(lang=lang)
-    if names.count()==0:
-        names = i18n_name.filter(lang=default_lang)
-    if names.count()==0:
-        return default_name
-    else:
-        # follow ServiceLoc.get_name()
-        return ', '.join([i.name for i in names])
+# def get_i18n_name(i18n_name, lang, default_lang='en', default_name='unknown'):
+#     names = i18n_name.filter(lang=lang)
+#     if names.count()==0:
+#         names = i18n_name.filter(lang=default_lang)
+#     if names.count()==0:
+#         return default_name
+#     else:
+#         # follow ServiceLoc.get_name()
+#         return ', '.join([i.name for i in names])
 
 def get_nro_name(lang):
     return Realm.objects.\
