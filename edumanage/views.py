@@ -1499,32 +1499,8 @@ def get_service_points(request):
         except UserProfile.DoesNotExist:
             inst = False
             return HttpResponseNotFound('<h1>Something went really wrong</h1>')
-        servicelocs = ServiceLoc.objects.filter(institutionid=inst)
-
-        locs = []
-        for sl in servicelocs:
-            response_location = {}
-            response_location['lat'] = u"%s" % sl.latitude
-            response_location['lng'] = u"%s" % sl.longitude
-            response_location['address'] = u"%s<br>%s" % (
-                sl.address_street,
-                sl.address_city
-            )
-            if len(sl.enc_level[0]) != 0:
-                response_location['enc'] = u"%s" % (','.join(sl.enc_level))
-            else:
-                response_location['enc'] = u"-"
-            response_location['AP_no'] = u"%s" % (sl.AP_no)
-            response_location['name'] = get_i18n_name(sl.loc_name, lang, 'en', 'unknown')
-            response_location['port_restrict'] = u"%s" % (sl.port_restrict)
-            response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
-            response_location['IPv6'] = u"%s" % (sl.IPv6)
-            response_location['NAT'] = u"%s" % (sl.NAT)
-            response_location['wired'] = u"%s" % (sl.wired)
-            response_location['SSID'] = u"%s" % (sl.SSID)
-            response_location['key'] = u"%s" % sl.pk
-            locs.append(response_location)
-        return HttpResponse(json.dumps(locs), content_type='application/json')
+        servicelocs = localizePointNames(ourPoints(institution=inst), lang)
+        return HttpResponse(json.dumps(servicelocs), content_type='application/json')
     else:
         return HttpResponseNotFound('<h1>Something went really wrong</h1>')
 
@@ -1552,33 +1528,7 @@ def overview(request):
 @never_cache
 def get_all_services(request):
     lang = request.LANGUAGE_CODE
-    servicelocs = ServiceLoc.objects.all()
-    locs = []
-    for sl in servicelocs:
-        response_location = {}
-        response_location['lat'] = u"%s" % sl.latitude
-        response_location['lng'] = u"%s" % sl.longitude
-        response_location['address'] = u"%s<br>%s" % (
-            sl.address_street, sl.address_city
-        )
-        if len(sl.enc_level[0]) != 0:
-            response_location['enc'] = u"%s" % (
-                ','.join(sl.enc_level)
-            )
-        else:
-            response_location['enc'] = u"-"
-        response_location['AP_no'] = u"%s" % (sl.AP_no)
-        response_location['inst'] = get_i18n_name(sl.institutionid.org_name, lang, 'en', 'unknown')
-        response_location['inst_key'] = u"%s" % sl.institutionid.pk
-        response_location['name'] = get_i18n_name(sl.loc_name, lang, 'en', 'unknown')
-        response_location['port_restrict'] = u"%s" % (sl.port_restrict)
-        response_location['transp_proxy'] = u"%s" % (sl.transp_proxy)
-        response_location['IPv6'] = u"%s" % (sl.IPv6)
-        response_location['NAT'] = u"%s" % (sl.NAT)
-        response_location['wired'] = u"%s" % (sl.wired)
-        response_location['SSID'] = u"%s" % (sl.SSID)
-        response_location['key'] = u"%s" % sl.pk
-        locs.append(response_location)
+    locs = localizePointNames(ourPoints(), lang)
     return HttpResponse(json.dumps(locs), content_type='application/json')
 
 
@@ -2658,15 +2608,15 @@ def lookupShibAttr(attrmap, requestMeta):
                 return requestMeta[attr]
     return ''
 
-def get_i18n_name(i18n_name, lang, default_lang='en', default_name='unknown'):
-    names = i18n_name.filter(lang=lang)
-    if names.count()==0:
-        names = i18n_name.filter(lang=default_lang)
-    if names.count()==0:
-        return default_name
-    else:
-        # follow ServiceLoc.get_name()
-        return ', '.join([i.name for i in names])
+# def get_i18n_name(i18n_name, lang, default_lang='en', default_name='unknown'):
+#     names = i18n_name.filter(lang=lang)
+#     if names.count()==0:
+#         names = i18n_name.filter(lang=default_lang)
+#     if names.count()==0:
+#         return default_name
+#     else:
+#         # follow ServiceLoc.get_name()
+#         return ', '.join([i.name for i in names])
 
 def get_nro_name(lang):
     return Realm.objects.\
