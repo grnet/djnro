@@ -2,8 +2,6 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block homeactive %}{% endblock %}
-{% block contactsactive %}class="active"{% endblock %}
 {% block management_content %}
 <h4>{% if edit %}{{form.instance.name}} ({% trans "edit" %}){% else %}{% trans "Add Contact" %}{% endif %}</h4>
 <hr>
