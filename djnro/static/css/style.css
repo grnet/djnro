@@ -127,6 +127,10 @@ footer.auth {
     }
 }
 
+.sidebar>.nav-pills>li>a>.badge {
+    margin-left: initial;
+}
+
 .closest footer {
 	display: none;
 }

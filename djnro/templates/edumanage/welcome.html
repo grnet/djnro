@@ -18,26 +18,36 @@
 				</li>
 				{% if institution_exists %}
 				<li {% block instactive %}{% endblock %}>
-					<a href="{% url 'institutions' %}">{% trans "Institution" %} {% if not institutiondetails %}<font style="color: red; font-weight: bold; font-size: 14px;">(!)</font>{% endif %}</a>
+					<a href="{% url 'institutions' %}">{% trans "Institution" %}
+					{% if not institutiondetails %}
+					  <span class="label label-danger"
+						style="font-size:100%;">!</span>
+					{% endif %}
+					</a>
 				</li>
 				{% endif %}
 				{% if institutiondetails %}
 				{% if institution_canhaveservicelocs %}
 				<li {% block servicesactive %}{% endblock %}>
-					<a href="{% url 'services' %}">{% trans "Locations" %} ({{services_num}})</a>
+					<a href="{% url 'services' %}">{% trans "Locations" %}
+					  <span class="badge">{{services_num}}</span></a>
 				</li>
 				{% endif %}
 				<li {% block serversactive %}{% endblock %}>
-					<a href="{% url 'servers' %}">{% trans "Servers" %} ({{servers_num}})</a>
+					<a href="{% url 'servers' %}">{% trans "Servers" %}
+					  <span class="badge">{{servers_num}}</span></a>
 				</li>
 				<li {% block realmsactive %}{% endblock %}>
-					<a href="{% url 'realms' %}">{% trans "Realms" %} ({{realms_num}})</a>
+					<a href="{% url 'realms' %}">{% trans "Realms" %}
+					  <span class="badge">{{realms_num}}</span></a>
 				</li>
 				<li {% block instrealmmon %}{% endblock %}>
-					<a href="{% url 'instrealmmon' %}">{% trans "Monitored Realms" %} ({{monrealms_num}})</a>
+					<a href="{% url 'instrealmmon' %}">{% trans "Monitored Realms" %}
+					  <span class="badge">{{monrealms_num}}</span></a>
 				</li>
 				<li {% block contactsactive %}{% endblock %}>
-					<a href="{% url 'contacts' %}">{% trans "Contacts" %} ({{contacts_num}})</a>
+					<a href="{% url 'contacts' %}">{% trans "Contacts" %}
+					<span class="badge">{{contacts_num}}</span></a>
 				</li>
 				{% if CAT_INSTANCES %}
 				<li {% block catactive %}{% endblock %}>
