@@ -6,8 +6,6 @@
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?{% if GOOGLE_MAPS_API_KEY %}key={{ GOOGLE_MAPS_API_KEY }}{% endif %}"></script>
 {% endblock %}
 
-{% block homeactive %}{% endblock %}
-{% block instrealmmon %}class="active"{% endblock %}
 {% block management_content %}
  <h4>{% if edit %}{% trans 'Monitored realm' %}: {{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm" %}{% endif %}</h4>
 <hr>

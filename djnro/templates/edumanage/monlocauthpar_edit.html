@@ -2,9 +2,6 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block homeactive %}{% endblock %}
-{% block instrealmmon %}class="active"{% endblock %}
-
 {% block management_content %}
 <h4>{% if edit %}{{realm.realm}} {% trans 'parameters' %} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm Parameters" %} ({{realm.realm}}){% endif %}</h4>
 <hr>
