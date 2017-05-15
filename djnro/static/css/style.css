@@ -52,6 +52,14 @@ footer.auth {
 	height: 51px;
 }
 
+@media screen and (max-width: 991px) {
+    /* when .sidebar at the top, .push-top just adds some space, without aligning
+       with right column */
+    .sidebar.push-top {
+        height: 15px;
+    }
+}
+
 .home .squares {
 	padding: 50px 0;
 }
