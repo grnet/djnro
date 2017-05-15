@@ -12,13 +12,13 @@
 	<div class="col-sm-offset-2 col-sm-8 col-md-offset-0 col-md-2">
 	{% with navpage_mgmt=request.resolver_match.url_name %}
 		<div class="push-top sidebar"></div>
-		<div class="well well-sm sidebar">
+		<div class="well well-sm sidebar" role="navigation">
 			<ul class="nav nav-pills nav-stacked">
-				<li class="{% if navpage_mgmt == 'manage' %}active{% endif %}">
+				<li role="presentation" class="{% if navpage_mgmt == 'manage' %}active{% endif %}">
 					<a href="{% url 'manage' %}">{% trans "Home" %}</a>
 				</li>
 				{% if institution_exists %}
-				<li class="{% if 'institution' in navpage_mgmt %}active{% endif %}">
+				<li role="presentation" class="{% if 'institution' in navpage_mgmt %}active{% endif %}">
 					<a href="{% url 'institutions' %}">{% trans "Institution" %}
 					{% if not institutiondetails %}
 					  <span class="label label-danger"
@@ -29,29 +29,29 @@
 				{% endif %}
 				{% if institutiondetails %}
 				{% if institution_canhaveservicelocs %}
-				<li class="{% if 'services' in navpage_mgmt %}active{% endif %}">
+				<li role="presentation" class="{% if 'services' in navpage_mgmt %}active{% endif %}">
 					<a href="{% url 'services' %}">{% trans "Locations" %}
 					  <span class="badge">{{services_num}}</span></a>
 				</li>
 				{% endif %}
-				<li class="{% if 'servers' in navpage_mgmt %}active{% endif %}">
+				<li role="presentation" class="{% if 'servers' in navpage_mgmt %}active{% endif %}">
 					<a href="{% url 'servers' %}">{% trans "Servers" %}
 					  <span class="badge">{{servers_num}}</span></a>
 				</li>
-				<li class="{% if 'realms' in navpage_mgmt %}active{% endif %}">
+				<li role="presentation" class="{% if 'realms' in navpage_mgmt %}active{% endif %}">
 					<a href="{% url 'realms' %}">{% trans "Realms" %}
 					  <span class="badge">{{realms_num}}</span></a>
 				</li>
-				<li class="{% if 'instrealmmon' in navpage_mgmt or navpage_mgmt == 'edit-monlocauthpar' %}active{% endif %}">
+				<li role="presentation" class="{% if 'instrealmmon' in navpage_mgmt or navpage_mgmt == 'edit-monlocauthpar' %}active{% endif %}">
 					<a href="{% url 'instrealmmon' %}">{% trans "Monitored Realms" %}
 					  <span class="badge">{{monrealms_num}}</span></a>
 				</li>
-				<li class="{% if 'contacts' in navpage_mgmt %}active{% endif %}">
+				<li role="presentation" class="{% if 'contacts' in navpage_mgmt %}active{% endif %}">
 					<a href="{% url 'contacts' %}">{% trans "Contacts" %}
 					  <span class="badge">{{contacts_num}}</span></a>
 				</li>
 				{% if CAT_INSTANCES %}
-				<li class="{% if 'catenroll' in navpage_mgmt %}active{% endif %}">
+				<li role="presentation" class="{% if 'catenroll' in navpage_mgmt %}active{% endif %}">
 					<a href="{% url 'catenroll' %}">{% trans "eduroam CAT" %}</a>
 				</li>
 				{% endif %}
