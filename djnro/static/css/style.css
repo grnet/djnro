@@ -98,10 +98,33 @@ footer.auth {
 	z-index: 10000;
 }
 
+@media screen and (max-width: 991px) {
+    .sidebar>.nav {
+        text-align: center;
+    }
 
-.sidebar-nav .active {
-	background: #eee;
+    /* this "cancels" .nav-stacked float: none */
+    .sidebar>.nav.nav-stacked>li {
+        display: inline-block;
+    }
+}
 
+.sidebar>.nav-stacked>li+li {
+    margin-top: 5px;
+}
+
+/* tweak .well for sidebar */
+.sidebar.well {
+    margin-bottom: 15px;
+}
+
+/* avoid words in sidebar elements overflowing the .well container */
+@media screen and (min-width: 992px) {
+    .sidebar.well>.nav>li>a {
+	overflow: hidden;
+	-ms-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+    }
 }
 
 .closest footer {
