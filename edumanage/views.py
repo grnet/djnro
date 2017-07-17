@@ -19,7 +19,8 @@ from django.http import (
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.views import logout as logout_view
 from django import forms
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.core.mail.message import EmailMessage
@@ -30,7 +31,6 @@ from django.contrib import messages
 from django.db.models import Max
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
-from django.contrib.auth import authenticate, login
 from accounts.models import User
 from django.core.cache import cache
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -1589,6 +1589,7 @@ def user_login(request):
             pass
 
         user = authenticate(username=username, firstname=firstname, lastname=lastname, mail=mail, authsource='shibboleth')
+        request.session['SHIB_LOGOUT'] = hasattr(settings, 'SHIB_LOGOUT_URL')
         if user is not None:
             try:
                 profile = user.userprofile
@@ -1649,6 +1650,23 @@ def user_login(request):
             {'error': error},
             context_instance=RequestContext(request)
         )
+
+
+@never_cache
+def user_logout(request, **kwargs):
+    shib_logout_url = getattr(settings, 'SHIB_LOGOUT_URL', None)
+    if 'return' in request.GET and \
+            'action' in request.GET and \
+            request.GET.get('action') == 'logout':
+        request_data = request.GET.copy()
+        request_data[REDIRECT_FIELD_NAME] = request_data.get('return')
+        del request_data['return']
+        del request_data['action']
+        request.GET = request_data
+    elif shib_logout_url is not None and \
+            request.session.get('SHIB_LOGOUT') is True:
+        kwargs['next_page'] = shib_logout_url
+    return logout_view(request, **kwargs)
 
 
 @never_cache
