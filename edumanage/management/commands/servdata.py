@@ -74,6 +74,8 @@ def servdata():
         if srv.name:
             srv_dict['label'] = srv.name
         srv_dict['secret'] = srv.secret
+        srv_dict['addr_type'] = srv.addr_type
+        srv_dict['proto'] = srv.proto
         root['clients'].update({srv_id: srv_dict})
 
     servers = hosts.filter(ertype__in=ERTYPE_ROLES.IDP)
@@ -92,6 +94,8 @@ def servdata():
             srv_dict['label'] = srv.name
         srv_dict['secret'] = srv.secret
         srv_dict['status_server'] = bool(srv.status_server)
+        srv_dict['addr_type'] = srv.addr_type
+        srv_dict['proto'] = srv.proto
         root['servers'].update({srv_id: srv_dict})
 
     if insts:
