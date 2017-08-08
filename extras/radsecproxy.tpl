@@ -46,7 +46,11 @@ rewrite rewrite-${client}-sp {
 }
 client ${client} {
         host ${clients[client]['host']}
+% if clients[client]['addr_type'] == 'ipv4':
         IPv4Only on
+% elif clients[client]['addr_type'] == 'ipv6':
+        IPv6Only on
+% endif
         type udp
         secret ${clients[client]['secret'] | percent_escape}
         fticksVISCOUNTRY GR
@@ -82,7 +86,11 @@ rewrite rewrite-${srv}-idp {
 }
 server ${srv}${'-acct' if servers[srv]['rad_pkt_type'] == 'acct' else ''} {
         host ${servers[srv]['host']}
+% if servers[srv]['addr_type'] == 'ipv4':
         IPv4Only on
+% elif servers[srv]['addr_type'] == 'ipv6':
+        IPv6Only on
+% endif
         type udp
         port ${servers[srv]['auth_port'] if servers[srv]['rad_pkt_type'] in ('auth', 'auth+acct') else servers[srv]['acct_port']}
         secret ${servers[srv]['secret'] | percent_escape}
