@@ -661,15 +661,17 @@
 		    selector_encode({cidp: profiles[idx].getIdpID(),
 				     cprof: profiles[idx].getProfileID()})
 		);
-		$.when(
-		    profiles[idx].getDisplay()
-		).then(function(display) {
-		    if (!!display) {
-			$profsel_a.text(display);
-		    } else {
-			$profsel_a.html('&nbsp;');
-		    }
-		});
+		(function($el) {
+		    $.when(
+			profiles[idx].getDisplay()
+		    ).then(function(display) {
+			if (!!display) {
+			    $el.text(display);
+			} else {
+			    $el.html('&nbsp;');
+			}
+		    });
+		}($profsel_a));
 		$profsel_el.removeClass('active');
 		$profsel_a.attr({'data-catprof': profiles[idx].getProfileID(),
 				 'data-catidp': self.obj.id})
