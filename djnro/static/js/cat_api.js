@@ -1247,14 +1247,16 @@
 	'apple_mav': [/Mac OS X 10[._]9/],
 	'apple_yos': [/Mac OS X 10[._]10/],
 	'apple_el_cap': [/Mac OS X 10[._]11/],
-	'apple_sierra': [/Mac OS X 10[._]1[2-9]/, /Mac OS X 10[._][2-9][0-9]/],
+	'apple_sierra': [/Mac OS X 10[._]12/],
+	'apple_hi_sierra': [/Mac OS X 10[._]1[3-9]/, /Mac OS X 10[._][2-9][0-9]/],
 	'linux': [/Linux(?!.*Android)/],
 	'chromeos': [/CrOS/],
 	'android_43': [/Android 4[._]3/],
 	'android_kitkat': [/Android 4[._][4-9]/],
 	'android_lollipop': [/Android 5[._][0-9]/],
 	'android_marshmallow': [/Android 6[._][0-9]/],
-	'android_nougat': [/Android [7-9]/, /Android [1-9][0-9]/],
+	'android_nougat': [/Android 7[._][0-9]/],
+	'android_oreo': [/Android [8-9]/, /Android [1-9][0-9]/],
 	'android_legacy': [/Android/],
 	'__undefined__': [ new RegExp('') ]
     }
