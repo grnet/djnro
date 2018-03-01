@@ -135,7 +135,7 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{% static 'js/showpass.js' %}"></script>
-<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?{% if GOOGLE_MAPS_API_KEY %}key={{ GOOGLE_MAPS_API_KEY }}{% endif %}"></script>
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3{% if GOOGLE_MAPS_API_KEY %}&amp;key={{ GOOGLE_MAPS_API_KEY }}{% endif %}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$('#id_secret').showPassword();
