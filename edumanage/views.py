@@ -1930,6 +1930,34 @@ def managementPage(request):
         context_instance=RequestContext(request)
     )
 
+def parse_kml_json(kml_filename):
+    with open(kml_filename, 'r') as f:
+        json_data = json.load(f)
+
+    point_list = []
+    # iterate over dictionary of items: "id": data_point_dict
+    for key, dp in json_data['data'].items():
+        marker = {
+            # name takes institution_name
+            "name": dp['in_name'],
+            "lat": dp['latitude'],
+            "lng": dp['longitude'],
+
+            # we now also set more fields as per new json:
+            "ser_name": dp['ser_name'],
+            "address": dp['address'],
+            "SSID": dp['SSID'],
+            "enc": dp['enc'],
+            "AP_no": dp['AP_no'],
+
+            # text takes a combination of the above:
+            "text": ( "<b>Name:</b> %s<br><b>Operator:</b> %s<br><b>Address:</b> %s<br><b>SSID:</b> %s<br><b>Enc:</b> %s<br><b>AP:</b> %s<br>\n" %
+                      ( dp['ser_name'], dp['in_name'], dp['address'], dp['SSID'], dp['enc'], dp['AP_no']))
+        }
+        point_list.append(marker)
+
+    return point_list
+
 
 def getPoints():
     points = cache.get('points')
@@ -1938,21 +1966,24 @@ def getPoints():
         return json.loads(points)
     else:
         point_list = []
-        doc = ElementTree.parse(settings.KML_FILE)
-        root = doc.getroot()
-        r = root.getchildren()[0]
-        for (counter, i) in enumerate(r.getchildren()):
-            if "id" in i.keys():
-                j = i.getchildren()
-                pointname = j[0].text
-                point = j[2].getchildren()[0].text
-                pointlng, pointlat, pointele = point.split(',')
-                marker = {
-                    "name": pointname,
-                    "lat": pointlat,
-                    "lng": pointlng,
-                    "text": j[1].text
-                }
+        if 'KML_IS_JSON' in dir(settings) and settings.KML_IS_JSON:
+            point_list.extend(parse_kml_json(settings.KML_FILE))
+        else:
+            doc = ElementTree.parse(settings.KML_FILE)
+            root = doc.getroot()
+            r = root.getchildren()[0]
+            for (counter, i) in enumerate(r.getchildren()):
+                if "id" in i.keys():
+                    j = i.getchildren()
+                    pointname = j[0].text
+                    point = j[2].getchildren()[0].text
+                    pointlng, pointlat, pointele = point.split(',')
+                    marker = {
+                        "name": pointname,
+                        "lat": pointlat,
+                        "lng": pointlng,
+                        "text": j[1].text
+                    }
                 point_list.append(marker)
         points = json.dumps(point_list)
         # make timeout configurable
