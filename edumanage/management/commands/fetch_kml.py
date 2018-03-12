@@ -26,6 +26,7 @@ from django.core.cache import cache
 from xml.etree import ElementTree
 import json
 import bz2
+from edumanage.views import parse_kml_json
 
 
 class Command(BaseCommand):
@@ -51,23 +52,26 @@ class Command(BaseCommand):
 
     def refresh_cache(self, file):
         point_list = []
-        doc = ElementTree.parse(file)
-        root = doc.getroot()
-        r = root.getchildren()[0]
-        for (counter, i) in enumerate(r.getchildren()):
-            if "id" in i.keys():
-                j = i.getchildren()
-                pointname = j[0].text
-                point = j[2].getchildren()[0].text
-                pointlng, pointlat, pointele = point.split(',')
-                point_list.append(
-                    {
-                        "name": pointname,
-                        "lat": pointlat,
-                        "lng": pointlng,
-                        "text": j[1].text
-                    }
-                )
+        if 'KML_IS_JSON' in dir(settings) and settings.KML_IS_JSON:
+            point_list.extend(parse_kml_json(settings.KML_FILE))
+        else:
+	    doc = ElementTree.parse(file)
+	    root = doc.getroot()
+	    r = root.getchildren()[0]
+	    for (counter, i) in enumerate(r.getchildren()):
+		if "id" in i.keys():
+		    j = i.getchildren()
+		    pointname = j[0].text
+		    point = j[2].getchildren()[0].text
+		    pointlng, pointlat, pointele = point.split(',')
+		    point_list.append(
+			{
+			    "name": pointname,
+			    "lat": pointlat,
+			    "lng": pointlng,
+			    "text": j[1].text
+			}
+		    )
         points = json.dumps(point_list)
         cache.set('points', bz2.compress(points), 60 * 3600 * 24)
         return True
