@@ -1951,8 +1951,8 @@ def parse_kml_json(kml_filename):
             "AP_no": dp['AP_no'],
 
             # text takes a combination of the above:
-            "text": ( "<b>Name:</b> %s<br><b>Address:</b> %s<br><b>SSID:</b> %s<br><b>Enc:</b> %s<br><b>AP:</b> %s<br>\n" %
-                      ( dp['ser_name'], dp['address'], dp['SSID'], dp['enc'], dp['AP_no']))
+            "text": ( "<b>Name:</b> %s<br><b>Operator:</b> %s<br><b>Address:</b> %s<br><b>SSID:</b> %s<br><b>Enc:</b> %s<br><b>AP:</b> %s<br>\n" %
+                      ( dp['ser_name'], dp['in_name'], dp['address'], dp['SSID'], dp['enc'], dp['AP_no']))
         }
         point_list.append(marker)
 
