@@ -32,7 +32,6 @@ class MultiSelectFormField(forms.MultipleChoiceField):
 
 
 class MultiSelectField(models.Field):
-    __metaclass__ = models.SubfieldBase
 
     def get_internal_type(self):
         return "CharField"
@@ -65,6 +64,9 @@ class MultiSelectField(models.Field):
             return value
         elif isinstance(value, list):
             return ",".join(value)
+
+    def from_db_value(self, value, expression, connection, context):
+        return value.split(',') if value is not None else []
 
     def to_python(self, value):
         if value is not None:
