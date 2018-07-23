@@ -3,13 +3,13 @@ from django.views.generic.base import TemplateView
 # Uncomment the next two lines to enable the django admin interface:
 from django.contrib import admin
 admin.autodiscover()
-import social.apps.django_app.urls
+import social_django.urls
 import edumanage
 import django
 import accounts, accounts.views
 
 urlpatterns = [
-    url(r'^accounts/', include(social.apps.django_app.urls, namespace='social')),
+    url(r'^accounts/', include(social_django.urls, namespace='social')),
     url(r'^setlang/?$', edumanage.views.set_language),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^managelogin/(?P<backend>[^/]+)/$', edumanage.views.manage_login, name='manage_login'),
