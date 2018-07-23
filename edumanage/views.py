@@ -9,7 +9,7 @@ import locale
 from localectxmgr import setlocale
 import requests
 
-from django.shortcuts import render_to_response, redirect, render
+from django.shortcuts import redirect, render
 from django.http import (
     HttpResponse,
     HttpResponseRedirect,
@@ -123,15 +123,16 @@ def manage_login_front(request):
     try:
         profile = user.userprofile
     except UserProfile.DoesNotExist:
-        return render_to_response(
+        return render(
+            request,
             'edumanage/welcome_manage.html',
-            context_instance=RequestContext(request, base_response(request))
+            context=base_response(request)
         )
     except AttributeError:
         return render(
             request,
             'edumanage/welcome_manage.html',
-            {}
+            context={}
         )
     if user.is_authenticated() and user.is_active and profile.is_social_active:
         return redirect(reverse('manage'))
@@ -139,7 +140,7 @@ def manage_login_front(request):
         return render(
             request,
             'edumanage/welcome_manage.html',
-            {}
+            context={}
         )
 
 
@@ -154,22 +155,23 @@ def manage(request):
         profile = user.userprofile
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        return render_to_response(
+        return render(
+            request,
             'edumanage/welcome.html',
-            context_instance=RequestContext(request, base_response(request))
+            context=base_response(request)
         )
     services = ServiceLoc.objects.filter(institutionid=inst)
     services_list.extend([s for s in services])
     servers = InstServer.objects.filter(instid=inst)
     servers_list.extend([s for s in servers])
-    return render_to_response(
+    return render(
+        request,
         'edumanage/welcome.html',
-        {
+        context=merge_dicts({
             'institution': inst,
             'services': services_list,
             'servers': servers_list,
-        },
-        context_instance=RequestContext(request, base_response(request))
+        }, base_response(request))
     )
 
 
@@ -188,13 +190,13 @@ def institutions(request):
     dict['institution'] = inst.pk
     form = InstDetailsForm(initial=dict)
     form.fields['institution'].widget.attrs['readonly'] = True
-    return render_to_response(
+    return render(
+        request,
         'edumanage/institution.html',
-        {
+        context=merge_dicts({
             'institution': inst,
             'form': form,
-        },
-        context_instance=RequestContext(request, base_response(request))
+        }, base_response(request))
     )
 
 
@@ -245,10 +247,10 @@ def add_institution_details(request, institution_pk):
         form.fields['contact'] = forms.ModelMultipleChoiceField(
             queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
         )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/institution_edit.html',
-            {'institution': inst, 'form': form, 'urls_form': urls_form},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'institution': inst, 'form': form, 'urls_form': urls_form}, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -274,12 +276,10 @@ def add_institution_details(request, institution_pk):
             form.fields['contact'] = forms.ModelMultipleChoiceField(
                 queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
             )
-            return render_to_response(
+            return render(
+                request,
                 'edumanage/institution_edit.html',
-                {'institution': inst, 'form': form, 'urls_form': urls_form},
-                context_instance=RequestContext(
-                    request, base_response(request)
-                )
+                context=merge_dicts({'institution': inst, 'form': form, 'urls_form': urls_form}, base_response(request))
             )
 
 
@@ -304,10 +304,10 @@ def services(request, service_pk):
             messages.ERROR,
             'Cannot add/edit Location. Your institution should be either SP or IdP/SP'
         )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/services.html',
-            {'institution': inst},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'institution': inst}, base_response(request))
         )
     try:
         services = ServiceLoc.objects.filter(institutionid=inst)
@@ -324,22 +324,22 @@ def services(request, service_pk):
                 'You have no rights to view this location'
             )
             return HttpResponseRedirect(reverse("services"))
-        return render_to_response(
+        return render(
+            request,
             'edumanage/service_details.html',
-            {
+            context=merge_dicts({
                 'institution': inst,
                 'service': services,
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
 
-    return render_to_response(
+    return render(
+        request,
         'edumanage/services.html',
-        {
+        context=merge_dicts({
             'institution': inst,
             'services': services,
-        },
-        context_instance=RequestContext(request, base_response(request))
+        }, base_response(request))
     )
 
 
@@ -366,10 +366,10 @@ def add_services(request, service_pk):
             messages.ERROR,
             'Cannot add/edit Service. Your institution should be either SP or IdP/SP'
         )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/services_edit.html',
-            {'edit': edit},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'edit': edit}, base_response(request))
         )
     if request.method == "GET":
 
@@ -425,15 +425,15 @@ def add_services(request, service_pk):
             url_form.fields['urltype'] = forms.ChoiceField(
                 choices=(('', '----------'), ('info', 'Info'),)
             )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/services_edit.html',
-            {
+            context=merge_dicts({
                 'form': form,
                 'services_form': names_form,
                 'urls_form': urls_form,
                 "edit": edit
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -495,16 +495,16 @@ def add_services(request, service_pk):
             url_form.fields['urltype'] = forms.ChoiceField(
                 choices=(('', '----------'), ('info', 'Info'),)
             )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/services_edit.html',
-            {
+            context=merge_dicts({
                 'institution': inst,
                 'form': form,
                 'services_form': names_form,
                 'urls_form': urls_form,
                 'edit': edit
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
 
 
@@ -556,20 +556,20 @@ def servers(request, server_pk):
         servers = InstServer.objects.filter(instid=inst)
     if server_pk:
         servers = servers.get(pk=server_pk)
-        return render_to_response(
+        return render(
+            request,
             'edumanage/server_details.html',
-            {
+            context=merge_dicts({
                 'institution': inst,
                 'server': servers,
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
-    return render_to_response(
+    return render(
+        request,
         'edumanage/servers.html',
-        {
+        context=merge_dicts({
             'servers': servers
-        },
-        context_instance=RequestContext(request, base_response(request))
+        }, base_response(request))
     )
 
 
@@ -607,13 +607,13 @@ def add_server(request, server_pk):
         if server:
             edit = True
 
-        return render_to_response(
+        return render(
+            request,
             'edumanage/servers_edit.html',
-            {
+            context=merge_dicts({
                 'form': form,
                 'edit': edit
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -639,14 +639,14 @@ def add_server(request, server_pk):
             return HttpResponseRedirect(reverse("servers"))
         if server:
             edit = True
-        return render_to_response(
+        return render(
+            request,
             'edumanage/servers_edit.html',
-            {
+            context=merge_dicts({
                 'institution': inst,
                 'form': form,
                 'edit': edit
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
 
 
@@ -673,10 +673,10 @@ def cat_enroll(request):
             messages.ERROR,
             'Cannot add/edit Enrollments. Your institution should be either IdP or IdP/SP'
         )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/catenroll.html',
-            {'status': False},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'status': False}, base_response(request))
         )
     if request.method == "GET":
         current_enrollments = inst.catenrollment_set.all()
@@ -693,19 +693,19 @@ def cat_enroll(request):
                 messages.ERROR,
                 'There are no available CAT instances for your institution enrollment'
             )
-            return render_to_response(
+            return render(
+                request,
                 'edumanage/catenroll.html',
-                {'status': False},
-                context_instance=RequestContext(request, base_response(request))
+                context=merge_dicts({'status': False}, base_response(request))
             )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/catenroll.html',
-            {
+            context=merge_dicts({
                 'status': True,
                 'current_enrollments': current_enrollments,
                 'cat_instances': available_enrollments
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -765,16 +765,16 @@ def cat_enroll(request):
         else:
             status = enroll.status
             response = enroll.response
-        return render_to_response(
+        return render(
+            request,
             'edumanage/catenroll.html',
-            {
+            context=merge_dicts({
                 'status': True,
                 'response_status': status,
                 'response': response,
                 'cat_url': cat_url,
                 'inst_uid': inst_uid
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
 
 
@@ -825,10 +825,10 @@ def realms(request):
             messages.ERROR,
             'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP'
         )
-    return render_to_response(
+    return render(
+        request,
         'edumanage/realms.html',
-        {'realms': realms},
-        context_instance=RequestContext(request, base_response(request))
+        context=merge_dicts({'realms': realms}, base_response(request))
     )
 
 
@@ -851,10 +851,10 @@ def add_realm(request, realm_pk):
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in [1, 3]:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
-        return render_to_response(
+        return render(
+            request,
             'edumanage/realms_edit.html',
-            {'edit': edit},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'edit': edit}, base_response(request))
         )
     if request.method == "GET":
 
@@ -882,10 +882,10 @@ def add_realm(request, realm_pk):
         )
         if realm:
             edit = True
-        return render_to_response(
+        return render(
+            request,
             'edumanage/realms_edit.html',
-            {'form': form, 'edit': edit},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'form': form, 'edit': edit}, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -916,10 +916,10 @@ def add_realm(request, realm_pk):
             )
         if realm:
             edit = True
-        return render_to_response(
+        return render(
+            request,
             'edumanage/realms_edit.html',
-            {'institution': inst, 'form': form, 'edit': edit},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'institution': inst, 'form': form, 'edit': edit}, base_response(request))
         )
 
 
@@ -975,10 +975,10 @@ def contacts(request):
             )
         ])
         contacts = Contact.objects.filter(pk__in=instcontacts)
-    return render_to_response(
+    return render(
+        request,
         'edumanage/contacts.html',
-        {'contacts': contacts},
-        context_instance=RequestContext(request, base_response(request))
+        context=merge_dicts({'contacts': contacts}, base_response(request))
     )
 
 
@@ -1020,13 +1020,13 @@ def add_contact(request, contact_pk):
                 return HttpResponseRedirect(reverse("contacts"))
         if contact:
             edit = True
-        return render_to_response(
+        return render(
+            request,
             'edumanage/contacts_edit.html',
-            {
+            context=merge_dicts({
                 'form': form,
                 'edit': edit
-            },
-            context_instance=RequestContext(request, base_response(request))
+            }, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -1057,10 +1057,10 @@ def add_contact(request, contact_pk):
             return HttpResponseRedirect(reverse("contacts"))
         if contact:
             edit = True
-        return render_to_response(
+        return render(
+            request,
             'edumanage/contacts_edit.html',
-            {'form': form, "edit": edit},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'form': form, "edit": edit}, base_response(request))
         )
 
 
@@ -1137,10 +1137,10 @@ def instrealmmon(request):
         return HttpResponseRedirect(reverse("manage"))
     if inst:
         instrealmmons = InstRealmMon.objects.filter(realm__instid=inst)
-    return render_to_response(
+    return render(
+        request,
         'edumanage/instrealmmons.html',
-        {'realms': instrealmmons},
-        context_instance=RequestContext(request, base_response(request))
+        context=merge_dicts({'realms': instrealmmons}, base_response(request))
     )
 
 
@@ -1186,10 +1186,10 @@ def add_instrealmmon(request, instrealmmon_pk):
             ),
             empty_label=None
         )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/instrealmmon_edit.html',
-            {'form': form, 'edit': edit},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'form': form, 'edit': edit}, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -1219,10 +1219,10 @@ def add_instrealmmon(request, instrealmmon_pk):
             ),
             empty_label=None
         )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/instrealmmon_edit.html',
-            {'form': form, "edit": edit},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'form': form, "edit": edit}, base_response(request))
         )
 
 
@@ -1306,10 +1306,10 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
             queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk),
             empty_label=None
         )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/monlocauthpar_edit.html',
-            {'form': form,"edit" : edit, "realm":instrealmmon},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'form': form,"edit" : edit, "realm":instrealmmon}, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -1349,10 +1349,10 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
             queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk),
             empty_label=None
         )
-        return render_to_response(
+        return render(
+            request,
             'edumanage/monlocauthpar_edit.html',
-            {'form': form, "edit": edit, "realm":instrealmmon},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'form': form, "edit": edit, "realm":instrealmmon}, base_response(request))
         )
 
 
@@ -1398,10 +1398,10 @@ def adduser(request):
 
     if request.method == "GET":
         form = ContactForm()
-        return render_to_response(
+        return render(
+            request,
             'edumanage/add_user.html',
-            {'form': form},
-            context_instance=RequestContext(request, base_response(request))
+            context=merge_dicts({'form': form}, base_response(request))
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -1421,13 +1421,10 @@ def adduser(request):
                 content_type='application/json'
             )
         else:
-            return render_to_response(
+            return render(
+                request,
                 'edumanage/add_user.html',
-                {'form': form},
-                context_instance=RequestContext(
-                    request,
-                    base_response(request)
-                )
+                context=merge_dicts({'form': form}, base_response(request))
             )
 
 
@@ -1512,16 +1509,16 @@ def overview(request):
     if user.has_perm('accounts.overview'):
         users = User.objects.all()
         institutions = Institution.objects.all()
-        return render_to_response(
+        return render(
+            request,
             'overview/index.html',
-            {'users': users, 'institutions': institutions},
-            context_instance=RequestContext(request)
+            context={'users': users, 'institutions': institutions}
         )
     else:
-        return render_to_response(
+        return render(
+            request,
             'overview/index.html',
-            {'violation': True},
-            context_instance=RequestContext(request)
+            context={'violation': True}
         )
 
 
@@ -1573,10 +1570,10 @@ def user_login(request):
 
         if errors:
             error = ''.join(errors)
-            return render_to_response(
+            return render(
+                request,
                 'status.html',
-                {'error': error, "missing_attributes": True},
-                context_instance=RequestContext(request)
+                context={'error': error, "missing_attributes": True}
             )
 
         try:
@@ -1605,10 +1602,10 @@ def user_login(request):
                     empty_label=None
                 )
                 form.fields['email'] = forms.CharField(initial=user.email)
-                return render_to_response(
+                return render(
+                    request,
                     'registration/select_institution.html',
-                    {'form': form},
-                    context_instance=RequestContext(request)
+                    context={'form': form}
                 )
 
             if user.is_active:
@@ -1628,27 +1625,27 @@ def user_login(request):
                     'nroname': get_nro_name(request.LANGUAGE_CODE)
                     }
 
-                return render_to_response(
+                return render(
+                    request,
                     'status.html',
-                    {'status': status, 'inactive': True},
-                    context_instance=RequestContext(request)
+                    context={'status': status, 'inactive': True}
                 )
         else:
             error = _(
                 "Something went wrong during user authentication."
                 " Contact your administrator %s" % user
             )
-            return render_to_response(
+            return render(
+                request,
                 'status.html',
-                {'error': error},
-                context_instance=RequestContext(request)
+                context={'error': error}
             )
     except Exception as e:
         error = _("Invalid login procedure. Error: %s" % e)
-        return render_to_response(
+        return render(
+            request,
             'status.html',
-            {'error': error},
-            context_instance=RequestContext(request)
+            context={'error': error}
         )
 
 
@@ -1671,19 +1668,20 @@ def user_logout(request, **kwargs):
 
 @never_cache
 def geolocate(request):
-    return render_to_response(
+    return render(
+        request,
         'front/geolocate.html',
-        context_instance=RequestContext(request)
+        context={}
     )
 
 
 @never_cache
 def api(request):
     current_site = get_current_site(request)
-    return render_to_response(
+    return render(
+        request,
         'front/api.html',
-        {'site': current_site},
-        context_instance=RequestContext(request)
+        context={'site': current_site}
     )
 
 
@@ -1702,13 +1700,13 @@ def participants(request):
         dets.sort(cmp=locale.strcoll,
                   key=lambda x: unicode(x.institution.
                                         get_name(lang=request.LANGUAGE_CODE)))
-    return render_to_response(
+    return render(
+        request,
         'front/participants.html',
-        {
+        context={
             'institutions': dets,
             'catexists': cat_exists
-        },
-        context_instance=RequestContext(request)
+        }
     )
 
 
@@ -1753,17 +1751,17 @@ def connect(request):
             if not cat_api_ldlbase and cat_api_direct:
                 cat_api_ldlbase = cat_api_direct.replace('user/API.php', '')
     template = settings_dict_get('CAT_CONNECT_TEMPLATE', cat_instance)
-    return render_to_response(
+    return render(
+        request,
         template or 'front/connect.html',
-        {
+        context={
             'institutions': dets,
             'institutions_cat': dets_cat,
             'catexists': cat_exists,
             'cat_api_direct': cat_api_direct,
             'cat_api_ldlbase': cat_api_ldlbase,
             'cat_api_version': cat_api_version
-        },
-        context_instance=RequestContext(request)
+        }
     )
 
 
@@ -1775,10 +1773,10 @@ def selectinst(request):
         try:
             UserProfile.objects.get(user=user)
             error = _("Violation warning: User account is already associated with an institution.The event has been logged and our administrators will be notified about it")
-            return render_to_response(
+            return render(
+                request,
                 'status.html',
-                {'error': error, 'inactive': True},
-                context_instance=RequestContext(request)
+                context={'error': error, 'inactive': True}
             )
         except UserProfile.DoesNotExist:
             pass
@@ -1800,10 +1798,10 @@ def selectinst(request):
                 'username': userprofile.user.username,
                 'nroname': get_nro_name(request.LANGUAGE_CODE)
                 }
-            return render_to_response(
+            return render(
+                request,
                 'status.html',
-                {'status': error, 'inactive': True},
-                context_instance=RequestContext(request)
+                context={'status': error, 'inactive': True}
             )
         else:
             form.fields['user'] = forms.ModelChoiceField(
@@ -1821,10 +1819,10 @@ def selectinst(request):
                 form.fields['email'] = forms.CharField()
             else:
                 form.fields['email'] = forms.CharField(initial=user_obj.email)
-            return render_to_response(
+            return render(
+                request,
                 'registration/select_institution.html',
-                {'form': form, 'nomail': nomail},
-                context_instance=RequestContext(request)
+                context={'form': form, 'nomail': nomail}
             )
 
 
@@ -1922,17 +1920,19 @@ def worldPoints(request):
 
 @never_cache
 def world(request):
-        return render_to_response(
+        return render(
+            request,
             'front/world.html',
-            context_instance=RequestContext(request)
+            context={}
         )
 
 
 @never_cache
 def managementPage(request):
-    return render_to_response(
+    return render(
+        request,
         'front/management.html',
-        context_instance=RequestContext(request)
+        context={}
     )
 
 
@@ -2211,12 +2211,12 @@ def instxml(request):
                 instLocUrl.attrib["lang"] = url.lang
                 instLocUrl.text = url.url
 
-    return render_to_response(
+    return render(
+        request,
         "general/institution.xml",
-        {
+        context={
             "xml": to_xml(root)
         },
-        context_instance=RequestContext(request,),
         content_type="application/xml"
     )
 
@@ -2274,10 +2274,10 @@ def realmxml(request):
     instTs = ElementTree.SubElement(realmElement, "ts")
     instTs.text = "%s" % realm.ts.isoformat()
 
-    return render_to_response(
+    return render(
+        request,
         "general/realm.xml",
-        {"xml": to_xml(root)},
-        context_instance=RequestContext(request,),
+        context={"xml": to_xml(root)},
         content_type="application/xml"
     )
 
@@ -2343,10 +2343,10 @@ def realmdataxml(request):
         datetimes.append(datetime.datetime.now())
     instTs = ElementTree.SubElement(realmdataElement, "ts")
     instTs.text = "%s" % max(datetimes).isoformat()
-    return render_to_response(
+    return render(
+        request,
         "general/realm_data.xml",
-        {"xml": to_xml(root)},
-        context_instance=RequestContext(request,),
+        context={"xml": to_xml(root)},
         content_type="application/xml"
     )
 
@@ -2654,3 +2654,10 @@ def settings_dict_get(setting, *keys, **opts):
     if dct == {}:
         dct = opts.get('default', None)
     return dct
+
+# utility function to merge two dictionaries
+def merge_dicts(dict1, dict2):
+    d = {}
+    for k, v in dict1.items() + dict2.items():
+        d[k] = v
+    return d
