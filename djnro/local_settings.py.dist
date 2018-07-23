@@ -17,7 +17,6 @@ PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
 
 # This should be always False
 DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('admin', 'admin@example.org'),
