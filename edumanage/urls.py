@@ -1,8 +1,7 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 import edumanage.views
 
-urlpatterns = patterns(
-    'edumanage.views',
+urlpatterns = [
     url(r'^$', edumanage.views.index, name="index"),
     url(r'^geolocate/?$', edumanage.views.geolocate, name="geolocate"),
     url(r'^closest/?$', edumanage.views.closest, name="closest"),
@@ -53,4 +52,4 @@ urlpatterns = patterns(
     url(r'^manage/catenroll/?$', edumanage.views.cat_enroll, name="catenroll"),
 
     url(r'^overview/?$', edumanage.views.overview, name="overview"),
-)
+]
