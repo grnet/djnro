@@ -88,10 +88,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     # Required so that RequestContext is passed into
     # template
     'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.request',
+    'django.template.context_processors.debug',
+    'django.template.context_processors.i18n',
+    'django.template.context_processors.media',
+    'django.template.context_processors.request',
     'edumanage.context_processors.country_code',
     'edumanage.context_processors.cat_instances',
     'edumanage.context_processors.manage_login_methods',
