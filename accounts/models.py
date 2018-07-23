@@ -1,7 +1,8 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, validators
+from django.contrib.auth.models import AbstractUser
 from django.contrib import admin
 from django.conf import settings
+from django.core import validators
 from django.utils.translation import ugettext_lazy as _
 from edumanage.models import Institution
 import re
