@@ -9,16 +9,16 @@ from edumanage.models import InstServer, Institution
 
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option(
+
+    help = "Exports server data"
+
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--output',
             dest='output',
             default="yaml",
             help="Output type: json, yaml"
-        ),
-    )
-    args = ''
-    help = "Exports server data"
+        )
 
     def handle(self, *args, **options):
         if options['output'] == "yaml":
