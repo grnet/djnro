@@ -1696,6 +1696,7 @@ def api(request):
 def participants(request):
     institutions = Institution.objects.filter(stage=PRODUCTION_STATES.ACTIVE,
                                               institutiondetails__isnull=False).\
+      exclude(ertype__in=ERTYPE_ROLES.NONE).\
       select_related('institutiondetails')
     cat_instance = 'production'
     dets = []
@@ -2153,7 +2154,7 @@ def instxml(request, version):
     root = ElementTree.Element("institutions")
     ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
     root.set(ns_xsi + "noNamespaceSchemaLocation", "institution.xsd")
-    institutions = Institution.objects.all().select_related(
+    institutions = Institution.objects.exclude(ertype__in=ERTYPE_ROLES.NONE).select_related(
         'institutiondetails', 'realmid'
     ).prefetch_related(
         'org_name', 'institutiondetails__contact',

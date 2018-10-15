@@ -262,6 +262,7 @@ def get_namedtuple_choices(*choices_tuples):
 
 # Last member in choices tuples maps numeric to string (EDB2) ERTYPE
 _ERTYPES = (
+    ('NONE', 0, 'None (Stats Only)', 'None'),
     ('IDP', 1, 'IdP only', 'IdP'),
     ('SP', 2, 'SP only', 'SP'),
     ('IDPSP', 3, 'IdP and SP', 'IdP+SP'),
@@ -269,7 +270,7 @@ _ERTYPES = (
 ERTYPES = get_namedtuple_choices(*_ERTYPES)
 ERTYPE_ROLES = get_namedtuple_choices(*(
     (cat.upper(), [val for val, descr in ERTYPES if cat in descr])
-    for cat in ('IdP', 'SP')
+    for cat in ('IdP', 'SP', 'None')
 ))
 def get_ertype_string(ertype, reverse=False):
     """
