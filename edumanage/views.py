@@ -35,6 +35,8 @@ from django.utils import six
 from accounts.models import User
 from django.core.cache import cache
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.contrib.admin.models import LogEntry, CHANGE, ADDITION, DELETION
+from django.contrib.contenttypes.models import ContentType
 
 from edumanage.models import (
     ServiceLoc,
@@ -611,7 +613,11 @@ def add_server(request, server_pk):
                 return HttpResponseRedirect(reverse("servers"))
 
         if form.is_valid():
-            form.save()
+            if server_pk:
+                LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(server).id, object_id=server_pk, object_repr=str(server), action_flag=CHANGE, change_message='Changed ' + server.name)
+            r = form.save()
+            if r and not server_pk:
+                LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(r).id, object_id=r.id, object_repr=str(r), action_flag=ADDITION, change_message='Added')
             if not inst in form.instance.instid.all():
                 form.instance.instid.add(inst)
             return HttpResponseRedirect(reverse("servers"))
@@ -784,6 +790,7 @@ def del_server(request):
             resp['error'] = "Could not get server or you have no rights to delete"
             return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
+            LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(server).id, object_id=server_pk, object_repr=str(server), action_flag=DELETION, change_message='Deleted ' + server.name)
             server.delete()
         except:
             resp['error'] = "Could not delete server"
@@ -886,7 +893,11 @@ def add_realm(request, realm_pk):
                 )
                 return HttpResponseRedirect(reverse("realms"))
         if form.is_valid():
-            form.save()
+            if realm_pk:
+                LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(realm).id, object_id=realm_pk, object_repr=str(realm), action_flag=CHANGE, change_message='Changed ' + realm.realm)
+            r = form.save()
+            if r and not realm_pk:
+                LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(r).id, object_id=r.id, object_repr=str(r), action_flag=ADDITION, change_message='Added')
             return HttpResponseRedirect(reverse("realms"))
         else:
             form.fields['instid'] = forms.ModelChoiceField(
@@ -928,6 +939,7 @@ def del_realm(request):
             resp['error'] = "Could not get realm or you have no rights to delete"
             return HttpResponse(json.dumps(resp), content_type='application/json')
         try:
+            LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(realm).id, object_id=realm_pk, object_repr=str(realm), action_flag=DELETION, change_message='Deleted ' + realm.realm)
             realm.delete()
         except:
             resp['error'] = "Could not delete realm"
@@ -1189,7 +1201,11 @@ def add_instrealmmon(request, instrealmmon_pk):
                 )
                 return HttpResponseRedirect(reverse("instrealmmon"))
         if form.is_valid():
-            form.save()
+            if instrealmmon_pk:
+                LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(instrealmmon).id, object_id=instrealmmon_pk, object_repr=str(instrealmmon), action_flag=CHANGE, change_message='Changed')
+            r = form.save()
+            if r and not instrealmmon_pk:
+                LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(r).id, object_id=r.id, object_repr=str(r), action_flag=ADDITION, change_message='Added')
             return HttpResponseRedirect(reverse("instrealmmon"))
         if instrealmmon:
             edit = True
@@ -1226,6 +1242,7 @@ def del_instrealmmon(request):
                 pk=instrealmmon_pk,
                 realm__instid=institution
             )
+            LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(instrealmmon).id, object_id=instrealmmon_pk, object_repr=str(instrealmmon), action_flag=DELETION, change_message='Deleted')
             instrealmmon.delete()
         except InstRealmMon.DoesNotExist:
             resp['error'] = "Could not get monitored realm or you have no rights to delete"
@@ -1320,7 +1337,11 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
                 )
             return HttpResponseRedirect(reverse("instrealmmon"))
         if form.is_valid():
-            form.save()
+            if monlocauthpar_pk:
+                LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(monlocauthpar).id, object_id=monlocauthpar_pk, object_repr=str(monlocauthpar), action_flag=CHANGE, change_message='Changed ' + monlocauthpar.username)
+            r = form.save()
+            if r and not monlocauthpar_pk:
+                LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(r).id, object_id=r.id, object_repr=str(r), action_flag=ADDITION, change_message='Added')
             return HttpResponseRedirect(reverse("instrealmmon"))
         if monlocauthpar:
             edit = True
@@ -1355,6 +1376,7 @@ def del_monlocauthpar(request):
                 pk=monlocauthpar_pk,
                 instrealmmonid__realm__instid=institution
             )
+            LogEntry.objects.log_action(user_id=user.id, content_type_id=ContentType.objects.get_for_model(monlocauthpar).id, object_id=monlocauthpar_pk, object_repr=str(monlocauthpar), action_flag=DELETION, change_message='Deleted ' + monlocauthpar.username)
             monlocauthpar.delete()
         except MonLocalAuthnParam.DoesNotExist:
             resp['error'] = "Could not get realm monitoring parameters or you have no rights to delete"
