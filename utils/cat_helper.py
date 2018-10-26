@@ -1,5 +1,6 @@
 import requests
 from lxml import objectify
+from lxml.etree import XMLSyntaxError
 import re
 
 # http://code.activestate.com/recipes/135435-sort-a-string-using-numeric-order/
@@ -33,9 +34,12 @@ class CatQuery(object):
 
     @staticmethod
     def curate_response(response):
-        response = response.split('<CAT-API-Response>')[1]
-        response = "<?xml version='1.0' ?><CAT-API-Response>"+response
-        return response
+        try:
+            o = objectify.fromstring(response)
+            assert o.tag == 'CAT-API-Response'
+            return o
+        except (XMLSyntaxError, AssertionError):
+            return objectify.Element('Dummy')
 
     def newinst(self, kwargs):
         self.status = None
@@ -44,7 +48,7 @@ class CatQuery(object):
         if 'NEWINST_PRIMARYADMIN' not in kwargs.keys():
             raise Exception('NEWINST_PRIMARYADMIN parameter is missing')
         response = self.post_request(kwargs)
-        r = objectify.fromstring(response)
+        r = self.curate_response(response)
         try:
             assert r.success is not None
             # Successfull response
@@ -56,7 +60,10 @@ class CatQuery(object):
             return True
         except AttributeError:
             self.status = 'Error'
-            self.response = r.error.description
+            try:
+                self.response = r.error.description
+            except AttributeError:
+                pass
             return False
 
     def admincount(self, kwargs):
@@ -66,8 +73,7 @@ class CatQuery(object):
         if not 'INST_IDENTIFIER' in kwargs.keys():
             raise Exception('INST_IDENTIFIER parameter is missing')
         response = self.post_request(kwargs)
-        response = self.curate_response(response)
-        r = objectify.fromstring(response)
+        r = self.curate_response(response)
         try:
             assert r.success is not None
             # Successfull response
@@ -76,7 +82,10 @@ class CatQuery(object):
             return True
         except AttributeError:
             self.status = 'Error'
-            self.response = r.error.description
+            try:
+                self.response = r.error.description
+            except AttributeError:
+                pass
             return False
 
     def statistics(self):
@@ -85,8 +94,7 @@ class CatQuery(object):
         kwargs = {}
         kwargs['ACTION'] = 'STATISTICS'
         response = self.post_request(kwargs)
-        response = self.curate_response(response)
-        r = objectify.fromstring(response)
+        r = self.curate_response(response)
         return r
 
 
