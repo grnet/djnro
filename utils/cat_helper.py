@@ -9,6 +9,26 @@ def string_split_by_numbers(x):
     l = r.split(x)
     return [int(y) if y.isdigit() else y for y in l]
 
+def safe_get(o, prop, default):
+    if isinstance(o, objectify.ObjectifiedElement):
+        return getattr(o, prop, default)
+    try:
+        return o.get(prop, default)
+    except AttributeError:
+        try:
+            assert isinstance(o, (str, unicode)) != True
+            return o[prop]
+        except:
+            return default
+
+def deep_get(o, *props, **opts):
+    default = opts.get('default')
+    for prop in props:
+        o = safe_get(o, prop, default)
+        if o == default:
+            break
+    return o
+
 class CatQuery(object):
 
     def __init__(self, cat_key, cat_url):
@@ -97,17 +117,17 @@ class CatQuery(object):
                 'VALUE': kwargs['NEWINST_PRIMARYADMIN'],
             },
         ])
-        if 'result' in response and response['result'] == 'SUCCESS':
+        if deep_get(response, 'result') == 'SUCCESS':
             self.status = 'Success'
             self.response = {
                 "inst_unique_id": kwargs['INST_IDENTIFIER'],
-                "enrollment_URL": response['details']['TOKEN URL'],
-                "enrollment_token": response['details']['TOKEN']
+                "enrollment_URL": deep_get(response, 'details', 'TOKEN URL'),
+                "enrollment_token": deep_get(response, 'details', 'TOKEN')
             }
             return True
         else:
             self.status = 'Error'
-            self.response = response['details']['description']
+            self.response = deep_get(response, 'details', 'description')
             return False
 
     """ Create a new institution, optionally adding an administrator to emulate the v1 behaviour. """
@@ -116,19 +136,19 @@ class CatQuery(object):
         self.response = None
         params = self.deuglify(kwargs);
         response = self.v2api_request('NEWINST', params)
-        if 'result' in response and response['result'] == 'SUCCESS':
-            kwargs['INST_IDENTIFIER'] = response['details']['ATTRIB-CAT-INSTID']
+        if deep_get(response, 'result') == 'SUCCESS':
+            kwargs['INST_IDENTIFIER'] = deep_get(response, 'details', 'ATTRIB-CAT-INSTID')
             if 'NEWINST_PRIMARYADMIN' in kwargs.keys():
                 return self.adminadd(kwargs)
             else:
                 self.status = 'Success'
                 self.response = {
-                    "inst_unique_id": response['details']['ATTRIB-CAT-INSTID']
+                    "inst_unique_id": deep_get(response, 'details', 'ATTRIB-CAT-INSTID')
                 }
                 return True
         else:
             self.status = 'Error'
-            self.response = response['details']['description']
+            self.response = deep_get(response, 'details', 'description')
             return False
 
     """ Emulate the v1 ADMINCOUNT function from ADMIN-LIST """
@@ -138,17 +158,17 @@ class CatQuery(object):
         if not 'INST_IDENTIFIER' in kwargs.keys():
             raise Exception('INST_IDENTIFIER parameter is missing')
         response = self.v2api_request('ADMIN-LIST', [ { 'NAME': 'ATTRIB-CAT-INSTID', 'VALUE': kwargs['INST_IDENTIFIER'] } ])
-        if 'result' in response and response['result'] == 'SUCCESS':
+        if deep_get(response, 'result') == 'SUCCESS':
             self.status = 'Success'
-            self.response = {"number_of_admins": len(response['details'])}
+            self.response = {"number_of_admins": len(deep_get(response, 'details', default=[]))}
             return True
         else:
             self.status = 'Error'
-            self.response = response['details']['description']
+            self.response = deep_get(response, 'details', 'description')
             return False
 
     def statistics(self):
         self.status = None
         self.response = None
         response = self.v2api_request('STATISTICS-FED', None)
-        return response['details']
+        return deep_get(response, 'details', default={})
