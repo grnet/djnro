@@ -91,8 +91,7 @@ class CatQuery(object):
                 params[id]['NAME'] = kwargs[k]
             elif k.startswith('value[S'):
                 if k.endswith('-lang]'):
-                    if kwargs[k] != 'C':
-                        params[id]['LANG'] = kwargs[k]
+                    params[id]['LANG'] = kwargs[k]
                 else:
                     params[id]['VALUE'] = kwargs[k]
         return filter(None, params)
