@@ -150,6 +150,7 @@ You must also set the following parameters for each CAT instance in `CAT_AUTH`:
 * `CAT_API_KEY`: Admin API key for authentication to CAT
 * `CAT_API_URL`: Admin API endpoint URL
 * `CAT_USER_API_URL`: User API endpoint URL
+* `CAT_USER_API_VERSION`: User API version
 * `CAT_USER_API_LOCAL_DOWNLOADS`: Base URL for local app downloads (e.g. Android); derived from `CAT_USER_API_URL` if not configured
 * `CAT_PROFILES_URL`: Base URL for the intitution download area pages
 * `CAT_IDPMGMT_URL`: URL for the IdP overview page
@@ -165,6 +166,7 @@ CAT_AUTH = {
         "CAT_API_KEY": "<provided API key>",
         "CAT_API_URL": "https://cat.eduroam.org/admin/API.php",
         "CAT_USER_API_URL": "https://cat.eduroam.org/user/API.php",
+        "CAT_USER_API_VERSION": 2,
         "CAT_USER_API_LOCAL_DOWNLOADS": "https://cat.eduroam.org/",
         "CAT_PROFILES_URL": "https://cat.eduroam.org/",
         "CAT_IDPMGMT_URL": "https://cat.eduroam.org/admin/overview_idp.php"
@@ -173,6 +175,7 @@ CAT_AUTH = {
         "CAT_API_KEY": "<provided API key>",
         "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
         "CAT_USER_API_URL": "https://cat-test.eduroam.org/test/user/API.php",
+        "CAT_USER_API_VERSION": 2,
         "CAT_USER_API_LOCAL_DOWNLOADS": "https://cat-test.eduroam.org/test/",
         "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_idp.php"
@@ -180,7 +183,7 @@ CAT_AUTH = {
 }
 ```
 
-For more information about eduroam CAT, you may read [the guide to eduroam CAT for federation administrators](//wiki.geant.org/display/H2eduroam/A+guide+to+eduroam+CAT+for+federation+administrators).
+For more information about eduroam CAT, you may read [the guide to eduroam CAT for federation administrators](//wiki.geant.org/display/H2eduroam/A+guide+to+eduroam+CAT+2.0+and+eduroam+Managed+IdP+for+National+Roaming+Operator+administrators).
 
 Please note: The front-end integration requires that DjNRO has a record of the institution CAT ID. If an institution is manually invited to eduroam CAT, rather than enrolling automatically through DjNRO, then the federation administrator should fill in the ID assigned to the institution in CAT, for example using the Django admin interface.
 

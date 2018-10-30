@@ -1737,9 +1737,13 @@ def connect(request):
         cat_exists = False
         cat_api_direct = None
         cat_api_ldlbase = None
+        cat_api_version = None
     else:
         cat_api_direct = settings_dict_get('CAT_AUTH', cat_instance,
                                            'CAT_USER_API_URL')
+        cat_api_version = settings_dict_get('CAT_AUTH', cat_instance,
+                                           'CAT_USER_API_VERSION',
+                                            default=2)
         if cat_api_direct is None:
             cat_exists = False
             cat_api_ldlbase = None
@@ -1756,7 +1760,8 @@ def connect(request):
             'institutions_cat': dets_cat,
             'catexists': cat_exists,
             'cat_api_direct': cat_api_direct,
-            'cat_api_ldlbase': cat_api_ldlbase
+            'cat_api_ldlbase': cat_api_ldlbase,
+            'cat_api_version': cat_api_version
         },
         context_instance=RequestContext(request)
     )

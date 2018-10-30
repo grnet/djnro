@@ -402,7 +402,8 @@
 	    apiBase: "{% url 'cat-api' %}",
 	    apiBaseD: "{{cat_api_direct}}",
 	    localDownloadBase: "{{cat_api_ldlbase}}",
-	    lang: "{{LANGUAGE_CODE}}"
+	    lang: "{{LANGUAGE_CODE}}",
+	    api_version: {{cat_api_version}}
 	});
 	root.NProgress = NProgress.configure({showSpinner: false});
 	root.CAT_UI = ConfigurationAssistantToolUI({CAT: root.CAT}, overrides);
