@@ -627,7 +627,7 @@
 		profiles.length == 0) {
 		$(self.element).trigger(events.cidp_disable_selector);
 		$.publish(pubsubs.cidp.remove.tostate,
-			  [$.extend({}, hstate.FromFragment(),
+			  [$.extend({}, hstate.fromFragment(),
 				    {_act: 'replace'})]);
 		self.progress().done();
 		return false;
