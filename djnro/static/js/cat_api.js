@@ -305,9 +305,9 @@
 		!obj.hasOwnProperty(key)) {
 		continue;
 	    }
-	    if (obj_translated[key] instanceof Object) {
+	    if (obj[key] instanceof Object) {
 		obj_translated[key] = this.apiVersionGetTranslated
-		    .apply(this, [obj_translated[key]].concat(args));
+		    .apply(this, [obj[key]].concat(args));
 	    } else {
 		obj_translated[key] = obj[key];
 	    }
@@ -318,6 +318,16 @@
 	    }
 	}
 	return obj_translated;
+    }
+    CAT.prototype._qryRespTranslate = function(data, jqxhr) {
+	if (this.options.api_version !== 1 &&
+	    !!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
+	    return this.apiVersionGetTranslated(data,
+						jqxhr._cat_qro.action,
+						'from',
+						true);
+	}
+	return data;
     }
     CAT.prototype.query = function(qro) {
 	if (!('action' in qro)) {
@@ -398,60 +408,48 @@
 	    return $.when().then(function(){
 		return $cat._cache[act];
 	    });
-	} else {
-	    var qro = {
-		action: act,
-		lang: undefined
-	    }
-	    var cb = function(ret) {
-		if (!!arguments[1] &&
-		    arguments[1] != 'success') {
-		    return null;
-		}
-		if (!!this.dataType &&
-		    this.dataType == 'json') {
-		    if (ret.status === 'ok') {
-			ret.status = 1;
-			if (!('data' in ret)) {
-			    ret.data = {};
-			    for (var k in ret) {
-				if (k != 'status' && k != 'data' &&
-				    ret.hasOwnProperty(k)) {
-				    ret.data[k] = ret[k];
-				}
-			    }
-			}
-		    }
-		    if (!('status' in ret) || ret.status != 1 || !('data' in ret)) {
-			$cat._cache[act] = null;
-			return null;
-		    }
-		    if (!!ret.tou) {
-			if (!('_tou' in $cat) || $cat._tou != ret.tou) {
-			    $cat._tou = ret.tou;
-			    if (typeof $cat.options.touCallBack === 'function') {
-				$cat.options.touCallBack(ret.tou);
-			    }
-			}
-		    }
-		    var data = ret.data;
-		    var jqxhr = !!arguments[2] ? arguments[2] : {};
-		    if ($cat.options.api_version !== 1 &&
-			!!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
-			data = $cat.apiVersionGetTranslated(data,
-							    jqxhr._cat_qro.action,
-							    'from',
-							    true);
-		    }
-		    $cat._cache[act] = data;
-		    return data;
-		} else {
-		    return null;
-		}
-	    }
-	    return this.query(qro)
-		.then(cb, cb);
 	}
+	var qro = {
+	    action: act,
+	    lang: undefined
+	}
+	var cb = function(ret) {
+	    if (!!arguments[1] &&
+		arguments[1] != 'success') {
+		return null;
+	    }
+	    if (!!!this.dataType ||
+		this.dataType != 'json') {
+		return null;
+	    }
+	    if (ret.status === 'ok') {
+		ret.status = 1;
+		if (!('data' in ret)) {
+		    ret.data = {};
+		    for (var k in ret) {
+			if (k != 'status' && k != 'data' &&
+			    ret.hasOwnProperty(k)) {
+			    ret.data[k] = ret[k];
+			}
+		    }
+		}
+	    }
+	    if (!('status' in ret) || ret.status != 1 || !('data' in ret)) {
+		return $cat._cache[act] = null;
+	    }
+	    if (!!ret.tou) {
+		if (!('_tou' in $cat) || $cat._tou != ret.tou) {
+		    $cat._tou = ret.tou;
+		    if (typeof $cat.options.touCallBack === 'function') {
+			$cat.options.touCallBack(ret.tou);
+		    }
+		}
+	    }
+	    var jqxhr = !!arguments[2] ? arguments[2] : {};
+	    return $cat._cache[act] = $cat._qryRespTranslate(ret.data, jqxhr);
+	}
+	return this.query(qro)
+	    .then(cb, cb);
     }
     CAT.prototype._qry1args = function(act, lang) {
 	if (!act) {
@@ -468,75 +466,63 @@
 	    return $.when().then(function(){
 		return $cat._cache[act][lang];
 	    });
-	} else {
-	    var qro = {
-		action: act
-	    }
-	    if (lang !== this.lang()) {
-		qro.lang = lang;
-	    }
-	    var cb = function(ret) {
-		if (!!arguments[1] &&
-		    arguments[1] != 'success') {
-		    return null;
-		}
-		if (!(act in $cat._cache)) {
-		    $cat._cache[act] = {};
-		}
-		if (!!this.dataType &&
-		    this.dataType == 'json') {
-		    // listAllIdentityProviders returns just an array
-		    if (Array.isArray(ret)) {
-			$cat._cache[act][lang] = ret;
-			return ret;
-		    }
-		    if (ret.status === 'ok') {
-			ret.status = 1;
-			if (!('data' in ret)) {
-			    ret.data = {};
-			    for (var k in ret) {
-				if (k != 'status' && k != 'data' &&
-				    ret.hasOwnProperty(k)) {
-				    ret.data[k] = ret[k];
-				}
-			    }
-			}
-		    }
-		    if (!('status' in ret) || ret.status != 1 || !('data' in ret)) {
-			$cat._cache[act][lang] = null;
-			return null;
-		    }
-		    if (!!ret.tou) {
-			if (!('_tou' in $cat) || $cat._tou != ret.tou) {
-			    $cat._tou = ret.tou;
-			    if (typeof $cat.options.touCallBack === 'function') {
-				$cat.options.touCallBack(ret.tou);
-			    }
-			}
-		    }
-		    var data = ret.data;
-		    var jqxhr = !!arguments[2] ? arguments[2] : {};
-		    if ($cat.options.api_version !== 1 &&
-			!!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
-			data = $cat.apiVersionGetTranslated(data,
-							    jqxhr._cat_qro.action,
-							    'from',
-							    true);
-		    }
-		    $cat._cache[act][lang] = data;
-		    return data;
-		// }
-		// else if (typeof ret === 'string' ||
-		// 	 ret instanceof $) {
-		//     $cat._cache[act][idval][lang] = ret;
-		//     return ret;
-		} else {
-		    return null;
-		}
-	    }
-	    return this.query(qro)
-		.then(cb, cb);
 	}
+	var qro = {
+	    action: act
+	}
+	if (lang !== this.lang()) {
+	    qro.lang = lang;
+	}
+	var cb = function(ret) {
+	    if (!!arguments[1] &&
+		arguments[1] != 'success') {
+		return null;
+	    }
+	    if (!(act in $cat._cache)) {
+		$cat._cache[act] = {};
+	    }
+	    // if (typeof ret === 'string' ||
+	    // 	ret instanceof $) {
+	    // 	return $cat._cache[act][lang] = ret;
+	    // }
+	    if (!!!this.dataType ||
+		this.dataType != 'json') {
+		return null;
+	    }
+	    var jqxhr = !!arguments[2] ? arguments[2] : {};
+	    // listAllIdentityProviders returns just an array
+	    if (Array.isArray(ret)) {
+		return $cat._cache[act][lang] =
+		    $cat._qryRespTranslate(ret, jqxhr);
+	    }
+	    if (ret.status === 'ok') {
+		ret.status = 1;
+		if (!('data' in ret)) {
+		    ret.data = {};
+		    for (var k in ret) {
+			if (k != 'status' && k != 'data' &&
+			    ret.hasOwnProperty(k)) {
+			    ret.data[k] = ret[k];
+			}
+		    }
+		}
+	    }
+	    if (!('status' in ret) || ret.status != 1 || !('data' in ret)) {
+		return $cat._cache[act][lang] = null;
+	    }
+	    if (!!ret.tou) {
+		if (!('_tou' in $cat) || $cat._tou != ret.tou) {
+		    $cat._tou = ret.tou;
+		    if (typeof $cat.options.touCallBack === 'function') {
+			$cat.options.touCallBack(ret.tou);
+		    }
+		}
+	    }
+	    return $cat._cache[act][lang] =
+		$cat._qryRespTranslate(ret.data, jqxhr);
+	}
+	return this.query(qro)
+	    .then(cb, cb);
     }
     CAT.prototype._qry2args = function(act, idname, idval, lang) {
 	if (!act ||
@@ -556,74 +542,62 @@
 	    return $.when().then(function() {
 		return $cat._cache[act][idval][lang];
 	    });
-	} else {
-	    var qro = {
-		action: act
-	    }
-	    if (lang !== this.lang()) {
-		qro.lang = lang;
-	    }
-	    qro[idname] = idval;
-	    var cb = function(ret) {
-		if (!!arguments[1] &&
-		    arguments[1] != 'success') {
-		    return null;
-		}
-		if (!(act in $cat._cache)) {
-		    $cat._cache[act] = {};
-		}
-		if (!(idval in $cat._cache[act])) {
-		    $cat._cache[act][idval] = {};
-		}
-		if (!!this.dataType &&
-		    this.dataType == 'json') {
-		    if (ret.status === 'ok') {
-			ret.status = 1;
-			if (!('data' in ret)) {
-			    ret.data = {};
-			    for (var k in ret) {
-				if (k != 'status' && k != 'data' &&
-				    ret.hasOwnProperty(k)) {
-				    ret.data[k] = ret[k];
-				}
-			    }
-			}
-		    }
-		    if (!('status' in ret) || ret.status != 1 || !('data' in ret)) {
-			$cat._cache[act][idval][lang] = null;
-			return null;
-		    }
-		    if (!!ret.tou) {
-			if (!('_tou' in $cat) || $cat._tou != ret.tou) {
-			    $cat._tou = ret.tou;
-			    if (typeof $cat.options.touCallBack === 'function') {
-				$cat.options.touCallBack(ret.tou);
-			    }
-			}
-		    }
-		    var data = ret.data;
-		    var jqxhr = !!arguments[2] ? arguments[2] : {};
-		    if ($cat.options.api_version !== 1 &&
-			!!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
-			data = $cat.apiVersionGetTranslated(data,
-							    jqxhr._cat_qro.action,
-							    'from',
-							    true);
-		    }
-		    $cat._cache[act][idval][lang] = data;
-		    return data;
-		}
-		else if (typeof ret === 'string' ||
-			 ret instanceof $) {
-		    $cat._cache[act][idval][lang] = ret;
-		    return ret;
-		} else {
-		    return null;
-		}
-	    }
-	    return this.query(qro)
-		.then(cb, cb);
 	}
+	var qro = {
+	    action: act
+	}
+	if (lang !== this.lang()) {
+	    qro.lang = lang;
+	}
+	qro[idname] = idval;
+	var cb = function(ret) {
+	    if (!!arguments[1] &&
+		arguments[1] != 'success') {
+		return null;
+	    }
+	    if (!(act in $cat._cache)) {
+		$cat._cache[act] = {};
+	    }
+	    if (!(idval in $cat._cache[act])) {
+		$cat._cache[act][idval] = {};
+	    }
+	    if (typeof ret === 'string' ||
+		ret instanceof $) {
+		return $cat._cache[act][idval][lang] = ret;
+	    }
+	    if (!!!this.dataType ||
+		this.dataType != 'json') {
+		return null;
+	    }
+	    if (ret.status === 'ok') {
+		ret.status = 1;
+		if (!('data' in ret)) {
+		    ret.data = {};
+		    for (var k in ret) {
+			if (k != 'status' && k != 'data' &&
+			    ret.hasOwnProperty(k)) {
+			    ret.data[k] = ret[k];
+			}
+		    }
+		}
+	    }
+	    if (!('status' in ret) || ret.status != 1 || !('data' in ret)) {
+		return $cat._cache[act][idval][lang] = null;
+	    }
+	    if (!!ret.tou) {
+		if (!('_tou' in $cat) || $cat._tou != ret.tou) {
+		    $cat._tou = ret.tou;
+		    if (typeof $cat.options.touCallBack === 'function') {
+			$cat.options.touCallBack(ret.tou);
+		    }
+		}
+	    }
+	    var jqxhr = !!arguments[2] ? arguments[2] : {};
+	    return $cat._cache[act][idval][lang] =
+		$cat._qryRespTranslate(ret.data, jqxhr);
+	}
+	return this.query(qro)
+	    .then(cb, cb);
     }
     CAT.prototype._qry3args = function(act, id1name, id1val, id2name, id2val, lang) {
 	if (!act ||
@@ -646,78 +620,66 @@
 	    return $.when().then(function() {
 		return $cat._cache[act][id1val][id2val][lang];
 	    });
-	} else {
-	    var qro = {
-		action: act
-	    }
-	    if (lang !== this.lang()) {
-		qro.lang = lang;
-	    }
-	    qro[id1name] = id1val;
-	    qro[id2name] = id2val;
-	    var cb = function(ret) {
-		if (!!arguments[1] &&
-		    arguments[1] != 'success') {
-		    return null;
-		}
-		if (!(act in $cat._cache)) {
-		    $cat._cache[act] = {};
-		}
-		if (!(id1val in $cat._cache[act])) {
-		    $cat._cache[act][id1val] = {};
-		}
-		if (!(id2val in $cat._cache[act][id1val])) {
-		    $cat._cache[act][id1val][id2val] = {};
-		}
-		if (!!this.dataType &&
-		    this.dataType == 'json') {
-		    if (ret.status === 'ok') {
-			ret.status = 1;
-			if (!('data' in ret)) {
-			    ret.data = {};
-			    for (var k in ret) {
-				if (k != 'status' && k != 'data' &&
-				    ret.hasOwnProperty(k)) {
-				    ret.data[k] = ret[k];
-				}
-			    }
-			}
-		    }
-		    if (!('status' in ret) || ret.status != 1 || !('data' in ret)) {
-			$cat._cache[act][id1val][id2val][lang] = null;
-			return null;
-		    }
-		    if (!!ret.tou) {
-			if (!('_tou' in $cat) || $cat._tou != ret.tou) {
-			    $cat._tou = ret.tou;
-			    if (typeof $cat.options.touCallBack === 'function') {
-				$cat.options.touCallBack(ret.tou);
-			    }
-			}
-		    }
-		    var data = ret.data;
-		    var jqxhr = !!arguments[2] ? arguments[2] : {};
-		    if ($cat.options.api_version !== 1 &&
-			!!jqxhr._cat_qro && !!jqxhr._cat_qro.action) {
-			data = $cat.apiVersionGetTranslated(data,
-							    jqxhr._cat_qro.action,
-							    'from',
-							    true);
-		    }
-		    $cat._cache[act][id1val][id2val][lang] = data;
-		    return data;
-		}
-		else if (typeof ret === 'string' ||
-			 ret instanceof $) {
-		    $cat._cache[act][id1val][id2val][lang] = ret;
-		    return ret;
-		} else {
-		    return null;
-		}
-	    }
-	    return this.query(qro)
-		.then(cb, cb);
 	}
+	var qro = {
+	    action: act
+	}
+	if (lang !== this.lang()) {
+	    qro.lang = lang;
+	}
+	qro[id1name] = id1val;
+	qro[id2name] = id2val;
+	var cb = function(ret) {
+	    if (!!arguments[1] &&
+		arguments[1] != 'success') {
+		return null;
+	    }
+	    if (!(act in $cat._cache)) {
+		$cat._cache[act] = {};
+	    }
+	    if (!(id1val in $cat._cache[act])) {
+		$cat._cache[act][id1val] = {};
+	    }
+	    if (!(id2val in $cat._cache[act][id1val])) {
+		$cat._cache[act][id1val][id2val] = {};
+	    }
+	    if (typeof ret === 'string' ||
+		ret instanceof $) {
+		return $cat._cache[act][id1val][id2val][lang] = ret;
+	    }
+	    if (!!!this.dataType ||
+		this.dataType != 'json') {
+		return null;
+	    }
+	    if (ret.status === 'ok') {
+		ret.status = 1;
+		if (!('data' in ret)) {
+		    ret.data = {};
+		    for (var k in ret) {
+			if (k != 'status' && k != 'data' &&
+			    ret.hasOwnProperty(k)) {
+			    ret.data[k] = ret[k];
+			}
+		    }
+		}
+	    }
+	    if (!('status' in ret) || ret.status != 1 || !('data' in ret)) {
+		return $cat._cache[act][id1val][id2val][lang] = null;
+	    }
+	    if (!!ret.tou) {
+		if (!('_tou' in $cat) || $cat._tou != ret.tou) {
+		    $cat._tou = ret.tou;
+		    if (typeof $cat.options.touCallBack === 'function') {
+			$cat.options.touCallBack(ret.tou);
+		    }
+		}
+	    }
+	    var jqxhr = !!arguments[2] ? arguments[2] : {};
+	    return $cat._cache[act][id1val][id2val][lang] =
+		$cat._qryRespTranslate(ret.data, jqxhr);
+	}
+	return this.query(qro)
+	    .then(cb, cb);
     }
 
     CAT.prototype.listLanguages = function() {
@@ -1248,7 +1210,8 @@
 	'apple_yos': [/Mac OS X 10[._]10/],
 	'apple_el_cap': [/Mac OS X 10[._]11/],
 	'apple_sierra': [/Mac OS X 10[._]12/],
-	'apple_hi_sierra': [/Mac OS X 10[._]1[3-9]/, /Mac OS X 10[._][2-9][0-9]/],
+	'apple_hi_sierra': [/Mac OS X 10[._]13/],
+	'apple_mojave': [/Mac OS X 10[._]1[4-9]/, /Mac OS X 10[._][2-9][0-9]/],
 	'linux': [/Linux(?!.*Android)/],
 	'chromeos': [/CrOS/],
 	'android_43': [/Android 4[._]3/],
@@ -1256,7 +1219,8 @@
 	'android_lollipop': [/Android 5[._][0-9]/],
 	'android_marshmallow': [/Android 6[._][0-9]/],
 	'android_nougat': [/Android 7[._][0-9]/],
-	'android_oreo': [/Android [8-9]/, /Android [1-9][0-9]/],
+	'android_oreo': [/Android 8[._][0-9]/],
+	'android_pie': [/Android 9/, /Android [1-9][0-9]/],
 	'android_legacy': [/Android/],
 	'__undefined__': [ new RegExp('') ]
     }
@@ -1365,6 +1329,19 @@
 	    }
 	}
 	return null;
+    }
+    CatDevice.prototype.detectDeviceID = function(deviceIDs) {
+	var UAs = this.USER_AGENTS;
+	deviceIDs = Array.isArray(deviceIDs) ? deviceIDs : Object.keys(UAs);
+	var cb = function(dev_id_obj) {
+	    return !!dev_id_obj && !!dev_id_obj.id &&
+		(dev_id_obj.id in UAs) &&
+		dev_id_obj.id ||
+		deviceIDs.pop(); // assume last resort at the end
+	}
+	return $.when(
+	    this.cat.detectOS()
+	).then(cb, cb);
     }
     CatDevice.prototype.getDeviceID = function() {
 	return this.id;
