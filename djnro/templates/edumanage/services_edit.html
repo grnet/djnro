@@ -250,7 +250,7 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}"></script>
-<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp{% if GOOGLE_MAPS_API_KEY %}&amp;key={{ GOOGLE_MAPS_API_KEY }}{% endif %}&amp;language=en&amp;libraries=places"></script>
+<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3{% if GOOGLE_MAPS_API_KEY %}&amp;key={{ GOOGLE_MAPS_API_KEY }}{% endif %}&amp;language=en&amp;libraries=places"></script>
 <script src="{% static 'js/jquery_csrf_protect.js' %}" type="text/javascript"></script>
 
 <script type="text/javascript">
