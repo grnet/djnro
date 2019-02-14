@@ -12,7 +12,7 @@ Additionally, the `TEMPLATES_DEBUG` setting has been removed and template debugg
 
 Dump data (always keep a backup):
 
-	./manage.py dumpdata --indent=4 --natural --exclude=contenttypes --exclude=auth.Permission > /tmp/eduroam_1.1.json
+	./manage.py dumpdata --indent=4 --natural--foreign --exclude=contenttypes --exclude=auth.Permission > /tmp/eduroam_1.1.json
 
 And, possibly, make also a full database dump from your database, and also make
 an archive of your installation tree - to be able to revert if something goes
