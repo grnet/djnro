@@ -20,19 +20,19 @@ from accounts.models import User
 
 
 class Command(BaseCommand):
-    option_list = BaseCommand.option_list + (
-        make_option(
+
+    help = 'Prints institution contacts in CSV format'
+
+    leave_locale_alone = True
+
+    def add_arguments(self, parser):
+        parser.add_argument(
             '--mail-list',
             action='store_true',
             dest='maillist',
             default=False,
             help='Return only emails (output suitable for a mailing list)'
-        ),
-    )
-    args = ''
-    help = 'Prints institution contacts in CSV format'
-
-    leave_locale_alone = True
+        )
 
     def handle(self, *args, **options):
         users = User.objects.all()

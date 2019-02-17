@@ -77,27 +77,33 @@ STATICFILES_FINDERS = (
 #   'django.contrib.staticfiles.finders.DefaultStorageFinder',
 )
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-#   'django.template.loaders.eggs.Loader',
-)
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    # Required so that RequestContext is passed into
-    # template
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.request',
-    'edumanage.context_processors.country_code',
-    'edumanage.context_processors.cat_instances',
-    'edumanage.context_processors.manage_login_methods',
-    'social.apps.django_app.context_processors.backends',
-    'social.apps.django_app.context_processors.login_redirect',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(PROJECT_DIR, 'templates/'),
+            os.path.join(BASE_DIR, 'templates/'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # Required so that RequestContext is passed into
+                # template
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.request',
+                'edumanage.context_processors.country_code',
+                'edumanage.context_processors.cat_instances',
+                'edumanage.context_processors.manage_login_methods',
+                'edumanage.context_processors.reverse_urls',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
+            ],
+        },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -135,8 +141,8 @@ AUTHENTICATION_BACKENDS = (
 # Override this in local_settings.py
 MANAGE_LOGIN_METHODS = (
   { 'backend': 'shibboleth', 'enabled': True, 'class': 'djangobackends.shibauthBackend.shibauthBackend', 'name': 'Shibboleth', 'local_image': 'img/image_shibboleth_logo_color.png' },
-  { 'backend': 'google-oauth2', 'enabled': True, 'class': 'social.backends.google.GoogleOAuth2', 'name': 'Google', 'fa_style': 'fa fa-google fa-2x' },
-  { 'backend': 'twitter', 'enabled': True, 'class': 'social.backends.twitter.TwitterOAuth', 'name': 'Twitter', 'fa_style': 'fa fa-twitter fa-2x' },
+  { 'backend': 'google-oauth2', 'enabled': True, 'class': 'social_core.backends.google.GoogleOAuth2', 'name': 'Google', 'fa_style': 'fa fa-google fa-2x' },
+  { 'backend': 'twitter', 'enabled': True, 'class': 'social_core.backends.twitter.TwitterOAuth', 'name': 'Twitter', 'fa_style': 'fa fa-twitter fa-2x' },
 )
 # Note: we are not explicitly adding backends from this list - they're already
 # included in AUTHENTICATION_BACKENDS anyway.
@@ -145,14 +151,6 @@ ROOT_URLCONF = 'djnro.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'djnro.wsgi.application'
-
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_DIR, 'templates/'),
-    os.path.join(BASE_DIR, 'templates/'),
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -164,7 +162,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.admin',
     'django.contrib.admindocs',
-    'social.apps.django_app.default',
+    'social_django',
     'edumanage',
     'accounts',
     'registration',

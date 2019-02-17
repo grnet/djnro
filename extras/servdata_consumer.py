@@ -42,6 +42,8 @@ class ServerDataReader:
             if resp.status_code > 304 or not resp.ok:
                 exit_with_error("Fetch failed from %s" % src)
             self.rawdata = resp.text
+        elif self.src == "-":
+            self.rawdata = sys.stdin.read()
         else:
             try:
                 with open(src, "r") as f:

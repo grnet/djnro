@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.urls import reverse
+from edumanage.views import set_language
 
 
 def country_code(context):
@@ -26,3 +28,6 @@ def cat_instances(context):
 
 def manage_login_methods(context):
     return {'MANAGE_LOGIN_METHODS': settings.MANAGE_LOGIN_METHODS}
+
+def reverse_urls(context):
+    return {'SET_LANGUAGE_URL': reverse(set_language)}

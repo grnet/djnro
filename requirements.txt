@@ -1,10 +1,11 @@
-Django>=1.8.11,<1.9a
+Django>=1.11,<2.0
 argparse>=1.2.1
 django-registration==2.0.4
 django-tinymce>=2.3.0,<3.0a
 ipaddr==2.1.11
-python-social-auth==0.2.14
-requests==2.7.0
+social-auth-app-django>=3.1.0,<4.0
+social-auth-core>=3.0.0,<4.0
+requests==2.9.1
 wsgiref==0.1.2
 lxml>=2.3.2
 PyYAML>=3.10,<4.0a
