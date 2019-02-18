@@ -1,6 +1,6 @@
 # Upgrading DjNRO from 1.1 to 1.2 or later
 
-DjNRO 1.1 was running with django 1.8. Version 1.2 was updated for django 1.11
+DjNRO 1.1 was running with Django 1.8. Version 1.2 was updated for Django 1.11
 
 The main change in the Django 1.11 upgrade is that the `python-social-auth` package is replaced with `social-auth-core`.
 
