@@ -10,7 +10,7 @@ import accounts, accounts.views
 
 urlpatterns = [
     url(r'^accounts/', include(social_django.urls, namespace='social')),
-    url(r'^setlang/?$', edumanage.views.set_language),
+    url(r'^setlang/?$', edumanage.views.set_language, name='set_language'),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^managelogin/(?P<backend>[^/]+)/$', edumanage.views.manage_login, name='manage_login'),
     url(r'^login/?', edumanage.views.user_login, name="login"),
