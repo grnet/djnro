@@ -2482,6 +2482,7 @@ def _cat_api_cache_action(request, cat_instance):
         'orderIdentityProviders':   600,
         'listCountries':            600,
         'sendLogo':                 600,
+        'detectOS':                 600,
         }
     timeouts_settings = getattr(settings, 'CAT_USER_API_CACHE_TIMEOUT', {})
     timeouts = timeouts_settings.get(cat_instance, timeouts_default)
@@ -2563,6 +2564,8 @@ def cat_user_api_proxy(request, cat_instance):
             patch_vary_headers(resp, ['Origin'])
         resp.setdefault('Access-Control-Allow-Origin', origin)
         resp.setdefault('Access-Control-Allow-Method', 'GET')
+    if cat_api_action == 'detectOS':
+        patch_vary_headers(resp, ['User-Agent'])
     if cd is not None:
         resp.setdefault('Content-Disposition', cd)
     resp.setdefault('Cache-Control', cc)
