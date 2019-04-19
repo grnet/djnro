@@ -275,6 +275,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 #         'profileAttributes':         _5m,
 #         'sendLogo':                 _15m,
 #         'deviceInfo':                _5m,
+#         'detectOS':                 _15m,
 #     }
 # }
 

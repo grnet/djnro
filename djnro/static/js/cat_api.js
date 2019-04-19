@@ -1201,9 +1201,10 @@
 	'vista': [/Windows NT 6[._]0/],
 	'w7': [/Windows NT 6[._]1/],
 	'w8': [/Windows NT 6[._][23]/],
-	'w10': [/Windows NT 10[._]/, /Windows NT 1[1-9]/, /Windows NT [2-9][0-9]/],
+	'w10': [/Windows NT 10/],
 	'mobileconfig-56': [/\((iPad|iPhone|iPod);.*OS [56]_/],
-	'mobileconfig': [/\((iPad|iPhone|iPod);.*OS [7-9]/, /\((iPad|iPhone|iPod);.*OS [1-9][0-9]/],
+	'mobileconfig': [/\((iPad|iPhone|iPod);.*OS [7-9]/, /\((iPad|iPhone|iPod);.*OS 1[0-1]/],
+	'mobileconfig12': [/\((iPad|iPhone|iPod);.*OS 1[2-9]/],
 	'apple_lion': [/Mac OS X 10[._]7/],
 	'apple_m_lion': [/Mac OS X 10[._]8/],
 	'apple_mav': [/Mac OS X 10[._]9/],
@@ -1216,11 +1217,12 @@
 	'chromeos': [/CrOS/],
 	'android_43': [/Android 4[._]3/],
 	'android_kitkat': [/Android 4[._][4-9]/],
-	'android_lollipop': [/Android 5[._][0-9]/],
-	'android_marshmallow': [/Android 6[._][0-9]/],
-	'android_nougat': [/Android 7[._][0-9]/],
-	'android_oreo': [/Android 8[._][0-9]/],
-	'android_pie': [/Android 9/, /Android [1-9][0-9]/],
+	'android_lollipop': [/Android 5/],
+	'android_marshmallow': [/Android 6/],
+	'android_nougat': [/Android 7/],
+	'android_oreo': [/Android 8/],
+	'android_pie': [/Android 9/],
+	'android_q': [/Android [1-9][0-9]/],
 	'android_legacy': [/Android/],
 	'__undefined__': [ new RegExp('') ]
     }
@@ -1335,7 +1337,6 @@
 	deviceIDs = Array.isArray(deviceIDs) ? deviceIDs : Object.keys(UAs);
 	var cb = function(dev_id_obj) {
 	    return !!dev_id_obj && !!dev_id_obj.id &&
-		(dev_id_obj.id in UAs) &&
 		dev_id_obj.id ||
 		deviceIDs.pop(); // assume last resort at the end
 	}

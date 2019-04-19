@@ -1023,6 +1023,19 @@
 		    .then(self.setup_devicelist_cb2, self.setup_devicelist_cb2)
 	    );
 
+	    if (!('catDeviceGuess' in cuopts) && CAT.API.options.api_version >= 2) {
+		var detect_device_id_cb = function(device_id) {
+		    if (!('catDeviceGuess' in cuopts) && device_id) {
+			cuopts.catDeviceGuess = device_id;
+		    }
+		}
+		deferreds.push(
+		    $.when(
+			CAT.Device().detectDeviceID()
+		    ).then(detect_device_id_cb, detect_device_id_cb)
+		);
+	    }
+
 	    return $.when.apply($, deferreds)
 		.then(
 		    function() {
@@ -1716,7 +1729,7 @@
 		}
 	    }('IdentityProvider', 'Profile', 'Device'));
 	}
-	if (!('catDeviceGuess' in cuopts)) {
+	if (!('catDeviceGuess' in cuopts) && CAT.API.options.api_version < 2) {
 	    cuopts.catDeviceGuess =
 		catPrototypes.Device.guessDeviceID(navigator.userAgent);
 	}
