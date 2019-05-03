@@ -97,7 +97,6 @@ TEMPLATES = [
                 'edumanage.context_processors.country_code',
                 'edumanage.context_processors.cat_instances',
                 'edumanage.context_processors.manage_login_methods',
-                'edumanage.context_processors.reverse_urls',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
             ],
