@@ -73,10 +73,10 @@
 	     data-idu="{% url 'participants' %}"
 	     data-iid="{{ i.institution.pk }}" data-catidp="{{catidp}}" tabindex="0">
 	  {% else %}
-	  <a class="btn" data-iid="{{ i.institution.pk }}"
+	  <a class="btn" data-toggle="link" data-iid="{{ i.institution.pk }}"
 	     href="{% url 'participants' %}" tabindex="0">
 	  {% endif %}
-	  <span class="title" {% if i.oper_name %}data-on="{{i.oper_name}}"{% endif %}>{% tolocale i.institution LANGUAGE_CODE %}</span><span class="small-small hidden">&nbsp;<span class="distance"></span>&nbsp;Km</span>&nbsp;<i title="{% trans 'See info (instructions, contacts) for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-arrow-circle-right text-muted"></i>
+	  <span class="title" {% if i.oper_name %}data-on="{{i.oper_name}}"{% endif %}>{% tolocale i.institution LANGUAGE_CODE %}</span><span class="small-small hidden">&nbsp;<span class="distance"></span>&nbsp;Km</span>&nbsp;<i title="{% trans 'See info (instructions, contacts) for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-arrow-circle-right text-muted connect-link"></i><i title="{% trans 'Use CAT profile created for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-wifi text-muted connect-cat"></i>
 	  </a>
 	</li>
 	{% endwith %}

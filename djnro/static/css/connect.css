@@ -189,13 +189,22 @@ ul.insts.filtered li:not(.match) {
 
 /* when an institution selector is CAT-bound, the following arrow
    (visual distinction) should be hidden */
-ul.insts a[data-toggle="modal"] i {
+ul.insts a[data-toggle="modal"] i.connect-link {
+    display: none;
+  }
+/* and instead a different icon shown */
+ul.insts a[data-toggle="link"] i.connect-cat {
     display: none;
   }
 /* otherwise it should be displayed inline */
 ul.insts a i {
     display: inline;
 }
+
+/* distinguish CAT-enabled institutions */
+ul.insts a[data-toggle="modal"] {
+    border: .1rem solid green;
+  }
 
 /* xxxxxxxx CAT UI xxxxxxxx */
 
