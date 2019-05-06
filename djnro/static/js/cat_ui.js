@@ -549,7 +549,7 @@
 		    return false;
 		}
 		$el.removeData('_catidp');
-		$el.attr({'data-toggle': null,
+		$el.attr({'data-toggle': 'link',
 			  'data-target': null})
 		    .removeData('toggle target');
 		var href = $(this).attr('href');
