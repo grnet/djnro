@@ -68,6 +68,7 @@
 	{% for i in institutions %}
 	{% with catidp=institutions_cat|dict_lookup:i.institution.pk %}
 	<li>
+	  {% block cat_institution_selector %}
 	  {% if catidp and catexists %}
 	  <a class="btn" data-toggle="modal" data-target="catModal"
 	     data-idu="{% url 'participants' %}"
@@ -78,6 +79,7 @@
 	  {% endif %}
 	  <span class="title" {% if i.oper_name %}data-on="{{i.oper_name}}"{% endif %}>{% tolocale i.institution LANGUAGE_CODE %}</span><span class="small-small hidden">&nbsp;<span class="distance"></span>&nbsp;Km</span>&nbsp;<i title="{% trans 'See info (instructions, contacts) for this institution' %}" data-toggle="tooltip" data-placement="bottom" class="fa fa-arrow-circle-right text-muted"></i>
 	  </a>
+	  {% endblock %}
 	</li>
 	{% endwith %}
 	{% endfor %}
