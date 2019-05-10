@@ -236,6 +236,9 @@ The note about the cat-users mailing list, shown after support contacts.
 The footnote attributing the CAT service being used.
 It should include an <a data-catui="cat-api-tou"> element.
 {% endblock %}
+{% block cat_institution_selector %}
+The button acting as the institution selector for each individual institution in the institution list.
+{% endblock %}
 ```
 
 The custom template should then be configured in the `CAT_CONNECT_TEMPLATE` setting, for the `production` instance. See the default template in `djnro/templates/front/connect.html` and the preceding comments in `local_settings.py.dist` for more details.
