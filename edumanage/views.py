@@ -1825,6 +1825,8 @@ def selectinst(request):
                 context={'form': form, 'nomail': nomail}
             )
 
+    else:
+        return HttpResponseBadRequest('<h1>Only POST requests are allowed at this URL.</h1>')
 
 def user_activation_notify(request, userprofile):
     current_site = get_current_site(request)
