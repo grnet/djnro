@@ -180,9 +180,9 @@ class NameFormSetFact(BaseGenericInlineFormSet):
                 empty_forms = False
             langs.append(form.cleaned_data.get('lang', None))
         if empty_forms:
-            raise forms.ValidationError, _("Fill in at least one location name in English")
+            raise forms.ValidationError(_("Fill in at least one location name in English"))
         if "en" not in langs:
-            raise forms.ValidationError, _("Fill in at least one location name in English")
+            raise forms.ValidationError(_("Fill in at least one location name in English"))
 
 
 class UrlFormSetFact(BaseGenericInlineFormSet):
@@ -208,6 +208,6 @@ class UrlFormSetFactInst(BaseGenericInlineFormSet):
                 empty_forms = False
             url_types.append(form.cleaned_data.get('urltype', None))
         if empty_forms:
-            raise forms.ValidationError, _("Fill in at least the info url")
+            raise forms.ValidationError(_("Fill in at least the info url"))
         if "info" not in url_types:
-            raise forms.ValidationError, _("Fill in at least the info url")
+            raise forms.ValidationError(_("Fill in at least the info url"))

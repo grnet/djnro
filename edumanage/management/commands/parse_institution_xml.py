@@ -72,7 +72,7 @@ schema.''')
                   ))
         try:
             self.nrorealm = Realm.objects.get(country=settings.NRO_COUNTRY_CODE)
-        except Realm.DoesNotExist, AttributeError:
+        except (Realm.DoesNotExist, AttributeError):
             raise CommandError('%s\n%s' % (
                   'Failed to get the Realm object',
             '''Before running this command, the following prerequisites must be met:

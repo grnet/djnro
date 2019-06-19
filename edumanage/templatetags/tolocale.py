@@ -7,7 +7,7 @@ def tolocale(parser, token):
     try:
         tag_name, objtrans, format_string = token.split_contents()
     except ValueError:
-        raise template.TemplateSyntaxError, "%r tag requires exactly two arguments" % token.contents.split()[0]
+        raise template.TemplateSyntaxError("%r tag requires exactly two arguments" % token.contents.split()[0])
     return CurrentLocaleNode(objtrans, format_string)
 
 
