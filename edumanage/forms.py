@@ -13,7 +13,7 @@ from accounts.models import UserProfile
 from edumanage.fields import MultipleEmailsField
 from django.contrib.contenttypes.forms import BaseGenericInlineFormSet
 
-import ipaddr
+import ipaddress
 import re
 
 FQDN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
@@ -123,11 +123,11 @@ class InstServerForm(forms.ModelForm):
             if not match:
                 try:
                     if addr_type == 'any':
-                        address = ipaddr.IPAddress(host)
+                        address = ipaddress.ip_address(host)
                     if addr_type == 'ipv4':
-                        address = ipaddr.IPv4Address(host)
+                        address = ipaddress.IPv4Address(host)
                     if addr_type == 'ipv6':
-                        address = ipaddr.IPv6Address(host)
+                        address = ipaddress.IPv6Address(host)
                 except Exception:
                         error_text = _('Invalid network address/hostname format')
                         raise forms.ValidationError(error_text)
