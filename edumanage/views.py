@@ -6,7 +6,7 @@ import math
 import datetime
 from xml.etree import ElementTree
 import locale
-from localectxmgr import setlocale
+from edumanage.localectxmgr import setlocale
 import requests
 
 from django.shortcuts import redirect, render
