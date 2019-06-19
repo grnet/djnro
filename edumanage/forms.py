@@ -71,20 +71,20 @@ class InstServerForm(forms.ModelForm):
 
     def clean_ertype(self):
         ertype = self.cleaned_data['ertype']
-	if not ertype:
-	    raise forms.ValidationError('This field is required.')
+        if not ertype:
+            raise forms.ValidationError('This field is required.')
         for institution in self.inst_list:
-	    inst_type = institution.ertype
-	    type_list = [inst_type]
-	    if inst_type == 3:
-		type_list = [1, 2, 3]
+            inst_type = institution.ertype
+            type_list = [inst_type]
+            if inst_type == 3:
+                type_list = [1, 2, 3]
             if ertype not in type_list:
                 raise forms.ValidationError('Server type cannot be different than institution type (%s)' %dict(self.fields['ertype'].choices)[inst_type])
-	return self.cleaned_data["ertype"]
+        return self.cleaned_data["ertype"]
 
     def clean_auth_port(self):
         auth_port = self.cleaned_data['auth_port']
-	if not 'ertype' in self.cleaned_data:
+        if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
         if ertype in [1,3]:
@@ -95,7 +95,7 @@ class InstServerForm(forms.ModelForm):
 
     def clean_acct_port(self):
         acct_port = self.cleaned_data['acct_port']
-	if not 'ertype' in self.cleaned_data:
+        if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
         if ertype in [1,3]:
@@ -106,7 +106,7 @@ class InstServerForm(forms.ModelForm):
 
     def clean_rad_pkt_type(self):
         rad_pkt_type = self.cleaned_data['rad_pkt_type']
-	if not 'ertype' in self.cleaned_data:
+        if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
         if ertype in [1,3]:
