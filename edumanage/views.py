@@ -31,6 +31,7 @@ from django.contrib import messages
 from django.db.models import Max
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
+from django.utils import six
 from accounts.models import User
 from django.core.cache import cache
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -2582,7 +2583,8 @@ def to_xml(ele, encoding="UTF-8"):
     Convert and return the XML for an *ele*
     (:class:`~xml.etree.ElementTree.Element`)
     with specified *encoding*.'''
-    xml = ElementTree.tostring(ele, encoding)
+    # on python3, we need to get a string, not bytestring - so if requesting unicode, request it as "unicode"
+    xml = ElementTree.tostring(ele, "unicode" if six.PY3 and encoding.lower()=="utf-8" else encoding)
     return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
 
 
