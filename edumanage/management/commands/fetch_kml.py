@@ -21,11 +21,15 @@
 from django.core.management.base import BaseCommand
 import time
 from django.conf import settings
-import urllib
 from django.core.cache import cache
 from xml.etree import ElementTree
 import json
 import bz2
+
+try:
+    from urllib.request import urlretrieve
+except ImportError:
+    from urllib import urlretrieve
 
 
 class Command(BaseCommand):
@@ -42,7 +46,7 @@ class Command(BaseCommand):
         eduroam_kml_url = "%s?gmaprnd=%s" % (eduroam_kml_url, rnd)
         write('Fetching data from %s...\n'%eduroam_kml_url)
         file = settings.KML_FILE
-        urllib.urlretrieve(eduroam_kml_url, file)
+        urlretrieve(eduroam_kml_url, file)
         write('Done fetching!\n')
         write('Updating cache\n')
         self.refresh_cache(file)
