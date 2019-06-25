@@ -5,6 +5,7 @@ import bz2
 import math
 import datetime
 from xml.etree import ElementTree
+import itertools
 import locale
 from edumanage.localectxmgr import setlocale
 import requests
@@ -2669,7 +2670,4 @@ def settings_dict_get(setting, *keys, **opts):
 
 # utility function to merge two dictionaries
 def merge_dicts(dict1, dict2):
-    d = {}
-    for k, v in dict1.items() + dict2.items():
-        d[k] = v
-    return d
+    return dict(itertools.chain(dict1.items(), dict2.items()))
