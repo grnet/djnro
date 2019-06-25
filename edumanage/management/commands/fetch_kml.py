@@ -22,6 +22,7 @@ from django.core.management.base import BaseCommand
 import time
 from django.conf import settings
 from django.core.cache import cache
+from django.utils import six
 from xml.etree import ElementTree
 import json
 import bz2
@@ -73,5 +74,8 @@ class Command(BaseCommand):
                     }
                 )
         points = json.dumps(point_list)
+        if six.PY3:
+            # python3: convert string as bytestring
+            points = points.encode('utf-8')
         cache.set('points', bz2.compress(points), 60 * 3600 * 24)
         return True

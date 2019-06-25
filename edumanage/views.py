@@ -1943,6 +1943,10 @@ def getPoints():
     points = cache.get('points')
     if points:
         points = bz2.decompress(points)
+        if six.PY3:
+            # decode from bytes to strings
+            # (done automatically in json.loads on python 3.6+)
+            points = points.decode('utf-8')
         return json.loads(points)
     else:
         point_list = []
@@ -1964,7 +1968,8 @@ def getPoints():
                 point_list.append(marker)
         points = json.dumps(point_list)
         # make timeout configurable
-        cache.set('points', bz2.compress(points), 60 * 60 * 24)
+        # encode points into bytestring on python 3, keep as-is otherwise
+        cache.set('points', bz2.compress(points.encode('utf-8') if six.PY3 else points), 60 * 60 * 24)
         return json.loads(points)
 
 
