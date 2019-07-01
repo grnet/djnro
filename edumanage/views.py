@@ -1700,7 +1700,7 @@ def participants(request):
             cat_exists = True
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
         dets.sort(key=lambda x: locale.strxfrm(
-            six.text_type(x.institution.get_name(lang=request.LANGUAGE_CODE))))
+            str(x.institution.get_name(lang=request.LANGUAGE_CODE))))
     return render(
         request,
         'front/participants.html',
@@ -1730,7 +1730,7 @@ def connect(request):
             dets_cat[i.pk] = catids[0]
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
         dets.sort(key=lambda x: locale.strxfrm(
-            six.text_type(x.institution.get_name(lang=request.LANGUAGE_CODE))))
+            str(x.institution.get_name(lang=request.LANGUAGE_CODE))))
     if settings_dict_get('CAT_AUTH', cat_instance) is None:
         cat_exists = False
         cat_api_direct = None
