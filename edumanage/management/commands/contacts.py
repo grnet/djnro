@@ -16,6 +16,7 @@ locale.setlocale(locale.LC_COLLATE, ('el_GR', 'UTF-8'))
 
 from optparse import make_option
 from django.core.management.base import BaseCommand
+from django.utils import six
 from accounts.models import User
 
 
@@ -33,6 +34,14 @@ class Command(BaseCommand):
             default=False,
             help='Return only emails (output suitable for a mailing list)'
         )
+
+    def get_str_func(self):
+        """Return a function suitable for conversion to string"""
+
+        if six.PY3:
+            return str
+        else:
+            return lambda s: unicode(s).encode('utf-8')
 
     def handle(self, *args, **options):
         users = User.objects.all()
@@ -55,7 +64,7 @@ class Command(BaseCommand):
                 and u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
             ) for m in u.email.split(';')
         ]
-        data.sort(key=lambda d: locale.strxfrm(str(d[0])))
+        data.sort(key=lambda d: locale.strxfrm(self.get_str_func()(d[0])))
         for (foreas, onoma, email) in data:
             if options['maillist']:
                 self.stdout.write(
