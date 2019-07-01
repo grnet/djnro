@@ -1700,7 +1700,7 @@ def participants(request):
             cat_exists = True
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
         dets.sort(key=lambda x: locale.strxfrm(
-            unicode(x.institution.get_name(lang=request.LANGUAGE_CODE))))
+            six.text_type(x.institution.get_name(lang=request.LANGUAGE_CODE))))
     return render(
         request,
         'front/participants.html',
@@ -1730,7 +1730,7 @@ def connect(request):
             dets_cat[i.pk] = catids[0]
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
         dets.sort(key=lambda x: locale.strxfrm(
-            unicode(x.institution.get_name(lang=request.LANGUAGE_CODE))))
+            six.text_type(x.institution.get_name(lang=request.LANGUAGE_CODE))))
     if settings_dict_get('CAT_AUTH', cat_instance) is None:
         cat_exists = False
         cat_api_direct = None
@@ -2465,7 +2465,7 @@ def adminlist(request):
         u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
         for m in u.email.split(';')
     ]
-    data.sort(key=lambda d: unicode(d[0]))
+    data.sort(key=lambda d: six.text_type(d[0]))
     resp_body = ""
     for (foreas, onoma, email) in data:
         resp_body += u'{email}\t{onoma}'.format(

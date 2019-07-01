@@ -55,7 +55,7 @@ class Command(BaseCommand):
                 and u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
             ) for m in u.email.split(';')
         ]
-        data.sort(key=lambda d: locale.strxfrm(unicode(d[0])))
+        data.sort(key=lambda d: locale.strxfrm(six.text_type(d[0])))
         for (foreas, onoma, email) in data:
             if options['maillist']:
                 self.stdout.write(
