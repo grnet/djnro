@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import fields
 from django.utils.text import capfirst
+from django.utils import six
 from django.core import exceptions
 from django.conf import settings
 from django import forms
@@ -61,7 +62,7 @@ class MultiSelectField(models.Field):
         return value
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             return value
         elif isinstance(value, list):
             return ",".join(value)
