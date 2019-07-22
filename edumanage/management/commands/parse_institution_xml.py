@@ -20,6 +20,7 @@
 # SOFTWARE.
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
+from django.utils import six
 from edumanage.models import *
 from lxml.etree import parse
 import argparse
@@ -72,7 +73,7 @@ schema.''')
                   ))
         try:
             self.nrorealm = Realm.objects.get(country=settings.NRO_COUNTRY_CODE)
-        except Realm.DoesNotExist, AttributeError:
+        except (Realm.DoesNotExist, AttributeError):
             raise CommandError('%s\n%s' % (
                   'Failed to get the Realm object',
             '''Before running this command, the following prerequisites must be met:
@@ -119,7 +120,7 @@ schema.''')
         self.stdout.write_maybe('%s %s: %s' %
                                 (created_or_found,
                                  type_str(object_tuple[0]),
-                                unicode(object_tuple[0])))
+                                six.text_type(object_tuple[0])))
         return object_tuple
 
     def parse_and_create_url(self, relobj, element):
@@ -146,7 +147,7 @@ schema.''')
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if obj_created else 'Found',
                                  type_str(obj),
-                                unicode(obj)))
+                                six.text_type(obj)))
         return obj
 
     def parse_and_create_instrealm(self, institution_obj, element):
@@ -162,7 +163,7 @@ schema.''')
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if object_tuple[1] else 'Found',
                                  type_str(object_tuple[0]),
-                                unicode(object_tuple[0])))
+                                six.text_type(object_tuple[0])))
         return object_tuple
 
     def parse_and_create_contact(self, relobj, element):
@@ -197,7 +198,7 @@ schema.''')
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if obj_created else 'Found',
                                  type_str(obj),
-                                unicode(obj)))
+                                six.text_type(obj)))
         return obj
 
     def parse_and_create_serviceloc(self, instobj, element):
@@ -288,7 +289,7 @@ schema.''')
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if obj_created else 'Found',
                                  type_str(obj),
-                                unicode(obj)))
+                                six.text_type(obj)))
         for url_element in url_elements:
             self.parse_and_create_url(obj, url_element)
         contacts_new = []
@@ -303,7 +304,7 @@ schema.''')
         if len(contacts_add) > 0:
             self.stdout.write_maybe('Linked %s contacts: %s' % (
                 type_str(obj),
-                ' '.join([unicode(c) for c in contacts_add])
+                ' '.join([six.text_type(c) for c in contacts_add])
                 ))
         contacts_remove = set(contacts_db) - set(contacts_new)
         for c in contacts_remove:
@@ -312,7 +313,7 @@ schema.''')
         if len(contacts_remove) > 0:
             self.stdout.write_maybe('Removed %s contacts: %s' % (
                 type_str(obj),
-                ' '.join([unicode(c) for c in contacts_remove])
+                ' '.join([six.text_type(c) for c in contacts_remove])
                 ))
         return obj
 
@@ -380,7 +381,7 @@ schema.''')
             self.stdout.write_maybe('%s %s: %s' %
                                     ('Created',
                                      type_str(institution_obj),
-                                    unicode(institution_obj)))
+                                    six.text_type(institution_obj)))
         else:
             institution_obj = parameters['org_name'][0][0].content_object
             if institution_obj is None:
@@ -389,7 +390,7 @@ schema.''')
                     'are not associated with an institution (only tried the ' +
                     'first one)! This must be fixed (e.g. by removing ' +
                     'duplicate objects) before we can proceed.\n' +
-                    '\n'.join([unicode(x[0]) for x in parameters['org_name']])
+                    '\n'.join([six.text_type(x[0]) for x in parameters['org_name']])
                     )
             if not [institution_obj] * len(parameters['org_name']) == \
               [getattr(x[0], 'content_object')
@@ -399,12 +400,12 @@ schema.''')
                     'are not associated with the same institution. ' +
                     'This must be fixed (e.g. by removing duplicate objects) ' +
                     'before we can proceed.\n' +
-                    '\n'.join([unicode(x[0]) for x in parameters['org_name']])
+                    '\n'.join([six.text_type(x[0]) for x in parameters['org_name']])
                     )
             self.stdout.write_maybe('%s %s: %s' %
                                     ('Found',
                                      type_str(institution_obj),
-                                    unicode(institution_obj)))
+                                    six.text_type(institution_obj)))
 
         for idx, contact_element in enumerate(parameters['contact']):
             parameters['contact'][idx] = \
@@ -423,7 +424,7 @@ schema.''')
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if instdetails_created else 'Found',
                                  type_str(instdetails_obj),
-                                unicode(instdetails_obj)))
+                                six.text_type(instdetails_obj)))
 
         contacts_db = instdetails_obj.contact.all()
         contacts_add = set(parameters['contact']) - set(contacts_db)
@@ -432,7 +433,7 @@ schema.''')
         if len(contacts_add) > 0:
             self.stdout.write_maybe('Linked %s contacts: %s' % (
                 type_str(instdetails_obj),
-                ' '.join([unicode(c) for c in contacts_add])
+                ' '.join([six.text_type(c) for c in contacts_add])
                 ))
         contacts_remove = set(contacts_db) - set(parameters['contact'])
         for c in contacts_remove:
@@ -441,7 +442,7 @@ schema.''')
         if len(contacts_remove) > 0:
             self.stdout.write_maybe('Removed %s contacts: %s' % (
                 type_str(instdetails_obj),
-                ' '.join([unicode(c) for c in contacts_remove])
+                ' '.join([six.text_type(c) for c in contacts_remove])
                 ))
 
         for tag in ['info_URL', 'policy_URL']:

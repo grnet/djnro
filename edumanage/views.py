@@ -5,8 +5,9 @@ import bz2
 import math
 import datetime
 from xml.etree import ElementTree
+import itertools
 import locale
-from localectxmgr import setlocale
+from edumanage.localectxmgr import setlocale
 import requests
 
 from django.shortcuts import redirect, render
@@ -31,6 +32,7 @@ from django.contrib import messages
 from django.db.models import Max
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
+from django.utils import six
 from accounts.models import User
 from django.core.cache import cache
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -184,7 +186,7 @@ def institutions(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     dict['institution'] = inst.pk
@@ -208,7 +210,7 @@ def add_institution_details(request, institution_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
 
@@ -291,7 +293,7 @@ def services(request, service_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -353,7 +355,7 @@ def add_services(request, service_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -583,7 +585,7 @@ def add_server(request, server_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -660,7 +662,7 @@ def cat_enroll(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -842,7 +844,7 @@ def add_realm(request, realm_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -961,7 +963,7 @@ def contacts(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -992,7 +994,7 @@ def add_contact(request, contact_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1128,7 +1130,7 @@ def instrealmmon(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1154,7 +1156,7 @@ def add_instrealmmon(request, instrealmmon_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1264,7 +1266,7 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1392,7 +1394,7 @@ def adduser(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__unicode__ = inst.get_name(request.LANGUAGE_CODE)
+        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
 
@@ -1697,9 +1699,8 @@ def participants(request):
         if i.get_active_cat_enrl(cat_instance):
             cat_exists = True
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
-        dets.sort(cmp=locale.strcoll,
-                  key=lambda x: unicode(x.institution.
-                                        get_name(lang=request.LANGUAGE_CODE)))
+        dets.sort(key=lambda x: locale.strxfrm(
+            str(x.institution.get_name(lang=request.LANGUAGE_CODE))))
     return render(
         request,
         'front/participants.html',
@@ -1728,9 +1729,8 @@ def connect(request):
             # may be more
             dets_cat[i.pk] = catids[0]
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
-        dets.sort(cmp=locale.strcoll,
-                  key=lambda x: unicode(x.institution.
-                                        get_name(lang=request.LANGUAGE_CODE)))
+        dets.sort(key=lambda x: locale.strxfrm(
+            str(x.institution.get_name(lang=request.LANGUAGE_CODE))))
     if settings_dict_get('CAT_AUTH', cat_instance) is None:
         cat_exists = False
         cat_api_direct = None
@@ -1942,6 +1942,10 @@ def getPoints():
     points = cache.get('points')
     if points:
         points = bz2.decompress(points)
+        if six.PY3:
+            # decode from bytes to strings
+            # (done automatically in json.loads on python 3.6+)
+            points = points.decode('utf-8')
         return json.loads(points)
     else:
         point_list = []
@@ -1963,7 +1967,8 @@ def getPoints():
                 point_list.append(marker)
         points = json.dumps(point_list)
         # make timeout configurable
-        cache.set('points', bz2.compress(points), 60 * 60 * 24)
+        # encode points into bytestring on python 3, keep as-is otherwise
+        cache.set('points', bz2.compress(points.encode('utf-8') if six.PY3 else points), 60 * 60 * 24)
         return json.loads(points)
 
 
@@ -2460,7 +2465,7 @@ def adminlist(request):
         u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
         for m in u.email.split(';')
     ]
-    data.sort(key=lambda d: unicode(d[0]))
+    data.sort(key=lambda d: six.text_type(d[0]))
     resp_body = ""
     for (foreas, onoma, email) in data:
         resp_body += u'{email}\t{onoma}'.format(
@@ -2582,7 +2587,8 @@ def to_xml(ele, encoding="UTF-8"):
     Convert and return the XML for an *ele*
     (:class:`~xml.etree.ElementTree.Element`)
     with specified *encoding*.'''
-    xml = ElementTree.tostring(ele, encoding)
+    # on python3, we need to get a string, not bytestring - so if requesting unicode, request it as "unicode"
+    xml = ElementTree.tostring(ele, "unicode" if six.PY3 and encoding.lower()=="utf-8" else encoding)
     return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
 
 
@@ -2662,7 +2668,4 @@ def settings_dict_get(setting, *keys, **opts):
 
 # utility function to merge two dictionaries
 def merge_dicts(dict1, dict2):
-    d = {}
-    for k, v in dict1.items() + dict2.items():
-        d[k] = v
-    return d
+    return dict(itertools.chain(dict1.items(), dict2.items()))

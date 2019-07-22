@@ -47,14 +47,14 @@ class Command(BaseCommand):
         try:
             csvname = sys.argv[2]
         except IndexError:
-            print _('Error in usage. See help')
+            print(_('Error in usage. See help'))
             sys.exit(1)
 
         count = 0
         with open(csvname, 'rb') as f:
             reader = csv.reader(f)
             for row in reader:
-                print row
+                print(row)
                 (
                     username,
                     password,
@@ -79,8 +79,8 @@ class Command(BaseCommand):
                     )
                     monlocalauthnparams.save()
                 except InstRealm.DoesNotExist:
-                    print "Realm %s does not exit" % realm
+                    print("Realm %s does not exit" % realm)
 
-                print 'OK: realm %s' % (realm)
+                print('OK: realm %s' % (realm))
                 count += 1
-            print 'Total ' + str(count)
+            print('Total ' + str(count))

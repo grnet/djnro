@@ -76,7 +76,7 @@ class MonLocalAuthnParamAdmin(admin.ModelAdmin):
 
 
 class CatEnrollmentAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'cat_active')
+    list_display = ('__str__', 'cat_active')
     list_filter = ('cat_instance',)
 
 admin.site.register(Name_i18n)

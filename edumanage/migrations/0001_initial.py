@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('cat_inst_id', models.PositiveIntegerField()),
-                ('url', models.CharField(help_text=b'Set to ACTIVE if institution has CAT profiles', max_length=255, null=True, blank=True)),
+                ('url', models.CharField(help_text='Set to ACTIVE if institution has CAT profiles', max_length=255, null=True, blank=True)),
                 ('cat_instance', models.CharField(max_length=50, choices=edumanage.models.get_choices_from_settings('CAT_INSTANCES'))),
                 ('ts', models.DateTimeField(auto_now=True)),
                 ('applier', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
@@ -29,9 +29,9 @@ class Migration(migrations.Migration):
             name='Contact',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('name', models.CharField(max_length=255, db_column=b'contact_name')),
-                ('email', models.CharField(max_length=80, db_column=b'contact_email')),
-                ('phone', models.CharField(max_length=80, db_column=b'contact_phone')),
+                ('name', models.CharField(max_length=255, db_column='contact_name')),
+                ('email', models.CharField(max_length=80, db_column='contact_email')),
+                ('phone', models.CharField(max_length=80, db_column='contact_phone')),
             ],
             options={
                 'verbose_name': 'Contact',
@@ -42,7 +42,7 @@ class Migration(migrations.Migration):
             name='Institution',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ertype', models.PositiveIntegerField(db_column=b'type', choices=[(1, b'IdP only'), (2, b'SP only'), (3, b'IdP and SP')])),
+                ('ertype', models.PositiveIntegerField(db_column='type', choices=[(1, 'IdP only'), (2, 'SP only'), (3, 'IdP and SP')])),
             ],
         ),
         migrations.CreateModel(
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('realm', models.CharField(max_length=160)),
-                ('instid', models.ForeignKey(verbose_name=b'Institution', to='edumanage.Institution')),
+                ('instid', models.ForeignKey(verbose_name='Institution', to='edumanage.Institution')),
             ],
             options={
                 'verbose_name': 'Institution Realm',
@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
             name='InstRealmMon',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('mon_type', models.CharField(max_length=16, choices=[(b'localauthn', b'Institution provides account for the NRO to monitor the realm')])),
+                ('mon_type', models.CharField(max_length=16, choices=[('localauthn', 'Institution provides account for the NRO to monitor the realm')])),
                 ('realm', models.ForeignKey(to='edumanage.InstRealm')),
             ],
             options={
@@ -103,18 +103,18 @@ class Migration(migrations.Migration):
             name='InstServer',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('ertype', models.PositiveIntegerField(db_column=b'type', choices=[(1, b'IdP only'), (2, b'SP only'), (3, b'IdP and SP')])),
+                ('ertype', models.PositiveIntegerField(db_column='type', choices=[(1, 'IdP only'), (2, 'SP only'), (3, 'IdP and SP')])),
                 ('name', models.CharField(help_text='Descriptive label', max_length=80, null=True, blank=True)),
-                ('addr_type', models.CharField(default=b'ipv4', max_length=16, choices=[(b'any', b'Default'), (b'ipv4', b'IPv4 only')])),
+                ('addr_type', models.CharField(default='ipv4', max_length=16, choices=[('any', 'Default'), ('ipv4', 'IPv4 only')])),
                 ('host', models.CharField(help_text='IP address | FQDN hostname', max_length=80)),
-                ('rad_pkt_type', models.CharField(default=b'auth+acct', max_length=48, null=True, blank=True, choices=[(b'auth', b'Handles Access-Request packets only'), (b'acct', b'Handles Accounting-Request packets only'), (b'auth+acct', b'Handles both Access-Request and Accounting-Request packets')])),
+                ('rad_pkt_type', models.CharField(default='auth+acct', max_length=48, null=True, blank=True, choices=[('auth', 'Handles Access-Request packets only'), ('acct', 'Handles Accounting-Request packets only'), ('auth+acct', 'Handles both Access-Request and Accounting-Request packets')])),
                 ('auth_port', models.PositiveIntegerField(default=1812, help_text='Default for RADIUS: 1812', null=True, blank=True)),
                 ('acct_port', models.PositiveIntegerField(default=1813, help_text='Default for RADIUS: 1813', null=True, blank=True)),
                 ('status_server', models.BooleanField(help_text='Do you accept Status-Server requests?')),
                 ('secret', models.CharField(max_length=80)),
-                ('proto', models.CharField(default=b'radius', max_length=12, choices=[(b'radius', b'traditional RADIUS over UDP')])),
+                ('proto', models.CharField(default='radius', max_length=12, choices=[('radius', 'traditional RADIUS over UDP')])),
                 ('ts', models.DateTimeField(auto_now=True)),
-                ('instid', models.ManyToManyField(default=b'none', related_name='servers', to='edumanage.Institution')),
+                ('instid', models.ManyToManyField(default='none', related_name='servers', to='edumanage.Institution')),
             ],
             options={
                 'verbose_name': 'Institution Server',
@@ -125,10 +125,10 @@ class Migration(migrations.Migration):
             name='MonLocalAuthnParam',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('eap_method', models.CharField(max_length=16, choices=[(b'PEAP', b'EAP-PEAP'), (b'TTLS', b'EAP-TTLS')])),
-                ('phase2', models.CharField(max_length=16, choices=[(b'PAP', b'PAP'), (b'CHAP', b'CHAP'), (b'MS-CHAPv2', b'MS-CHAPv2')])),
+                ('eap_method', models.CharField(max_length=16, choices=[('PEAP', 'EAP-PEAP'), ('TTLS', 'EAP-TTLS')])),
+                ('phase2', models.CharField(max_length=16, choices=[('PAP', 'PAP'), ('CHAP', 'CHAP'), ('MS-CHAPv2', 'MS-CHAPv2')])),
                 ('username', models.CharField(max_length=36)),
-                ('passwp', models.CharField(max_length=80, db_column=b'pass')),
+                ('passwp', models.CharField(max_length=80, db_column='pass')),
                 ('instrealmmonid', models.OneToOneField(to='edumanage.InstRealmMon')),
             ],
             options={
@@ -144,7 +144,7 @@ class Migration(migrations.Migration):
                 ('host', models.CharField(help_text='IP address | FQDN hostname', max_length=80)),
                 ('status_server', models.BooleanField()),
                 ('secret', models.CharField(max_length=80)),
-                ('proto', models.CharField(max_length=12, choices=[(b'radius', b'traditional RADIUS over UDP')])),
+                ('proto', models.CharField(max_length=12, choices=[('radius', 'traditional RADIUS over UDP')])),
                 ('ts', models.DateTimeField(auto_now=True)),
                 ('instrealmmonid', models.ForeignKey(to='edumanage.InstRealmMon')),
             ],
@@ -206,7 +206,7 @@ class Migration(migrations.Migration):
                 ('address_street', models.CharField(max_length=96)),
                 ('address_city', models.CharField(max_length=64)),
                 ('SSID', models.CharField(max_length=16)),
-                ('enc_level', edumanage.models.MultiSelectField(blank=True, max_length=64, null=True, choices=[(b'WPA/TKIP', b'WPA-TKIP'), (b'WPA/AES', b'WPA-AES'), (b'WPA2/TKIP', b'WPA2-TKIP'), (b'WPA2/AES', b'WPA2-AES')])),
+                ('enc_level', edumanage.models.MultiSelectField(blank=True, max_length=64, null=True, choices=[('WPA/TKIP', 'WPA-TKIP'), ('WPA/AES', 'WPA-AES'), ('WPA2/TKIP', 'WPA2-TKIP'), ('WPA2/AES', 'WPA2-AES')])),
                 ('port_restrict', models.BooleanField()),
                 ('transp_proxy', models.BooleanField()),
                 ('IPv6', models.BooleanField()),
@@ -215,7 +215,7 @@ class Migration(migrations.Migration):
                 ('wired', models.BooleanField()),
                 ('ts', models.DateTimeField(auto_now=True)),
                 ('contact', models.ManyToManyField(to='edumanage.Contact', blank=True)),
-                ('institutionid', models.ForeignKey(verbose_name=b'Institution', to='edumanage.Institution')),
+                ('institutionid', models.ForeignKey(verbose_name='Institution', to='edumanage.Institution')),
             ],
             options={
                 'verbose_name': 'Service Location',
@@ -226,9 +226,9 @@ class Migration(migrations.Migration):
             name='URL_i18n',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('url', models.CharField(max_length=180, db_column=b'URL')),
+                ('url', models.CharField(max_length=180, db_column='URL')),
                 ('lang', models.CharField(max_length=5, choices=edumanage.models.get_choices_from_settings('URL_NAME_LANGS'))),
-                ('urltype', models.CharField(max_length=10, db_column=b'type', choices=[(b'info', b'Info'), (b'policy', b'Policy')])),
+                ('urltype', models.CharField(max_length=10, db_column='type', choices=[('info', 'Info'), ('policy', 'Policy')])),
                 ('object_id', models.PositiveIntegerField(null=True, blank=True)),
                 ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
             ],

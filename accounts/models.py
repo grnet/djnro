@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib import admin
 from django.conf import settings
 from django.core import validators
+from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from edumanage.models import Institution
 import re
@@ -31,6 +32,7 @@ class User(AbstractUser):
         verbose_name_plural = _('users')
 patch_username_maxlen(User._meta.get_field('username'))
 
+@python_2_unicode_compatible
 class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL)
     institution = models.ForeignKey(Institution)
@@ -41,5 +43,5 @@ class UserProfile(models.Model):
             ("overview", "Can see registered user and respective institutions"),
         )
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s:%s" % (self.user.username, self.institution)

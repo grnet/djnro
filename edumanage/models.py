@@ -5,10 +5,12 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import fields
 from django.utils.text import capfirst
+from django.utils import six
 from django.core import exceptions
 from django.conf import settings
 from django import forms
 from django.core.exceptions import ValidationError
+from django.utils.encoding import python_2_unicode_compatible
 
 
 def get_choices_from_settings(setting):
@@ -60,7 +62,7 @@ class MultiSelectField(models.Field):
         return value
 
     def get_db_prep_value(self, value, connection=None, prepared=False):
-        if isinstance(value, basestring):
+        if isinstance(value, six.string_types):
             return value
         elif isinstance(value, list):
             return ",".join(value)
@@ -125,6 +127,7 @@ RADTYPES = (
 )
 
 
+@python_2_unicode_compatible
 class Name_i18n(models.Model):
     '''
     Name in a particular language
@@ -136,7 +139,7 @@ class Name_i18n(models.Model):
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = fields.GenericForeignKey('content_type', 'object_id')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     class Meta:
@@ -144,6 +147,7 @@ class Name_i18n(models.Model):
         verbose_name_plural = "Names (i18n)"
 
 
+@python_2_unicode_compatible
 class Contact(models.Model):
     '''
     Contact
@@ -153,7 +157,7 @@ class Contact(models.Model):
     email = models.CharField(max_length=80, db_column='contact_email')
     phone = models.CharField(max_length=80, db_column='contact_phone')
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s <%s> (%s)' % (self.name, self.email, self.phone)
 
     class Meta:
@@ -161,11 +165,12 @@ class Contact(models.Model):
         verbose_name_plural = "Contacts"
 
 
+@python_2_unicode_compatible
 class InstitutionContactPool(models.Model):
     contact = models.OneToOneField(Contact)
     institution = models.ForeignKey("Institution")
 
-    def __unicode__(self):
+    def __str__(self):
         return u"%s:%s" %(self.contact, self.institution)
 
     class Meta:
@@ -173,6 +178,7 @@ class InstitutionContactPool(models.Model):
         verbose_name_plural = "Instutution Contacts (Pool)"
 
 
+@python_2_unicode_compatible
 class URL_i18n(models.Model):
     '''
     URL of a particular type in a particular language
@@ -193,10 +199,11 @@ class URL_i18n(models.Model):
         verbose_name = "Url (i18n)"
         verbose_name_plural = "Urls (i18n)"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.url
 
 
+@python_2_unicode_compatible
 class InstRealm(models.Model):
     '''
     Realm of an IdP Institution
@@ -210,13 +217,14 @@ class InstRealm(models.Model):
         verbose_name = "Institution Realm"
         verbose_name_plural = "Institutions' Realms"
 
-    def __unicode__(self):
+    def __str__(self):
         return '%s' % self.realm
 
     def get_servers(self):
         return ",".join(["%s" % x for x in self.proxyto.all()])
 
 
+@python_2_unicode_compatible
 class InstServer(models.Model):
     '''
     Server of an Institution
@@ -250,7 +258,7 @@ class InstServer(models.Model):
         verbose_name = "Institution Server"
         verbose_name_plural = "Institutions' Servers"
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Server: %(servername)s, Type: %(ertype)s') % {
             # but name is many-to-many from institution
             # 'inst': self.instid,
@@ -282,6 +290,7 @@ class InstServer(models.Model):
                     )
 
 
+@python_2_unicode_compatible
 class InstRealmMon(models.Model):
     '''
     Realm of an IdP Institution to be monitored
@@ -300,9 +309,9 @@ class InstRealmMon(models.Model):
         verbose_name = "Institution Monitored Realm"
         verbose_name_plural = "Institution Monitored Realms"
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s-%s" % (self.realm.realm, self.mon_type)
-#    def __unicode__(self):
+#    def __str__(self):
 #        return _('Institution: %(inst)s, Monitored Realm: %(monrealm)s, Monitoring Type: %(montype)s') % {
 #        # but name is many-to-many from institution
 #            'inst': self.instid.name,
@@ -311,6 +320,7 @@ class InstRealmMon(models.Model):
 #            }
 
 
+@python_2_unicode_compatible
 class MonProxybackClient(models.Model):
     '''
     Server of an Institution that will be proxying back requests for a monitored realm
@@ -338,7 +348,7 @@ class MonProxybackClient(models.Model):
         verbose_name = "Institution Proxyback Client"
         verbose_name_plural = "Institution Proxyback Clients"
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s') % {
             # but name is many-to-many from institution
             'monrealm': self.instrealmmonid.realm,
@@ -346,6 +356,7 @@ class MonProxybackClient(models.Model):
         }
 
 
+@python_2_unicode_compatible
 class MonLocalAuthnParam(models.Model):
     '''
     Parameters for an old-style monitored realm
@@ -381,7 +392,7 @@ class MonLocalAuthnParam(models.Model):
         verbose_name = "Monitored Realm (local authn)"
         verbose_name_plural = "Monitored Realms (local authn)"
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: %(phase2)s, Username: %(username)s') % {
             # but name is many-to-many from institution
             'monrealm': self.instrealmmonid.realm,
@@ -391,6 +402,7 @@ class MonLocalAuthnParam(models.Model):
         }
 
 
+@python_2_unicode_compatible
 class ServiceLoc(models.Model):
     '''
     Service Location of an SP/IdPSP Institution
@@ -428,7 +440,7 @@ class ServiceLoc(models.Model):
         verbose_name = "Service Location"
         verbose_name_plural = "Service Locations"
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Institution: %(inst)s, Service Location: %(locname)s') % {
             # but name is many-to-many from institution
             'inst': self.institutionid,
@@ -449,6 +461,7 @@ class ServiceLoc(models.Model):
     get_name.short_description = 'Location Name'
 
 
+@python_2_unicode_compatible
 class Institution(models.Model):
     '''
     Institution
@@ -458,7 +471,7 @@ class Institution(models.Model):
     org_name = fields.GenericRelation(Name_i18n)
     ertype = models.PositiveIntegerField(choices=ERTYPES, db_column='type')
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s" % ', '.join([i.name for i in self.org_name.all()])
 
     def get_name(self, lang=None):
@@ -488,6 +501,7 @@ class Institution(models.Model):
         return ids
 
 
+@python_2_unicode_compatible
 class InstitutionDetails(models.Model):
     '''
     Institution Details
@@ -514,7 +528,7 @@ class InstitutionDetails(models.Model):
         verbose_name = "Institutions' Details"
         verbose_name_plural = "Institution Details"
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Institution: %(inst)s, Type: %(ertype)s') % {
             # but name is many-to-many from institution
             'inst': ', '.join([i.name for i in self.institution.org_name.all()]),
@@ -526,6 +540,7 @@ class InstitutionDetails(models.Model):
     get_inst_name.short_description = "Institution Name"
 
 
+@python_2_unicode_compatible
 class Realm(models.Model):
     '''
     Realm
@@ -545,7 +560,7 @@ class Realm(models.Model):
         verbose_name = "Realm"
         verbose_name_plural = "Realms"
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Country: %(country)s, NRO: %(orgname)s') % {
             # but name is many-to-many from institution
             'orgname': ', '.join([i.name for i in self.org_name.all()]),
@@ -565,6 +580,7 @@ class Realm(models.Model):
 
 
 # TODO: this represents a *database view* "realm_data", find a better way to write it
+@python_2_unicode_compatible
 class RealmData(models.Model):
     '''
     Realm statistics
@@ -586,7 +602,7 @@ class RealmData(models.Model):
     # db: select greatest(max(realm.ts), max(institution.ts)) as ts from institution, realm where institution.realmid == realm.realmid
     ts = models.DateTimeField(editable=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return _('Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: %(idp)s, SPs: %(sp)s, IdPSPs: %(idpsp)s, Users: %(numuser)s, Identities: %(numid)s') % {
             # but name is many-to-many from institution
             'orgname': self.org_name,
@@ -600,6 +616,7 @@ class RealmData(models.Model):
         }
 
 
+@python_2_unicode_compatible
 class CatEnrollment(models.Model):
     ''' eduroam CAT enrollment '''
 
@@ -615,7 +632,7 @@ class CatEnrollment(models.Model):
     class Meta:
         unique_together = ['inst', 'cat_instance']
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s: %s" % (self.cat_inst_id, ', '.join([i.name for i in self.inst.org_name.all()]))
 
     def cat_active(self):

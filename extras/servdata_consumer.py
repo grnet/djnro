@@ -14,6 +14,7 @@ except ImportError:
 import requests
 from mako.template import Template
 from mako.lookup import TemplateLookup
+from django.utils import six
 
 SETTINGS = {
     "template_directory" : "/etc/djnro_servdata",
@@ -157,7 +158,11 @@ directory (may be used more than once) [default: %s]"""
     for t in SETTINGS["templates"]:
         to = t.replace('-', '_')
         if getattr(opts, to, None) is not None:
-            getattr(opts, to).write(sw.render_tpl(t))
+            rendered_template = sw.render_tpl(t)
+            if six.PY3:
+                # mako.template.Template.render returned bytestring, convert to str
+                rendered_template = rendered_template.decode('utf-8')
+            getattr(opts, to).write(rendered_template)
 
 if __name__ == "__main__":
     main()

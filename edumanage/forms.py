@@ -13,7 +13,7 @@ from accounts.models import UserProfile
 from edumanage.fields import MultipleEmailsField
 from django.contrib.contenttypes.forms import BaseGenericInlineFormSet
 
-import ipaddr
+import ipaddress
 import re
 
 FQDN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
@@ -71,20 +71,20 @@ class InstServerForm(forms.ModelForm):
 
     def clean_ertype(self):
         ertype = self.cleaned_data['ertype']
-	if not ertype:
-	    raise forms.ValidationError('This field is required.')
+        if not ertype:
+            raise forms.ValidationError('This field is required.')
         for institution in self.inst_list:
-	    inst_type = institution.ertype
-	    type_list = [inst_type]
-	    if inst_type == 3:
-		type_list = [1, 2, 3]
+            inst_type = institution.ertype
+            type_list = [inst_type]
+            if inst_type == 3:
+                type_list = [1, 2, 3]
             if ertype not in type_list:
                 raise forms.ValidationError('Server type cannot be different than institution type (%s)' %dict(self.fields['ertype'].choices)[inst_type])
-	return self.cleaned_data["ertype"]
+        return self.cleaned_data["ertype"]
 
     def clean_auth_port(self):
         auth_port = self.cleaned_data['auth_port']
-	if not 'ertype' in self.cleaned_data:
+        if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
         if ertype in [1,3]:
@@ -95,7 +95,7 @@ class InstServerForm(forms.ModelForm):
 
     def clean_acct_port(self):
         acct_port = self.cleaned_data['acct_port']
-	if not 'ertype' in self.cleaned_data:
+        if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
         if ertype in [1,3]:
@@ -106,7 +106,7 @@ class InstServerForm(forms.ModelForm):
 
     def clean_rad_pkt_type(self):
         rad_pkt_type = self.cleaned_data['rad_pkt_type']
-	if not 'ertype' in self.cleaned_data:
+        if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
         if ertype in [1,3]:
@@ -123,11 +123,11 @@ class InstServerForm(forms.ModelForm):
             if not match:
                 try:
                     if addr_type == 'any':
-                        address = ipaddr.IPAddress(host)
+                        address = ipaddress.ip_address(host)
                     if addr_type == 'ipv4':
-                        address = ipaddr.IPv4Address(host)
+                        address = ipaddress.IPv4Address(host)
                     if addr_type == 'ipv6':
-                        address = ipaddr.IPv6Address(host)
+                        address = ipaddress.IPv6Address(host)
                 except Exception:
                         error_text = _('Invalid network address/hostname format')
                         raise forms.ValidationError(error_text)
@@ -180,9 +180,9 @@ class NameFormSetFact(BaseGenericInlineFormSet):
                 empty_forms = False
             langs.append(form.cleaned_data.get('lang', None))
         if empty_forms:
-            raise forms.ValidationError, _("Fill in at least one location name in English")
+            raise forms.ValidationError(_("Fill in at least one location name in English"))
         if "en" not in langs:
-            raise forms.ValidationError, _("Fill in at least one location name in English")
+            raise forms.ValidationError(_("Fill in at least one location name in English"))
 
 
 class UrlFormSetFact(BaseGenericInlineFormSet):
@@ -208,6 +208,6 @@ class UrlFormSetFactInst(BaseGenericInlineFormSet):
                 empty_forms = False
             url_types.append(form.cleaned_data.get('urltype', None))
         if empty_forms:
-            raise forms.ValidationError, _("Fill in at least the info url")
+            raise forms.ValidationError(_("Fill in at least the info url"))
         if "info" not in url_types:
-            raise forms.ValidationError, _("Fill in at least the info url")
+            raise forms.ValidationError(_("Fill in at least the info url"))

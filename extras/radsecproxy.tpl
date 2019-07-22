@@ -10,13 +10,10 @@ def realm_regex(text):
         return '"/@%s$"' % text
     else:
         return text
-def wildcard_realm_least_precedence(a, b):
-    if a.find('*.') == 0 and b.find('*.') != 0:
-        return -1
-    elif b.find('*.') == 0 and a.find('*.') != 0:
-        return 1
-    else:
-        return 0
+def wildcard_realm_least_precedence(key):
+    return '~' + key \
+        if (key.find('*.') == 0) else \
+        key
 def deduplicated_list(seq):
     seen = set()
     return [x for x in seq if not (x in seen or seen.add(x))]
@@ -109,7 +106,7 @@ servers[srv]['seen'] = True
 %>\
 % endif
 % endfor
-% for realm in sorted([r for r in inst['realms'] if 'proxy_to' in inst['realms'][r]], cmp=wildcard_realm_least_precedence, reverse=True):
+% for realm in sorted([r for r in inst['realms'] if 'proxy_to' in inst['realms'][r]], key=wildcard_realm_least_precedence):
 realm ${realm | realm_regex} {
 % for srv in inst['realms'][realm]['proxy_to']:
 % if servers[srv]['rad_pkt_type'] in ('auth', 'auth+acct'):

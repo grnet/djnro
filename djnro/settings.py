@@ -304,7 +304,7 @@ def _dictmerge(a, b):
             ret[key] = _dictmerge(a[key], b[key])
     return ret
 
-from local_settings import *  # noqa
+from djnro.local_settings import *  # noqa
 for var, val in [i for i in locals().items() if i[0].startswith('EXTRA_')]:
     name = var[len('EXTRA_'):]
     try:

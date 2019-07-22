@@ -21,8 +21,8 @@
 from django.core.management.base import BaseCommand
 import time
 from django.conf import settings
-import urllib
 from django.core.cache import cache
+from django.utils import six
 from xml.etree import ElementTree
 import json
 import bz2
@@ -42,7 +42,7 @@ class Command(BaseCommand):
         eduroam_kml_url = "%s?gmaprnd=%s" % (eduroam_kml_url, rnd)
         write('Fetching data from %s...\n'%eduroam_kml_url)
         file = settings.KML_FILE
-        urllib.urlretrieve(eduroam_kml_url, file)
+        six.moves.urllib.request.urlretrieve(eduroam_kml_url, file)
         write('Done fetching!\n')
         write('Updating cache\n')
         self.refresh_cache(file)
@@ -69,5 +69,8 @@ class Command(BaseCommand):
                     }
                 )
         points = json.dumps(point_list)
+        if six.PY3:
+            # python3: convert string as bytestring
+            points = points.encode('utf-8')
         cache.set('points', bz2.compress(points), 60 * 3600 * 24)
         return True
