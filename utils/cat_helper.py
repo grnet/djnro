@@ -94,7 +94,7 @@ class CatQuery(object):
                     params[id]['LANG'] = kwargs[k]
                 else:
                     params[id]['VALUE'] = kwargs[k]
-        return filter(None, params)
+        return list(filter(None, params))
 
     """ Add an administrator into an institution """
     def adminadd(self, kwargs):
