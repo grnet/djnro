@@ -80,7 +80,7 @@ class CatQuery(object):
     to the uglify() method at https://github.com/GEANT/CAT/blob/master/web/lib/admin/API.php
     '''
     def deuglify(self, kwargs):
-        params = [None]*(len(kwargs)/2);
+        params = [None]*(len(kwargs)//2);
         for k in sorted(kwargs, key=string_split_by_numbers):
             m = re.search(r"\[S(\d+)", k);
             id = 0
