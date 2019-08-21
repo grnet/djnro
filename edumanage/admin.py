@@ -106,7 +106,7 @@ class TinyMCEFlatPageAdmin(FlatPageAdmin):
         if db_field.name == 'content':
             return db_field.formfield(widget=TinyMCE(
                 attrs={'cols': 80, 'rows': 30},
-                mce_attrs={'external_link_list_url': reverse('tinymce.views.flatpages_link_list')},
+                mce_attrs={'external_link_list_url': reverse('tinymce-linklist')},
             ))
         return super(TinyMCEFlatPageAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
