@@ -35,14 +35,6 @@ class Command(BaseCommand):
             help='Return only emails (output suitable for a mailing list)'
         )
 
-    def get_str_func(self):
-        """Return a function suitable for conversion to string"""
-
-        if six.PY3:
-            return str
-        else:
-            return lambda s: unicode(s).encode('utf-8')
-
     def handle(self, *args, **options):
         users = User.objects.all()
         if not options['maillist']:
@@ -64,7 +56,11 @@ class Command(BaseCommand):
                 and u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
             ) for m in u.email.split(';')
         ]
-        data.sort(key=lambda d: locale.strxfrm(self.get_str_func()(d[0])))
+        def compat_strxfrm(string):
+            if not six.PY3:
+                string = string.encode('utf-8')
+            return locale.strxfrm(string)
+        data.sort(key=lambda d: compat_strxfrm(d[0]))
         for (foreas, onoma, email) in data:
             if options['maillist']:
                 self.stdout.write(
