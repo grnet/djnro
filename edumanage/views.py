@@ -186,7 +186,6 @@ def institutions(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     dict['institution'] = inst.pk
@@ -210,7 +209,6 @@ def add_institution_details(request, institution_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
 
@@ -293,7 +291,6 @@ def services(request, service_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -355,7 +352,6 @@ def add_services(request, service_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -585,7 +581,6 @@ def add_server(request, server_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -662,7 +657,6 @@ def cat_enroll(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -844,7 +838,6 @@ def add_realm(request, realm_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -963,7 +956,6 @@ def contacts(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -994,7 +986,6 @@ def add_contact(request, contact_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1130,7 +1121,6 @@ def instrealmmon(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1156,7 +1146,6 @@ def add_instrealmmon(request, instrealmmon_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1266,7 +1255,6 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1394,7 +1382,6 @@ def adduser(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
 
