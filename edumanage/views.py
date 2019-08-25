@@ -2445,7 +2445,7 @@ def adminlist(request):
     users = User.objects.filter(userprofile__isnull=False,
                                 registrationprofile__isnull=False)
     data = [
-        (u.userprofile.institution.get_name('el'),
+        (u.userprofile.institution.get_name(request.LANGUAGE_CODE),
          u.first_name + " " + u.last_name,
          m)
         for u in users if
