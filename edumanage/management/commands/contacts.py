@@ -14,10 +14,9 @@ import codecs
 
 from optparse import make_option
 from django.core.management.base import BaseCommand
-from django.utils import six
 from accounts.models import User
 from django.utils.translation import get_language, to_locale, ugettext as _
-from edumanage.localectxmgr import setlocale
+from utils.locale import setlocale, compat_strxfrm
 
 
 class Command(BaseCommand):
@@ -56,10 +55,6 @@ class Command(BaseCommand):
                 and u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
             ) for m in u.email.split(';')
         ]
-        def compat_strxfrm(string):
-            if not six.PY3:
-                string = string.encode('utf-8')
-            return locale.strxfrm(string)
         with setlocale((to_locale(get_language()), 'UTF-8'),
                        locale.LC_COLLATE):
             data.sort(key=lambda d: compat_strxfrm(d[0]))

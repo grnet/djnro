@@ -7,7 +7,6 @@ import datetime
 from xml.etree import ElementTree
 import itertools
 import locale
-from edumanage.localectxmgr import setlocale
 import requests
 
 from django.shortcuts import redirect, render
@@ -74,6 +73,7 @@ from django.utils.cache import (
 )
 from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
+from utils.locale import setlocale, compat_strxfrm
 
 
 # Almost verbatim copy of django.views.i18n.set_language; however:
@@ -1686,7 +1686,7 @@ def participants(request):
         if i.get_active_cat_enrl(cat_instance):
             cat_exists = True
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
-        dets.sort(key=lambda x: locale.strxfrm(
+        dets.sort(key=lambda x: compat_strxfrm(
             x.institution.get_name(lang=request.LANGUAGE_CODE)))
     return render(
         request,
@@ -1716,7 +1716,7 @@ def connect(request):
             # may be more
             dets_cat[i.pk] = catids[0]
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
-        dets.sort(key=lambda x: locale.strxfrm(
+        dets.sort(key=lambda x: compat_strxfrm(
             x.institution.get_name(lang=request.LANGUAGE_CODE)))
     if settings_dict_get('CAT_AUTH', cat_instance) is None:
         cat_exists = False
@@ -2452,7 +2452,8 @@ def adminlist(request):
         u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
         for m in u.email.split(';')
     ]
-    data.sort(key=lambda d: d[0])
+    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+        data.sort(key=lambda d: compat_strxfrm(d[0]))
     resp_body = ""
     for (foreas, onoma, email) in data:
         resp_body += u'{email}\t{onoma}'.format(
