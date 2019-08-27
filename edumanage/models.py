@@ -146,6 +146,20 @@ class Name_i18n(models.Model):
         verbose_name = "Name (i18n)"
         verbose_name_plural = "Names (i18n)"
 
+    @staticmethod
+    def get_name_factory(reverse_accessor):
+        def get_name(self, lang=None):
+            manager = getattr(self, reverse_accessor)
+            def all_names():
+                return ', '.join([n.name for n in manager.all()])
+            if not lang:
+                return all_names()
+            try:
+                return manager.get(lang=lang).name
+            except Name_i18n.DoesNotExist:
+                return all_names()
+        return get_name
+
 
 @python_2_unicode_compatible
 class Contact(models.Model):
@@ -448,16 +462,7 @@ class ServiceLoc(models.Model):
             'locname': self.get_name(),
         }
 
-    def get_name(self, lang=None):
-        name = ', '.join([i.name for i in self.loc_name.all()])
-        if not lang:
-            return name
-        else:
-            try:
-                name = self.loc_name.get(lang=lang)
-                return name
-            except Exception:
-                return name
+    get_name = Name_i18n.get_name_factory('loc_name')
     get_name.short_description = 'Location Name'
 
 
@@ -474,16 +479,7 @@ class Institution(models.Model):
     def __str__(self):
         return "%s" % ', '.join([i.name for i in self.org_name.all()])
 
-    def get_name(self, lang=None):
-        name = ', '.join([i.name for i in self.org_name.all()])
-        if not lang:
-            return name
-        else:
-            try:
-                name = self.org_name.get(lang=lang)
-                return name
-            except Exception:
-                return name
+    get_name = Name_i18n.get_name_factory('org_name')
 
     def get_active_cat_enrl(self, cat_instance='production'):
         urls = []
@@ -567,16 +563,7 @@ class Realm(models.Model):
             'country': self.country,
         }
 
-    def get_name(self, lang=None):
-        name = ', '.join([i.name for i in self.org_name.all()])
-        if not lang:
-            return name
-        else:
-            try:
-                name = self.org_name.get(lang=lang)
-                return name
-            except Exception:
-                return name
+    get_name = Name_i18n.get_name_factory('org_name')
 
 
 # TODO: this represents a *database view* "realm_data", find a better way to write it

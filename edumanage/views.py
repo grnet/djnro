@@ -7,7 +7,6 @@ import datetime
 from xml.etree import ElementTree
 import itertools
 import locale
-from edumanage.localectxmgr import setlocale
 import requests
 
 from django.shortcuts import redirect, render
@@ -74,6 +73,7 @@ from django.utils.cache import (
 )
 from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
+from utils.locale import setlocale, compat_strxfrm
 
 
 # Almost verbatim copy of django.views.i18n.set_language; however:
@@ -186,7 +186,6 @@ def institutions(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     dict['institution'] = inst.pk
@@ -210,7 +209,6 @@ def add_institution_details(request, institution_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
 
@@ -293,7 +291,6 @@ def services(request, service_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -355,7 +352,6 @@ def add_services(request, service_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -585,7 +581,6 @@ def add_server(request, server_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -662,7 +657,6 @@ def cat_enroll(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -844,7 +838,6 @@ def add_realm(request, realm_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -963,7 +956,6 @@ def contacts(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -994,7 +986,6 @@ def add_contact(request, contact_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1130,7 +1121,6 @@ def instrealmmon(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1156,7 +1146,6 @@ def add_instrealmmon(request, instrealmmon_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1266,7 +1255,6 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
     try:
@@ -1394,7 +1382,6 @@ def adduser(request):
     try:
         profile = user.userprofile
         inst = profile.institution
-        inst.__str__ = inst.get_name(request.LANGUAGE_CODE)
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
 
@@ -1699,8 +1686,8 @@ def participants(request):
         if i.get_active_cat_enrl(cat_instance):
             cat_exists = True
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
-        dets.sort(key=lambda x: locale.strxfrm(
-            str(x.institution.get_name(lang=request.LANGUAGE_CODE))))
+        dets.sort(key=lambda x: compat_strxfrm(
+            x.institution.get_name(lang=request.LANGUAGE_CODE)))
     return render(
         request,
         'front/participants.html',
@@ -1729,8 +1716,8 @@ def connect(request):
             # may be more
             dets_cat[i.pk] = catids[0]
     with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
-        dets.sort(key=lambda x: locale.strxfrm(
-            str(x.institution.get_name(lang=request.LANGUAGE_CODE))))
+        dets.sort(key=lambda x: compat_strxfrm(
+            x.institution.get_name(lang=request.LANGUAGE_CODE)))
     if settings_dict_get('CAT_AUTH', cat_instance) is None:
         cat_exists = False
         cat_api_direct = None
@@ -2458,14 +2445,15 @@ def adminlist(request):
     users = User.objects.filter(userprofile__isnull=False,
                                 registrationprofile__isnull=False)
     data = [
-        (u.userprofile.institution.get_name('el'),
+        (u.userprofile.institution.get_name(request.LANGUAGE_CODE),
          u.first_name + " " + u.last_name,
          m)
         for u in users if
         u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
         for m in u.email.split(';')
     ]
-    data.sort(key=lambda d: six.text_type(d[0]))
+    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+        data.sort(key=lambda d: compat_strxfrm(d[0]))
     resp_body = ""
     for (foreas, onoma, email) in data:
         resp_body += u'{email}\t{onoma}'.format(

@@ -6,8 +6,6 @@ warnings.simplefilter("ignore", DeprecationWarning)
 import sys
 import locale
 import codecs
-# sort greek utf-8 properly
-locale.setlocale(locale.LC_COLLATE, ('el_GR', 'UTF-8'))
 # Printing unicode: WAS: https://wiki.python.org/moin/PrintFails
 # But now rather follow:
 #    https://docs.djangoproject.com/en/1.9/howto/custom-management-commands/#management-commands-and-locales
@@ -16,8 +14,9 @@ locale.setlocale(locale.LC_COLLATE, ('el_GR', 'UTF-8'))
 
 from optparse import make_option
 from django.core.management.base import BaseCommand
-from django.utils import six
 from accounts.models import User
+from django.utils.translation import get_language, to_locale, ugettext as _
+from utils.locale import setlocale, compat_strxfrm
 
 
 class Command(BaseCommand):
@@ -35,28 +34,20 @@ class Command(BaseCommand):
             help='Return only emails (output suitable for a mailing list)'
         )
 
-    def get_str_func(self):
-        """Return a function suitable for conversion to string"""
-
-        if six.PY3:
-            return str
-        else:
-            return lambda s: unicode(s).encode('utf-8')
-
     def handle(self, *args, **options):
         users = User.objects.all()
         if not options['maillist']:
             self.stdout.write(
-                u'"%s","%s","%s"' % (
-                    u"Φορέας",
-                    u"Διαχειριστής",
+                u'{},{},{}'.format(
+                    _('Institution'),
+                    _('Administrator'),
                     "email"
                 )
                 + "\n"
             )
         data = [
             (
-                u.userprofile.institution.get_name('el'),
+                u.userprofile.institution.get_name(get_language()),
                 u.first_name + " " + u.last_name,
                 m
             ) for u in users if (
@@ -64,7 +55,9 @@ class Command(BaseCommand):
                 and u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
             ) for m in u.email.split(';')
         ]
-        data.sort(key=lambda d: locale.strxfrm(self.get_str_func()(d[0])))
+        with setlocale((to_locale(get_language()), 'UTF-8'),
+                       locale.LC_COLLATE):
+            data.sort(key=lambda d: compat_strxfrm(d[0]))
         for (foreas, onoma, email) in data:
             if options['maillist']:
                 self.stdout.write(
