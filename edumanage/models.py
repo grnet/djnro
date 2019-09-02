@@ -150,14 +150,19 @@ class Name_i18n(models.Model):
     def get_name_factory(reverse_accessor):
         def get_name(self, lang=None):
             manager = getattr(self, reverse_accessor)
-            def all_names():
-                return ', '.join([n.name for n in manager.all()])
+            def all_names(**kwargs):
+                names_qs = manager.filter(**kwargs) \
+                    if kwargs else \
+                    manager.all()
+                return ', '.join([n.name for n in names_qs])
             if not lang:
                 return all_names()
             try:
                 return manager.get(lang=lang).name
             except Name_i18n.DoesNotExist:
                 return all_names()
+            except Name_i18n.MultipleObjectsReturned:
+                return all_names(lang=lang)
         return get_name
 
 
