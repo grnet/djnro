@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+from collections import namedtuple
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -100,30 +101,71 @@ class MultiSelectField(models.Field):
         value = self._get_val_from_obj(obj)
         return self.get_db_prep_value(value)
 
-ERTYPES = (
-    (1, 'IdP only'),
-    (2, 'SP only'),
-    (3, 'IdP and SP'),
+# https://www.djangosnippets.org/snippets/2402/
+def get_namedtuple_choices(*choices_tuples):
+    names = [tup[0] for tup in choices_tuples]
+    vals = [tup[1:3] for tup in choices_tuples]
+    class Choices(namedtuple('Choices', names)):
+        def __getattribute__(self, name):
+            attr = super(Choices, self).__getattribute__(name)
+            if not isinstance(attr, tuple):
+                return attr
+            return attr[0]
+    return Choices._make(vals)
+
+_ERTYPES = (
+    ('IDP', 1, 'IdP only', 'IdP'),
+    ('SP', 2, 'SP only', 'SP'),
+    ('IDPSP', 3, 'IdP and SP', 'IdP+SP'),
+)
+ERTYPES = get_namedtuple_choices(*_ERTYPES)
+def get_ertype_string(ertype):
+    return {x[1]: x[-1] for x in _ERTYPES}[ertype]
+
+RADPROTOS = get_namedtuple_choices(
+    ('UDP', 'radius', 'traditional RADIUS over UDP'),
+    # ('TCP', 'radius-tcp', 'RADIUS over TCP (RFC6613)'),
+    # ('TLS', 'radius-tls', 'RADIUS over TLS (RFC6614)'),
+    # ('DTLS', 'radius-dtls', 'RADIUS over datagram TLS (RESERVED)'),
 )
 
-RADPROTOS = (
-    ('radius', 'traditional RADIUS over UDP'),
-#        ('radius-tcp', 'RADIUS over TCP (RFC6613)'),
-#        ('radius-tls', 'RADIUS over TLS (RFC6614)'),
-#        ('radius-dtls', 'RADIUS over datagram TLS (RESERVED)'),
+
+ADDRTYPES = get_namedtuple_choices(
+    ('ANY', 'any', 'Default'),
+    ('IPV4', 'ipv4', 'IPv4 only'),
+    #('IPV6', 'ipv6', 'IPv6 only'), # Commented for the time...not yet in use
 )
 
-
-ADDRTYPES = (
-    ('any', 'Default'),
-    ('ipv4', 'IPv4 only'),
-    #('ipv6', 'IPv6 only'), # Commented for the time...not yet in use
+RADTYPES = get_namedtuple_choices(
+    ('AUTH', 'auth', 'Handles Access-Request packets only'),
+    ('ACCT', 'acct', 'Handles Accounting-Request packets only'),
+    ('AUTHACCT', 'auth+acct', 'Handles both Access-Request and Accounting-Request packets'),
 )
 
-RADTYPES = (
-    ('auth', 'Handles Access-Request packets only'),
-    ('acct', 'Handles Accounting-Request packets only'),
-    ('auth+acct', 'Handles both Access-Request and Accounting-Request packets'),
+PRODUCTION_STATES = get_namedtuple_choices(
+    ('TEST', 0, 'preproduction/test'),
+    ('ACTIVE', 1, 'active'),
+)
+
+CONTACT_TYPES = get_namedtuple_choices(
+    ('PERSON', 0, 'person'),
+    ('SERVCE', 1, 'service/department'),
+)
+
+CONTACT_PRIVACY = get_namedtuple_choices(
+    ('PRIVATE', 0, 'private'),
+    ('PUBLIC', 1, 'public'),
+)
+
+LOCATION_TYPES = get_namedtuple_choices(
+    ('SPOT', 0, 'single spot'),
+    ('AREA', 1, 'area'),
+    ('MOBILE', 2, 'mobile'),
+)
+
+PHYSICAL_AVAILABILITY_STATES = get_namedtuple_choices(
+    ('ALWAYS', 0, 'no restrictions'),
+    ('RESTRICTED', 1, 'physical access restrictions'),
 )
 
 
@@ -260,17 +302,17 @@ class InstServer(models.Model):
     # hostname/ipaddr or descriptive label of server
     name = models.CharField(max_length=80, help_text=_("Descriptive label"), null=True, blank=True) # ** (acts like a label)
     # hostname/ipaddr of server, overrides name
-    addr_type = models.CharField(max_length=16, choices=ADDRTYPES, default='ipv4')
+    addr_type = models.CharField(max_length=16, choices=ADDRTYPES, default=ADDRTYPES.IPV4)
     host = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname")) # Handling with FQDN parser or ipaddr (google lib) * !!! Add help text to render it in template (mandatory, unique)
     #TODO: Add description field or label field
     # accept if type: 1 (idp) or 3 (idpsp) (for the folowing 4 fields)
-    rad_pkt_type = models.CharField(max_length=48, choices=RADTYPES, default='auth+acct', null=True, blank=True,)
+    rad_pkt_type = models.CharField(max_length=48, choices=RADTYPES, default=RADTYPES.AUTHACCT, null=True, blank=True,)
     auth_port = models.PositiveIntegerField(null=True, blank=True, default=1812, help_text=_("Default for RADIUS: 1812")) # TODO: Also ignore while exporting XML
     acct_port = models.PositiveIntegerField(null=True, blank=True, default=1813, help_text=_("Default for RADIUS: 1813"))
     status_server = models.BooleanField(help_text=_("Do you accept Status-Server requests?"))
 
     secret = models.CharField(max_length=80)
-    proto = models.CharField(max_length=12, choices=RADPROTOS, default='radius')
+    proto = models.CharField(max_length=12, choices=RADPROTOS, default=RADPROTOS.UDP)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -432,6 +474,14 @@ class ServiceLoc(models.Model):
         ('WPA/AES', 'WPA-AES'),
         ('WPA2/TKIP', 'WPA2-TKIP'),
         ('WPA2/AES', 'WPA2-AES'),
+    )
+
+    LOCATION_TAGS = (
+        ('port_restrict', 'port restrictions'),
+        ('transp_proxy', 'transparent proxy'),
+        ('IPv6', 'IPv6'),
+        ('NAT', 'NAT'),
+        ('HS2.0', 'Passpoint (Hotspot 2.0)'),
     )
 
     # accept if institutionid.ertype: 2 (sp) or 3 (idpsp)
