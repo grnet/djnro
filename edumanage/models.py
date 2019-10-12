@@ -628,10 +628,22 @@ class Realm(models.Model):
     Realm
     '''
 
+    roid = models.CharField(
+        max_length=255,
+        default=getattr(settings, 'NRO_ROID'),
+        unique=True,
+        db_column='ROid'
+    )
     country = models.CharField(max_length=5, choices=get_choices_from_settings('REALM_COUNTRIES'))
-    stype = models.PositiveIntegerField(default=0, editable=False)
+    stype = 0 # hard-coded (FLRS)
+    stage = models.PositiveIntegerField(
+        choices=PRODUCTION_STATES,
+        default=PRODUCTION_STATES.ACTIVE
+    )
     # TODO: multiple names can be specified [...] name in English is required
     org_name = fields.GenericRelation(Name_i18n)
+    # TODO: multiple addresses can be specified [...] address in English is required
+    address = fields.GenericRelation(Address_i18n)
     address_street = models.CharField(max_length=32)
     address_city = models.CharField(max_length=24)
     contact = models.ManyToManyField(Contact)
