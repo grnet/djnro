@@ -254,6 +254,27 @@ class URL_i18n(models.Model):
 
 
 @python_2_unicode_compatible
+class Address_i18n(models.Model):
+    '''
+    Address in a particular language
+    '''
+
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
+    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    object_id = models.PositiveIntegerField(blank=True, null=True)
+    content_object = fields.GenericForeignKey('content_type', 'object_id')
+
+    def __str__(self):
+        return '{}: {}, {}'.format(self.lang.upper(), self.street, self.city)
+
+    class Meta:
+        verbose_name = "Address (i18n)"
+        verbose_name_plural = "Addresses (i18n)"
+
+
+@python_2_unicode_compatible
 class InstRealm(models.Model):
     '''
     Realm of an IdP Institution
