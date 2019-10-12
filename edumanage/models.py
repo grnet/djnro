@@ -206,6 +206,16 @@ class Contact(models.Model):
     name = models.CharField(max_length=255, db_column='contact_name')
     email = models.CharField(max_length=80, db_column='contact_email')
     phone = models.CharField(max_length=80, db_column='contact_phone')
+    type = models.PositiveIntegerField(
+        choices=CONTACT_TYPES,
+        default=CONTACT_TYPES.PERSON,
+        db_column='contact_type'
+    )
+    privacy = models.PositiveIntegerField(
+        choices=CONTACT_PRIVACY,
+        default=CONTACT_PRIVACY.PRIVATE,
+        db_column='contact_privacy'
+    )
 
     def __str__(self):
         return '%s <%s> (%s)' % (self.name, self.email, self.phone)
