@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 from collections import namedtuple
+import uuid
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -559,8 +560,14 @@ class Institution(models.Model):
     '''
 
     realmid = models.ForeignKey("Realm")
+    instid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     org_name = fields.GenericRelation(Name_i18n)
+    inst_name = fields.GenericRelation(Name_i18n)
     ertype = models.PositiveIntegerField(choices=ERTYPES, db_column='type')
+    stage = models.PositiveIntegerField(
+        choices=PRODUCTION_STATES,
+        default=PRODUCTION_STATES.ACTIVE
+    )
 
     def __str__(self):
         return "%s" % ', '.join([i.name for i in self.org_name.all()])
