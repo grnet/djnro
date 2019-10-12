@@ -15,6 +15,16 @@ from django.core.exceptions import ValidationError
 from django.utils.encoding import python_2_unicode_compatible
 
 
+def validate_venue_info(value):
+    subfields = value.split(',')
+    if len(subfields) != 2:
+        return False
+    for subfield in subfields:
+        if not 0 <= int(subfield) <= 255:
+            return False
+    return True
+
+
 def get_choices_from_settings(setting):
     return getattr(settings, setting, tuple())
 
@@ -596,6 +606,8 @@ class InstitutionDetails(models.Model):
     Institution Details
     '''
     institution = models.OneToOneField(Institution)
+    # TODO: multiple addresses can be specified [...] address in English is required
+    address = fields.GenericRelation(Address_i18n)
     # TODO: multiple names can be specified [...] name in English is required
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
@@ -607,6 +619,12 @@ class InstitutionDetails(models.Model):
         null=True,
         blank=True,
         help_text=_('The primary, registered domain name for your institution, eg. example.com.<br>This is used to derive the Operator-Name attribute according to RFC5580, par.4.1, using the REALM namespace.')
+    )
+    venue_info = models.CharField(
+        max_length=7,
+        blank=True,
+        validators=[validate_venue_info],
+        db_column='inst_type'
     )
     # accept if ertype: 1 (idp) or 3 (idpsp) (Applies to the following field)
     number_user = models.PositiveIntegerField(null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
