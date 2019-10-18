@@ -534,21 +534,53 @@ class ServiceLoc(models.Model):
 
     # accept if institutionid.ertype: 2 (sp) or 3 (idpsp)
     institutionid = models.ForeignKey("Institution", verbose_name="Institution")
+    locationid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     longitude = models.DecimalField(max_digits=12, decimal_places=8)
     latitude = models.DecimalField(max_digits=12, decimal_places=8)
+    stage = models.PositiveIntegerField(
+        choices=PRODUCTION_STATES,
+        default=PRODUCTION_STATES.ACTIVE
+    )
+    geo_type = models.PositiveIntegerField(
+        choices=GEO_TYPES,
+        default=GEO_TYPES.SPOT,
+        db_column='type'
+    )
     # TODO: multiple names can be specified [...] name in English is required
     loc_name = fields.GenericRelation(Name_i18n)
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
+    # TODO: multiple addresses can be specified [...] address in English is required
+    address = fields.GenericRelation(Address_i18n)
+    venue_info = models.CharField(
+        max_length=7,
+        blank=True,
+        validators=[validate_venue_info],
+        db_column='location_type',
+        help_text=_VENUE_INFO_HELP_TEXT
+    )
     contact = models.ManyToManyField(Contact, blank=True)
     SSID = models.CharField(max_length=16)
     enc_level = MultiSelectField(max_length=64, choices=ENCTYPES, blank=True, null=True)
+    tag = MultiSelectField(max_length=64, choices=LOCATION_TAGS, blank=True)
     port_restrict = models.BooleanField()
     transp_proxy = models.BooleanField()
     IPv6 = models.BooleanField()
     NAT = models.BooleanField()
-    AP_no = models.PositiveIntegerField()
+    AP_no = models.PositiveIntegerField(blank=True, null=True)
     wired = models.BooleanField()
+    wired_no = models.PositiveIntegerField(blank=True, null=True)
+    physical_avail = models.PositiveIntegerField(
+        choices=PHYSICAL_AVAILABILITY_STATES,
+        default=PHYSICAL_AVAILABILITY_STATES.ALWAYS,
+        db_column='availability',
+        help_text=_('Restrictions regarding physical access to the service '
+                    'area')
+    )
+    operation_hours = models.CharField(max_length=255, blank=True, help_text=_(
+        'Free text description of opening hours, if service is not available '
+        '24 hours per day'
+    ))
     # only urltype = 'info' should be accepted here
     url = fields.GenericRelation(URL_i18n, blank=True, null=True)
     ts = models.DateTimeField(auto_now=True)
