@@ -50,6 +50,19 @@ class MultiSelectFormField(forms.MultipleChoiceField):
         )
 
 class MultiSelectField(models.Field):
+    _separator_default = ','
+
+    def __init__(self, *args, **kwargs):
+        self.separator = kwargs.pop(
+            'separator', self._separator_default)
+        super(MultiSelectField, self).__init__(*args, **kwargs)
+
+    def deconstruct(self):
+        name, path, args, kwargs = super(
+            MultiSelectField, self).deconstruct()
+        if self.separator != self._separator_default:
+            kwargs['separator'] = self.separator
+        return name, path, args, kwargs
 
     def get_internal_type(self):
         return "CharField"
@@ -65,15 +78,15 @@ class MultiSelectField(models.Field):
         if isinstance(value, six.string_types):
             return value
         if isinstance(value, list):
-            return ",".join(value)
+            return self.separator.join(value)
         return ''
 
     def from_db_value(self, value, expression, connection, context):
-        return value.split(',') if value is not None else []
+        return value.split(self.separator) if value is not None else []
 
     def to_python(self, value):
         if isinstance(value, six.string_types):
-            return value.split(',') if value else []
+            return value.split(self.separator) if value else []
         if isinstance(value, list):
             return value
         return []
@@ -85,7 +98,7 @@ class MultiSelectField(models.Field):
             def _get_FIELD_display(self, field):
                 values = getattr(self, field.attname)
                 choices = dict(field.flatchoices)
-                return ",".join([
+                return self.separator.join([
                     force_text(
                         choices.get(value, value),
                         strings_only=True
