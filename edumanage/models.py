@@ -20,6 +20,7 @@ from django.core.exceptions import ValidationError
 from django.utils.encoding import (
     force_text, python_2_unicode_compatible
 )
+from sortedm2m.fields import SortedManyToManyField
 
 
 _VENUE_INFO_HELP_TEXT = _(
@@ -254,6 +255,32 @@ class Contact(models.Model):
     class Meta:
         verbose_name = "Contact"
         verbose_name_plural = "Contacts"
+
+
+@python_2_unicode_compatible
+class Coordinates(models.Model):
+    longitude = models.DecimalField(
+        max_digits=12, decimal_places=8, help_text=_(
+            'Longitude in decimal degrees, up to 8 decimal places'
+        ))
+    latitude = models.DecimalField(
+        max_digits=12, decimal_places=8, help_text=_(
+            'Latitude in decimal degrees, up to 8 decimal places'
+        ))
+    altitude = models.DecimalField(
+        max_digits=7, decimal_places=3, null=True, help_text=_(
+            'Altitude, up to 9999 meters with millimeter precision'
+        ))
+
+    def __str__(self):
+        coordinates_str = 'Lat {}, Lon {}'.format(self.latitude, self.longitude)
+        if self.altitude is not None:
+            coordinates_str += ', Alt {}'.format(self.altitude)
+        return coordinates_str
+
+    class Meta:
+        verbose_name = "Coordinates"
+        verbose_name_plural = "Coordinates"
 
 
 @python_2_unicode_compatible
@@ -552,6 +579,8 @@ class ServiceLoc(models.Model):
     locationid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     longitude = models.DecimalField(max_digits=12, decimal_places=8)
     latitude = models.DecimalField(max_digits=12, decimal_places=8)
+    # single set of coordinates enforced by .signals.sloc_coordinates_enforce_one
+    coordinates = SortedManyToManyField(Coordinates)
     stage = models.PositiveIntegerField(
         choices=PRODUCTION_STATES,
         default=PRODUCTION_STATES.ACTIVE
@@ -664,6 +693,12 @@ class InstitutionDetails(models.Model):
     # TODO: multiple names can be specified [...] name in English is required
     address_street = models.CharField(max_length=96)
     address_city = models.CharField(max_length=64)
+    coordinates = models.ForeignKey(
+        Coordinates,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
     contact = models.ManyToManyField(Contact)
     url = fields.GenericRelation(URL_i18n)
     # accept if ertype: 2 (sp) or 3 (idpsp) (Applies to the following field)
@@ -725,6 +760,12 @@ class Realm(models.Model):
     address = fields.GenericRelation(Address_i18n)
     address_street = models.CharField(max_length=32)
     address_city = models.CharField(max_length=24)
+    coordinates = models.ForeignKey(
+        Coordinates,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True
+    )
     contact = models.ManyToManyField(Contact)
     url = fields.GenericRelation(URL_i18n)
     ts = models.DateTimeField(auto_now=True)
