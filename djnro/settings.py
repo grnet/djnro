@@ -292,6 +292,13 @@ LINKEDIN_EXTRA_DATA = [('id', 'id'),
 
 CAT_INSTANCES = ()
 
+# How to convert ServiceLoc.wired to wired_no
+# Default: Use a magic number for True, NULL for False
+SERVICELOC_DERIVE_WIRED_NO = {
+    True: 42,
+    False: None,
+}
+
 SENTRY = dict()
 
 import _version
