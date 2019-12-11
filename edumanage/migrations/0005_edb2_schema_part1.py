@@ -8,16 +8,16 @@ from django.conf import settings
 import django.db.models.deletion
 import edumanage.models
 
+from . import AppAwareRunPython
 
 class Backfill(object):
-    def __init__(self, app, model, field, value_func, only_fill_null=True):
-        self.app = app
+    def __init__(self, model, field, value_func, only_fill_null=True):
         self.model = model
         self.field = field
         self.value_func = value_func
         self.only_fill_null = only_fill_null
-    def __call__(self, apps, schema_editor):
-        model = apps.get_model(self.app, self.model)
+    def __call__(self, apps, schema_editor, app_label):
+        model = apps.get_model(app_label, self.model)
         rows = model.objects.all()
         if self.only_fill_null:
             filter_kwargs = {'{}__isnull'.format(self.field): True}
@@ -69,9 +69,9 @@ class Migration(migrations.Migration):
             name='instid',
             field=models.UUIDField(default=None, null=True),
         ),
-        migrations.RunPython(
-            Backfill('edumanage', 'institution', 'instid', uuid.uuid4),
-            reverse_code=migrations.RunPython.noop,
+        AppAwareRunPython(
+            Backfill('institution', 'instid', uuid.uuid4),
+            reverse_code=AppAwareRunPython.noop,
             hints={'model_name': 'institution'},
         ),
         migrations.AlterField(
@@ -109,9 +109,9 @@ class Migration(migrations.Migration):
             name='locationid',
             field=models.UUIDField(default=None, null=True),
         ),
-        migrations.RunPython(
-            Backfill('edumanage', 'serviceloc', 'locationid', uuid.uuid4),
-            reverse_code=migrations.RunPython.noop,
+        AppAwareRunPython(
+            Backfill('serviceloc', 'locationid', uuid.uuid4),
+            reverse_code=AppAwareRunPython.noop,
             hints={'model_name': 'serviceloc'},
         ),
         migrations.AlterField(
