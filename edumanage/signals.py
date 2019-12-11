@@ -4,7 +4,7 @@ from django.db.models.signals import post_save, post_delete, m2m_changed
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from edumanage.models import ServiceLoc
+from edumanage.models import ServiceLoc, Coordinates
 from edumanage.views import ourPoints
 
 @receiver([post_save, post_delete], sender=ServiceLoc,
@@ -16,6 +16,30 @@ def recache_ourpoints(sender, instance, **kwargs):
         inst = None
 
     ourPoints(institution=inst, cache_flush=True)
+
+@receiver(post_save, sender=ServiceLoc,
+          dispatch_uid="edumanage.models.ServiceLoc.save_latlon_cache")
+def save_latlon_cache(sender, instance, **kwargs):
+    if not isinstance(instance, ServiceLoc):
+        return
+    try:
+        props = {
+            p: instance.__dict__[p] for p in ['latitude', 'longitude']
+        }
+    except KeyError:
+        return
+    if not all([props[p] is not None for p in props]):
+        return
+    try:
+        instance.coordinates.update_or_create(defaults=props)
+    except Coordinates.MultipleObjectsReturned:
+        # following receiver ensures this should never happen, but anyway
+        instance.coordinates.filter(
+            id=instance.coordinates.first().id
+        ).update(**props)
+    for p in props:
+        instance.__dict__.pop(p)
+
 
 @receiver(m2m_changed, sender=ServiceLoc.coordinates.through,
           dispatch_uid="edumanage.models.ServiceLoc.coordinates.enforce_one")
