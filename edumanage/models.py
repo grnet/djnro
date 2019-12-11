@@ -21,6 +21,7 @@ from django.utils.encoding import (
     force_text, python_2_unicode_compatible
 )
 from sortedm2m.fields import SortedManyToManyField
+from utils.functional import cached_property
 
 
 def validate_venue_info(value):
@@ -621,6 +622,38 @@ class ServiceLoc(models.Model):
 
     get_name = Name_i18n.get_name_factory('loc_name')
     get_name.short_description = 'Location Name'
+
+    @cached_property
+    def latitude(self):
+        try:
+            return self.coordinates.first().latitude
+        except AttributeError:
+            return None
+    @latitude.setter
+    def latitude(self, value):
+        return value
+    @latitude.deleter
+    def latitude(self, value):
+        try:
+            self.coordinates.filter(latitude=value).first().delete()
+        except AttributeError:
+            pass
+
+    @cached_property
+    def longitude(self):
+        try:
+            return self.coordinates.first().longitude
+        except AttributeError:
+            return None
+    @longitude.setter
+    def longitude(self, value):
+        return value
+    @longitude.deleter
+    def longitude(self, value):
+        try:
+            self.coordinates.filter(longitude=value).first().delete()
+        except AttributeError:
+            pass
 
 
 @python_2_unicode_compatible
