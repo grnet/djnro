@@ -48,8 +48,7 @@ class ServiceLocAdmin(admin.ModelAdmin):
     inlines = [
         UrlInline, NameInline,
     ]
-    list_filter = ('SSID', 'enc_level', 'port_restrict',
-                   'transp_proxy', 'IPv6', 'NAT', 'wired')
+    list_filter = ('SSID', 'enc_level', 'tag')
 
 
 class RealmInLine(admin.ModelAdmin):

@@ -569,8 +569,6 @@ class ServiceLoc(models.Model):
     # accept if institutionid.ertype: 2 (sp) or 3 (idpsp)
     institutionid = models.ForeignKey("Institution", verbose_name="Institution")
     locationid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    longitude = models.DecimalField(max_digits=12, decimal_places=8)
-    latitude = models.DecimalField(max_digits=12, decimal_places=8)
     # single set of coordinates enforced by .signals.sloc_coordinates_enforce_one
     coordinates = SortedManyToManyField(Coordinates)
     stage = models.PositiveIntegerField(
@@ -584,8 +582,6 @@ class ServiceLoc(models.Model):
     )
     # TODO: multiple names can be specified [...] name in English is required
     loc_name = fields.GenericRelation(Name_i18n)
-    address_street = models.CharField(max_length=96)
-    address_city = models.CharField(max_length=64)
     # TODO: multiple addresses can be specified [...] address in English is required
     address = fields.GenericRelation(Address_i18n)
     venue_info = models.CharField(
@@ -598,10 +594,6 @@ class ServiceLoc(models.Model):
     SSID = models.CharField(max_length=16)
     enc_level = MultiSelectField(max_length=64, choices=ENCTYPES, blank=True, null=True)
     tag = MultiSelectField(max_length=64, choices=LOCATION_TAGS, blank=True)
-    port_restrict = models.BooleanField()
-    transp_proxy = models.BooleanField()
-    IPv6 = models.BooleanField()
-    NAT = models.BooleanField()
     AP_no = models.PositiveIntegerField(null=True)
     wired = models.BooleanField()
     wired_no = models.PositiveIntegerField(null=True)
@@ -676,9 +668,6 @@ class InstitutionDetails(models.Model):
     institution = models.OneToOneField(Institution)
     # TODO: multiple addresses can be specified [...] address in English is required
     address = fields.GenericRelation(Address_i18n)
-    # TODO: multiple names can be specified [...] name in English is required
-    address_street = models.CharField(max_length=96)
-    address_city = models.CharField(max_length=64)
     coordinates = models.ForeignKey(
         Coordinates,
         on_delete=models.SET_NULL,
@@ -743,8 +732,6 @@ class Realm(models.Model):
     org_name = fields.GenericRelation(Name_i18n)
     # TODO: multiple addresses can be specified [...] address in English is required
     address = fields.GenericRelation(Address_i18n)
-    address_street = models.CharField(max_length=32)
-    address_city = models.CharField(max_length=24)
     coordinates = models.ForeignKey(
         Coordinates,
         on_delete=models.SET_NULL,
