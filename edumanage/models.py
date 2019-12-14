@@ -339,12 +339,33 @@ class Address_i18n(models.Model):
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = fields.GenericForeignKey('content_type', 'object_id')
 
+    _str_include_lang = True
+
     def __str__(self):
-        return '{}: {}, {}'.format(self.lang.upper(), self.street, self.city)
+        addr_str = ', '.join([f for f in (self.street, self.city) if f])
+        if self._str_include_lang:
+            addr_str = six.text_type('{}: {}').format(
+                self.lang.upper(), addr_str)
+        return addr_str
 
     class Meta:
         verbose_name = "Address (i18n)"
         verbose_name_plural = "Addresses (i18n)"
+
+    @staticmethod
+    def get_address_factory(reverse_accessor):
+        def get_address(self, lang=None, default_lang_fallback=True):
+            lang_default = getattr(settings, 'LANGUAGE_CODE', 'en')
+            manager = getattr(self, reverse_accessor)
+            if lang is None:
+                lang = lang_default
+            addr = manager.filter(lang=lang).first()
+            if addr is None and default_lang_fallback and lang != lang_default:
+                addr = manager.filter(lang=lang_default).first()
+            if isinstance(addr, Address_i18n):
+                addr._str_include_lang = False
+            return addr
+        return get_address
 
 
 @python_2_unicode_compatible
@@ -640,6 +661,9 @@ class ServiceLoc(models.Model):
     get_name = Name_i18n.get_name_factory('loc_name')
     get_name.short_description = 'Location Name'
 
+    get_address = Address_i18n.get_address_factory('address')
+    get_address.short_description = 'Location Address'
+
     @cached_property
     def latitude(self):
         try:
@@ -745,6 +769,9 @@ class InstitutionDetails(models.Model):
     number_id = models.PositiveIntegerField(null=True, blank=True, help_text=_("Number of issued e-identities (credentials) that may be used for authentication in eduroam service"))
     ts = models.DateTimeField(auto_now=True)
 
+    get_address = Address_i18n.get_address_factory('address')
+    get_address.short_description = 'Institution Address'
+
     class Meta:
         verbose_name = "Institutions' Details"
         verbose_name_plural = "Institution Details"
@@ -792,6 +819,9 @@ class Realm(models.Model):
     contact = models.ManyToManyField(Contact)
     url = fields.GenericRelation(URL_i18n)
     ts = models.DateTimeField(auto_now=True)
+
+    get_address = Address_i18n.get_address_factory('address')
+    get_address.short_description = 'Realm Address'
 
     class Meta:
         verbose_name = "Realm"
