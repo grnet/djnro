@@ -161,6 +161,7 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'widget_tweaks',
     'sortedm2m',
     'social_django',
     'edumanage',
