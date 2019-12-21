@@ -182,21 +182,16 @@ def manage(request):
 @never_cache
 def institutions(request):
     user = request.user
-    dict = {}
     try:
         profile = user.userprofile
         inst = profile.institution
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    dict['institution'] = inst.pk
-    form = InstDetailsForm(initial=dict)
-    form.fields['institution'].widget.attrs['readonly'] = True
     return render(
         request,
         'edumanage/institution.html',
         context=merge_dicts({
             'institution': inst,
-            'form': form,
         }, base_response(request))
     )
 
