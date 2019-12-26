@@ -29,22 +29,26 @@
 					<input class="input" id="disabledInput2" type="text" placeholder="{{institution.get_ertype_display}}" disabled>
 				</div>
 			</div>
-			<div class="form-group {% if form.address_street.errors %} error {% endif %}">
-				<label class="control-label" for="id_address_street"><b>{% trans "Address Street" %}</b></label>
-				<div class="controls">
-					{{ form.address_street }}
-					{% if form.address_street.errors %} <div class="alert-danger" > {{ form.address_street.errors|join:", " }} </div>
-					{% endif %} <span class="help-block"> {{ form.address_street.help_text }}</span>
-				</div>
-			</div>
-			<div class="form-group {% if form.address_city.errors %} error {% endif %}">
-				<label class="control-label" for="id_address_city"><b>{% trans "Address City" %}</b></label>
-				<div class="controls" >
-					{{ form.address_city }}
-					{% if form.address_city.errors %} <div class="alert-danger" > {{ form.address_city.errors|join:", " }} </div>
-					{% endif %} <span class="help-block"> {{ form.address_city.help_text }}</span>
-				</div>
-			</div>
+		    <div class="form-group {% for err in addrs_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if addrs_form.non_form_errors %}error{% endif %}">
+		        <label class="control-label" for="id_addrs"><b>{% trans "Address" %}</b></label>
+		        {{addrs_form.management_form}}
+		        <div class="controls">
+		        {% if addrs_form.non_form_errors %} <div class="alert-danger"> {{ addrs_form.non_form_errors|join:", "}}</div>{% endif %}
+		            <table id="addrsform"><thead><tr><td>{% trans "Street" %}</td><td>{% trans "City" %}</td><td>{% trans "Language" %}</td></tr></thead><tbody>
+		        {% for formset in addrs_form.forms %}
+		        {{ formset.id }}
+
+
+		            <tr id="{{ formset.prefix }}-row">
+		            <td> {% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.street }}{% if formset.street.errors %}<br><div class="alert-danger">  {{ formset.street.errors|join:", " }} </div>{% endif %}</td>
+		             <td>{{formset.city}}{% if formset.city.errors %}<br><div class="alert-danger">  {{ formset.city.errors|join:", " }} </div>{% endif %}</td>
+		             <td>{{formset.lang}}{% if formset.lang.errors %}<br><div class="alert-danger">  {{ formset.lang.errors|join:", " }} </div>{% endif %}</td>
+
+		        </tr>
+		        {% endfor %}
+		        </tbody></table>
+		        </div>
+		    </div>
 			<div class="form-group {% if form.contact.errors %} error {% endif %}">
 				<label class="control-label" for="id_contact"><b>{% trans "Contacts" %}</b></label>
 				<div class="controls">
@@ -180,6 +184,12 @@ $(document).ready(function() {
 	 $('#urlsform tbody tr').formset({
         prefix: '{{urls_form.prefix}}',
         formCssClass: "dynamic-formset1",
+        added: addButton,
+    });
+
+	 $('#addrsform tbody tr').formset({
+        prefix: '{{addrs_form.prefix}}',
+        formCssClass: "dynamic-formset2",
         added: addButton,
     });
 
