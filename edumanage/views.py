@@ -50,6 +50,7 @@ from edumanage.models import (
     InstRealm,
     Contact,
     Name_i18n,
+    Address_i18n,
 )
 from accounts.models import UserProfile
 from edumanage.forms import (
@@ -61,7 +62,7 @@ from edumanage.forms import (
     MonLocalAuthnParamForm,
     InstRealmMonForm,
     ServiceLocForm,
-    NameFormSetFact,
+    Generici18nFormSetFact,
     UrlFormSetFact,
     InstServerForm
 )
@@ -74,6 +75,7 @@ from django.utils.cache import (
 from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
 from utils.locale import setlocale, compat_strxfrm
+from utils.functional import partialclass
 
 
 # Almost verbatim copy of django.views.i18n.set_language; however:
@@ -215,67 +217,86 @@ def add_institution_details(request, institution_pk):
         )
         return HttpResponseRedirect(reverse("institutions"))
 
-    if request.method == "GET":
-        try:
-            inst_details = InstitutionDetails.objects.get(institution=inst)
-            form = InstDetailsForm(instance=inst_details)
-            UrlFormSet = generic_inlineformset_factory(
-                URL_i18n,
-                extra=2,
-                formset=UrlFormSetFactInst,
-                can_delete=True
-            )
-            urls_form = UrlFormSet(prefix='urlsform', instance=inst_details)
-        except InstitutionDetails.DoesNotExist:
-            form = InstDetailsForm()
-            form.fields['institution'] = forms.ModelChoiceField(
-                queryset=Institution.objects.filter(pk=institution_pk),
-                empty_label=None
-            )
-            UrlFormSet = generic_inlineformset_factory(
-                URL_i18n,
-                extra=2,
-                can_delete=True
-            )
-            urls_form = UrlFormSet(prefix='urlsform')
-
-        form.fields['contact'] = forms.ModelMultipleChoiceField(
+    formset_params = (
+        ('url', URL_i18n, {'formset': UrlFormSetFactInst}),
+        ('addr', Address_i18n, {
+            'formset': partialclass(Generici18nFormSetFact,
+                                    obj_descr=_('institution address')),
+        }),
+    )
+    _fsf_kwargs = {'extra': 2}
+    formsets = {}
+    # Determine add or edit
+    try:
+        inst_details = InstitutionDetails.objects.get(institution=inst)
+        form_kwargs = {'instance': inst_details}
+    except InstitutionDetails.DoesNotExist:
+        inst_details = None
+        form_kwargs = {}
+    form_fields = {
+        'institution': forms.ModelChoiceField(
+            queryset=Institution.objects.filter(pk=institution_pk),
+            empty_label=None
+        ),
+        'contact': forms.ModelMultipleChoiceField(
             queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
-        )
+        ),
+    }
+    if request.method == "GET":
+        form = InstDetailsForm(**form_kwargs)
+        if not inst_details:
+            form.fields['institution'] = form_fields['institution']
+        form.fields['contact'] = form_fields['contact']
+        for form_key, model, fsf_kwargs_bound in formset_params:
+            fsf_kwargs = _fsf_kwargs.copy()
+            fs_kwargs = {'prefix': '%ssform' % form_key}
+            if inst_details:
+                fsf_kwargs.update(fsf_kwargs_bound)
+                fs_kwargs['instance'] = inst_details
+            formsets[form_key] = generic_inlineformset_factory(
+                model, **fsf_kwargs
+            )(**fs_kwargs)
         return render(
             request,
             'edumanage/institution_edit.html',
-            context=merge_dicts({'institution': inst, 'form': form, 'urls_form': urls_form}, base_response(request))
+            context=merge_dicts({
+                'institution': inst,
+                'form': form,
+                'urls_form': formsets['url'],
+                'addrs_form': formsets['addr']
+            }, base_response(request))
         )
-    elif request.method == 'POST':
+    if request.method == 'POST':
         request_data = request.POST.copy()
-        UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
-        try:
-            inst_details = InstitutionDetails.objects.get(institution=inst)
-            form = InstDetailsForm(request_data, instance=inst_details)
-            urls_form = UrlFormSet(request_data, instance=inst_details, prefix='urlsform')
-        except InstitutionDetails.DoesNotExist:
-            form = InstDetailsForm(request_data)
-            urls_form = UrlFormSet(request_data, prefix='urlsform')
-        UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
-        if form.is_valid() and urls_form.is_valid():
+        form = InstDetailsForm(request_data, **form_kwargs)
+        for form_key, model, fsf_kwargs_extra in formset_params:
+            fsf_kwargs = _fsf_kwargs.copy()
+            fsf_kwargs.update(fsf_kwargs_extra)
+            fs_kwargs = {'prefix': '%ssform' % form_key}
+            if inst_details:
+                fs_kwargs.update(form_kwargs)
+            formsets[form_key] = generic_inlineformset_factory(
+                model, **fsf_kwargs
+            )(request_data, **fs_kwargs)
+        if form.is_valid() and all(
+                [formsets[form_key].is_valid() for form_key in formsets]):
             instdets = form.save()
-            urls_form.instance = instdets
-            urls_form.save()
+            for form_key in formsets:
+                formsets[form_key].instance = instdets
+                formsets[form_key].save()
             return HttpResponseRedirect(reverse("institutions"))
-        else:
-            form.fields['institution'] = forms.ModelChoiceField(
-                queryset=Institution.objects.filter(pk=institution_pk),
-                empty_label=None
-            )
-            form.fields['contact'] = forms.ModelMultipleChoiceField(
-                queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
-            )
-            return render(
-                request,
-                'edumanage/institution_edit.html',
-                context=merge_dicts({'institution': inst, 'form': form, 'urls_form': urls_form}, base_response(request))
-            )
+        # invalid form data, render page with errors
+        form.fields.update(form_fields)
+        return render(
+            request,
+            'edumanage/institution_edit.html',
+            context=merge_dicts({
+                'institution': inst,
+                'form': form,
+                'urls_form': formsets['url'],
+                'addrs_form': formsets['addr']
+            }, base_response(request))
+        )
 
 
 @login_required
@@ -364,57 +385,56 @@ def add_services(request, service_pk):
             'edumanage/services_edit.html',
             context=merge_dicts({'edit': edit}, base_response(request))
         )
-    if request.method == "GET":
-
-        # Determine add or edit
-        try:
-            service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
-            form = ServiceLocForm(instance=service)
-        except ServiceLoc.DoesNotExist:
-            form = ServiceLocForm()
-            if service_pk:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    'You have no rights to edit this location'
-                )
-                return HttpResponseRedirect(reverse("services"))
-        form.fields['institutionid'] = forms.ModelChoiceField(
+    formset_params = (
+        ('url', URL_i18n, {'formset': UrlFormSetFact}),
+        ('name', Name_i18n, {
+            'formset': partialclass(Generici18nFormSetFact,
+                                    obj_descr=_('location name')),
+            'extra': 1
+        }),
+        ('addr', Address_i18n, {
+            'formset': partialclass(Generici18nFormSetFact,
+                                    obj_descr=_('location address')),
+        }),
+    )
+    _fsf_kwargs = {'extra': 2}
+    formsets = {}
+    # Determine add or edit
+    try:
+        service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
+        form_kwargs = {'instance': service}
+    except ServiceLoc.DoesNotExist:
+        form_kwargs = {}
+        if service_pk:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'You have no rights to edit this location'
+            )
+            return HttpResponseRedirect(reverse("services"))
+    form_fields = {
+        'institutionid': forms.ModelChoiceField(
             queryset=Institution.objects.filter(pk=inst.pk),
             empty_label=None
-        )
-        UrlFormSet = generic_inlineformset_factory(
-            URL_i18n,
-            extra=2,
-            can_delete=True
-        )
-        NameFormSet = generic_inlineformset_factory(
-            Name_i18n,
-            extra=2,
-            can_delete=True
-        )
-        urls_form = UrlFormSet(prefix='urlsform')
-        names_form = NameFormSet(prefix='namesform')
-        if (service):
-            NameFormSet = generic_inlineformset_factory(
-                Name_i18n,
-                extra=1,
-                formset=NameFormSetFact, can_delete=True
-            )
-            names_form = NameFormSet(instance=service, prefix='namesform')
-            UrlFormSet = generic_inlineformset_factory(
-                URL_i18n,
-                extra=2,
-                formset=UrlFormSetFact,
-                can_delete=True
-            )
-            urls_form = UrlFormSet(instance=service, prefix='urlsform')
-        form.fields['contact'] = forms.ModelMultipleChoiceField(
+        ),
+        'contact': forms.ModelMultipleChoiceField(
             queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
-        )
+        ),
+    }
+    if request.method == "GET":
+        form = ServiceLocForm(**form_kwargs)
+        form.fields.update(form_fields)
+        for form_key, model, fsf_kwargs_bound in formset_params:
+            fsf_kwargs = _fsf_kwargs.copy()
+            fs_kwargs = {'prefix': '%ssform' % form_key}
+            if service:
+                fsf_kwargs.update(fsf_kwargs_bound)
+                fs_kwargs['instance'] = service
+            formsets[form_key] = generic_inlineformset_factory(
+                model, **fsf_kwargs)(**fs_kwargs)
         if service:
             edit = True
-        for url_form in urls_form.forms:
+        for url_form in formsets['url'].forms:
             url_form.fields['urltype'] = forms.ChoiceField(
                 choices=(('', '----------'), ('info', 'Info'),)
             )
@@ -423,68 +443,37 @@ def add_services(request, service_pk):
             'edumanage/services_edit.html',
             context=merge_dicts({
                 'form': form,
-                'services_form': names_form,
-                'urls_form': urls_form,
+                'services_form': formsets['name'],
+                'urls_form': formsets['url'],
+                'addrs_form': formsets['addr'],
                 "edit": edit
             }, base_response(request))
         )
-    elif request.method == 'POST':
+    if request.method == 'POST':
         request_data = request.POST.copy()
-        NameFormSet = generic_inlineformset_factory(
-            Name_i18n,
-            extra=1,
-            formset=NameFormSetFact,
-            can_delete=True
-        )
-        UrlFormSet = generic_inlineformset_factory(
-            URL_i18n,
-            extra=2,
-            formset=UrlFormSetFact,
-            can_delete=True
-        )
-        try:
-            service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
-            form = ServiceLocForm(request_data, instance=service)
-            names_form = NameFormSet(
-                request_data,
-                instance=service,
-                prefix='namesform'
-            )
-            urls_form = UrlFormSet(
-                request_data,
-                instance=service,
-                prefix='urlsform'
-            )
-        except ServiceLoc.DoesNotExist:
-            form = ServiceLocForm(request_data)
-            names_form = NameFormSet(request_data, prefix='namesform')
-            urls_form = UrlFormSet(request_data, prefix='urlsform')
-            if service_pk:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    'You have no rights to edit this location'
-                )
-                return HttpResponseRedirect(reverse("services"))
-        if form.is_valid() and names_form.is_valid() and urls_form.is_valid():
+        form = ServiceLocForm(request_data, **form_kwargs)
+        for form_key, model, fsf_kwargs_extra in formset_params:
+            fsf_kwargs = _fsf_kwargs.copy()
+            fsf_kwargs.update(fsf_kwargs_extra)
+            fs_kwargs = {'prefix': '%ssform' % form_key}
+            if service:
+                fs_kwargs.update(form_kwargs)
+            formsets[form_key] = generic_inlineformset_factory(
+                model, **fsf_kwargs
+            )(request_data, **fs_kwargs)
+        if form.is_valid() and all(
+                [formsets[form_key].is_valid() for form_key in formsets]):
             serviceloc = form.save()
             service = serviceloc
-            names_form.instance = service
-            urls_form.instance = service
-            names_form.save()
-            urls_form.save()
+            for form_key in formsets:
+                formsets[form_key].instance = service
+                formsets[form_key].save()
             return HttpResponseRedirect(reverse("services"))
-        else:
-            form.fields['institutionid'] = forms.ModelChoiceField(
-                queryset=Institution.objects.filter(pk=inst.pk),
-                empty_label=None
-            )
-            form.fields['contact'] = forms.ModelMultipleChoiceField(
-                queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
-            )
+        # invalid form data, render page with errors
+        form.fields.update(form_fields)
         if service:
             edit = True
-        for url_form in urls_form.forms:
+        for url_form in formsets['url'].forms:
             url_form.fields['urltype'] = forms.ChoiceField(
                 choices=(('', '----------'), ('info', 'Info'),)
             )
@@ -494,8 +483,9 @@ def add_services(request, service_pk):
             context=merge_dicts({
                 'institution': inst,
                 'form': form,
-                'services_form': names_form,
-                'urls_form': urls_form,
+                'services_form': formsets['name'],
+                'urls_form': formsets['url'],
+                'addrs_form': formsets['addr'],
                 'edit': edit
             }, base_response(request))
         )
