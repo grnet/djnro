@@ -118,11 +118,11 @@
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="id_address_street">{% trans "Address" %}</label>
+        <label class="control-label" for="id_address">{% trans "Address" %}</label>
         <div class="controls">
-            {{ service.address_street }}<br>
-            {{ service.address_city }}
-
+            {% for service_address in service.address.all %}
+            {{ service_address.street }}{% if service_address.street %}, {% endif %}{{ service_address.city }} ({{service_address.get_lang_display}}){% if not forloop.last %}<br>{% endif %}
+            {% endfor %}
         </div>
     </div>
     <div class="control-group">
