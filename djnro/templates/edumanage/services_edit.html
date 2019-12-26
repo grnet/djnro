@@ -129,42 +129,12 @@
 		</div>
 	</div>
 	<div class="col-md-6">
-		<div class="form-group {% if form.port_restrict.errors %} error {% endif %}">
-			<label for="id_number_user">{% trans "Port Restrict" %}</label>
+		<div class="form-group {% if form.tag.errors %} error {% endif %}">
+			<label for="id_tag">{% trans "Tags" %}</label>
 			<div class="controls">
-				{{ form.port_restrict }}
-				{% if form.port_restrict.errors %} <div class="alert-danger"> {{ form.port_restrict.errors|join:", " }} </div>
-				{% endif %} <span class="help-block"> {{ form.port_restrict.help_text }}</span>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class="form-group {% if form.transp_proxy.errors %} error {% endif %}">
-			<label for="id_number_id">{% trans "Transparent Proxy" %}</label>
-			<div class="controls">
-				{{ form.transp_proxy }}
-				{% if form.transp_proxy.errors %} <div class="alert-danger"> {{ form.transp_proxy.errors|join:", " }} </div>
-				{% endif %} <span class="help-block"> {{ form.transp_proxy.help_text }}</span>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class="form-group {% if form.IPv6.errors %} error {% endif %}">
-			<label for="id_number_id">IPv6</label>
-			<div class="controls">
-				{{ form.IPv6 }}
-				{% if form.IPv6.errors %} <div class="alert-danger"> {{ form.IPv6.errors|join:", " }} </div>
-				{% endif %} <span class="help-block"> {{ form.IPv6.help_text }}</span>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class="form-group {% if form.NAT.errors %} error {% endif %}">
-			<label for="id_number_id">NAT</label>
-			<div class="controls">
-				{{ form.NAT }}
-				{% if form.NAT.errors %} <div class="alert-danger"> {{ form.NAT.errors|join:", " }} </div>
-				{% endif %} <span class="help-block"> {{ form.NAT.help_text }}</span>
+				{{ form.tag }}
+				{% if form.tag.errors %} <div class="alert-danger"> {{ form.tag.errors|join:", " }} </div>
+				{% endif %} <span class="help-block"> {{ form.tag.help_text }}</span>
 			</div>
 		</div>
 	</div>
