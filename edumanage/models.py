@@ -2,10 +2,7 @@
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 from collections import namedtuple
 import uuid
-try:
-    from inspect import getfullargspec as getargspec
-except ImportError:
-    from inspect import getargspec
+from django.utils.inspect import getargspec
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -49,7 +46,9 @@ class MultiSelectFormField(forms.MultipleChoiceField):
     def __init__(self, *args, **kwargs):
         supercls = super(MultiSelectFormField, self)
         # remove TypedChoiceField extra args
-        supercls_init_args = getargspec(supercls.__init__).args[1:]
+        supercls_init_args = getargspec(supercls.__init__)[0]
+        if supercls_init_args[0:0] == ['self']:
+            del supercls_init_args[0]
         supercls.__init__(
             *args,
             **{key: val for (key, val) in kwargs.items()
