@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load tolocale %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block management_content %}
 <h4>
@@ -75,22 +76,25 @@
 		</div>
 	</div>
 	<div class="col-md-6">
-		<div class="form-group {% if form.address_street.errors %} error {% endif %}">
-			<label for="id_address_street">{% trans "Address Street" %}</label>
+		<div class="form-group {% for err in addrs_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if addrs_form.non_form_errors %}error{% endif %}">
+			<label for="id_address">{% trans "Address" %}</label>
+			{{addrs_form.management_form}}
 			<div class="controls">
-				{{ form.address_street }}
-				{% if form.address_street.errors %} <div class="alert-danger"> {{ form.address_street.errors|join:", " }} </div>
-				{% endif %} <span class="help-block"> {{ form.address_street.help_text }}</span>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
-		<div class="form-group {% if form.address_city.errors %} error {% endif %}">
-			<label for="id_address_city"><b>{% trans "Address City" %}</b></label>
-			<div class="controls">
-				{{ form.address_city }}
-				{% if form.address_city.errors %} <div class="alert-danger"> {{ form.address_city.errors|join:", " }} </div>
-				{% endif %} <span class="help-block"> {{ form.address_city.help_text }}</span>
+			{% for err in addrs_form.errors %}{% if err|length > 0 %}<span class="help-inline"></span>{% endif %}{% endfor %}
+			{% if addrs_form.non_form_errors %} <div class="alert-danger"> {{ addrs_form.non_form_errors|join:", "}}</div>{% endif %}
+				<table id="addrsform"><thead><tr><td>{% trans "Street" %}</td><td>{% trans "City" %}</td><td>{% trans "Language" %}</td></tr></thead><tbody>
+			{% for formset_a in addrs_form.forms %}
+			{{ formset_a.id }}
+
+
+				<tr id="{{ formset_a.prefix }}-row">
+				<td> {% if formset_a.instance.pk %}{{ formset_a.DELETE }}{% endif %}{{ formset_a.street|set_data:"address:street" }}{% if formset_a.street.errors %}<br><div class="alert-danger">{{ formset_a.street.errors|join:", " }} </div>{% endif %}</td>
+				     <td>{{ formset_a.city|set_data:"address:city" }}{% if formset_a.city.errors %}<br><div class="alert-danger">{{ formset_a.city.errors|join:", " }} </div>{% endif %}</td>
+		             <td>{{formset_a.lang|set_data:"address:lang"}}{% if formset_a.lang.errors %}<br><p class="help-inline"> {{ formset_a.lang.errors|join:", " }} </p>{% endif %}</td>
+
+			</tr>
+			{% endfor %}
+			</tbody></table>
 			</div>
 		</div>
 	</div>
@@ -279,13 +283,38 @@
 		function setPositionValues(position) {
 			$("#id_longitude").val('');
 			$("#id_latitude").val('');
-			$("#id_address_street").val('');
-			$("#id_address_city").val('');
+			// $("[data-address='street']").val('');
+			// $("[data-address='city']").val('');
 			pos_lng = new Number(position.lng().toPrecision(11)).toFixed(8);
 			pos_lat = new Number(position.lat().toPrecision(11)).toFixed(8);
 			$("#id_longitude").val(pos_lng);
 			$("#id_latitude").val(pos_lat);
-			codeLatLng(position);
+			var addrData = {};
+			$('[data-address="lang"]').each(function(){
+				var $tr = $(this).parents('tr'),
+					lang = $(this).children(':selected').attr('value'),
+					$street = $tr.find('[data-address="street"]'),
+					$city = $tr.find('[data-address="city"]');
+				if (!lang) {
+					return;
+				}
+				if (!(lang in addrData)) {
+					addrData[lang] = {
+						street: $street,
+						city: $city
+					}
+				} else {
+					addrData[lang].street = addrData[lang].street.add($street.get());
+					addrData[lang].city = addrData[lang].city.add($city.get());
+				}
+			});
+			for (var lang in addrData) {
+				if (lang != 'en') {
+					continue;
+				}
+				codeLatLng(position, lang, addrData[lang].street,
+						   addrData[lang].city);
+			}
 		}
 
 		function getPosition(position) {
@@ -303,11 +332,12 @@
 			setPositionValues(position);
 		}
 
-		function geocode(position){
+		function geocode(position, lang, $street, $city){
 			geocoder
 			.geocode(
 					{
-						'latLng' : position
+						'latLng' : position,
+						'language': lang
 					},
 					function(results, status) {
 						if (status == google.maps.GeocoderStatus.OK) {
@@ -349,13 +379,13 @@
 									addr_field = addr.route + " "
 											+ addr.street_number;
 								}
-								$("#id_address_street").val(addr_field);
+								$street.val(addr_field);
 								city_field = addr.city;
 								if (addr.zipcode) {
 									city_field = addr.city + ", "
 											+ addr.zipcode;
 								}
-								$("#id_address_city").val(city_field);
+								$city.val(city_field);
 							}
 						}
 					});
@@ -368,7 +398,7 @@
 			addr_name = '';
 			addr_city = '';
 			addr_code = '';
-			geocode(position)
+			geocode.apply(null, arguments);
 		}
 		function initialize() {
 			image = new google.maps.MarkerImage('{% static '/img/edupin.png' %}',
@@ -512,6 +542,12 @@
 			 $('#locsform tbody tr').formset({
 		            prefix: '{{services_form.prefix}}',
 		            formCssClass: "dynamic-formset2",
+		            added: addButton
+		        });
+
+			 $('#addrsform tbody tr').formset({
+		            prefix: '{{addrs_form.prefix}}',
+		            formCssClass: "dynamic-formset3",
 		            added: addButton
 		        });
 
