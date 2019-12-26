@@ -168,8 +168,15 @@ class ServiceLocForm(forms.ModelForm):
         fields = '__all__'
 
 
-class NameFormSetFact(BaseGenericInlineFormSet):
+class Generici18nFormSetFact(BaseGenericInlineFormSet):
+    def __init__(self, *args, **kwargs):
+        self.obj_descr = kwargs.pop('obj_descr')
+        super(Generici18nFormSetFact, self).__init__(*args, **kwargs)
+
     def clean(self):
+        error_msg = _("Fill in at least one %(obj_descr) in English") % {
+            'obj_descr': self.obj_descr
+        }
         if any(self.errors):
             return
         langs = []
@@ -180,19 +187,13 @@ class NameFormSetFact(BaseGenericInlineFormSet):
                 empty_forms = False
             langs.append(form.cleaned_data.get('lang', None))
         if empty_forms:
-            raise forms.ValidationError(_("Fill in at least one location name in English"))
+            raise forms.ValidationError(error_msg)
         if "en" not in langs:
-            raise forms.ValidationError(_("Fill in at least one location name in English"))
+            raise forms.ValidationError(error_msg)
 
 
 class UrlFormSetFact(BaseGenericInlineFormSet):
     def clean(self):
-        if any(self.errors):
-            return
-        for i in range(0, self.total_form_count()):
-            form = self.forms[i]
-            if len(form.cleaned_data) == 0:
-                pass
         return
 
 
@@ -204,10 +205,11 @@ class UrlFormSetFactInst(BaseGenericInlineFormSet):
         empty_forms = True
         for i in range(0, self.total_form_count()):
             form = self.forms[i]
-            if len(form.cleaned_data) != 0:
+            if form.cleaned_data:
                 empty_forms = False
             url_types.append(form.cleaned_data.get('urltype', None))
+        error_msg = _("Fill in at least the info url")
         if empty_forms:
-            raise forms.ValidationError(_("Fill in at least the info url"))
+            raise forms.ValidationError(error_msg)
         if "info" not in url_types:
-            raise forms.ValidationError(_("Fill in at least the info url"))
+            raise forms.ValidationError(error_msg)
