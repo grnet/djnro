@@ -28,16 +28,17 @@
 								{{ institution.get_ertype_display }}
 							</div>
 						</div>
+					{% tolocale_get institution.institutiondetails LANGUAGE_CODE get="address" as institutiondetails_address %}
 					<div class="col-md-2">
-						<label class="" for="id_address_street">{% trans "Address Street" %}</label>
+						<label class="" for="id_address_street">{% trans "Street" %}</label>
 						<div class="">
-							{{ institution.institutiondetails.address_street }}
+							{{ institutiondetails_address.street }}
 						</div>
 					</div>
 					<div class="col-md-2">
-						<label class="" for="id_address_city">{% trans "Address City" %}</label>
+						<label class="" for="id_address_city">{% trans "City" %}</label>
 						<div class="">
-							{{ institution.institutiondetails.address_city }}
+							{{ institutiondetails_address.city }}
 						</div>
 					</div>
 					<div class="col-md-2">
