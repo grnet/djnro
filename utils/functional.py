@@ -1,3 +1,5 @@
+from django.utils.inspect import getargspec
+
 class cached_property(object):
     """Property descriptor that caches the return value
     of the get function.
@@ -21,42 +23,52 @@ class cached_property(object):
     """
 
     def __init__(self, fget=None, fset=None, fdel=None, doc=None, name=None):
-        self.__get = fget
-        self.__set = fset
-        self.__del = fdel
-        self.__doc__ = doc or fget.__doc__
-        self.__name__ = name or fget.__name__
-        self.__module__ = fget.__module__
+        self.fget = fget
+        self.fset = fset
+        self.fdel = fdel
+        if doc is None and fget is not None:
+            doc = fget.__doc__
+        self.__doc__ = doc
+        if name is None and fget is not None:
+            name = fget.__name__
+        self.__name__ = name
+        if fget is not None:
+            self.__module__ = fget.__module__
 
-    def __get__(self, obj, type=None):
+    def __get__(self, obj, objtype=None):
         if obj is None:
             return self
+        if self.fget is None:
+            raise AttributeError("unreadable attribute")
         try:
             return obj.__dict__[self.__name__]
         except KeyError:
-            value = obj.__dict__[self.__name__] = self.__get(obj)
+            value = obj.__dict__[self.__name__] = self.fget(obj)
             return value
 
     def __set__(self, obj, value):
         if obj is None:
-            return self
-        if self.__set is not None:
-            value = self.__set(obj, value)
+            return
+        if self.fset is not None:
+            value = self.fset(obj, value)
         obj.__dict__[self.__name__] = value
 
     def __delete__(self, obj):
         if obj is None:
-            return self
+            return
         try:
             value = obj.__dict__.pop(self.__name__)
         except KeyError:
             pass
         else:
-            if self.__del is not None:
-                self.__del(obj, value)
+            if self.fdel is not None:
+                fdel_args = [obj]
+                if len(getargspec(self.fdel)[0]) == 2:
+                    fdel_args.append(value)
+                self.fdel(*fdel_args)
 
     def setter(self, fset):
-        return self.__class__(self.__get, fset, self.__del)
+        return self.__class__(self.fget, fset, self.fdel, self.__doc__, self.__name__)
 
     def deleter(self, fdel):
-        return self.__class__(self.__get, self.__set, fdel)
+        return self.__class__(self.fget, self.fset, fdel, self.__doc__, self.__name__)
