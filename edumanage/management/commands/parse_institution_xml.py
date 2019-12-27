@@ -47,6 +47,12 @@ class Command(BaseCommand):
 empty string. This will break if a target field does not accept null values, but
 it is useful if you want to enforce that the input XML aligns with the database
 schema.''')
+        parser.add_argument(
+            '--eduroam-database-version',
+            dest='edb_version',
+            type=int,
+            default=2
+        )
 
     def handle(self, **options):
         '''
@@ -59,6 +65,8 @@ schema.''')
             self.stdout.write_maybe = lambda *args: None
 
         self.strict_empty_text_nodes = options['strict']
+
+        self.edb_version = options['edb_version']
 
         self.parse_and_create(options['file'])
 
@@ -121,6 +129,59 @@ schema.''')
                                 (created_or_found,
                                  type_str(object_tuple[0]),
                                 six.text_type(object_tuple[0])))
+        return object_tuple
+
+    def parse_and_create_address(self, relobj_or_model, element):
+        self.stdout.write_maybe('Parsing %s' % element.tag)
+        parameters = {}
+        required_parameters = ['lang', 'street', 'city']
+        for child_element in element.getchildren():
+            try:
+                lang = element.attrib['lang']
+                if 'lang' in parameters:
+                    assert lang == parameters['lang']
+                else:
+                    parameters['lang'] = lang
+            except KeyError:
+                self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
+                return None, False
+            except AssertionError:
+                self.stdout.write_maybe(
+                    'Skipping %s: different languages not supported' %
+                    element.tag
+                )
+                return None, False
+            parameters[child_element.tag] = \
+                self.parse_text_node(child_element)
+        if not all([key in parameters for key in required_parameters]):
+            self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
+            return None, False
+        if not all([key in required_parameters for key in parameters]):
+            self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
+            return None, False
+        for key in parameters:
+            if not parameters[key]:
+                self.stdout.write_maybe('Skipping %s: empty %s' %
+                                        (element.tag, key))
+                return None, False
+        try:
+            parameters['content_type'] = \
+              ContentType.objects.get_for_model(type(relobj_or_model))
+            parameters['object_id'] = relobj_or_model.pk
+            bound = True
+        # (ModelClass) object has no attribute '_meta'
+        except AttributeError:
+            parameters['content_type'] = \
+              ContentType.objects.get_for_model(relobj_or_model)
+            bound = False
+        object_tuple = Address_i18n.objects.get_or_create(**parameters)
+        created_or_found = 'Created' if object_tuple[1] else 'Found'
+        if object_tuple[1] and not bound:
+            created_or_found += ' (preliminary)'
+        self.stdout.write_maybe('%s %s: %s' %
+                                (created_or_found,
+                                 type_str(object_tuple[0]),
+                                 six.text_type(object_tuple[0])))
         return object_tuple
 
     def parse_and_create_url(self, relobj, element):
@@ -206,6 +267,7 @@ schema.''')
         name_elements = []
         contact_elements = []
         url_elements = []
+        address_elements = []
         # eduroam db XSD says these are optional, but unfortunately
         # they are not optional in our schema, so use some defaults
         parameters = {k : False for k in ['port_restrict', 'transp_proxy',
@@ -224,10 +286,10 @@ schema.''')
                 contact_elements.append(child_element)
                 continue
             if tag == 'address':
-                for sub_element in child_element.getchildren():
-                    if sub_element.tag in ['street', 'city']:
-                        parameters['address_' + sub_element.tag] = \
-                            self.parse_text_node(sub_element)
+                if self.edb_version == 1:
+                    for sub_element in child_element.getchildren():
+                        sub_element.attrib['lang'] = 'en'
+                address_elements.append(child_element)
                 continue
             if tag == 'enc_level':
                 parameters['enc_level'] = \
@@ -249,9 +311,12 @@ schema.''')
         # abort if required data not present
         if False in [x in parameters
                      for x in ['longitude', 'latitude',
-                               'address_street', 'address_city',
                                'SSID', 'enc_level']]:
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
+            return None
+        if self.edb_version == 1 and len(address_elements) > 1:
+            self.stdout.write_maybe('Skipping %s: invalid multiple addresses' %
+                                    element.tag)
             return None
         parameters['institutionid'] = instobj
         # try to find "identical" ServiceLoc (lat, lon, address, ssid...)
@@ -290,6 +355,8 @@ schema.''')
                                 ('Created' if obj_created else 'Found',
                                  type_str(obj),
                                 six.text_type(obj)))
+        for address_element in address_elements:
+            self.parse_and_create_address(obj, address_element)
         for url_element in url_elements:
             self.parse_and_create_url(obj, url_element)
         contacts_new = []
@@ -331,25 +398,25 @@ schema.''')
                 parameters[tag] = int(child_element.text)
                 continue
             if tag in ['inst_realm', 'org_name', 'contact',
-                       'info_URL', 'policy_URL', 'location']:
+                       'info_URL', 'policy_URL', 'location',
+                       'address']:
+                if tag == 'address' and self.edb_version == 1:
+                    for sub_element in child_element.getchildren():
+                        sub_element.attrib['lang'] = 'en'
                 if not tag in parameters:
                     parameters[tag] = []
                 parameters[tag].append(child_element)
                 continue
-            if tag == 'address':
-                for sub_element in child_element.getchildren():
-                    if sub_element.tag in ['street', 'city']:
-                        parameters['address_' + sub_element.tag] = \
-                          self.parse_text_node(sub_element)
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
-        if False in \
-          [x in parameters
-           for x in ['type', 'org_name',
-                     'address_street', 'address_city',
-                     'info_URL']]:
+        required_tags = ['type', 'org_name', 'info_URL', 'address']
+        if not all([tag in parameters for tag in required_tags]):
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
+            return None
+        if self.edb_version == 1 and len(parameters['address']) > 1:
+            self.stdout.write_maybe('Skipping %s: invalid multiple addresses' %
+                                    element.tag)
             return None
         if parameters['type'] not in [1, 2, 3]:
             self.stdout.write_maybe('Skipping %s: invalid type %d' %
@@ -410,10 +477,10 @@ schema.''')
         for idx, contact_element in enumerate(parameters['contact']):
             parameters['contact'][idx] = \
               self.parse_and_create_contact(institution_obj, contact_element)
-        instdetails_defaults={x: parameters[x]
-                              for x in ['address_street',
-                                        'address_city']}
-                                        # 'number_id']
+        instdetails_defaults = [
+            # 'number_id',
+        ]
+        instdetails_defaults = {x: parameters[x] for x in instdetails_defaults}
         instdetails_obj, instdetails_created = \
           InstitutionDetails.objects.\
           get_or_create(defaults=instdetails_defaults,
@@ -450,6 +517,11 @@ schema.''')
                 for url_element in parameters[tag]:
                     url_obj = \
                       self.parse_and_create_url(instdetails_obj, url_element)
+
+        for idx, address_element in enumerate(parameters['address']):
+            parameters['address'][idx] = \
+                self.parse_and_create_address(
+                    instdetails_obj, address_element)
 
         for idx, instrealm_element in enumerate(parameters.get('inst_realm', [])):
             parameters['inst_realm'][idx] = \
