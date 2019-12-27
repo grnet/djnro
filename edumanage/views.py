@@ -2175,17 +2175,20 @@ def instxml(request):
             instLocEncLevel = ElementTree.SubElement(instLocation, "enc_level")
             instLocEncLevel.text = ', '.join(serviceloc.enc_level)
 
-            instLocPortRestrict = ElementTree.SubElement(instLocation, "port_restrict")
-            instLocPortRestrict.text = ("%s" % serviceloc.port_restrict).lower()
-
-            instLocTransProxy = ElementTree.SubElement(instLocation, "transp_proxy")
-            instLocTransProxy.text = ("%s" % serviceloc.transp_proxy).lower()
-
-            instLocIpv6 = ElementTree.SubElement(instLocation, "IPv6")
-            instLocIpv6.text = ("%s" % serviceloc.IPv6).lower()
-
-            instLocNAT = ElementTree.SubElement(instLocation, "NAT")
-            instLocNAT.text = ("%s" % serviceloc.NAT).lower()
+            if version == 1:
+                for tag in ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']:
+                    tag_set = tag in serviceloc.tag
+                    # eduroam db v1 schema caveat: port_restrict not optional
+                    if not tag_set and tag != 'port_restrict':
+                        continue
+                    instLocTagSubElement = ElementTree.SubElement(
+                        instLocation, tag)
+                    instLocTagSubElement.text = six.text_type(
+                        1 if tag_set else 0
+                    )
+            else:
+                instLocTagElement = ElementTree.SubElement(instLocation, 'tag')
+                instLocTagElement.text = ','.join(serviceloc.tag)
 
             instLocAP_no = ElementTree.SubElement(instLocation, "AP_no")
             instLocAP_no.text = "%s" % int(serviceloc.AP_no)
