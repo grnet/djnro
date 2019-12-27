@@ -169,8 +169,8 @@
 												+ "<dt>NAT</dt><dd>"
 												+ jsonMarker.NAT
 												+ "&nbsp;</dd>"
-												+ "<dt>Wired</dt><dd>"
-												+ jsonMarker.wired
+												+ "<dt>Wired Number</dt><dd>"
+												+ jsonMarker.wired_no
 												+ "&nbsp;</dd></dl>"
 												+ "</div>"
 												+ "</div>"

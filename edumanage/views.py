@@ -2034,7 +2034,7 @@ def ourPoints(institution=None, cache_flush=False):
             #     ]
             for loc_tag, __ in ServiceLoc.LOCATION_TAGS:
                 point[loc_tag] = str(loc_tag in sl.tag)
-            point['wired'] = u"%s" % (sl.wired)
+            point['wired_no'] = u"%s" % (sl.wired_no)
             point['SSID'] = u"%s" % (sl.SSID)
             point['key'] = u"%s" % sl.pk
             points[cache_key].append(point)
