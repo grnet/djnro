@@ -294,6 +294,12 @@ schema.''')
                 parameters['enc_level'] = \
                   re.split(r'\s*,\s*', self.parse_text_node(child_element))
                 continue
+            if self.edb_version == 1 and tag == 'wired':
+                parameters['wired_no'] = \
+                    getattr(settings, '_SERVICELOC_DERIVE_WIRED_NO').get(
+                        child_element.text in ('true', '1')
+                    )
+                continue
             if self.edb_version == 1 and tag in edb_v1_tags:
                 if child_element.text in ('true', '1'):
                     parameters['tag'].append(tag)
@@ -305,6 +311,9 @@ schema.''')
             if tag == 'AP_no':
                 parameters['AP_no'] = \
                   int(child_element.text)
+                continue
+            if self.edb_version != 1 and tag == 'wired_no':
+                parameters[tag] = int(child_element.text)
                 continue
             if tag == 'info_URL':
                 url_elements.append(child_element)
