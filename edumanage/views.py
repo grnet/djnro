@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+from itertools import groupby
 import json
 import bz2
 import math
@@ -2001,9 +2002,20 @@ def ourPoints(institution=None, cache_flush=False):
             point = {}
             point['lat'] = u"%s" % sl.latitude
             point['lng'] = u"%s" % sl.longitude
-            point['address'] = u"%s<br>%s" % (
-                sl.address_street, sl.address_city
+            addrs = {
+                group[0]: [
+                    ', '.join([f for f in (addr.street, addr.city) if f])
+                    for addr in group[1]
+                ]
+                for group in groupby(
+                    sl.address.order_by('lang'),
+                    key=lambda addr: addr.lang
                 )
+            }
+            point['address'] = {
+                lang: '<br>'.join(addrs[lang])
+                for lang in addrs
+            }
             if sl.enc_level:
                 point['enc'] = u"%s" % (
                     ','.join(sl.enc_level)
@@ -2043,7 +2055,7 @@ def ourPoints(institution=None, cache_flush=False):
 
 def localizePointNames(points, lang='en'):
     for point in points:
-        for key in ['inst', 'name']:
+        for key in ['inst', 'name', 'address']:
             if key not in point:
                 continue
             try:
