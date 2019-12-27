@@ -2032,10 +2032,8 @@ def ourPoints(institution=None, cache_flush=False):
             #       for attr in ['name', 'phone', 'email'] }
             #     for contact in sl.contact.all()
             #     ]
-            point['port_restrict'] = u"%s" % (sl.port_restrict)
-            point['transp_proxy'] = u"%s" % (sl.transp_proxy)
-            point['IPv6'] = u"%s" % (sl.IPv6)
-            point['NAT'] = u"%s" % (sl.NAT)
+            for loc_tag, __ in ServiceLoc.LOCATION_TAGS:
+                point[loc_tag] = str(loc_tag in sl.tag)
             point['wired'] = u"%s" % (sl.wired)
             point['SSID'] = u"%s" % (sl.SSID)
             point['key'] = u"%s" % sl.pk
