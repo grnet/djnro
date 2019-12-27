@@ -2065,8 +2065,21 @@ def localizePointNames(points, lang='en'):
     return points
 
 
+def xml_address_elements(elem, obj, version=2):
+    addr_objs = obj.address.all()
+    if version == 1:
+        addr_objs = addr_objs.filter(lang="en")[:1]
+    for addr_obj in addr_objs:
+        addr_elem = ElementTree.SubElement(elem, "address")
+        for prop in ["street", "city"]:
+            prop_elem = ElementTree.SubElement(addr_elem, prop)
+            prop_elem.text = getattr(addr_obj, prop)
+            if version == 2:
+                prop_elem.attrib["lang"] = addr_obj.lang
+
 @never_cache
 def instxml(request):
+    version = 2
     ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
     root = ElementTree.Element("institutions")
     ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
@@ -2097,13 +2110,7 @@ def instxml(request):
             instOrgName.attrib["lang"] = name.lang
             instOrgName.text = u"%s" % name.name
 
-        instAddress = ElementTree.SubElement(instElement, "address")
-
-        instAddrStreet = ElementTree.SubElement(instAddress, "street")
-        instAddrStreet.text = inst.address_street
-
-        instAddrCity = ElementTree.SubElement(instAddress, "city")
-        instAddrCity.text = inst.address_city
+        xml_address_elements(instElement, inst, version=version)
 
         for contact in inst.contact.all():
             instContact = ElementTree.SubElement(instElement, "contact")
@@ -2150,13 +2157,7 @@ def instxml(request):
                 instLocName.attrib["lang"] = instlocname.lang
                 instLocName.text = instlocname.name
 
-            instLocAddress = ElementTree.SubElement(instLocation, "address")
-
-            instLocAddrStreet = ElementTree.SubElement(instLocAddress, "street")
-            instLocAddrStreet.text = serviceloc.address_street
-
-            instLocAddrCity = ElementTree.SubElement(instLocAddress, "city")
-            instLocAddrCity.text = serviceloc.address_city
+            xml_address_elements(instLocation, serviceloc, version=version)
 
             for contact in serviceloc.contact.all():
                 instLocContact = ElementTree.SubElement(instLocation, "contact")
@@ -2214,6 +2215,7 @@ def instxml(request):
 
 @never_cache
 def realmxml(request):
+    version = 2
     realm = Realm.objects.all()[0]
     ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
     root = ElementTree.Element("realms")
@@ -2232,13 +2234,7 @@ def realmxml(request):
         realmOrgName.attrib["lang"] = name.lang
         realmOrgName.text = u"%s" % name.name
 
-    realmAddress = ElementTree.SubElement(realmElement, "address")
-
-    realmAddrStreet = ElementTree.SubElement(realmAddress, "street")
-    realmAddrStreet.text = realm.address_street
-
-    realmAddrCity = ElementTree.SubElement(realmAddress, "city")
-    realmAddrCity.text = realm.address_city
+    xml_address_elements(realmElement, realm, version=version)
 
     for contact in realm.contact.all():
         realmContact = ElementTree.SubElement(realmElement, "contact")
