@@ -268,11 +268,10 @@ schema.''')
         contact_elements = []
         url_elements = []
         address_elements = []
-        # eduroam db XSD says these are optional, but unfortunately
-        # they are not optional in our schema, so use some defaults
-        parameters = {k : False for k in ['port_restrict', 'transp_proxy',
-                                          'IPv6', 'NAT', 'wired']}
+        parameters = {}
         parameters['AP_no'] = 0
+        parameters['tag'] = []
+        edb_v1_tags = ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']
         for child_element in element.getchildren():
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
@@ -295,10 +294,13 @@ schema.''')
                 parameters['enc_level'] = \
                   re.split(r'\s*,\s*', self.parse_text_node(child_element))
                 continue
-            if tag in ['port_restrict', 'transp_proxy',
-                       'IPv6', 'NAT', 'wired']:
-                parameters[tag] = \
-                  child_element.text in ('true', '1')
+            if self.edb_version == 1 and tag in edb_v1_tags:
+                if child_element.text in ('true', '1'):
+                    parameters['tag'].append(tag)
+                continue
+            if self.edb_version != 1 and tag == 'tag':
+                parameters[tag] = self.parse_text_node(
+                    child_element).split(',')
                 continue
             if tag == 'AP_no':
                 parameters['AP_no'] = \
@@ -306,6 +308,7 @@ schema.''')
                 continue
             if tag == 'info_URL':
                 url_elements.append(child_element)
+        parameters['tag'] = sorted(set(parameters['tag']))
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
