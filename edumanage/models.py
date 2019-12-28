@@ -105,7 +105,7 @@ class MultiSelectField(models.Field):
             def _get_FIELD_display(self, field):
                 values = getattr(self, field.attname)
                 choices = dict(field.flatchoices)
-                return self.separator.join([
+                return field.separator.join([
                     force_text(
                         choices.get(value, value),
                         strings_only=True
