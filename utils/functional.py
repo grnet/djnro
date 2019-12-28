@@ -1,4 +1,22 @@
+from functools import partial
 from django.utils.inspect import getargspec
+try:
+    from functools import partialmethod
+except ImportError:
+    class partialmethod(partial):
+        def __get__(self, instance, owner):
+            if instance is None:
+                return self
+            return partial(self.func, instance,
+                           *(self.args or ()), **(self.keywords or {}))
+
+# https://stackoverflow.com/a/38911383
+def partialclass(cls, *args, **kwds):
+    class NewCls(cls):
+        __init__ = partialmethod(cls.__init__, *args, **kwds)
+    NewCls.__name__ = cls.__name__
+    NewCls.__module__ = cls.__module__
+    return NewCls
 
 class cached_property(object):
     """Property descriptor that caches the return value
