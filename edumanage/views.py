@@ -2019,7 +2019,7 @@ def ourPoints(institution=None, cache_flush=False):
             point['address'] = u"%s<br>%s" % (
                 sl.address_street, sl.address_city
                 )
-            if len(sl.enc_level[0]) != 0:
+            if sl.enc_level:
                 point['enc'] = u"%s" % (
                     ','.join(sl.enc_level)
                     )
