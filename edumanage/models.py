@@ -73,6 +73,11 @@ class MultiSelectField(models.Field):
     def get_internal_type(self):
         return "CharField"
 
+    def get_choices(self, *args, **kwargs):
+        if self.blank:
+            kwargs['include_blank'] = False
+        return super(MultiSelectField, self).get_choices(*args, **kwargs)
+
     def formfield(self, **kwargs):
         defaults = {
             'choices_form_class': MultiSelectFormField
