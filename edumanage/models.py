@@ -93,7 +93,7 @@ class MultiSelectField(models.Field):
         return ''
 
     def from_db_value(self, value, expression, connection, context):
-        return value.split(self.separator) if value is not None else []
+        return value.split(self.separator) if value not in ('', None) else []
 
     def to_python(self, value):
         if isinstance(value, six.string_types):
