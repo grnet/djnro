@@ -7,7 +7,8 @@ from edumanage.models import (
     InstServer,
     Contact,
     InstRealm,
-    ServiceLoc
+    ServiceLoc,
+    Coordinates
 )
 from accounts.models import UserProfile
 from edumanage.fields import MultipleEmailsField
@@ -19,6 +20,30 @@ import re
 FQDN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
 DN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
 
+def get_model_field(model, field_name):
+    fields = forms.models.fields_for_model(
+        model,
+        fields=[field_name]
+    )
+    return fields[field_name]
+
+class ModelFormWithPropertyFields(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        self.property_fields = getattr(self, '_property_fields', {})
+        instance = kwargs.get('instance', None)
+        if instance:
+            initial = kwargs.get('initial', {})
+            initial.update({
+                field_name: getattr(instance, field_name)
+                for field_name in self.property_fields
+            })
+            kwargs['initial'] = initial
+        super(ModelFormWithPropertyFields, self).__init__(*args, **kwargs)
+
+    def save(self, *args, **kwargs): # pylint: disable=arguments-differ
+        for field_name in self.property_fields:
+            setattr(self.instance, field_name, self.cleaned_data[field_name])
+        return super(ModelFormWithPropertyFields, self).save(*args, **kwargs)
 
 class MonLocalAuthnParamForm(forms.ModelForm):
 
@@ -161,11 +186,16 @@ class InstRealmForm(forms.ModelForm):
         return self.cleaned_data["proxyto"]
 
 
-class ServiceLocForm(forms.ModelForm):
+class ServiceLocForm(ModelFormWithPropertyFields):
+
+    latitude = get_model_field(Coordinates, 'latitude')
+    longitude = get_model_field(Coordinates, 'longitude')
+    _property_fields = ['latitude', 'longitude']
 
     class Meta:
         model = ServiceLoc
         fields = '__all__'
+        exclude = ('coordinates',) # pylint: disable=modelform-uses-exclude
 
 
 class Generici18nFormSetFact(BaseGenericInlineFormSet):
