@@ -23,6 +23,7 @@ from django.conf import settings
 from django.utils import six
 from edumanage.models import *
 from lxml.etree import parse
+from collections import defaultdict
 import argparse
 import sys
 import traceback
@@ -268,14 +269,33 @@ schema.''')
         contact_elements = []
         url_elements = []
         address_elements = []
-        parameters = {}
-        parameters['AP_no'] = 0
-        parameters['tag'] = []
-        edb_v1_tags = ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']
+        parameters = {
+            'AP_no': 0,
+            'tag': [],
+        }
+        if self.edb_version == 1:
+            edb_v1_tags = ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']
+            coordinates = defaultdict(list)
+        else:
+            coordinates = []
+        coordinate_fields = [f.name for f in Coordinates._meta.get_fields()
+                             if not f.auto_created]
         for child_element in element.getchildren():
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
-            if tag in ['longitude', 'latitude', 'SSID']:
+            if self.edb_version == 1 and tag in coordinate_fields[:2]:
+                coordinates[tag].append(
+                    self.parse_text_node(child_element)
+                )
+                continue
+            if self.edb_version != 1 and tag == 'coordinates':
+                for coord in self.parse_text_node(child_element).split(';'):
+                    coordinates.append({
+                        k: v for k, v in
+                        zip(coordinate_fields, coord.split(',', 2))
+                    })
+                continue
+            if tag == 'SSID':
                 parameters[tag] = self.parse_text_node(child_element)
                 continue
             if tag == 'loc_name':
@@ -321,19 +341,45 @@ schema.''')
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
-        if False in [x in parameters
-                     for x in ['longitude', 'latitude',
-                               'SSID', 'enc_level']]:
+        required_tags = ['SSID']
+        if self.edb_version == 1:
+            required_tags.append('enc_level')
+        if not all([tag in parameters for tag in required_tags]):
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
         if self.edb_version == 1 and len(address_elements) > 1:
             self.stdout.write_maybe('Skipping %s: invalid multiple addresses' %
                                     element.tag)
             return None
+        if self.edb_version == 1 and not all(
+                [len(coordinates[k] == 1) for k in coordinate_fields[:2]]
+        ):
+            self.stdout.write_maybe('Skipping %s: invalid longitude/latitude' %
+                                    element.tag)
+            return None
+        if self.edb_version != 1 and len(coordinates) > 1:
+            self.stdout.write_maybe('Skipping %s: multiple coordinates not '
+                                    'supported currently' %
+                                    element.tag)
+            return None
+        if self.edb_version != 1 and not all(
+                [2 <= len(coord) <= 3 for coord in coordinates]
+        ):
+            self.stdout.write_maybe('Skipping %s: invalid coordinates' %
+                                    element.tag)
+            return None
         parameters['institutionid'] = instobj
-        # try to find "identical" ServiceLoc (lat, lon, address, ssid...)
+        if self.edb_version == 1:
+            coordinates = [{k: coordinates[k][0] for k in coordinates}]
+        # try to find "identical" ServiceLoc (based on own fields)
         existing_obj = ServiceLoc.objects.filter(**parameters).\
           prefetch_related('loc_name')
+        # chain filter for coordinates (lat, lon, alt)
+        for term in [
+                {'coordinates__{}'.format(k): coord[k] for k in coord}
+                for coord in coordinates
+        ]:
+            existing_obj = existing_obj.filter(**term)
         # Prepare list of unique loc_name's for the location we are parsing.
         # Don't use self.parse_and_create_name(ServiceLoc, name_element)
         # as it may find existing Name_i18n objects by the same name, but
@@ -367,6 +413,15 @@ schema.''')
                                 ('Created' if obj_created else 'Found',
                                  type_str(obj),
                                 six.text_type(obj)))
+        if obj_created:
+            for coord in coordinates:
+                cobj, cobj_created = \
+                    obj.coordinates.get_or_create(**coord)
+                self.stdout.write_maybe('%s %s: %s' %
+                                        ('Created' if cobj_created
+                                         else 'Found',
+                                         type_str(cobj),
+                                         six.text_type(cobj)))
         for address_element in address_elements:
             self.parse_and_create_address(obj, address_element)
         for url_element in url_elements:
@@ -400,6 +455,8 @@ schema.''')
         self.stdout.write_maybe('Walking %s' % element.tag)
         parameters = {}
         # parameters['number_id'] = 1
+        coordinate_fields = [f.name for f in Coordinates._meta.get_fields()
+                             if not f.auto_created]
         for child_element in element.getchildren():
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
@@ -422,6 +479,12 @@ schema.''')
                     parameters[tag] = []
                 parameters[tag].append(child_element)
                 continue
+            if self.edb_version != 1 and tag == 'coordinates':
+                parameters[tag] = [
+                    {k: v for k, v in
+                     zip(coordinate_fields, coord.split(',', 2))}
+                    for coord in self.parse_text_node(child_element).split(';')
+                ]
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
@@ -433,6 +496,16 @@ schema.''')
             self.stdout.write_maybe('Skipping %s: invalid multiple addresses' %
                                     element.tag)
             return None
+        if self.edb_version != 1 and parameters.get('coordinates', []):
+            if len(parameters['coordinates']) != 1:
+                self.stdout.write_maybe('Skipping %s: invalid multiple '
+                                        'coordinates' % element.tag)
+                return None
+            if not all([2 <= len(coord) <= 3
+                        for coord in parameters['coordinates']]):
+                self.stdout.write_maybe('Skipping %s: invalid coordinates' %
+                                        element.tag)
+                return None
         if parameters['type'] not in [1, 2, 3]:
             self.stdout.write_maybe('Skipping %s: invalid type %d' %
                                     (element.tag,
@@ -537,6 +610,16 @@ schema.''')
             parameters['address'][idx] = \
                 self.parse_and_create_address(
                     instdetails_obj, address_element)
+
+        for idx, coord in enumerate(parameters['coordinates']):
+            cobj, cobj_created = \
+                instdetails_obj.coordinates.get_or_create(**coord)
+            self.stdout.write_maybe('%s %s: %s' %
+                                    ('Created' if cobj_created
+                                     else 'Found',
+                                     type_str(cobj),
+                                     six.text_type(cobj)))
+            parameters['coordinates'][idx] = (cobj, cobj_created)
 
         for idx, instrealm_element in enumerate(parameters.get('inst_realm', [])):
             parameters['inst_realm'][idx] = \
