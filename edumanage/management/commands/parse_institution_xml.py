@@ -292,7 +292,7 @@ schema.''')
                 continue
             if tag == 'enc_level':
                 parameters['enc_level'] = \
-                  re.split(r'\s*,\s*', self.parse_text_node(child_element))
+                    self.parse_multi_value_text_node(child_element)
                 continue
             if self.edb_version == 1 and tag == 'wired':
                 parameters['wired_no'] = \
@@ -305,8 +305,8 @@ schema.''')
                     parameters['tag'].append(tag)
                 continue
             if self.edb_version != 1 and tag == 'tag':
-                parameters[tag] = self.parse_text_node(
-                    child_element).split(',')
+                parameters[tag] = \
+                    self.parse_multi_value_text_node(child_element)
                 continue
             if tag == 'AP_no':
                 parameters['AP_no'] = \
@@ -556,6 +556,11 @@ schema.''')
             return ''
         else:
             return None
+
+    def parse_multi_value_text_node(self, *args, **kwargs):
+        value = self.parse_text_node(*args, **kwargs)
+        value = re.split(r'\s*,\s*', value)
+        return sorted(set(value))
 
 def type_str(obj):
     return type(obj).__name__
