@@ -407,7 +407,10 @@ schema.''')
             if tag == 'country':
                 continue
             if tag == 'type':
-                parameters[tag] = int(child_element.text)
+                if self.edb_version == 1:
+                    parameters[tag] = int(child_element.text)
+                else:
+                    parameters[tag] = get_ertype_number(child_element.text)
                 continue
             if tag in ['inst_realm', 'org_name', 'contact',
                        'info_URL', 'policy_URL', 'location',
