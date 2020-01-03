@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*- vim:fileencoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 from collections import namedtuple
+from functools import partial
 import uuid
 from django.utils.inspect import getargspec
 from django.db import models
@@ -156,8 +157,10 @@ _ERTYPES = (
     ('IDPSP', 3, 'IdP and SP', 'IdP+SP'),
 )
 ERTYPES = get_namedtuple_choices(*_ERTYPES)
-def get_ertype_string(ertype):
-    return {x[1]: x[-1] for x in _ERTYPES}[ertype]
+def get_ertype_string(ertype, reverse=False):
+    return dict(map(lambda x: (x[-1], x[1]) if reverse else (x[1], x[-1]),
+                    _ERTYPES))[ertype]
+get_ertype_number = partial(get_ertype_string, reverse=True)
 
 RADPROTOS = get_namedtuple_choices(
     ('UDP', 'radius', 'traditional RADIUS over UDP'),
