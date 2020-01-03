@@ -53,6 +53,7 @@ from edumanage.models import (
     Name_i18n,
     Address_i18n,
 )
+from .models import get_ertype_string
 from accounts.models import UserProfile
 from edumanage.forms import (
     InstDetailsForm,
@@ -2097,7 +2098,11 @@ def instxml(request):
         instCountry.text = ("%s" % inst.institution.realmid.country).upper()
 
         instType = ElementTree.SubElement(instElement, "type")
-        instType.text = "%s" % inst.institution.ertype
+        ertype = inst.institution.ertype
+        if version == 1:
+            instType.text = six.text_type(ertype)
+        else:
+            instType.text = get_ertype_string(ertype)
 
         for realm in institution.instrealm_set.all():
             instRealm = ElementTree.SubElement(instElement, "inst_realm")
