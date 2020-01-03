@@ -52,6 +52,7 @@ from edumanage.models import (
     Contact,
     Name_i18n,
     Address_i18n,
+    Coordinates,
 )
 from .models import get_ertype_string
 from accounts.models import UserProfile
@@ -2076,6 +2077,38 @@ def xml_address_elements(elem, obj, version=2):
             if version == 2:
                 prop_elem.attrib["lang"] = addr_obj.lang
 
+def xml_coordinates_elements(elem, obj, version=2):
+    if version == 1 and not isinstance(obj, ServiceLoc):
+        return
+    coord_objs = obj.coordinates
+    if isinstance(coord_objs, Coordinates):
+        coord_objs = [coord_objs]
+    elif coord_objs is None:
+        coord_objs = []
+    else:
+        coord_objs = coord_objs.all()
+    coords_elem_vals = []
+    coordinate_fields = [f.name for f in Coordinates._meta.get_fields()
+                         if not f.auto_created]
+    for coord_obj in coord_objs:
+        if version == 1:
+            for prop in coordinate_fields[:2]:
+                prop_elem = ElementTree.SubElement(elem, prop)
+                prop_elem.text = six.text_type(getattr(coord_obj, prop))
+            break # only render the first coord_obj
+        else:
+            coords_elem_vals.append(','.join([
+                six.text_type(prop)
+                for prop in [
+                    getattr(coord_obj, attr)
+                    for attr in coordinate_fields
+                ]
+                if prop is not None
+            ]))
+    if coords_elem_vals:
+        coords_elem = ElementTree.SubElement(elem, "coordinates")
+        coords_elem.text = ';'.join(coords_elem_vals)
+
 @never_cache
 def instxml(request):
     version = 2
@@ -2115,6 +2148,8 @@ def instxml(request):
 
         xml_address_elements(instElement, inst, version=version)
 
+        xml_coordinates_elements(instElement, inst, version=version)
+
         for contact in inst.contact.all():
             instContact = ElementTree.SubElement(instElement, "contact")
 
@@ -2149,11 +2184,7 @@ def instxml(request):
         for serviceloc in inst.institution.serviceloc_set.all():
             instLocation = ElementTree.SubElement(instElement, "location")
 
-            instLong = ElementTree.SubElement(instLocation, "longitude")
-            instLong.text = "%s" % serviceloc.longitude
-
-            instLat = ElementTree.SubElement(instLocation, "latitude")
-            instLat.text = "%s" % serviceloc.latitude
+            xml_coordinates_elements(instLocation, serviceloc, version=version)
 
             for instlocname in serviceloc.loc_name.all():
                 instLocName = ElementTree.SubElement(instLocation, "loc_name")
@@ -2241,6 +2272,8 @@ def realmxml(request):
         realmOrgName.text = u"%s" % name.name
 
     xml_address_elements(realmElement, realm, version=version)
+
+    xml_coordinates_elements(realmElement, realm, version=version)
 
     for contact in realm.contact.all():
         realmContact = ElementTree.SubElement(realmElement, "contact")
