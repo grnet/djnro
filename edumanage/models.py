@@ -191,6 +191,10 @@ def get_namedtuple_choices(*choices_tuples):
             if not isinstance(attr, tuple):
                 return attr
             return attr[0]
+        def __contains__(self, item):
+            if not isinstance(item, tuple):
+                return item in (val[0] for val in self.__iter__())
+            return super(Choices, self).__contains__(item)
     return Choices._make(vals)
 
 _ERTYPES = (
@@ -199,6 +203,10 @@ _ERTYPES = (
     ('IDPSP', 3, 'IdP and SP', 'IdP+SP'),
 )
 ERTYPES = get_namedtuple_choices(*_ERTYPES)
+ERTYPE_ROLES = get_namedtuple_choices(*(
+    (cat.upper(), [val for val, descr in ERTYPES if cat in descr])
+    for cat in ('IdP', 'SP')
+))
 def get_ertype_string(ertype, reverse=False):
     return dict(map(lambda x: (x[-1], x[1]) if reverse else (x[1], x[-1]),
                     _ERTYPES))[ertype]
