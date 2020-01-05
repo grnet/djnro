@@ -88,19 +88,20 @@ class MultiSelectField(models.Field):
 
     def get_prep_value(self, value):
         if isinstance(value, six.string_types):
-            return value
-        if isinstance(value, list):
-            return self.separator.join(value)
+            value = value.split(self.separator) if value else []
+        if isinstance(value, (list, set)):
+            return self.separator.join(sorted(set(value)))
         return ''
 
-    def from_db_value(self, value, expression, connection, context):
-        return value.split(self.separator) if value not in ('', None) else []
+    def from_db_value(self, value, *_):
+        return sorted(set(value.split(self.separator))) \
+            if value not in ('', None) else []
 
     def to_python(self, value):
         if isinstance(value, six.string_types):
-            return value.split(self.separator) if value else []
-        if isinstance(value, list):
-            return value
+            value = value.split(self.separator) if value else []
+        if isinstance(value, (list, set)):
+            return sorted(set(value))
         return []
 
     def contribute_to_class(self, cls, name, *args, **kwargs):
