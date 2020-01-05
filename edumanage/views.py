@@ -2256,16 +2256,25 @@ def realmxml(request):
     version = 2
     realm = Realm.objects.all()[0]
     ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
-    root = ElementTree.Element("realms")
+    root = ElementTree.Element("realms" if version == 1 else "ROs")
     ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
-    root.set(ns_xsi + "noNamespaceSchemaLocation", "realm.xsd")
-    realmElement = ElementTree.SubElement(root, "realm")
+    root.set(ns_xsi + "noNamespaceSchemaLocation", "realm.xsd" if version == 1 else "ro.xsd")
+    realmElement = ElementTree.SubElement(root, "realm" if version == 1 else "RO")
+
+    if version != 1:
+        realmROid = ElementTree.SubElement(realmElement, "ROid")
+        realmROid.text = realm.roid
 
     realmCountry = ElementTree.SubElement(realmElement, "country")
     realmCountry.text = realm.country.upper()
 
-    realmStype = ElementTree.SubElement(realmElement, "stype")
-    realmStype.text = "%s" % realm.stype
+    if version == 1:
+        realmStype = ElementTree.SubElement(realmElement, "stype")
+        realmStype.text = "%s" % realm.stype
+
+    if version != 1:
+        realmStage = ElementTree.SubElement(realmElement, "stage")
+        realmStage.text = six.text_type(realm.stage)
 
     for name in realm.org_name.all():
         realmOrgName = ElementTree.SubElement(realmElement, "org_name")
@@ -2287,6 +2296,15 @@ def realmxml(request):
 
         realmContactPhone = ElementTree.SubElement(realmContact, "phone")
         realmContactPhone.text = contact.phone
+
+        if version != 1:
+            realmContactType = ElementTree.SubElement(realmContact,
+                                                      "type")
+            realmContactType.text = six.text_type(contact.type)
+
+            realmContactPrivacy = ElementTree.SubElement(realmContact,
+                                                         "privacy")
+            realmContactPrivacy.text = six.text_type(contact.privacy)
 
     url_map = {}
     for url in realm.url.all():
