@@ -2141,8 +2141,9 @@ def instxml(request):
             instRealm = ElementTree.SubElement(instElement, "inst_realm")
             instRealm.text = realm.realm
 
-        for name in inst.institution.org_name.all():
-            instOrgName = ElementTree.SubElement(instElement, "org_name")
+        for name in inst.institution.inst_name.all():
+            name_tag = 'org_name' if version == 1 else 'inst_name'
+            instOrgName = ElementTree.SubElement(instElement, name_tag)
             instOrgName.attrib["lang"] = name.lang
             instOrgName.text = u"%s" % name.name
 
