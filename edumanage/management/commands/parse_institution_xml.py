@@ -56,6 +56,13 @@ schema.''')
             type=int,
             default=2
         )
+        parser.add_argument('--derive-uuids-with-md5',
+                            dest='derive_uuids',
+                            action='store_true',
+                            default=True,
+                            help='''Derive UUID values (for instid, locationid),
+if necessary, by obtaining the hexdigest for the MD5 hash of the original value.
+This returns 32 hex digits, which works as input for UUID.''')
 
     def handle(self, **options):
         '''
@@ -70,6 +77,8 @@ schema.''')
         self.strict_empty_text_nodes = options['strict']
 
         self.edb_version = options['edb_version']
+
+        self.derive_uuids = options['derive_uuids']
 
         self.parse_and_create(options['file'])
 
@@ -747,6 +756,8 @@ schema.''')
         try:
             return uuid.UUID(hex=uuid_text)
         except ValueError:
+            if not self.derive_uuids:
+                raise
             if not uuid_text:
                 raise ValueError("Can not derive UUID from empty string")
             uuid_derived = hashlib.md5(uuid_text).hexdigest()
