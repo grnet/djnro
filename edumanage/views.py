@@ -2138,15 +2138,26 @@ def instxml(request):
 
         instElement = ElementTree.SubElement(root, "institution")
 
-        instCountry = ElementTree.SubElement(instElement, "country")
-        instCountry.text = ("%s" % inst.institution.realmid.country).upper()
+        if version == 1:
+            instCountry = ElementTree.SubElement(instElement, "country")
+            instCountry.text = institution.realmid.country.upper()
+
+        if version != 1:
+            instId = ElementTree.SubElement(instElement, "instid")
+            instId.text = six.text_type(institution.instid)
+            roId = ElementTree.SubElement(instElement, "ROid")
+            roId.text = institution.realmid.roid
 
         instType = ElementTree.SubElement(instElement, "type")
-        ertype = inst.institution.ertype
+        ertype = institution.ertype
         if version == 1:
             instType.text = six.text_type(ertype)
         else:
             instType.text = get_ertype_string(ertype)
+
+        if version != 1:
+            instStage = ElementTree.SubElement(instElement, "stage")
+            instStage.text = six.text_type(institution.stage)
 
         for realm in institution.instrealm_set.all():
             instRealm = ElementTree.SubElement(instElement, "inst_realm")
@@ -2162,6 +2173,10 @@ def instxml(request):
 
         xml_coordinates_elements(instElement, inst, version=version)
 
+        if version != 1:
+            instVenueInfo = ElementTree.SubElement(instElement, "inst_type")
+            instVenueInfo = inst.venue_info
+
         for contact in inst.contact.all():
             instContact = ElementTree.SubElement(instElement, "contact")
 
@@ -2173,6 +2188,15 @@ def instxml(request):
 
             instContactPhone = ElementTree.SubElement(instContact, "phone")
             instContactPhone.text = contact.phone
+
+            if version != 1:
+                instContactType = ElementTree.SubElement(instContact,
+                                                         "type")
+                instContactType.text = six.text_type(contact.type)
+
+                instContactPrivacy = ElementTree.SubElement(instContact,
+                                                            "privacy")
+                instContactPrivacy.text = six.text_type(contact.privacy)
 
         url_map = {}
         for url in inst.url.all():
@@ -2197,7 +2221,17 @@ def instxml(request):
 
             instLocation = ElementTree.SubElement(instElement, "location")
 
+            if version != 1:
+                locId = ElementTree.SubElement(instLocation, "locationid")
+                locId.text = six.text_type(serviceloc.locationid)
+
             xml_coordinates_elements(instLocation, serviceloc, version=version)
+
+            if version != 1:
+                locStage = ElementTree.SubElement(instLocation, "stage")
+                locStage.text = six.text_type(serviceloc.stage)
+                locType = ElementTree.SubElement(instLocation, "type")
+                locType.text = six.text_type(serviceloc.geo_type)
 
             for instlocname in serviceloc.loc_name.all():
                 instLocName = ElementTree.SubElement(instLocation, "loc_name")
@@ -2205,6 +2239,11 @@ def instxml(request):
                 instLocName.text = instlocname.name
 
             xml_address_elements(instLocation, serviceloc, version=version)
+
+            if version != 1:
+                instLocVenueInfo = ElementTree.SubElement(
+                    instLocation, "location_type")
+                instLocVenueInfo = serviceloc.venue_info
 
             for contact in serviceloc.contact.all():
                 instLocContact = ElementTree.SubElement(instLocation, "contact")
@@ -2217,6 +2256,15 @@ def instxml(request):
 
                 instLocContactPhone = ElementTree.SubElement(instLocContact, "phone")
                 instLocContactPhone.text = contact.phone
+
+                if version != 1:
+                    instLocContactType = ElementTree.SubElement(
+                        instLocContact, "type")
+                    instLocContactType.text = six.text_type(contact.type)
+
+                    instLocContactPrivacy = ElementTree.SubElement(
+                        instLocContact, "privacy")
+                    instLocContactPrivacy.text = six.text_type(contact.privacy)
 
             instLocSSID = ElementTree.SubElement(instLocation, "SSID")
             instLocSSID.text = serviceloc.SSID
@@ -2235,15 +2283,32 @@ def instxml(request):
                     instLocTagSubElement.text = six.text_type(
                         1 if tag_set else 0
                     )
-            else:
+
+            if serviceloc.AP_no is not None:
+                instLocAP_no = ElementTree.SubElement(instLocation, "AP_no")
+                instLocAP_no.text = "%s" % int(serviceloc.AP_no)
+
+            if version == 1:
+                instLocWired = ElementTree.SubElement(instLocation, "wired")
+                instLocWired.text = ("%s" % bool(serviceloc.wired_no)).lower()
+            if version != 1 and serviceloc.wired_no is not None:
+                instLocWired_no = ElementTree.SubElement(
+                    instLocation, "wired_no")
+                instLocWired_no.text = six.text_type(serviceloc.wired_no)
+
+            if version != 1:
                 instLocTagElement = ElementTree.SubElement(instLocation, 'tag')
                 instLocTagElement.text = ','.join(serviceloc.tag)
 
-            instLocAP_no = ElementTree.SubElement(instLocation, "AP_no")
-            instLocAP_no.text = "%s" % int(serviceloc.AP_no)
+                instLocAvailElement = ElementTree.SubElement(
+                    instLocation, 'availability')
+                instLocAvailElement.text = six.text_type(
+                    serviceloc.physical_avail)
 
-            instLocWired = ElementTree.SubElement(instLocation, "wired")
-            instLocWired.text = ("%s" % serviceloc.wired).lower()
+                instLocOperHoursElement = ElementTree.SubElement(
+                    instLocation, 'operation_hours')
+                instLocOperHoursElement.text = \
+                    serviceloc.operation_hours
 
             for url in serviceloc.url.all():
                 instLocUrl = ElementTree.SubElement(
