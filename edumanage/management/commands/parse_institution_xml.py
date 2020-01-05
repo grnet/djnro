@@ -457,6 +457,7 @@ schema.''')
         # parameters['number_id'] = 1
         coordinate_fields = [f.name for f in Coordinates._meta.get_fields()
                              if not f.auto_created]
+        name_tag = 'org_name' if self.edb_version == 1 else 'inst_name'
         for child_element in element.getchildren():
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
@@ -469,7 +470,7 @@ schema.''')
                 else:
                     parameters[tag] = get_ertype_number(child_element.text)
                 continue
-            if tag in ['inst_realm', 'org_name', 'contact',
+            if tag in ['inst_realm', name_tag, 'contact',
                        'info_URL', 'policy_URL', 'location',
                        'address']:
                 if tag == 'address' and self.edb_version == 1:
@@ -488,7 +489,7 @@ schema.''')
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
-        required_tags = ['type', 'org_name', 'info_URL', 'address']
+        required_tags = ['type', name_tag, 'info_URL', 'address']
         if not all([tag in parameters for tag in required_tags]):
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
@@ -522,15 +523,15 @@ schema.''')
                                      parameters['type']))
             return None
 
-        for idx, name_element in enumerate(parameters['org_name']):
-            parameters['org_name'][idx] = \
+        for idx, name_element in enumerate(parameters[name_tag]):
+            parameters[name_tag][idx] = \
               self.parse_and_create_name(Institution, name_element)
-        if [True] * len(parameters['org_name']) == [x[1] for x in
-                                                     parameters['org_name']]:
+        if [True] * len(parameters[name_tag]) == [x[1] for x in
+                                                     parameters[name_tag]]:
             institution_obj = Institution(realmid=self.nrorealm,
                                           ertype=parameters['type'])
             institution_obj.save()
-            for name, created in parameters['org_name']:
+            for name, created in parameters[name_tag]:
                 name.content_object = institution_obj
                 name.save()
             self.stdout.write_maybe('%s %s: %s' %
@@ -538,24 +539,24 @@ schema.''')
                                      type_str(institution_obj),
                                     six.text_type(institution_obj)))
         else:
-            institution_obj = parameters['org_name'][0][0].content_object
+            institution_obj = parameters[name_tag][0][0].content_object
             if institution_obj is None:
                 raise Exception(
                     'The following institution names were found but they ' +
                     'are not associated with an institution (only tried the ' +
                     'first one)! This must be fixed (e.g. by removing ' +
                     'duplicate objects) before we can proceed.\n' +
-                    '\n'.join([six.text_type(x[0]) for x in parameters['org_name']])
+                    '\n'.join([six.text_type(x[0]) for x in parameters[name_tag]])
                     )
-            if not [institution_obj] * len(parameters['org_name']) == \
+            if not [institution_obj] * len(parameters[name_tag]) == \
               [getattr(x[0], 'content_object')
-               for x in parameters['org_name']]:
+               for x in parameters[name_tag]]:
                 raise Exception(
                     'The following institution names were found but they ' +
                     'are not associated with the same institution. ' +
                     'This must be fixed (e.g. by removing duplicate objects) ' +
                     'before we can proceed.\n' +
-                    '\n'.join([six.text_type(x[0]) for x in parameters['org_name']])
+                    '\n'.join([six.text_type(x[0]) for x in parameters[name_tag]])
                     )
             self.stdout.write_maybe('%s %s: %s' %
                                     ('Found',
