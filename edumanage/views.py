@@ -2116,7 +2116,20 @@ def instxml(request):
     root = ElementTree.Element("institutions")
     ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
     root.set(ns_xsi + "noNamespaceSchemaLocation", "institution.xsd")
-    institutions = Institution.objects.all()
+    institutions = Institution.objects.all().select_related(
+        'institutiondetails', 'realmid'
+    ).prefetch_related(
+        'org_name', 'institutiondetails__contact',
+        'institutiondetails__address', 'institutiondetails__coordinates',
+        'institutiondetails__url', 'instrealm_set')
+    servicelocs = ServiceLoc.objects.all().prefetch_related(
+        'coordinates', 'loc_name', 'address', 'contact', 'url'
+    ).order_by('institutionid')
+    servicelocs = {
+        instid: list(group) for instid, group in
+        groupby(servicelocs, lambda sloc: sloc.institutionid_id)
+        if instid is not None
+    }
     for institution in institutions:
         try:
             inst = institution.institutiondetails
@@ -2182,7 +2195,8 @@ def instxml(request):
         instTs.text = "%s" % inst.ts.isoformat()
         #Let's go to Institution Service Locations
 
-        for serviceloc in inst.institution.serviceloc_set.all():
+        for serviceloc in servicelocs[institution.id]:
+
             instLocation = ElementTree.SubElement(instElement, "location")
 
             xml_coordinates_elements(instLocation, serviceloc, version=version)
