@@ -2133,8 +2133,6 @@ def instxml(request):
     for institution in institutions:
         try:
             inst = institution.institutiondetails
-            if not inst:
-                continue
         except InstitutionDetails.DoesNotExist:
             continue
 
