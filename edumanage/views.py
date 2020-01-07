@@ -2144,7 +2144,7 @@ def instxml(request):
 
         if version != 1:
             instId = ElementTree.SubElement(instElement, "instid")
-            instId.text = six.text_type(institution.instid)
+            instId.text = six.text_type(institution.instid.hex)
             roId = ElementTree.SubElement(instElement, "ROid")
             roId.text = institution.realmid.roid
 
@@ -2223,7 +2223,7 @@ def instxml(request):
 
             if version != 1:
                 locId = ElementTree.SubElement(instLocation, "locationid")
-                locId.text = six.text_type(serviceloc.locationid)
+                locId.text = six.text_type(serviceloc.locationid.hex)
 
             xml_coordinates_elements(instLocation, serviceloc, version=version)
 
