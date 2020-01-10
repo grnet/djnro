@@ -2173,7 +2173,7 @@ def instxml(request):
 
         xml_coordinates_elements(instElement, inst, version=version)
 
-        if version != 1:
+        if version != 1 and inst.venue_info:
             instVenueInfo = ElementTree.SubElement(instElement, "inst_type")
             instVenueInfo = inst.venue_info
 
@@ -2240,7 +2240,7 @@ def instxml(request):
 
             xml_address_elements(instLocation, serviceloc, version=version)
 
-            if version != 1:
+            if version != 1 and serviceloc.venue_info:
                 instLocVenueInfo = ElementTree.SubElement(
                     instLocation, "location_type")
                 instLocVenueInfo = serviceloc.venue_info
@@ -2269,8 +2269,11 @@ def instxml(request):
             instLocSSID = ElementTree.SubElement(instLocation, "SSID")
             instLocSSID.text = serviceloc.SSID
 
-            instLocEncLevel = ElementTree.SubElement(instLocation, "enc_level")
-            instLocEncLevel.text = ', '.join(serviceloc.enc_level)
+            # required only under eduroam db v1 schema
+            if version == 1 or serviceloc.enc_level:
+                instLocEncLevel = ElementTree.SubElement(instLocation,
+                                                         "enc_level")
+                instLocEncLevel.text = ', '.join(serviceloc.enc_level)
 
             if version == 1:
                 for tag in ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']:
@@ -2297,18 +2300,21 @@ def instxml(request):
                 instLocWired_no.text = six.text_type(serviceloc.wired_no)
 
             if version != 1:
-                instLocTagElement = ElementTree.SubElement(instLocation, 'tag')
-                instLocTagElement.text = ','.join(serviceloc.tag)
+                if serviceloc.tag:
+                    instLocTagElement = ElementTree.SubElement(instLocation,
+                                                               'tag')
+                    instLocTagElement.text = ','.join(serviceloc.tag)
 
                 instLocAvailElement = ElementTree.SubElement(
                     instLocation, 'availability')
                 instLocAvailElement.text = six.text_type(
                     serviceloc.physical_avail)
 
-                instLocOperHoursElement = ElementTree.SubElement(
-                    instLocation, 'operation_hours')
-                instLocOperHoursElement.text = \
-                    serviceloc.operation_hours
+                if serviceloc.operation_hours:
+                    instLocOperHoursElement = ElementTree.SubElement(
+                        instLocation, 'operation_hours')
+                    instLocOperHoursElement.text = \
+                        serviceloc.operation_hours
 
             for url in serviceloc.url.all():
                 instLocUrl = ElementTree.SubElement(
