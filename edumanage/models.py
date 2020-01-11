@@ -140,6 +140,47 @@ class MultiSelectField(models.Field):
             )
         return
 
+@MultiSelectField.register_lookup
+class DelimitedValueExactLookup(models.lookups.PatternLookup):
+    lookup_name = 'exact'
+
+    delimited_patterns = (
+        ('contains', '%%{delimiter}%s{delimiter}%%'),
+        ('startswith', '%s{delimiter}%%'),
+        ('endswith', '%%{delimiter}%s'),
+    )
+
+    def as_sql(self, compiler, connection):
+        lhs, lhs_params = compiler.compile(self.lhs)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        sql = '%s %s' % (lhs, self.get_rhs_op(connection, rhs))
+
+        try:
+            delimiter = self.lhs.field.separator
+        except AttributeError:
+            delimiter = ''
+        for lookup_name, pattern_replacement in self.delimited_patterns:
+            self.lookup_name = lookup_name
+            pattern = pattern_replacement.format(delimiter=delimiter)
+            rhs, rhs_params = self.process_rhs_pattern(
+                compiler, connection, pattern
+            )
+            sql += ' OR %s %s' % (
+                lhs,
+                self.get_rhs_op(connection, rhs)
+            )
+            params += lhs_params + rhs_params
+        self.lookup_name = DelimitedValueExactLookup.lookup_name
+        return sql, params
+
+    def process_rhs_pattern(self, qn, connection, pattern):
+        rhs, params = super(DelimitedValueExactLookup, self).process_rhs(
+            qn, connection)
+        if params and not self.bilateral_transforms:
+            params[0] = pattern % connection.ops.prep_for_like_query(params[0])
+        return rhs, params
+
 # https://www.djangosnippets.org/snippets/2402/
 def get_namedtuple_choices(*choices_tuples):
     names = [tup[0] for tup in choices_tuples]
