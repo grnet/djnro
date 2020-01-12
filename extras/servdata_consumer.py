@@ -14,7 +14,7 @@ except ImportError:
 import requests
 from mako.template import Template
 from mako.lookup import TemplateLookup
-from django.utils import six
+import six
 
 SETTINGS = {
     "template_directory" : "/etc/djnro_servdata",
