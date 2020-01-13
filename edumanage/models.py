@@ -493,7 +493,7 @@ class InstServer(models.Model):
     def clean(self):
         if not self.pk:
             return
-        if self.ertype == 2:
+        if self.ertype == ERTYPES.SP:
             realms = self.instrealm_set.all()
             # If a server is a proxy for a realm, can not change type to SP
             if realms.count() > 0:

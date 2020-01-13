@@ -53,6 +53,8 @@ from edumanage.models import (
     Name_i18n,
     Address_i18n,
     Coordinates,
+    ERTYPES,
+    ERTYPE_ROLES,
 )
 from .models import get_ertype_string
 from accounts.models import UserProfile
@@ -316,7 +318,7 @@ def services(request, service_pk):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [2, 3]:
+    if inst.ertype not in ERTYPE_ROLES.SP:
         messages.add_message(
             request,
             messages.ERROR,
@@ -377,7 +379,7 @@ def add_services(request, service_pk):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [2, 3]:
+    if inst.ertype not in ERTYPE_ROLES.SP:
         messages.add_message(
             request,
             messages.ERROR,
@@ -651,7 +653,7 @@ def cat_enroll(request):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [1, 3]:
+    if inst.ertype not in ERTYPE_ROLES.IDP:
         messages.add_message(
             request,
             messages.ERROR,
@@ -803,7 +805,7 @@ def realms(request):
         return HttpResponseRedirect(reverse("manage"))
     if inst:
         realms = InstRealm.objects.filter(instid=inst)
-    if inst.ertype not in [1, 3]:
+    if inst.ertype not in ERTYPE_ROLES.IDP:
         messages.add_message(
             request,
             messages.ERROR,
@@ -832,7 +834,7 @@ def add_realm(request, realm_pk):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [1, 3]:
+    if inst.ertype not in ERTYPE_ROLES.IDP:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
         return render(
             request,
@@ -1443,7 +1445,7 @@ def base_response(request):
     except:
         instututiondetails = False
     try:
-        institution_canhaveservicelocs = institution.ertype in [2, 3]
+        institution_canhaveservicelocs = institution.ertype in ERTYPE_ROLES.SP
     except:
         pass
     return {
@@ -1457,6 +1459,8 @@ def base_response(request):
         'institutiondetails': instututiondetails,
         'institution_exists': institution_exists,
         'institution_canhaveservicelocs': institution_canhaveservicelocs,
+        'ERTYPES': ERTYPES,
+        'ERTYPE_ROLES': ERTYPE_ROLES,
     }
 
 
@@ -1688,7 +1692,7 @@ def participants(request):
 
 @never_cache
 def connect(request):
-    institutions = Institution.objects.filter(ertype__in=[1,3],
+    institutions = Institution.objects.filter(ertype__in=ERTYPE_ROLES.IDP,
                                               institutiondetails__isnull=False).\
         select_related('institutiondetails')
     cat_instance = 'production'
@@ -2424,13 +2428,13 @@ def realmdataxml(request):
     realmCountry.text = realm.country.upper()
 
     nIdpCountry = ElementTree.SubElement(realmdataElement, "number_IdP")
-    nIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=1))
+    nIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=ERTYPES.IDP))
 
     nSPCountry = ElementTree.SubElement(realmdataElement, "number_SP")
-    nSPCountry.text = "%s" % len(realm.institution_set.filter(ertype=2))
+    nSPCountry.text = "%s" % len(realm.institution_set.filter(ertype=ERTYPES.SP))
 
     nSPIdpCountry = ElementTree.SubElement(realmdataElement, "number_SPIdP")
-    nSPIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=3))
+    nSPIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=ERTYPES.IDPSP))
 
     ninstCountry = ElementTree.SubElement(realmdataElement, "number_inst")
     ninstCountry.text = "%s" % len(realm.institution_set.all())
@@ -2485,7 +2489,7 @@ def servdata(request):
     hosts = InstServer.objects.all()
     insts = Institution.objects.all()
 
-    clients = hosts.filter(ertype__in=[2, 3])
+    clients = hosts.filter(ertype__in=ERTYPE_ROLES.SP)
     if clients:
         root['clients'] = {}
     for srv in clients:
@@ -2497,7 +2501,7 @@ def servdata(request):
         srv_dict['secret'] = srv.secret
         root['clients'].update({srv_id: srv_dict})
 
-    servers = hosts.filter(ertype__in=[1, 3])
+    servers = hosts.filter(ertype__in=ERTYPE_ROLES.IDP)
     if servers:
         root['servers'] = {}
     for srv in servers:
@@ -2525,12 +2529,12 @@ def servdata(request):
                 inst.institutiondetails.oper_name:
             inst_dict['id'] = inst.institutiondetails.oper_name
         inst_dict['type'] = inst.ertype
-        if inst.ertype in (2, 3):
-            inst_clients = inst.servers.filter(ertype__in=[2, 3])
+        if inst.ertype in ERTYPE_ROLES.SP:
+            inst_clients = inst.servers.filter(ertype__in=ERTYPE_ROLES.SP)
             if inst_clients:
                 inst_dict['clients'] = [getSrvIdentifier(srv, "client_") for
                                         srv in inst_clients]
-        if inst.ertype in (1, 3):
+        if inst.ertype in ERTYPE_ROLES.IDP:
             inst_realms = inst.instrealm_set.all()
             if inst_realms:
                 inst_dict['realms'] = {}
@@ -2740,7 +2744,7 @@ def getInstContacts(inst):
 def getInstServers(inst, idpsp=False):
     servers = InstServer.objects.filter(instid=inst)
     if idpsp:
-        servers = servers.filter(ertype__in=[1, 3])
+        servers = servers.filter(ertype__in=ERTYPE_ROLES.IDP)
     server_pks = []
     for server in servers:
         server_pks.append(server.pk)

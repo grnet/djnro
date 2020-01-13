@@ -601,17 +601,17 @@ This returns 32 hex digits, which works as input for UUID.''')
                 self.stdout.write_maybe('Skipping %s: invalid coordinates' %
                                         element.tag)
                 return None
-        if parameters['type'] not in [1, 2, 3]:
+        if parameters['type'] not in ERTYPES:
             self.stdout.write_maybe('Skipping %s: invalid type %d' %
                                     (element.tag,
                                      parameters['type']))
             return None
-        if parameters['type'] != 2 and 'inst_realm' not in parameters:
+        if parameters['type'] in ERTYPE_ROLES.IDP and 'inst_realm' not in parameters:
             self.stdout.write_maybe('Skipping %s: type %d but no "inst_realm"' %
                                     (element.tag,
                                      parameters['type']))
             return None
-        if parameters['type'] != 1 and 'location' not in parameters:
+        if parameters['type'] in ERTYPE_ROLES.SP and 'location' not in parameters:
             self.stdout.write_maybe('Skipping %s: type %d but no "location"' %
                                     (element.tag,
                                      parameters['type']))
