@@ -19,7 +19,7 @@ def deduplicated_list(seq):
     return [x for x in seq if not (x in seen or seen.add(x))]
 %>\
 % for inst in insts:
-% if inst['type'] in (1, 3) and 'realms' in inst:
+% if inst['type'] in ERTYPE_ROLES.IDP and 'realms' in inst:
 #{{{${' ' + inst['id'] if 'id' in inst else ''}
 <%doc>
 The following one-liner does the equivalent of:
