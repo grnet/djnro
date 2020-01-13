@@ -14,7 +14,6 @@ except ImportError:
 import requests
 from mako.template import Template
 from mako.lookup import TemplateLookup
-import six
 
 SETTINGS = {
     "template_directory" : "/etc/djnro_servdata",
@@ -128,7 +127,7 @@ directory (may be used more than once) [default: %s]"""
                             help="""generate %(dest)s output
 (write to %(metavar)s or stdout)""",
                             nargs='?',
-                            type=argparse.FileType('w'),
+                            type=argparse.FileType('wb'),
                             const=sys.stdout,
                             default=None)
     opts = parser.parse_args()
@@ -157,12 +156,15 @@ directory (may be used more than once) [default: %s]"""
 
     for t in SETTINGS["templates"]:
         to = t.replace('-', '_')
-        if getattr(opts, to, None) is not None:
-            rendered_template = sw.render_tpl(t)
-            if six.PY3:
-                # mako.template.Template.render returned bytestring, convert to str
-                rendered_template = rendered_template.decode('utf-8')
-            getattr(opts, to).write(rendered_template)
+        tof = getattr(opts, to)
+        if tof is None:
+            continue
+        if tof.name == '<stdout>':
+            try:
+                tof = tof.buffer # PY3
+            except AttributeError:
+                pass
+        tof.write(sw.render_tpl(t))
 
 if __name__ == "__main__":
     main()
