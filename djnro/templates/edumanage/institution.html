@@ -58,7 +58,7 @@
 				        {% endfor %}
 				        </div>
 				    </div>
-					{% if institution.ertype == 2 or institution.ertype == 3 %}
+					{% if institution.ertype in ERTYPE_ROLES.SP %}
 					<div class="col-md-2">
 						<label class="" for="id_oper_name">{% trans "Domain Name" %}</label>
 						<div class="">
@@ -66,7 +66,7 @@
 						</div>
 					</div>
 					{% endif %}
-					{% if institution.ertype == 1 or institution.ertype == 3 %}
+					{% if institution.ertype in ERTYPE_ROLES.IDP %}
 					<div class="col-md-2">
 						<label class="" for="id_number_user">{% trans "Number User" %}</label>
 						<div class="">

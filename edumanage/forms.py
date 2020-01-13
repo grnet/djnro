@@ -8,7 +8,9 @@ from edumanage.models import (
     Contact,
     InstRealm,
     ServiceLoc,
-    Coordinates
+    Coordinates,
+    ERTYPES,
+    ERTYPE_ROLES,
 )
 from accounts.models import UserProfile
 from edumanage.fields import MultipleEmailsField
@@ -77,7 +79,7 @@ class InstDetailsForm(forms.ModelForm):
     def clean_oper_name(self):
         oper_name = self.cleaned_data['oper_name']
         institution = self.cleaned_data['institution']
-        if institution.ertype in [2, 3]:
+        if institution.ertype in ERTYPE_ROLES.SP:
             if oper_name:
                 match = re.match(FQDN_RE, oper_name)
                 if not match:
@@ -101,8 +103,9 @@ class InstServerForm(forms.ModelForm):
         for institution in self.inst_list:
             inst_type = institution.ertype
             type_list = [inst_type]
-            if inst_type == 3:
-                type_list = [1, 2, 3]
+            # for Institution IdP+SP accept any InstServer ertype
+            if inst_type == ERTYPES.IDPSP:
+                type_list = ERTYPES
             if ertype not in type_list:
                 raise forms.ValidationError('Server type cannot be different than institution type (%s)' %dict(self.fields['ertype'].choices)[inst_type])
         return self.cleaned_data["ertype"]
@@ -112,7 +115,7 @@ class InstServerForm(forms.ModelForm):
         if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
-        if ertype in [1,3]:
+        if ertype in ERTYPE_ROLES.IDP:
             if auth_port:
                 return self.cleaned_data["auth_port"]
             else:
@@ -123,7 +126,7 @@ class InstServerForm(forms.ModelForm):
         if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
-        if ertype in [1,3]:
+        if ertype in ERTYPE_ROLES.IDP:
             if acct_port:
                 return self.cleaned_data["acct_port"]
             else:
@@ -134,7 +137,7 @@ class InstServerForm(forms.ModelForm):
         if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
-        if ertype in [1,3]:
+        if ertype in ERTYPE_ROLES.IDP:
             if rad_pkt_type:
                 return self.cleaned_data["rad_pkt_type"]
             else:
@@ -178,7 +181,7 @@ class InstRealmForm(forms.ModelForm):
         proxied_servers = self.cleaned_data['proxyto']
         if proxied_servers:
             for server in proxied_servers:
-                if server.ertype not in [1,3]:
+                if server.ertype not in ERTYPE_ROLES.IDP:
                     error_text = _('Only IdP and IdP/SP server types are allowed')
                     raise forms.ValidationError(error_text)
         else:

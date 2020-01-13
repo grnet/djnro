@@ -13,7 +13,7 @@
 	    {% endfor %}
 	</table>
 {% endif %}
-{% if institution.ertype == 1 or institution.ertype == 3 %}
+{% if institution.ertype in ERTYPE_ROLES.IDP %}
 <form method="POST" class="">
 	{% csrf_token %}
 	{% if form.non_field_errors %}

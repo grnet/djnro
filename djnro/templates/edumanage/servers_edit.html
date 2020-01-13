@@ -58,7 +58,7 @@
 			</div>
 		</div>
 	</div>
-	{% if institution.ertype == 1 or institution.ertype == 3 %}
+	{% if institution.ertype in ERTYPE_ROLES.IDP %}
 	<div class="col-md-6">
 		<div class="form-group {% if form.rad_pkt_type.errors %} error {% endif %}">
 			<label class="control-label" for="id_rad_pkt_type"><b>{% trans "RADIUS Packet Types" %}</b></label>
