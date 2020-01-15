@@ -30,6 +30,9 @@ import traceback
 import re
 import uuid
 import hashlib
+from utils.edb_versioning import (
+    EduroamDatabaseVersion, DEFAULT_EDUROAM_DATABASE_VERSION
+)
 
 
 class Command(BaseCommand):
@@ -53,8 +56,8 @@ schema.''')
         parser.add_argument(
             '--eduroam-database-version',
             dest='edb_version',
-            type=int,
-            default=2
+            type=EduroamDatabaseVersion,
+            default=DEFAULT_EDUROAM_DATABASE_VERSION
         )
         parser.add_argument('--derive-uuids-with-md5',
                             dest='derive_uuids',
@@ -243,7 +246,7 @@ This returns 32 hex digits, which works as input for UUID.''')
         self.stdout.write_maybe('Parsing %s' % element.tag)
         parameters = {}
         tags = ['name', 'email', 'phone']
-        if self.edb_version != 1:
+        if self.edb_version.ge_version_2:
             tags += ['type', 'privacy']
         for child_element in element.getchildren():
             if child_element.tag in tags:
@@ -287,7 +290,7 @@ This returns 32 hex digits, which works as input for UUID.''')
             'AP_no': 0,
             'tag': [],
         }
-        if self.edb_version == 1:
+        if self.edb_version.is_version_1:
             edb_v1_tags = ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']
             coordinates = defaultdict(list)
         else:
@@ -302,7 +305,7 @@ This returns 32 hex digits, which works as input for UUID.''')
         for child_element in element.getchildren():
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
-            if self.edb_version != 1 and tag == 'locationid':
+            if self.edb_version.ge_version_2 and tag == 'locationid':
                 try:
                     parameters[tag] = \
                         self.parse_uuid_node(child_element)
@@ -310,18 +313,18 @@ This returns 32 hex digits, which works as input for UUID.''')
                     self.stdout.write_maybe('Skipping %s: %s' % (
                         child_element.tag, uuid_e))
                 continue
-            if self.edb_version != 1 and tag in ('stage', 'type'):
+            if self.edb_version.ge_version_2 and tag in ('stage', 'type'):
                 parameters[tag] = int(child_element.text)
                 continue
-            if self.edb_version != 1 and tag == 'location_type':
+            if self.edb_version.ge_version_2 and tag == 'location_type':
                 parameters[tag] = self.parse_text_node(child_element)
                 continue
-            if self.edb_version == 1 and tag in coordinate_fields[:2]:
+            if self.edb_version.is_version_1 and tag in coordinate_fields[:2]:
                 coordinates[tag].append(
                     self.parse_text_node(child_element)
                 )
                 continue
-            if self.edb_version != 1 and tag == 'coordinates':
+            if self.edb_version.ge_version_2 and tag == 'coordinates':
                 for coord in self.parse_text_node(child_element).split(';'):
                     coordinates.append({
                         k: v for k, v in
@@ -338,7 +341,7 @@ This returns 32 hex digits, which works as input for UUID.''')
                 contact_elements.append(child_element)
                 continue
             if tag == 'address':
-                if self.edb_version == 1:
+                if self.edb_version.is_version_1:
                     for sub_element in child_element.getchildren():
                         sub_element.attrib['lang'] = 'en'
                 address_elements.append(child_element)
@@ -347,24 +350,24 @@ This returns 32 hex digits, which works as input for UUID.''')
                 parameters[tag] = \
                     self.parse_multi_value_text_node(child_element)
                 continue
-            if self.edb_version == 1 and tag == 'wired':
+            if self.edb_version.is_version_1 and tag == 'wired':
                 parameters['wired_no'] = \
                     getattr(settings, '_SERVICELOC_DERIVE_WIRED_NO').get(
                         child_element.text in ('true', '1')
                     )
                 continue
-            if self.edb_version == 1 and tag in edb_v1_tags:
+            if self.edb_version.is_version_1 and tag in edb_v1_tags:
                 if child_element.text in ('true', '1'):
                     parameters['tag'].append(tag)
                 continue
-            if self.edb_version != 1 and tag == 'tag':
+            if self.edb_version.ge_version_2 and tag == 'tag':
                 parameters[tag] = \
                     self.parse_multi_value_text_node(child_element)
                 continue
             if tag == 'AP_no':
                 parameters[tag] = int(child_element.text)
                 continue
-            if self.edb_version != 1 and tag == 'wired_no':
+            if self.edb_version.ge_version_2 and tag == 'wired_no':
                 parameters[tag] = int(child_element.text)
                 continue
             if tag == 'info_URL':
@@ -374,30 +377,30 @@ This returns 32 hex digits, which works as input for UUID.''')
 
         # abort if required data not present
         required_tags = ['SSID']
-        if self.edb_version == 1:
+        if self.edb_version.is_version_1:
             required_tags.append('enc_level')
         else:
             required_tags += ['locationid', 'stage', 'type']
         if not all([tag in parameters for tag in required_tags]):
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
-        if self.edb_version == 1 and len(address_elements) > 1:
+        if self.edb_version.is_version_1 and len(address_elements) > 1:
             self.stdout.write_maybe('Skipping %s: invalid multiple addresses' %
                                     element.tag)
             return None
-        if self.edb_version == 1 and not all(
+        if self.edb_version.is_version_1 and not all(
                 [len(coordinates[k] == 1) for k in coordinate_fields[:2]]
         ):
             self.stdout.write_maybe('Skipping %s: invalid longitude/latitude' %
                                     element.tag)
             return None
-        if self.edb_version != 1 and not all(
+        if self.edb_version.ge_version_2 and not all(
                 [2 <= len(coord) <= 3 for coord in coordinates]
         ):
             self.stdout.write_maybe('Skipping %s: invalid coordinates' %
                                     element.tag)
             return None
-        if self.edb_version != 1 and len(coordinates) > 1:
+        if self.edb_version.ge_version_2 and len(coordinates) > 1:
             self.stdout.write_maybe('Transforming %s: multiple coordinates '
                                     'not supported currently, keeping the '
                                     'first one' %
@@ -408,11 +411,11 @@ This returns 32 hex digits, which works as input for UUID.''')
             for k in parameters
         }
         parameters['institutionid'] = instobj
-        if self.edb_version == 1:
+        if self.edb_version.is_version_1:
             coordinates = [{k: coordinates[k][0] for k in coordinates}]
 
         id_parameters = ['institutionid']
-        if self.edb_version != 1:
+        if self.edb_version.ge_version_2:
             id_parameters.append('locationid')
         id_parameters = {
             k: parameters[k]
@@ -533,11 +536,11 @@ This returns 32 hex digits, which works as input for UUID.''')
             InstitutionDetails._meta.get_fields()
             if getattr(f, 'db_column', None) is not None and not f.auto_created
         }
-        name_tag = 'org_name' if self.edb_version == 1 else 'inst_name'
+        name_tag = 'org_name' if self.edb_version.is_version_1 else 'inst_name'
         for child_element in element.getchildren():
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
-            if self.edb_version != 1 and tag == 'instid':
+            if self.edb_version.ge_version_2 and tag == 'instid':
                 try:
                     parameters[tag] = \
                         self.parse_uuid_node(child_element)
@@ -546,33 +549,33 @@ This returns 32 hex digits, which works as input for UUID.''')
                         child_element.tag, uuid_e))
                 continue
             # hardcode to self.nrorealm, ignore country/ROid
-            if self.edb_version == 1 and tag == 'country':
+            if self.edb_version.is_version_1 and tag == 'country':
                 continue
-            if self.edb_version != 1 and tag == "ROid":
+            if self.edb_version.ge_version_2 and tag == "ROid":
                 continue
             if tag == 'type':
-                if self.edb_version == 1:
+                if self.edb_version.is_version_1:
                     parameters[tag] = int(child_element.text)
                 else:
                     parameters[tag] = get_ertype_number(child_element.text)
                 continue
-            if self.edb_version != 1 and tag == 'stage':
+            if self.edb_version.ge_version_2 and tag == 'stage':
                 parameters[tag] = int(child_element.text)
                 continue
-            if self.edb_version != 1 and tag == 'inst_type':
+            if self.edb_version.ge_version_2 and tag == 'inst_type':
                 parameters[tag] = self.parse_text_node(child_element)
                 continue
             if tag in ['inst_realm', name_tag, 'contact',
                        'info_URL', 'policy_URL', 'location',
                        'address']:
-                if tag == 'address' and self.edb_version == 1:
+                if tag == 'address' and self.edb_version.is_version_1:
                     for sub_element in child_element.getchildren():
                         sub_element.attrib['lang'] = 'en'
                 if not tag in parameters:
                     parameters[tag] = []
                 parameters[tag].append(child_element)
                 continue
-            if self.edb_version != 1 and tag == 'coordinates':
+            if self.edb_version.ge_version_2 and tag == 'coordinates':
                 parameters[tag] = [
                     {k: v for k, v in
                      zip(coordinate_fields, coord.split(',', 2))}
@@ -582,16 +585,16 @@ This returns 32 hex digits, which works as input for UUID.''')
 
         # abort if required data not present
         required_tags = ['type', name_tag, 'info_URL', 'address']
-        if self.edb_version != 1:
+        if self.edb_version.ge_version_2:
             required_tags += ['instid', 'stage']
         if not all([tag in parameters for tag in required_tags]):
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
-        if self.edb_version == 1 and len(parameters['address']) > 1:
+        if self.edb_version.is_version_1 and len(parameters['address']) > 1:
             self.stdout.write_maybe('Skipping %s: invalid multiple addresses' %
                                     element.tag)
             return None
-        if self.edb_version != 1 and parameters.get('coordinates', []):
+        if self.edb_version.ge_version_2 and parameters.get('coordinates', []):
             if len(parameters['coordinates']) != 1:
                 self.stdout.write_maybe('Skipping %s: invalid multiple '
                                         'coordinates' % element.tag)
@@ -682,7 +685,7 @@ This returns 32 hex digits, which works as input for UUID.''')
         instdetails_defaults = [
             # 'number_id',
         ]
-        if self.edb_version != 1:
+        if self.edb_version.ge_version_2:
             instdetails_defaults.append('venue_info')
         instdetails_defaults = {x: parameters[x] for x in instdetails_defaults}
         instdetails_obj, instdetails_created = \
