@@ -26,6 +26,7 @@
 
 from django.utils.translation import ugettext_lazy as _
 import os
+from utils.edb_versioning import EduroamDatabaseVersionDef
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
@@ -298,6 +299,14 @@ CAT_INSTANCES = ()
 SERVICELOC_DERIVE_WIRED_NO = {
     True: 42,
     False: None,
+}
+
+EDUROAM_DATABASE_VERSIONS = {
+    'default': EduroamDatabaseVersionDef.version_2,
+    'allowed': (
+        EduroamDatabaseVersionDef.version_1,
+        EduroamDatabaseVersionDef.version_2,
+    ),
 }
 
 SENTRY = dict()

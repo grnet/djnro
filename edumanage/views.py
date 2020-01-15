@@ -73,7 +73,8 @@ from edumanage.forms import (
 )
 from registration.models import RegistrationProfile
 from edumanage.decorators import (social_active_required,
-                                  cache_page_ifreq)
+                                  cache_page_ifreq,
+                                  detect_eduroam_db_version)
 from django.utils.cache import (
     get_max_age, patch_response_headers, patch_vary_headers
 )
@@ -2069,20 +2070,20 @@ def localizePointNames(points, lang='en'):
     return points
 
 
-def xml_address_elements(elem, obj, version=2):
+def xml_address_elements(elem, obj, version):
     addr_objs = obj.address.all()
-    if version == 1:
+    if version.is_version_1:
         addr_objs = addr_objs.filter(lang="en")[:1]
     for addr_obj in addr_objs:
         addr_elem = ElementTree.SubElement(elem, "address")
         for prop in ["street", "city"]:
             prop_elem = ElementTree.SubElement(addr_elem, prop)
             prop_elem.text = getattr(addr_obj, prop)
-            if version == 2:
+            if version.is_version_2:
                 prop_elem.attrib["lang"] = addr_obj.lang
 
-def xml_coordinates_elements(elem, obj, version=2):
-    if version == 1 and not isinstance(obj, ServiceLoc):
+def xml_coordinates_elements(elem, obj, version):
+    if version.is_version_1 and not isinstance(obj, ServiceLoc):
         return
     coord_objs = obj.coordinates
     if isinstance(coord_objs, Coordinates):
@@ -2095,7 +2096,7 @@ def xml_coordinates_elements(elem, obj, version=2):
     coordinate_fields = [f.name for f in Coordinates._meta.get_fields()
                          if not f.auto_created]
     for coord_obj in coord_objs:
-        if version == 1:
+        if version.is_version_1:
             for prop in coordinate_fields[:2]:
                 prop_elem = ElementTree.SubElement(elem, prop)
                 prop_elem.text = six.text_type(getattr(coord_obj, prop))
@@ -2114,8 +2115,8 @@ def xml_coordinates_elements(elem, obj, version=2):
         coords_elem.text = ';'.join(coords_elem_vals)
 
 @never_cache
-def instxml(request):
-    version = 2
+@detect_eduroam_db_version
+def instxml(request, version):
     ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
     root = ElementTree.Element("institutions")
     ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
@@ -2142,11 +2143,11 @@ def instxml(request):
 
         instElement = ElementTree.SubElement(root, "institution")
 
-        if version == 1:
+        if version.is_version_1:
             instCountry = ElementTree.SubElement(instElement, "country")
             instCountry.text = institution.realmid.country.upper()
 
-        if version != 1:
+        if version.ge_version_2:
             instId = ElementTree.SubElement(instElement, "instid")
             instId.text = six.text_type(institution.instid.hex)
             roId = ElementTree.SubElement(instElement, "ROid")
@@ -2154,12 +2155,12 @@ def instxml(request):
 
         instType = ElementTree.SubElement(instElement, "type")
         ertype = institution.ertype
-        if version == 1:
+        if version.is_version_1:
             instType.text = six.text_type(ertype)
         else:
             instType.text = get_ertype_string(ertype)
 
-        if version != 1:
+        if version.ge_version_2:
             instStage = ElementTree.SubElement(instElement, "stage")
             instStage.text = six.text_type(institution.stage)
 
@@ -2168,7 +2169,7 @@ def instxml(request):
             instRealm.text = realm.realm
 
         for name in inst.institution.inst_name.all():
-            name_tag = 'org_name' if version == 1 else 'inst_name'
+            name_tag = 'org_name' if version.is_version_1 else 'inst_name'
             instOrgName = ElementTree.SubElement(instElement, name_tag)
             instOrgName.attrib["lang"] = name.lang
             instOrgName.text = u"%s" % name.name
@@ -2177,7 +2178,7 @@ def instxml(request):
 
         xml_coordinates_elements(instElement, inst, version=version)
 
-        if version != 1 and inst.venue_info:
+        if version.ge_version_2 and inst.venue_info:
             instVenueInfo = ElementTree.SubElement(instElement, "inst_type")
             instVenueInfo = inst.venue_info
 
@@ -2193,7 +2194,7 @@ def instxml(request):
             instContactPhone = ElementTree.SubElement(instContact, "phone")
             instContactPhone.text = contact.phone
 
-            if version != 1:
+            if version.ge_version_2:
                 instContactType = ElementTree.SubElement(instContact,
                                                          "type")
                 instContactType.text = six.text_type(contact.type)
@@ -2225,13 +2226,13 @@ def instxml(request):
 
             instLocation = ElementTree.SubElement(instElement, "location")
 
-            if version != 1:
+            if version.ge_version_2:
                 locId = ElementTree.SubElement(instLocation, "locationid")
                 locId.text = six.text_type(serviceloc.locationid.hex)
 
             xml_coordinates_elements(instLocation, serviceloc, version=version)
 
-            if version != 1:
+            if version.ge_version_2:
                 locStage = ElementTree.SubElement(instLocation, "stage")
                 locStage.text = six.text_type(serviceloc.stage)
                 locType = ElementTree.SubElement(instLocation, "type")
@@ -2244,7 +2245,7 @@ def instxml(request):
 
             xml_address_elements(instLocation, serviceloc, version=version)
 
-            if version != 1 and serviceloc.venue_info:
+            if version.ge_version_2 and serviceloc.venue_info:
                 instLocVenueInfo = ElementTree.SubElement(
                     instLocation, "location_type")
                 instLocVenueInfo = serviceloc.venue_info
@@ -2261,7 +2262,7 @@ def instxml(request):
                 instLocContactPhone = ElementTree.SubElement(instLocContact, "phone")
                 instLocContactPhone.text = contact.phone
 
-                if version != 1:
+                if version.ge_version_2:
                     instLocContactType = ElementTree.SubElement(
                         instLocContact, "type")
                     instLocContactType.text = six.text_type(contact.type)
@@ -2274,12 +2275,12 @@ def instxml(request):
             instLocSSID.text = serviceloc.SSID
 
             # required only under eduroam db v1 schema
-            if version == 1 or serviceloc.enc_level:
+            if version.is_version_1 or serviceloc.enc_level:
                 instLocEncLevel = ElementTree.SubElement(instLocation,
                                                          "enc_level")
                 instLocEncLevel.text = ', '.join(serviceloc.enc_level)
 
-            if version == 1:
+            if version.is_version_1:
                 for tag in ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']:
                     tag_set = tag in serviceloc.tag
                     # eduroam db v1 schema caveat: port_restrict not optional
@@ -2295,15 +2296,15 @@ def instxml(request):
                 instLocAP_no = ElementTree.SubElement(instLocation, "AP_no")
                 instLocAP_no.text = "%s" % int(serviceloc.AP_no)
 
-            if version == 1:
+            if version.is_version_1:
                 instLocWired = ElementTree.SubElement(instLocation, "wired")
                 instLocWired.text = ("%s" % bool(serviceloc.wired_no)).lower()
-            if version != 1 and serviceloc.wired_no is not None:
+            if version.ge_version_2 and serviceloc.wired_no is not None:
                 instLocWired_no = ElementTree.SubElement(
                     instLocation, "wired_no")
                 instLocWired_no.text = six.text_type(serviceloc.wired_no)
 
-            if version != 1:
+            if version.ge_version_2:
                 if serviceloc.tag:
                     instLocTagElement = ElementTree.SubElement(instLocation,
                                                                'tag')
@@ -2339,27 +2340,27 @@ def instxml(request):
 
 
 @never_cache
-def realmxml(request):
-    version = 2
+@detect_eduroam_db_version
+def realmxml(request, version):
     realm = Realm.objects.all()[0]
     ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
-    root = ElementTree.Element("realms" if version == 1 else "ROs")
+    root = ElementTree.Element("realms" if version.is_version_1 else "ROs")
     ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
-    root.set(ns_xsi + "noNamespaceSchemaLocation", "realm.xsd" if version == 1 else "ro.xsd")
-    realmElement = ElementTree.SubElement(root, "realm" if version == 1 else "RO")
+    root.set(ns_xsi + "noNamespaceSchemaLocation", "realm.xsd" if version.is_version_1 else "ro.xsd")
+    realmElement = ElementTree.SubElement(root, "realm" if version.is_version_1 else "RO")
 
-    if version != 1:
+    if version.ge_version_2:
         realmROid = ElementTree.SubElement(realmElement, "ROid")
         realmROid.text = realm.roid
 
     realmCountry = ElementTree.SubElement(realmElement, "country")
     realmCountry.text = realm.country.upper()
 
-    if version == 1:
+    if version.is_version_1:
         realmStype = ElementTree.SubElement(realmElement, "stype")
         realmStype.text = "%s" % realm.stype
 
-    if version != 1:
+    if version.ge_version_2:
         realmStage = ElementTree.SubElement(realmElement, "stage")
         realmStage.text = six.text_type(realm.stage)
 
@@ -2384,7 +2385,7 @@ def realmxml(request):
         realmContactPhone = ElementTree.SubElement(realmContact, "phone")
         realmContactPhone.text = contact.phone
 
-        if version != 1:
+        if version.ge_version_2:
             realmContactType = ElementTree.SubElement(realmContact,
                                                       "type")
             realmContactType.text = six.text_type(contact.type)
