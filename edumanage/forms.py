@@ -1,5 +1,9 @@
 from django import forms
-from django.utils.translation import ugettext as _
+from django.conf import settings
+from django.utils.translation import (
+    ugettext as _,
+    ugettext_lazy as _l,
+)
 from edumanage.models import (
     URL_i18n,
     MonLocalAuthnParam,
@@ -224,48 +228,81 @@ class ServiceLocForm(ModelFormWithPropertyFields):
         exclude = ('coordinates',) # pylint: disable=modelform-uses-exclude
 
 
-class Generici18nFormSetFact(BaseGenericInlineFormSet):
+class i18nFormSet(BaseGenericInlineFormSet): # pylint: disable=invalid-name
     def __init__(self, *args, **kwargs):
-        self.obj_descr = kwargs.pop('obj_descr')
-        super(Generici18nFormSetFact, self).__init__(*args, **kwargs)
+        if not hasattr(self, 'obj_descr'):
+            self.obj_descr = kwargs.pop('obj_descr')
+        if not hasattr(self, 'required_value_sets'):
+            self.required_value_sets = kwargs.pop('required_value_sets')
+        super(i18nFormSet, self).__init__(*args, **kwargs)
 
-    def clean(self):
-        error_msg = _("Fill in at least one %(obj_descr) in English") % {
-            'obj_descr': self.obj_descr
-        }
-        if any(self.errors):
-            return
-        langs = []
-        empty_forms = True
-        for i in range(0, self.total_form_count()):
-            form = self.forms[i]
-            if len(form.cleaned_data) != 0:
-                empty_forms = False
-            langs.append(form.cleaned_data.get('lang', None))
-        if empty_forms:
-            raise forms.ValidationError(error_msg)
-        if "en" not in langs:
-            raise forms.ValidationError(error_msg)
-
-
-class UrlFormSetFact(BaseGenericInlineFormSet):
-    def clean(self):
-        return
-
-
-class UrlFormSetFactInst(BaseGenericInlineFormSet):
     def clean(self):
         if any(self.errors):
             return
-        url_types = []
-        empty_forms = True
-        for i in range(0, self.total_form_count()):
-            form = self.forms[i]
-            if form.cleaned_data:
-                empty_forms = False
-            url_types.append(form.cleaned_data.get('urltype', None))
-        error_msg = _("Fill in at least the info url")
-        if empty_forms:
-            raise forms.ValidationError(error_msg)
-        if "info" not in url_types:
-            raise forms.ValidationError(error_msg)
+        if not self.required_value_sets:
+            return
+        found_valsets = {}
+        errors = []
+        empty_formset = True
+        for form in self.forms:
+            if self.can_delete and self._should_delete_form(form): # pylint: disable=no-member
+                continue
+            data = form.cleaned_data
+            if not data:
+                continue
+            empty_formset = False
+            for idx, required_value_set in enumerate(self.required_value_sets):
+                if found_valsets.get(idx, False):
+                    continue
+                match = all(
+                    [field in data and value == data[field]
+                     for (field, _f), (value, _v) in required_value_set]
+                )
+                if match:
+                    found_valsets[idx] = True
+        if empty_formset:
+            return
+        for idx, required_value_set in enumerate(self.required_value_sets):
+            if found_valsets.get(idx, False):
+                continue
+            for kv_idx, key_value in enumerate(required_value_set):
+                (_a, attr_descr), (_v, value_descr) = key_value
+                attr_descr %= {'value': value_descr}
+                if not kv_idx:
+                    msg = attr_descr
+                    continue
+                msg = _("%(prev_descr)s and %(attr_descr)s") % {
+                    'prev_descr': msg,
+                    'attr_descr': attr_descr,
+                }
+            errors.append(forms.ValidationError(
+                _("Fill in at least one %(obj_type)s with %(msg)s"),
+                code='invalid', params={
+                    'obj_type': self.obj_descr,
+                    'msg': msg,
+                }
+            ))
+        if errors:
+            raise forms.ValidationError(errors)
+
+
+class i18nFormSetDefaultLang(i18nFormSet): # pylint: disable=invalid-name
+    required_value_sets = (
+        (
+            (('lang', _l("language in %(value)s")),
+             [lang_tuple for lang_tuple in settings.LANGUAGES
+              if lang_tuple[0] == settings.LANGUAGE_CODE].pop()),
+        ),
+    )
+
+
+class URL_i18nFormSet(i18nFormSet): # pylint: disable=invalid-name
+    required_value_sets = tuple(
+        (
+            (('lang', _l("language in %(value)s")),
+             [lang_tuple for lang_tuple in settings.LANGUAGES
+              if lang_tuple[0] == settings.LANGUAGE_CODE].pop()),
+            (('urltype', _l("%(value)s URL type")),
+             urltype),
+        ) for urltype in URL_i18n.URLTYPES
+    )
