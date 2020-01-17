@@ -60,7 +60,6 @@ from .models import get_ertype_string
 from accounts.models import UserProfile
 from edumanage.forms import (
     InstDetailsForm,
-    UrlFormSetFactInst,
     InstRealmForm,
     UserProfileForm,
     ContactForm,
@@ -68,8 +67,8 @@ from edumanage.forms import (
     MonLocalAuthnParamForm,
     InstRealmMonForm,
     ServiceLocForm,
-    Generici18nFormSetFact,
-    UrlFormSetFact,
+    i18nFormSetDefaultLang,
+    URL_i18nFormSet,
     InstServerForm
 )
 from registration.models import RegistrationProfile
@@ -225,10 +224,17 @@ def add_institution_details(request, institution_pk):
         return HttpResponseRedirect(reverse("institutions"))
 
     formset_params = (
-        ('url', URL_i18n, {'formset': UrlFormSetFactInst}),
+        ('url', URL_i18n, {
+            'formset': partialclass(URL_i18nFormSet,
+                                    obj_descr=_('institution URL')),
+            'min_num': 2,
+            'validate_min': True,
+        }),
         ('addr', Address_i18n, {
-            'formset': partialclass(Generici18nFormSetFact,
+            'formset': partialclass(i18nFormSetDefaultLang,
                                     obj_descr=_('institution address')),
+            'min_num': 1,
+            'validate_min': True,
         }),
     )
     _fsf_kwargs = {'extra': 2}
@@ -394,18 +400,19 @@ def add_services(request, service_pk):
         )
     formset_params = (
         ('url', URL_i18n, {
-            'formset': UrlFormSetFact,
             'form': partialclass(URL_i18nForm,
                                  valid_urltypes='info'),
         }),
         ('name', Name_i18n, {
-            'formset': partialclass(Generici18nFormSetFact,
+            'formset': partialclass(i18nFormSetDefaultLang,
                                     obj_descr=_('location name')),
-            'extra': 1
+            'extra': 1,
         }),
         ('addr', Address_i18n, {
-            'formset': partialclass(Generici18nFormSetFact,
-                                    obj_descr=_('location address')),
+            'formset': partialclass(i18nFormSetDefaultLang,
+                                    obj_descr=_('institution address')),
+            'min_num': 1,
+            'validate_min': True,
         }),
     )
     _fsf_kwargs = {'extra': 2}
