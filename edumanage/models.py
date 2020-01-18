@@ -589,21 +589,27 @@ class ServiceLoc(models.Model):
         max_length=7,
         blank=True,
         validators=[validate_venue_info],
-        db_column='location_type'
+        db_column='location_type',
+        help_text=_VENUE_INFO_HELP_TEXT
     )
     contact = models.ManyToManyField(Contact, blank=True)
     SSID = models.CharField(max_length=16)
     enc_level = MultiSelectField(max_length=64, choices=ENCTYPES, blank=True, null=True)
     tag = MultiSelectField(max_length=64, choices=LOCATION_TAGS, blank=True)
-    AP_no = models.PositiveIntegerField(null=True)
+    AP_no = models.PositiveIntegerField(blank=True, null=True)
     wired = models.BooleanField()
-    wired_no = models.PositiveIntegerField(null=True)
+    wired_no = models.PositiveIntegerField(blank=True, null=True)
     physical_avail = models.PositiveIntegerField(
         choices=PHYSICAL_AVAILABILITY_STATES,
         default=PHYSICAL_AVAILABILITY_STATES.ALWAYS,
-        db_column='availability'
+        db_column='availability',
+        help_text=_('Restrictions regarding physical access to the service '
+                    'area')
     )
-    operation_hours = models.CharField(max_length=255, blank=True)
+    operation_hours = models.CharField(max_length=255, blank=True, help_text=_(
+        'Free text description of opening hours, if service is not available '
+        '24 hours per day'
+    ))
     # only urltype = 'info' should be accepted here
     url = fields.GenericRelation(URL_i18n, blank=True, null=True)
     ts = models.DateTimeField(auto_now=True)
