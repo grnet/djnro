@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='institutiondetails',
             name='venue_info',
-            field=models.CharField(blank=True, db_column='inst_type', max_length=7, validators=[edumanage.models.validate_venue_info]),
+            field=models.CharField(blank=True, db_column='inst_type', max_length=7, help_text='IEEE 802.11-2012, clause 8.4.1.34 Venue Info. This is a pair of integers, each between 0 and 255 (inclusive), separated with ",".', validators=[edumanage.models.validate_venue_info]),
         ),
         migrations.AddField(
             model_name='realm',
@@ -119,15 +119,20 @@ class Migration(migrations.Migration):
             name='locationid',
             field=models.UUIDField(default=uuid.uuid4, unique=True, editable=False),
         ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='enc_level',
+            field=edumanage.models.MultiSelectField(blank=True, choices=[(b'WPA/TKIP', b'WPA-TKIP'), (b'WPA/AES', b'WPA-AES'), (b'WPA2/TKIP', b'WPA2-TKIP'), (b'WPA2/AES', b'WPA2-AES'), (b'WPA3/AES', b'WPA3-AES')], max_length=64, null=True),
+        ),
         migrations.AddField(
             model_name='serviceloc',
             name='operation_hours',
-            field=models.CharField(blank=True, max_length=255),
+            field=models.CharField(blank=True, help_text='Free text description of opening hours, if service is not available 24 hours per day', max_length=255),
         ),
         migrations.AddField(
             model_name='serviceloc',
             name='physical_avail',
-            field=models.PositiveIntegerField(choices=[(0, 'no restrictions'), (1, 'physical access restrictions')], db_column='availability', default=0),
+            field=models.PositiveIntegerField(choices=[(0, 'no restrictions'), (1, 'physical access restrictions')], db_column='availability', default=0, help_text='Restrictions regarding physical access to the service area'),
         ),
         migrations.AddField(
             model_name='serviceloc',
@@ -142,16 +147,16 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='serviceloc',
             name='venue_info',
-            field=models.CharField(blank=True, db_column='location_type', max_length=7, validators=[edumanage.models.validate_venue_info]),
+            field=models.CharField(blank=True, db_column='location_type', max_length=7, help_text='IEEE 802.11-2012, clause 8.4.1.34 Venue Info. This is a pair of integers, each between 0 and 255 (inclusive), separated with ",".', validators=[edumanage.models.validate_venue_info]),
         ),
         migrations.AddField(
             model_name='serviceloc',
             name='wired_no',
-            field=models.PositiveIntegerField(null=True),
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
         migrations.AlterField(
             model_name='serviceloc',
             name='AP_no',
-            field=models.PositiveIntegerField(null=True),
+            field=models.PositiveIntegerField(blank=True, null=True),
         ),
     ]
