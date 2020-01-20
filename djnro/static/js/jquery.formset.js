@@ -88,9 +88,10 @@
                 del.remove();
             }
             if (hasChildElements(row)) {
-                //insertDeleteLink(row);
+                insertDeleteLink(row);
                 row.addClass(options.formCssClass);
                 // mod
+		/*
                 if (row.is(':visible')) {
     				forms_tmp = $('.' + options.formCssClass).not('.formset-custom-template');
     				if(forms_tmp.length == 1) {
@@ -101,8 +102,9 @@
     				}
                     applyExtraClasses(row, i);
                 }
+		*/
                 // mod end
-                //applyExtraClasses(row, i);
+                applyExtraClasses(row, i);
             }          
             
         });
@@ -155,6 +157,7 @@
                 applyExtraClasses(row, formCount);
                 row.insertBefore($(buttonRow)).show();
                 // mod
+		/*
                 forms_tmp = $('.' + options.formCssClass).not('.formset-custom-template');
 				if(forms_tmp.length == 1) {
 					forms_tmp.find('a.' + options.deleteCssClass).hide();
@@ -162,6 +165,7 @@
 				} else {
 					//insertDeleteLink(row);
 				}
+				*/
 				// mod end
                 row.find('input,select,textarea,label').each(function() {
                     updateElementIndex($(this), options.prefix, formCount);
