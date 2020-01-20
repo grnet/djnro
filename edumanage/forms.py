@@ -110,10 +110,10 @@ class InstDetailsForm(forms.ModelForm):
             if oper_name:
                 match = re.match(FQDN_RE, oper_name)
                 if not match:
-                    raise forms.ValidationError('Invalid domain name format.')
+                    raise forms.ValidationError(_('Invalid domain name format.'))
                 return self.cleaned_data["oper_name"]
             else:
-                raise forms.ValidationError('This field is required.')
+                raise forms.ValidationError(_('This field is required.'))
 
 
 class InstServerForm(forms.ModelForm):
