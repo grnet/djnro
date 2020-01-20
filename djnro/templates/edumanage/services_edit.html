@@ -54,12 +54,40 @@
 
 
 	<div class="col-md-6">
+		<div class="form-group">
+			<label for="id_locationid">{% trans "ID" %}</label>
+			<div class="controls">
+			  <input class="input" type="text" {% if edit %}value="{{ form.instance.locationid }}" {% endif %}readonly>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group {% if form.stage.errors %} error {% endif %}">
+			<label for="id_stage">{% trans "Stage" %}</label>
+			<div class="controls">
+				{{ form.stage }}
+				{% if form.stage.errors %} <div class="alert-danger"> {{ form.stage.errors|join:", " }} </div>
+				{% endif %} <span class="help-block"> {{ form.stage.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6" style="display: none">
+		<div class="form-group {% if form.geo_type.errors %} error {% endif %}">
+			<label for="id_geo_type">{% trans "Geo Type" %}</label>
+			<div class="controls">
+				{{ form.geo_type }}
+				{% if form.geo_type.errors %} <div class="alert-danger"> {{ form.geo_type.errors|join:", " }} </div>
+				{% endif %} <span class="help-block"> {{ form.geo_type.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
 		<div class="form-group {% for err in services_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if services_form.non_form_errors %}error{% endif %}">
 			<label for="id_address_city">{% trans "Location Name" %}</label>
 			{{services_form.management_form}}
 			<div class="controls">
 			{% for err in services_form.errors %}{% if err|length > 0 %}<span class="help-inline"></span>{% endif %}{% endfor %}
-			{% if services_form.non_form_errors %} <div class="alert-danger"> {{ services_form.non_form_errors|join:", "}}</div>{% endif %}
+			{% if services_form.non_form_errors %} <div class="alert-danger">{% for nfe in services_form.non_form_errors %}{{ nfe }}{% if not nfe.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
 				<table id="locsform"><thead><tr><td>{% trans "Name" %}</td><td>{% trans "Language" %}</td></tr></thead><tbody>
 			{% for formset_s in services_form.forms %}
 			{{ formset_s.id }}
@@ -81,7 +109,7 @@
 			{{addrs_form.management_form}}
 			<div class="controls">
 			{% for err in addrs_form.errors %}{% if err|length > 0 %}<span class="help-inline"></span>{% endif %}{% endfor %}
-			{% if addrs_form.non_form_errors %} <div class="alert-danger"> {{ addrs_form.non_form_errors|join:", "}}</div>{% endif %}
+			{% if addrs_form.non_form_errors %} <div class="alert-danger">{% for nfe in addrs_form.non_form_errors %}{{ nfe }}{% if not nfe.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
 				<table id="addrsform"><thead><tr><td>{% trans "Street" %}</td><td>{% trans "City" %}</td><td>{% trans "Language" %}</td></tr></thead><tbody>
 			{% for formset_a in addrs_form.forms %}
 			{{ formset_a.id }}
@@ -99,22 +127,52 @@
 		</div>
 	</div>
 	<div class="col-md-6">
-		<div class="form-group {% if form.SSID.errors %} error {% endif %}">
-			<label for="id_url"><b>SSID</b></label>
-			<div class="controls">
-				{{ form.SSID }}
-				{% if form.SSID.errors %}<div class="alert-danger"> {{ form.SSID.errors|join:", " }} </div>
-				{% endif %} <span class="help-block"> {{ form.SSID.help_text }}</span>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-6">
 		<div class="form-group {% if form.contact.errors %} error {% endif %}">
 			<label for="id_contact">{% trans "Contacts" %}</label>
 			<div class="controls">
 				{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
 				{% if form.contact.errors %} <div class="alert-danger"> {{ form.contact.errors|join:", " }} </div>
 				{% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group {% if form.physical_avail.errors %} error {% endif %}">
+			<label for="id_physical_avail">{% trans "Physical Availability" %}</label>
+			<div class="controls">
+				{{ form.physical_avail }}
+				{% if form.physical_avail.errors %} <div class="alert-danger"> {{ form.physical_avail.errors|join:", " }} </div>
+				{% endif %} <span class="help-block"> {{ form.physical_avail.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group {% if form.operation_hours.errors %} error {% endif %}">
+			<label for="id_operation_hours">{% trans "Operation Hours" %}</label>
+			<div class="controls">
+				{{ form.operation_hours }}
+				{% if form.operation_hours.errors %} <div class="alert-danger"> {{ form.operation_hours.errors|join:", " }} </div>
+				{% endif %} <span class="help-block"> {{ form.operation_hours.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group {% if form.venue_info.errors %} error {% endif %}">
+			<label for="id_venue_info">{% trans "Location Type" %}</label>
+			<div class="controls">
+				{{ form.venue_info }}
+				{% if form.venue_info.errors %} <div class="alert-danger"> {{ form.venue_info.errors|join:", " }} </div>
+				{% endif %} <span class="help-block"> {{ form.venue_info.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-6">
+		<div class="form-group {% if form.SSID.errors %} error {% endif %}">
+			<label for="id_url"><b>SSID</b></label>
+			<div class="controls">
+				{{ form.SSID }}
+				{% if form.SSID.errors %}<div class="alert-danger"> {{ form.SSID.errors|join:", " }} </div>
+				{% endif %} <span class="help-block"> {{ form.SSID.help_text }}</span>
 			</div>
 		</div>
 	</div>
@@ -140,7 +198,7 @@
 	</div>
 	<div class="col-md-6">
 		<div class="form-group {% if form.AP_no.errors %} error {% endif %}">
-			<label for="id_number_id"><b>{% trans "AP number" %}</b></label>
+			<label for="id_ap_no"><b>{% trans "AP number" %}</b></label>
 			<div class="controls">
 				{{ form.AP_no }}
 				{% if form.AP_no.errors %} <div class="alert-danger"> {{ form.AP_no.errors|join:", " }} </div>
@@ -149,12 +207,12 @@
 		</div>
 	</div>
 	<div class="col-md-6">
-		<div class="form-group {% if form.wired.errors %} error {% endif %}">
-			<label for="id_number_id">{% trans "Wired" %}</label>
+		<div class="form-group {% if form.wired_no.errors %} error {% endif %}">
+			<label for="id_wired_no"><b>{% trans "Wired number" %}</b></label>
 			<div class="controls">
-				{{ form.wired }}
-				{% if form.wired.errors %} <div class="alert-danger"> {{ form.wired.errors|join:", " }} </div>
-				{% endif %} <span class="help-block"> {{ form.wired.help_text }}</span>
+				{{ form.wired_no }}
+				{% if form.wired_no.errors %} <div class="alert-danger"> {{ form.wired_no.errors|join:", " }} </div>
+				{% endif %} <span class="help-block"> {{ form.wired_no.help_text }}</span>
 			</div>
 		</div>
 	</div>
@@ -164,7 +222,7 @@
 			{{urls_form.management_form}}
 			<div class="controls">
 			{% for err in urls_form.errors %}{% if err|length > 0 %}<div class="alert-danger">{{err}}</div>{% endif %}{% endfor %}
-			{% if urls_form.non_form_errors %} <div class="alert-danger"> {{ urls_form.non_form_errors|join:", "}}</div>{% endif %}
+			{% if urls_form.non_form_errors %} <div class="alert-danger">{% for nfe in urls_form.non_form_errors %}{{ nfe }}{% if not nfe.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
 				<table id="urlsform">
 					<thead>
 						<tr>

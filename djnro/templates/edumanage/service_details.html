@@ -109,6 +109,27 @@
     </div>
 
     <div class="control-group">
+        <label class="control-label" for="id_locationid">{% trans "ID" %}</label>
+        <div class="controls">
+            {{ service.locationid }}
+
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="id_stage">{% trans "Stage" %}</label>
+        <div class="controls">
+            {{ service.get_stage_display }}
+
+        </div>
+    </div>
+    <div class="control-group" style="display: none;">
+        <label class="control-label" for="id_geo_type">{% trans "Geo Type" %}</label>
+        <div class="controls">
+            {{ service.geo_type }}
+
+        </div>
+    </div>
+    <div class="control-group">
         <label class="control-label" for="id_address_city">{% trans "Location Name" %}</label>
 
         <div class="controls">
@@ -126,18 +147,35 @@
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="id_url">SSID</label>
-        <div class="controls">
-            {{ service.SSID }}
-
-        </div>
-    </div>
-    <div class="control-group">
         <label class="control-label" for="id_contact">{% trans "Contacts" %}</label>
         <div class="controls">
            	{% for contact in service.contact.all %}
         		{{contact.name}} (<a href="mailto:{{contact.email}}">{{contact.email}}</a> - tel:{{contact.phone}}){% if not forloop.last %}<br>{% endif %}
         	{% endfor %}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="id_physical_avail">{% trans "Physical Availability" %}</label>
+        <div class="controls">
+            {{ service.get_physical_avail_display }}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="id_operation_hours">{% trans "Operation Hours" %}</label>
+        <div class="controls">
+            {{ service.operation_hours }}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="id_venue_info">{% trans "Location Type" %}</label>
+        <div class="controls">
+            {{ service.venue_info }}
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="id_url">SSID</label>
+        <div class="controls">
+            {{ service.SSID }}
         </div>
     </div>
     <div class="control-group">
@@ -153,16 +191,17 @@
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="id_number_id">{% trans "AP number" %}</label>
+        <label class="control-label" for="id_ap_no">{% trans "AP number" %}</label>
         <div class="controls">
             {{ service.AP_no }}
 
         </div>
     </div>
     <div class="control-group">
-        <label class="control-label" for="id_number_id">{% trans "Wired" %}</label>
+        <label class="control-label" for="id_wired_no">{% trans "Wired number" %}</label>
         <div class="controls">
-            {{ service.wired }}
+            {{ service.AP_no }}
+
         </div>
     </div>
     <div class="control-group">

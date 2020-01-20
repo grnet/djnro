@@ -28,6 +28,12 @@
 								{{ institution.get_ertype_display }}
 							</div>
 						</div>
+						<div class="col-md-2">
+							<label class="" for="id_instid">{% trans "ID" %}</label>
+							<div class="">
+								{{ institution.instid }}
+							</div>
+						</div>
 					{% tolocale_get institution.institutiondetails LANGUAGE_CODE get="address" as institutiondetails_address %}
 					<div class="col-md-2">
 						<label class="" for="id_address_street">{% trans "Street" %}</label>
@@ -58,6 +64,12 @@
 				        {% endfor %}
 				        </div>
 				    </div>
+					<div class="col-md-2">
+						<label class="" for="id_venue_info">{% trans "Institution Type" %}</label>
+						<div class="">
+							{{ institution.institutiondetails.venue_info }}
+						</div>
+					</div>
 					{% if institution.ertype in ERTYPE_ROLES.SP %}
 					<div class="col-md-2">
 						<label class="" for="id_oper_name">{% trans "Domain Name" %}</label>
