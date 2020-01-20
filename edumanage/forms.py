@@ -1,6 +1,7 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from edumanage.models import (
+    URL_i18n,
     MonLocalAuthnParam,
     InstRealmMon,
     InstitutionDetails,
@@ -46,6 +47,28 @@ class ModelFormWithPropertyFields(forms.ModelForm):
         for field_name in self.property_fields:
             setattr(self.instance, field_name, self.cleaned_data[field_name])
         return super(ModelFormWithPropertyFields, self).save(*args, **kwargs)
+
+class URL_i18nForm(forms.ModelForm):
+
+    class Meta:
+        model = URL_i18n
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        valid_urltypes = kwargs.pop('valid_urltypes', [])
+        super(URL_i18nForm, self).__init__(*args, **kwargs)
+        if not valid_urltypes:
+            return
+        if not isinstance(valid_urltypes, (tuple, list)):
+            valid_urltypes = [valid_urltypes]
+        urltype_field = self.fields['urltype']
+        choices = urltype_field.choices
+        if not choices:
+            return
+        new_choices = tuple(choice for choice in choices
+                            if not choice[0] or choice[0] in valid_urltypes)
+        urltype_field.choices = urltype_field.widget.choices = new_choices
+
 
 class MonLocalAuthnParamForm(forms.ModelForm):
 

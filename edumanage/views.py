@@ -64,6 +64,7 @@ from edumanage.forms import (
     InstRealmForm,
     UserProfileForm,
     ContactForm,
+    URL_i18nForm,
     MonLocalAuthnParamForm,
     InstRealmMonForm,
     ServiceLocForm,
@@ -392,7 +393,11 @@ def add_services(request, service_pk):
             context=merge_dicts({'edit': edit}, base_response(request))
         )
     formset_params = (
-        ('url', URL_i18n, {'formset': UrlFormSetFact}),
+        ('url', URL_i18n, {
+            'formset': UrlFormSetFact,
+            'form': partialclass(URL_i18nForm,
+                                 valid_urltypes='info'),
+        }),
         ('name', Name_i18n, {
             'formset': partialclass(Generici18nFormSetFact,
                                     obj_descr=_('location name')),
@@ -440,10 +445,6 @@ def add_services(request, service_pk):
                 model, **fsf_kwargs)(**fs_kwargs)
         if service:
             edit = True
-        for url_form in formsets['url'].forms:
-            url_form.fields['urltype'] = forms.ChoiceField(
-                choices=(('', '----------'), ('info', 'Info'),)
-            )
         return render(
             request,
             'edumanage/services_edit.html',
@@ -479,10 +480,6 @@ def add_services(request, service_pk):
         form.fields.update(form_fields)
         if service:
             edit = True
-        for url_form in formsets['url'].forms:
-            url_form.fields['urltype'] = forms.ChoiceField(
-                choices=(('', '----------'), ('info', 'Info'),)
-            )
         return render(
             request,
             'edumanage/services_edit.html',
