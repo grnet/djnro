@@ -436,7 +436,8 @@ def add_services(request, service_pk):
             empty_label=None
         ),
         'contact': forms.ModelMultipleChoiceField(
-            queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
+            queryset=Contact.objects.filter(pk__in=getInstContacts(inst)),
+            required=False,
         ),
     }
     if request.method == "GET":
