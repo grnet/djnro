@@ -183,20 +183,40 @@ class DelimitedValueExactLookup(models.lookups.PatternLookup):
 
 # https://www.djangosnippets.org/snippets/2402/
 def get_namedtuple_choices(*choices_tuples):
+    """
+    Return an object resembling PY3 enum, by means of collections.namedtuple
+
+    :param choices_tuples: Sequence of tuples, each containing at least 3
+        members: symbolic name (for attribute lookup), value, description (the
+        latter 2 as required for Django choices); additional members are
+        ignored
+
+    :return: Choices(tuple) instance
+    """
     names = [tup[0] for tup in choices_tuples]
     vals = [tup[1:3] for tup in choices_tuples]
     class Choices(namedtuple('Choices', names)):
         def __getattribute__(self, name):
+            """
+            If the value is a tuple, return the first member; attribute lookup
+            on a choices object thus returns only the value, rather than
+            (value, description)
+            """
             attr = super(Choices, self).__getattribute__(name)
             if not isinstance(attr, tuple):
                 return attr
             return attr[0]
         def __contains__(self, item):
+            """
+            If the argument is not a tuple, membership test checks against the
+            first member rather than the whole tuple (value, description)
+            """
             if not isinstance(item, tuple):
                 return item in (val[0] for val in self.__iter__())
             return super(Choices, self).__contains__(item)
     return Choices._make(vals)
 
+# Last member in choices tuples maps numeric to string (EDB2) ERTYPE
 _ERTYPES = (
     ('IDP', 1, 'IdP only', 'IdP'),
     ('SP', 2, 'SP only', 'SP'),
@@ -208,9 +228,12 @@ ERTYPE_ROLES = get_namedtuple_choices(*(
     for cat in ('IdP', 'SP')
 ))
 def get_ertype_string(ertype, reverse=False):
+    """
+    Map an ERTYPE number to the respective string, or vice versa if reverse
+    """
     return dict(map(lambda x: (x[-1], x[1]) if reverse else (x[1], x[-1]),
                     _ERTYPES))[ertype]
-get_ertype_number = partial(get_ertype_string, reverse=True)
+get_ertype_number = partial(get_ertype_string, reverse=True) # pylint: disable=invalid-name
 
 RADPROTOS = get_namedtuple_choices(
     ('UDP', 'radius', 'traditional RADIUS over UDP'),
