@@ -605,7 +605,6 @@ class ServiceLoc(models.Model):
     enc_level = MultiSelectField(max_length=64, choices=ENCTYPES, blank=True, null=True)
     tag = MultiSelectField(max_length=64, choices=LOCATION_TAGS, blank=True)
     AP_no = models.PositiveIntegerField(blank=True, null=True)
-    wired = models.BooleanField()
     wired_no = models.PositiveIntegerField(blank=True, null=True)
     physical_avail = models.PositiveIntegerField(
         choices=PHYSICAL_AVAILABILITY_STATES,
