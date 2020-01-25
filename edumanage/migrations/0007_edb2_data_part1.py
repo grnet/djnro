@@ -4,14 +4,15 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.db import migrations
-from django.db.models import OuterRef, Subquery, F
+from django.db.models import OuterRef, Subquery, F, When, Case, Value
+from django.db.models.fields import BooleanField, PositiveIntegerField
 from django.utils.functional import curry
 
 from . import AppAwareRunPython
 
 def migrate_addresses(apps, schema_editor, app_name,
                       model_name, forwards=True,
-                      default_lang=getattr(settings, 'LANGUAGE_CODE', 'en')):
+                      default_lang=settings.LANGUAGE_CODE):
     db_alias = schema_editor.connection.alias
     db_model = apps.get_model(app_name, model_name)
     ct_model = apps.get_model('contenttypes.ContentType')
@@ -59,6 +60,27 @@ def migrate_serviceloc_tags(apps, schema_editor, app_name, forwards=True):
                 setattr(obj, tag, value)
         obj.save()
 
+def migrate_serviceloc_wired(apps, schema_editor, app_name, forwards=True):
+    wired_to_wired_no = settings.SERVICELOC_DERIVE_WIRED_NO
+    db_alias = schema_editor.connection.alias
+    db_model = apps.get_model(app_name, 'ServiceLoc')
+    if forwards:
+        db_model.objects.using(db_alias).annotate(
+            _wired_no=Case(
+                When(wired=True, then=Value(wired_to_wired_no[True])),
+                default=Value(wired_to_wired_no[False]),
+                output_field=PositiveIntegerField()
+            )
+        ).update(wired_no=F('_wired_no'))
+    else:
+        db_model.objects.using(db_alias).annotate(
+            _wired=Case(
+                When(wired_no__gt=0, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        ).update(wired=F('_wired'))
+
 
 class Migration(migrations.Migration):
 
@@ -86,6 +108,11 @@ class Migration(migrations.Migration):
         AppAwareRunPython(
             curry(migrate_serviceloc_tags, forwards=True),
             reverse_code=curry(migrate_serviceloc_tags, forwards=False),
+            hints={'model_name': 'serviceloc'},
+        ),
+        AppAwareRunPython(
+            curry(migrate_serviceloc_wired, forwards=True),
+            reverse_code=curry(migrate_serviceloc_wired, forwards=False),
             hints={'model_name': 'serviceloc'},
         ),
     ]
