@@ -60,4 +60,8 @@ class Migration(migrations.Migration):
             model_name='serviceloc',
             name='transp_proxy',
         ),
+        migrations.RemoveField(
+            model_name='serviceloc',
+            name='wired',
+        ),
     ]
