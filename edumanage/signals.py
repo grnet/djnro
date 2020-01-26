@@ -30,7 +30,13 @@ def save_latlon_cache(sender, instance, **kwargs):
         return
     if not all([props[p] is not None for p in props]):
         return
-    instance.coordinates.update_or_create(defaults=props)
+    try:
+        instance.coordinates.update_or_create(defaults=props)
+    except Coordinates.MultipleObjectsReturned:
+        # following receiver ensures this should never happen, but anyway
+        instance.coordinates.filter(
+            id=instance.coordinates.first().id
+        ).update(**props)
     for p in props:
         instance.__dict__.pop(p)
 
