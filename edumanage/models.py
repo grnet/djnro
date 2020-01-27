@@ -260,10 +260,18 @@ class Contact(models.Model):
 
 @python_2_unicode_compatible
 class Coordinates(models.Model):
-    longitude = models.DecimalField(max_digits=12, decimal_places=8)
-    latitude = models.DecimalField(max_digits=12, decimal_places=8)
-    # up to 9999 meters, with millimeter precision
-    altitude = models.DecimalField(max_digits=7, decimal_places=3, null=True)
+    longitude = models.DecimalField(
+        max_digits=12, decimal_places=8, help_text=_(
+            'Longitude in decimal degrees, up to 8 decimal places'
+        ))
+    latitude = models.DecimalField(
+        max_digits=12, decimal_places=8, help_text=_(
+            'Latitude in decimal degrees, up to 8 decimal places'
+        ))
+    altitude = models.DecimalField(
+        max_digits=7, decimal_places=3, null=True, help_text=_(
+            'Altitude, up to 9999 meters with millimeter precision'
+        ))
 
     def __str__(self):
         coordinates_str = 'Lat {}, Lon {}'.format(self.latitude, self.longitude)
