@@ -1,6 +1,7 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
 {% load staticfiles %}
+{% load join_with_linebreaks %}
 
 
 {% block management_content %}
@@ -28,7 +29,7 @@
 		<label class="control-label" for="id_realm"><b>{% trans "Realm" %}</b></label>
 		<div class="controls">
 			{{ form.realm }}
-			{% if form.realm.errors %} <div class="alert-danger"> {{ form.realm.errors|join:", " }} </div>
+			{% if form.realm.errors %} <div class="alert-danger"> {{ form.realm.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.realm.help_text }}</span>
 		</div>
 	</div>
@@ -36,7 +37,7 @@
 		<label class="control-label" for="id_proxyto"><b>{% trans "Proxy to Servers" %}</b></label>
 		<div class="controls">
 			{{ form.proxyto }}
-			{% if form.proxyto.errors %} <div class="alert-danger"> {{ form.proxyto.errors|join:", " }} </div>
+			{% if form.proxyto.errors %} <div class="alert-danger"> {{ form.proxyto.errors|join_with_linebreaks }} </div>
 			{% endif %}<span class="help-block">{% trans "Only IdP and IdP/SP server types are allowed" %}</span>
 		</div>
 	</div>
