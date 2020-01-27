@@ -116,12 +116,8 @@ def edb_version_from_request(request, version=None, resource=None):
         versions['path'] = EduroamDatabaseVersion(version)
     if request.GET.get('version', None):
         versions['parameter'] = EduroamDatabaseVersion(request.GET['version'])
-    if resource == "realm":
-        versions['resource'] = EduroamDatabaseVersionDef.version_1
-    if resource == "ro":
-        versions['resource'] = EduroamDatabaseVersionDef.version_2
-    if versions.get('resource', None):
-        versions['resource'] = EduroamDatabaseVersion(versions['resource'])
+    if resource is not None:
+        versions['resource'] = edb_version_fromto_resource(resource)
 
     if not versions:
         return DEFAULT_EDUROAM_DATABASE_VERSION
@@ -132,3 +128,29 @@ def edb_version_from_request(request, version=None, resource=None):
                 "Conflicting versions ({} vs. {})".format(_key, key)
             )
     return _ver
+
+def edb_version_fromto_resource(res_or_edbv):
+    resource_to_version = {
+        "realm": EduroamDatabaseVersionDef.version_1,
+        "ro": EduroamDatabaseVersionDef.version_2,
+    }
+
+    if not isinstance(res_or_edbv, EduroamDatabaseVersion):
+        res = res_or_edbv
+        try:
+            version = resource_to_version[res]
+        except KeyError:
+            raise ValueError("Invalid resource")
+        return EduroamDatabaseVersion(version)
+
+    edbv = res_or_edbv
+    version_to_resource = {
+        resource_to_version[k]: k
+        for k in resource_to_version
+    }
+    if edbv in version_to_resource:
+        return version_to_resource[edbv]
+    for version in sorted(version_to_resource, reverse=True):
+        if edbv > version:
+            return version_to_resource[version]
+    raise ValueError("Could not determine resource from version")
