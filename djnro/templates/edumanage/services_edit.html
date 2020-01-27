@@ -28,8 +28,7 @@
 			<b>{% trans "Location" %}</b>
 		</label>
 		<div>
-			<div id="map_canvas" style="width:100%; height:350px;"></div>
-			<span class="help-block">{{ form.longitude.help_text }}</span>
+			<div id="map_canvas" style="width:100%; height:350px; margin-bottom: 10px;"></div>
 		</div>
 		<div class="col-md-6" >
 			<label for="">{% trans "Search location" %}</label>: <input type="text" value="" id="searchbox" style=" width: 300px;">
@@ -37,17 +36,22 @@
 		<div class="col-md-6">
 
 			 <div class="form-group">
-			 	<label for="">Lat</label> {{ form.latitude }} <label for="">Lng</label> {{ form.longitude }}
+			   {% if form.longitude.errors %}
+			   <div class="alert-danger">{{ form.longitude.errors|join:", " }}</div>
+			   {% endif %}
+			   <label for="">Lat</label> {{ form.latitude }}
+			   <span class="help-block">{{ form.longitude.help_text }}</span>
+			   {% if form.latitude.errors %}
+			   <div class="alert-danger">{{ form.latitude.errors|join:", " }}</div>
+			   {% endif %}
+			   <label for="">Lng</label> {{ form.longitude }}
+			   <span class="help-block">{{ form.latitude.help_text }}</span>
 			 				<button class="btn btn-info disabled" id="updatemap" disabled="disabled">
 			 					{% trans "Update Map" %}
 			 				</button>
 			 				<button class="btn btn-info" id="myloc">
 			 					{% trans "Current Location" %}
 			 				</button>
-			 				{% if form.longitude.errors %} <div class="alert-danger"> {{ form.longitude.errors|join:", " }} </div>
-			 				{% endif %}
-			 				{% if form.latitude.errors %} <div class="alert-danger"> {{ form.latitude.errors|join:", " }} </div>
-			 				{% endif %} <span class="help-block">{{ form.longitude.help_text }}</span>
 			 </div>
 		</div>
 	</div>
@@ -550,11 +554,11 @@
 				return false;
 			});
 
-			$("#id_latitude").keypress(function(){
+			$("#id_latitude").on('keyup change', function(){
 				$("#updatemap").removeClass('disabled');
 				$("#updatemap").removeAttr('disabled');
 			});
-			$("#id_longitude").keypress(function(){
+			$("#id_longitude").on('keyup change', function(){
 				$("#updatemap").removeClass('disabled');
 				$("#updatemap").removeAttr('disabled');
 			});
