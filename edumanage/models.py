@@ -24,6 +24,11 @@ from sortedm2m.fields import SortedManyToManyField
 from utils.functional import cached_property
 
 
+_VENUE_INFO_HELP_TEXT = _(
+    'IEEE 802.11-2012, clause 8.4.1.34 Venue Info. This is a pair of integers, '
+    'each between 0 and 255, separated with ",".'
+)
+
 def validate_venue_info(value):
     subfields = value.split(',')
     if len(subfields) != 2:
@@ -715,7 +720,8 @@ class InstitutionDetails(models.Model):
         max_length=7,
         blank=True,
         validators=[validate_venue_info],
-        db_column='inst_type'
+        db_column='inst_type',
+        help_text=_VENUE_INFO_HELP_TEXT
     )
     # accept if ertype: 1 (idp) or 3 (idpsp) (Applies to the following field)
     number_user = models.PositiveIntegerField(null=True, blank=True, help_text=_("Number of users (individuals) that are eligible to participate in eduroam service"))
