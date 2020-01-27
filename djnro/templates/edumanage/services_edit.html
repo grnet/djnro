@@ -1,6 +1,7 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
 {% load tolocale %}
+{% load join_with_linebreaks %}
 {% load staticfiles %}
 {% load widget_tweaks %}
 
@@ -37,12 +38,12 @@
 
 			 <div class="form-group">
 			   {% if form.longitude.errors %}
-			   <div class="alert-danger">{{ form.longitude.errors|join:", " }}</div>
+			   <div class="alert-danger">{{ form.longitude.errors|join_with_linebreaks }}</div>
 			   {% endif %}
 			   <label for="">Lat</label> {{ form.latitude }}
 			   <span class="help-block">{{ form.longitude.help_text }}</span>
 			   {% if form.latitude.errors %}
-			   <div class="alert-danger">{{ form.latitude.errors|join:", " }}</div>
+			   <div class="alert-danger">{{ form.latitude.errors|join_with_linebreaks }}</div>
 			   {% endif %}
 			   <label for="">Lng</label> {{ form.longitude }}
 			   <span class="help-block">{{ form.latitude.help_text }}</span>
@@ -70,7 +71,7 @@
 			<label for="id_stage">{% trans "Stage" %}</label>
 			<div class="controls">
 				{{ form.stage }}
-				{% if form.stage.errors %} <div class="alert-danger"> {{ form.stage.errors|join:", " }} </div>
+				{% if form.stage.errors %} <div class="alert-danger"> {{ form.stage.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.stage.help_text }}</span>
 			</div>
 		</div>
@@ -80,7 +81,7 @@
 			<label for="id_geo_type">{% trans "Geo Type" %}</label>
 			<div class="controls">
 				{{ form.geo_type }}
-				{% if form.geo_type.errors %} <div class="alert-danger"> {{ form.geo_type.errors|join:", " }} </div>
+				{% if form.geo_type.errors %} <div class="alert-danger"> {{ form.geo_type.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.geo_type.help_text }}</span>
 			</div>
 		</div>
@@ -91,15 +92,15 @@
 			{{services_form.management_form}}
 			<div class="controls">
 			{% for err in services_form.errors %}{% if err|length > 0 %}<span class="help-inline"></span>{% endif %}{% endfor %}
-			{% if services_form.non_form_errors %} <div class="alert-danger">{% for nfe in services_form.non_form_errors %}{{ nfe }}{% if not nfe.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
+			{% if services_form.non_form_errors %} <div class="alert-danger">{{ services_form.non_form_errors|join_with_linebreaks }}</div>{% endif %}
 				<table id="locsform"><thead><tr><td>{% trans "Name" %}</td><td>{% trans "Language" %}</td></tr></thead><tbody>
 			{% for formset_s in services_form.forms %}
 			{{ formset_s.id }}
 
 
 				<tr id="{{ formset_s.prefix }}-row">
-				<td> {% if formset_s.instance.pk %}{{ formset_s.DELETE }}{% endif %}{{ formset_s.name }}{% if formset_s.name.errors %}<br><div class="alert-danger">{{ formset_s.name.errors|join:", " }} </div>{% endif %}</td>
-		             <td>{{formset_s.lang}}{% if formset_s.lang.errors %}<br><p class="help-inline"> {{ formset_s.lang.errors|join:", " }} </p>{% endif %}</td>
+				<td> {% if formset_s.instance.pk %}{{ formset_s.DELETE }}{% endif %}{{ formset_s.name }}{% if formset_s.name.errors %}<br><div class="alert-danger">{{ formset_s.name.errors|join_with_linebreaks }} </div>{% endif %}</td>
+		             <td>{{formset_s.lang}}{% if formset_s.lang.errors %}<br><p class="help-inline"> {{ formset_s.lang.errors|join_with_linebreaks }} </p>{% endif %}</td>
 
 			</tr>
 			{% endfor %}
@@ -113,16 +114,16 @@
 			{{addrs_form.management_form}}
 			<div class="controls">
 			{% for err in addrs_form.errors %}{% if err|length > 0 %}<span class="help-inline"></span>{% endif %}{% endfor %}
-			{% if addrs_form.non_form_errors %} <div class="alert-danger">{% for nfe in addrs_form.non_form_errors %}{{ nfe }}{% if not nfe.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
+			{% if addrs_form.non_form_errors %} <div class="alert-danger">{{ addrs_form.non_form_errors|join_with_linebreaks }}</div>{% endif %}
 				<table id="addrsform"><thead><tr><td>{% trans "Street" %}</td><td>{% trans "City" %}</td><td>{% trans "Language" %}</td></tr></thead><tbody>
 			{% for formset_a in addrs_form.forms %}
 			{{ formset_a.id }}
 
 
 				<tr id="{{ formset_a.prefix }}-row">
-				<td> {% if formset_a.instance.pk %}{{ formset_a.DELETE }}{% endif %}{{ formset_a.street|set_data:"address:street" }}{% if formset_a.street.errors %}<br><div class="alert-danger">{{ formset_a.street.errors|join:", " }} </div>{% endif %}</td>
-				     <td>{{ formset_a.city|set_data:"address:city" }}{% if formset_a.city.errors %}<br><div class="alert-danger">{{ formset_a.city.errors|join:", " }} </div>{% endif %}</td>
-		             <td>{{formset_a.lang|set_data:"address:lang"}}{% if formset_a.lang.errors %}<br><p class="help-inline"> {{ formset_a.lang.errors|join:", " }} </p>{% endif %}</td>
+				<td> {% if formset_a.instance.pk %}{{ formset_a.DELETE }}{% endif %}{{ formset_a.street|set_data:"address:street" }}{% if formset_a.street.errors %}<br><div class="alert-danger">{{ formset_a.street.errors|join_with_linebreaks }} </div>{% endif %}</td>
+				     <td>{{ formset_a.city|set_data:"address:city" }}{% if formset_a.city.errors %}<br><div class="alert-danger">{{ formset_a.city.errors|join_with_linebreaks }} </div>{% endif %}</td>
+		             <td>{{formset_a.lang|set_data:"address:lang"}}{% if formset_a.lang.errors %}<br><p class="help-inline"> {{ formset_a.lang.errors|join_with_linebreaks }} </p>{% endif %}</td>
 
 			</tr>
 			{% endfor %}
@@ -135,7 +136,7 @@
 			<label for="id_contact">{% trans "Contacts" %}</label>
 			<div class="controls">
 				{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
-				{% if form.contact.errors %} <div class="alert-danger"> {{ form.contact.errors|join:", " }} </div>
+				{% if form.contact.errors %} <div class="alert-danger"> {{ form.contact.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
 			</div>
 		</div>
@@ -145,7 +146,7 @@
 			<label for="id_physical_avail">{% trans "Physical Availability" %}</label>
 			<div class="controls">
 				{{ form.physical_avail }}
-				{% if form.physical_avail.errors %} <div class="alert-danger"> {{ form.physical_avail.errors|join:", " }} </div>
+				{% if form.physical_avail.errors %} <div class="alert-danger"> {{ form.physical_avail.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.physical_avail.help_text }}</span>
 			</div>
 		</div>
@@ -155,7 +156,7 @@
 			<label for="id_operation_hours">{% trans "Operation Hours" %}</label>
 			<div class="controls">
 				{{ form.operation_hours }}
-				{% if form.operation_hours.errors %} <div class="alert-danger"> {{ form.operation_hours.errors|join:", " }} </div>
+				{% if form.operation_hours.errors %} <div class="alert-danger"> {{ form.operation_hours.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.operation_hours.help_text }}</span>
 			</div>
 		</div>
@@ -165,7 +166,7 @@
 			<label for="id_venue_info">{% trans "Location Type" %}</label>
 			<div class="controls">
 				{{ form.venue_info }}
-				{% if form.venue_info.errors %} <div class="alert-danger"> {{ form.venue_info.errors|join:", " }} </div>
+				{% if form.venue_info.errors %} <div class="alert-danger"> {{ form.venue_info.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.venue_info.help_text }}</span>
 			</div>
 		</div>
@@ -175,7 +176,7 @@
 			<label for="id_url"><b>SSID</b></label>
 			<div class="controls">
 				{{ form.SSID }}
-				{% if form.SSID.errors %}<div class="alert-danger"> {{ form.SSID.errors|join:", " }} </div>
+				{% if form.SSID.errors %}<div class="alert-danger"> {{ form.SSID.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.SSID.help_text }}</span>
 			</div>
 		</div>
@@ -185,7 +186,7 @@
 			<label for="id_oper_name">{% trans "Encryption Level" %}</label>
 			<div class="controls">
 				{{ form.enc_level }}
-				{% if form.enc_level.errors %} <div class="alert-danger"> {{ form.enc_level.errors|join:", " }} </div>
+				{% if form.enc_level.errors %} <div class="alert-danger"> {{ form.enc_level.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.enc_level.help_text }}</span>
 			</div>
 		</div>
@@ -195,7 +196,7 @@
 			<label for="id_tag">{% trans "Tags" %}</label>
 			<div class="controls">
 				{{ form.tag }}
-				{% if form.tag.errors %} <div class="alert-danger"> {{ form.tag.errors|join:", " }} </div>
+				{% if form.tag.errors %} <div class="alert-danger"> {{ form.tag.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.tag.help_text }}</span>
 			</div>
 		</div>
@@ -205,7 +206,7 @@
 			<label for="id_ap_no"><b>{% trans "AP number" %}</b></label>
 			<div class="controls">
 				{{ form.AP_no }}
-				{% if form.AP_no.errors %} <div class="alert-danger"> {{ form.AP_no.errors|join:", " }} </div>
+				{% if form.AP_no.errors %} <div class="alert-danger"> {{ form.AP_no.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.AP_no.help_text }}</span>
 			</div>
 		</div>
@@ -215,7 +216,7 @@
 			<label for="id_wired_no"><b>{% trans "Wired number" %}</b></label>
 			<div class="controls">
 				{{ form.wired_no }}
-				{% if form.wired_no.errors %} <div class="alert-danger"> {{ form.wired_no.errors|join:", " }} </div>
+				{% if form.wired_no.errors %} <div class="alert-danger"> {{ form.wired_no.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.wired_no.help_text }}</span>
 			</div>
 		</div>
@@ -226,7 +227,7 @@
 			{{urls_form.management_form}}
 			<div class="controls">
 			{% for err in urls_form.errors %}{% if err|length > 0 %}<div class="alert-danger">{{err}}</div>{% endif %}{% endfor %}
-			{% if urls_form.non_form_errors %} <div class="alert-danger">{% for nfe in urls_form.non_form_errors %}{{ nfe }}{% if not nfe.last %}<br>{% endif %}{% endfor %}</div>{% endif %}
+			{% if urls_form.non_form_errors %} <div class="alert-danger">{{ urls_form.non_form_errors|join_with_linebreaks }}</div>{% endif %}
 				<table id="urlsform">
 					<thead>
 						<tr>
@@ -240,13 +241,13 @@
 						{{ formset.id }}
 						<tr id="{{ formset.prefix }}-row">
 							<td>
-								{% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="alert-danger"> {{ formset.url.errors|join:", " }} </div>{% endif %}
+								{% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="alert-danger"> {{ formset.url.errors|join_with_linebreaks }} </div>{% endif %}
 							</td>
 		             		<td>
-		             			{{formset.urltype}}{% if formset.urltype.errors %}<br><p class="help-inline"> {{ formset.urltype.errors|join:", " }} </p>{% endif %}
+		             			{{formset.urltype}}{% if formset.urltype.errors %}<br><p class="help-inline"> {{ formset.urltype.errors|join_with_linebreaks }} </p>{% endif %}
 		             		</td>
 		             		<td>
-		             			{{formset.lang}}{% if formset.lang.errors %}<br><p class="help-inline"> {{ formset.lang.errors|join:", " }} </p>{% endif %}
+		             			{{formset.lang}}{% if formset.lang.errors %}<br><p class="help-inline"> {{ formset.lang.errors|join_with_linebreaks }} </p>{% endif %}
 		             		</td>
 						</tr>
 					{% endfor %}

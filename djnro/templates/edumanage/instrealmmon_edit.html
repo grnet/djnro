@@ -1,6 +1,7 @@
 {% extends "edumanage/welcome.html"%}
 {% load staticfiles %}
 {% load i18n %}
+{% load join_with_linebreaks %}
 
 {% block extrajs %}
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3{% if GOOGLE_MAPS_API_KEY %}&amp;key={{ GOOGLE_MAPS_API_KEY }}{% endif %}"></script>
@@ -21,7 +22,7 @@
 		<label class="control-label" for="id_realm"><b>{% trans "Realm" %}</b></label>
 		<div class="controls">
 			{{ form.realm }}
-			{% if form.realm.errors %} <div class="alert-danger"> {{ form.realm.errors|join:", " }} </div>
+			{% if form.realm.errors %} <div class="alert-danger"> {{ form.realm.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.realm.help_text }}</span>
 		</div>
 	</div>
@@ -29,7 +30,7 @@
 		<label class="control-label" for="id_mon_type"><b>{% trans "Monitoring Method" %}</b></label>
 		<div class="controls">
 			{{ form.mon_type }}
-			{% if form.mon_type.errors %} <div class="alert-danger"> {{ form.mon_type.errors|join:", " }} </div>
+			{% if form.mon_type.errors %} <div class="alert-danger"> {{ form.mon_type.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.mon_type.help_text }}</span>
 		</div>
 	</div>

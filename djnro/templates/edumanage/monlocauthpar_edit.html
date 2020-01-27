@@ -1,6 +1,7 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
 {% load staticfiles %}
+{% load join_with_linebreaks %}
 
 {% block management_content %}
 <h4>{% if edit %}{{realm.realm}} {% trans 'parameters' %} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm Parameters" %} ({{realm.realm}}){% endif %}</h4>
@@ -23,7 +24,7 @@
 		<label class="control-label" for="id_eap_method"><b>{% trans "EAP Method" %}</b></label>
 		<div class="controls">
 			{{ form.eap_method }}
-			{% if form.eap_method.errors %} <div class="alert-danger"> {{ form.eap_method.errors|join:", " }} </div>
+			{% if form.eap_method.errors %} <div class="alert-danger"> {{ form.eap_method.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.eap_method.help_text }}</span>
 		</div>
 	</div>
@@ -31,7 +32,7 @@
 		<label class="control-label" for="id_phase2"><b>{% trans "EAP2 Method" %}</b></label>
 		<div class="controls">
 			{{ form.phase2 }}
-			{% if form.phase2.errors %} <div class="alert-danger"> {{ form.phase2.errors|join:", " }} </div>
+			{% if form.phase2.errors %} <div class="alert-danger"> {{ form.phase2.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.phase2.help_text }}</span>
 		</div>
 	</div>
@@ -39,7 +40,7 @@
 		<label class="control-label" for="id_username"><b>{% trans "Username" %}</b></label>
 		<div class="controls">
 			{{ form.username }}
-			{% if form.username.errors %} <div class="alert-danger"> {{ form.username.errors|join:", " }} </div>
+			{% if form.username.errors %} <div class="alert-danger"> {{ form.username.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.username.help_text }}</span>
 		</div>
 	</div>
@@ -47,7 +48,7 @@
 		<label class="control-label" for="id_passwp"><b>{% trans "Password" %}</b></label>
 		<div class="controls">
 			<input type="password" maxlength="80" name="passwp" id="id_passwp" {% if edit %}value='{{form.instance.passwp}}'{% endif %} {% if form.data.passwp %}value='{{form.data.passwp}}'{% endif %}>
-			{% if form.passwp.errors %} <div class="alert-danger"> {{ form.passwp.errors|join:", " }} </div>
+			{% if form.passwp.errors %} <div class="alert-danger"> {{ form.passwp.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.passwp.help_text }}</span>
 		</div>
 	</div>
