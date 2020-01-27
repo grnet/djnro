@@ -18,9 +18,9 @@ class Migration(migrations.Migration):
             name='Coordinates',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('longitude', models.DecimalField(decimal_places=8, max_digits=12)),
-                ('latitude', models.DecimalField(decimal_places=8, max_digits=12)),
-                ('altitude', models.DecimalField(decimal_places=3, max_digits=7, null=True)),
+                ('longitude', models.DecimalField(decimal_places=8, help_text='Longitude in decimal degrees, up to 8 decimal places', max_digits=12)),
+                ('latitude', models.DecimalField(decimal_places=8, help_text='Latitude in decimal degrees, up to 8 decimal places', max_digits=12)),
+                ('altitude', models.DecimalField(decimal_places=3, help_text='Altitude, up to 9999 meters with millimeter precision', max_digits=7, null=True)),
             ],
             options={
                 'verbose_name': 'Coordinates',
