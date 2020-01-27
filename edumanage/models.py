@@ -185,17 +185,6 @@ CONTACT_PRIVACY = get_namedtuple_choices(
     ('PUBLIC', 1, 'public'),
 )
 
-LOCATION_TYPES = get_namedtuple_choices(
-    ('SPOT', 0, 'single spot'),
-    ('AREA', 1, 'area'),
-    ('MOBILE', 2, 'mobile'),
-)
-
-PHYSICAL_AVAILABILITY_STATES = get_namedtuple_choices(
-    ('ALWAYS', 0, 'no restrictions'),
-    ('RESTRICTED', 1, 'physical access restrictions'),
-)
-
 
 @python_2_unicode_compatible
 class Name_i18n(models.Model):
@@ -552,11 +541,17 @@ class ServiceLoc(models.Model):
         ('MOBILE', 2, 'mobile'),
     )
 
+    PHYSICAL_AVAILABILITY_STATES = get_namedtuple_choices(
+        ('ALWAYS', 0, 'no restrictions'),
+        ('RESTRICTED', 1, 'physical access restrictions'),
+    )
+
     ENCTYPES = (
         ('WPA/TKIP', 'WPA-TKIP'),
         ('WPA/AES', 'WPA-AES'),
         ('WPA2/TKIP', 'WPA2-TKIP'),
         ('WPA2/AES', 'WPA2-AES'),
+        ('WPA3/AES', 'WPA3-AES'),
     )
 
     LOCATION_TAGS = (
