@@ -34,7 +34,7 @@
 								{{ institution.instid }}
 							</div>
 						</div>
-					{% tolocale_get institution.institutiondetails LANGUAGE_CODE get="address" as institutiondetails_address %}
+					{% tolocale institution.institutiondetails LANGUAGE_CODE get="address" as institutiondetails_address %}
 					<div class="col-md-2">
 						<label class="" for="id_address_street">{% trans "Street" %}</label>
 						<div class="">
