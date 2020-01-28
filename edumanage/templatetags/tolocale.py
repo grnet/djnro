@@ -2,6 +2,7 @@ from django import template
 
 register = template.Library()
 
+@register.simple_tag
 @register.filter
 def tolocale(objtrans, translang, get='name'):
     try:
@@ -12,6 +13,3 @@ def tolocale(objtrans, translang, get='name'):
             return objtrans.get(translang, '')
         else:
             return objtrans
-
-register.simple_tag(tolocale)
-register.assignment_tag(tolocale, name='tolocale_get')

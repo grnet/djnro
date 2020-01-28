@@ -34,7 +34,7 @@
 			{% for service in services %}
 		    	<tr class="GradeC">
 		        	<td><a href="{% url 'services' service.pk %}">{% tolocale service LANGUAGE_CODE %}</a></td>
-		        	{% tolocale_get service LANGUAGE_CODE get="address" as service_address %}
+		        	{% tolocale service LANGUAGE_CODE get="address" as service_address %}
 		        	<td>{{service_address.street}}<br>{{service_address.city}}</td>
 		        	<td>{{service.SSID}}</td>
 		            <td>{% for enc in service.enc_level %}{% if enc == '' %}-{% else %}{{enc}}{% if not forloop.last%},{% endif %}{% endif %}{% endfor %}</td>
