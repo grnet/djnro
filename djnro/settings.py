@@ -316,7 +316,7 @@ SW_VERSION = _version.VERSION
 
 def _dictmerge(a, b):
     """ deep merge two dictionaries """
-    ret = dict(a.items() + b.items())
+    ret = dict(list(a.items()) + list(b.items()))
     for key in set(a.keys()) & set(b.keys()):
         if isinstance(a[key], dict) and isinstance(b[key], dict):
             ret[key] = _dictmerge(a[key], b[key])
