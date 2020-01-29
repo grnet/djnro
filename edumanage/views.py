@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
-from itertools import groupby
 import json
 import bz2
 import math
@@ -2015,11 +2014,11 @@ def ourPoints(institution=None, cache_flush=False):
             point['lat'] = u"%s" % sl.latitude
             point['lng'] = u"%s" % sl.longitude
             addrs = {
-                group[0]: [
+                lang: [
                     ', '.join([f for f in (addr.street, addr.city) if f])
-                    for addr in group[1]
+                    for addr in group
                 ]
-                for group in groupby(
+                for lang, group in itertools.groupby(
                     sl.address.order_by('lang'),
                     key=lambda addr: addr.lang
                 )
@@ -2137,7 +2136,7 @@ def instxml(request, version):
     ).order_by('institutionid')
     servicelocs = {
         instid: list(group) for instid, group in
-        groupby(servicelocs, lambda sloc: sloc.institutionid_id)
+        itertools.groupby(servicelocs, lambda sloc: sloc.institutionid_id)
         if instid is not None
     }
     for institution in institutions:
