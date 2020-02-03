@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='institutiondetails',
             name='venue_info',
-            field=models.CharField(blank=True, db_column='inst_type', max_length=7, help_text='IEEE 802.11-2012, clause 8.4.1.34 Venue Info. This is a pair of integers, each between 0 and 255 (inclusive), separated with ",".', validators=[edumanage.models.validate_venue_info]),
+            field=models.CharField(blank=True, db_column='inst_type', help_text='IEEE 802.11-2012, clause 8.4.1.34 Venue Info. This is a pair of integers, each between 0 and 255, separated with ",".', max_length=7, validators=[edumanage.models.validate_venue_info]),
         ),
         migrations.AddField(
             model_name='realm',
@@ -122,7 +122,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='serviceloc',
             name='enc_level',
-            field=edumanage.models.MultiSelectField(blank=True, choices=[(b'WPA/TKIP', b'WPA-TKIP'), (b'WPA/AES', b'WPA-AES'), (b'WPA2/TKIP', b'WPA2-TKIP'), (b'WPA2/AES', b'WPA2-AES'), (b'WPA3/AES', b'WPA3-AES')], max_length=64, null=True),
+            field=edumanage.models.MultiSelectField(blank=True, choices=[('WPA/TKIP', 'WPA-TKIP'), ('WPA/AES', 'WPA-AES'), ('WPA2/TKIP', 'WPA2-TKIP'), ('WPA2/AES', 'WPA2-AES'), ('WPA3/AES', 'WPA3-AES')], max_length=64, null=True),
         ),
         migrations.AddField(
             model_name='serviceloc',
@@ -147,7 +147,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='serviceloc',
             name='venue_info',
-            field=models.CharField(blank=True, db_column='location_type', max_length=7, help_text='IEEE 802.11-2012, clause 8.4.1.34 Venue Info. This is a pair of integers, each between 0 and 255 (inclusive), separated with ",".', validators=[edumanage.models.validate_venue_info]),
+            field=models.CharField(blank=True, db_column='location_type', help_text='IEEE 802.11-2012, clause 8.4.1.34 Venue Info. This is a pair of integers, each between 0 and 255, separated with ",".', max_length=7, validators=[edumanage.models.validate_venue_info]),
         ),
         migrations.AddField(
             model_name='serviceloc',
