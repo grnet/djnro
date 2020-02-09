@@ -352,7 +352,7 @@ schema.''')
                                     element.tag)
             return None
         if self.edb_version == 1 and not all(
-                [len(coordinates[k] == 1) for k in coordinate_fields[:2]]
+                [len(coordinates[k]) == 1 for k in coordinate_fields[:2]]
         ):
             self.stdout.write_maybe('Skipping %s: invalid longitude/latitude' %
                                     element.tag)
@@ -374,12 +374,13 @@ schema.''')
         # try to find "identical" ServiceLoc (based on own fields)
         existing_obj = ServiceLoc.objects.filter(**parameters).\
           prefetch_related('loc_name')
-        # chain filter for coordinates (lat, lon, alt)
-        for term in [
-                {'coordinates__{}'.format(k): coord[k] for k in coord}
-                for coord in coordinates
-        ]:
-            existing_obj = existing_obj.filter(**term)
+        # for edb v1, chain filter for coordinates (lat, lon, alt)
+        if not self.edb_version >= 2:
+            for term in [
+                    {'coordinates__{}'.format(k): coord[k] for k in coord}
+                    for coord in coordinates
+            ]:
+                existing_obj = existing_obj.filter(**term)
         # Prepare list of unique loc_name's for the location we are parsing.
         # Don't use self.parse_and_create_name(ServiceLoc, name_element)
         # as it may find existing Name_i18n objects by the same name, but
@@ -390,6 +391,9 @@ schema.''')
         # No ServiceLoc objects matching these parameters
         if not existing_obj.exists():
             obj_created = True
+        elif self.edb_version >= 2:
+            obj = existing_obj.first()
+            obj_created = False
         else:
             # Extend the comparison to the names (their set vs. our set)
             # for each matched ServiceLoc
