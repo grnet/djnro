@@ -389,7 +389,7 @@ This returns 32 hex digits, which works as input for UUID.''')
                                     element.tag)
             return None
         if self.edb_version.is_version_1 and not all(
-                [len(coordinates[k] == 1) for k in coordinate_fields[:2]]
+                [len(coordinates[k]) == 1 for k in coordinate_fields[:2]]
         ):
             self.stdout.write_maybe('Skipping %s: invalid longitude/latitude' %
                                     element.tag)
@@ -424,15 +424,19 @@ This returns 32 hex digits, which works as input for UUID.''')
         # try to find "identical" ServiceLoc (based on subset of own fields)
         existing_obj = ServiceLoc.objects.filter(**id_parameters).\
           prefetch_related('loc_name')
-        # chain filter for coordinates (lat, lon, alt)
-        for term in [
-                {'coordinates__{}'.format(k): coord[k] for k in coord}
-                for coord in coordinates
-        ]:
-            existing_obj = existing_obj.filter(**term)
+        # for edb v1, chain filter for coordinates (lat, lon, alt)
+        if not self.edb_version.ge_version_2:
+            for term in [
+                    {'coordinates__{}'.format(k): coord[k] for k in coord}
+                    for coord in coordinates
+            ]:
+                existing_obj = existing_obj.filter(**term)
         # No ServiceLoc objects matching these parameters
         if not existing_obj.exists():
             obj_created = True
+        elif self.edb_version.ge_version_2:
+            obj = existing_obj.first()
+            obj_created = False
         else:
             # Prepare list of unique loc_name's for the location we are parsing.
             # Don't use self.parse_and_create_name(ServiceLoc, name_element)
