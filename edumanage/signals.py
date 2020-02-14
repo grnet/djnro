@@ -56,8 +56,9 @@ def sloc_coordinates_enforce_one(sender, instance, **kwargs):
             # through (sender) objects having FK to instance (ServiceLoc)
             sloc_coords = sender.objects.filter(serviceloc=instance)
         else:
+            pk = next(iter(pk_set))
             # through (sender) objects having FK to ServiceLoc (pk added)
-            sloc_coords = sender.objects.filter(serviceloc__pk=pk_set[0])
+            sloc_coords = sender.objects.filter(serviceloc__pk=pk)
         invalid = sloc_coords.count() > 0
     if invalid:
         raise ValidationError(
