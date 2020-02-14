@@ -42,6 +42,34 @@ def save_latlon_cache(sender, instance, **kwargs):
 
 
 @receiver(m2m_changed, sender=ServiceLoc.coordinates.through,
+          dispatch_uid="edumanage.models.Coordinates.serviceloc_set.enforce_one")
+def coords_serviceloc_enforce_one(sender, instance, **kwargs):
+    action = kwargs['action']
+    reverse = kwargs['reverse']
+    pk_set = kwargs['pk_set']
+    if action != 'pre_add':
+        return
+    if len(pk_set) > 1:
+        invalid = True
+    else:
+        # pk = next(iter(pk_set))
+        if not reverse:
+            pk = next(iter(pk_set))
+            # through (sender) objects having FK to Coordinates (pk added)
+            coord_slocs = sender.objects.filter(coordinates__id=pk)
+        else:
+            # through (sender) objects having FK to instance (Coordinates)
+            coord_slocs = sender.objects.filter(coordinates=instance)
+        invalid = coord_slocs.count() > 0
+    if invalid:
+        raise ValidationError(
+            {'serviceloc': _(
+                'Coordinates may not be linked to more than one ServiceLoc'
+            )}
+        )
+
+
+@receiver(m2m_changed, sender=ServiceLoc.coordinates.through,
           dispatch_uid="edumanage.models.ServiceLoc.coordinates.enforce_one")
 def sloc_coordinates_enforce_one(sender, instance, **kwargs):
     action = kwargs['action']
