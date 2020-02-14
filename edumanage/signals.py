@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
-from django.db.models.signals import post_save, post_delete, m2m_changed
+from django.db.models.signals import (
+    post_save, pre_delete, post_delete, m2m_changed
+)
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 from edumanage.models import ServiceLoc, Coordinates
 from edumanage.views import ourPoints
+
+@receiver(pre_delete, sender=ServiceLoc,
+          dispatch_uid="edumanage.models.ServiceLoc.clean_orphan_coordinates")
+def clean_serviceloc_coordinates(sender, instance, **kwargs):
+    instance.coordinates.all().delete()
 
 @receiver([post_save, post_delete], sender=ServiceLoc,
               dispatch_uid="edumanage.views.ourpoints.recache")
