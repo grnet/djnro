@@ -458,40 +458,33 @@ This returns 32 hex digits, which works as input for UUID.''')
                     for coord in coordinates
             ]:
                 existing_obj = existing_obj.filter(**term)
-        # No ServiceLoc objects matching these parameters
-        if not existing_obj.exists():
-            obj_created = True
-        elif self.edb_version.ge_version_2:
-            obj = existing_obj.first()
-            obj_created = False
-        else:
-            # Prepare list of unique loc_name's for the location we are parsing.
-            # Don't use self.parse_and_create_name(ServiceLoc, name_element)
-            # as it may find existing Name_i18n objects by the same name, but
-            # unrelated to this location; also we'd rather not create Name_i18n
-            # objects that may go away after all
+        if not self.edb_version.ge_version_2 and existing_obj.count() > 1:
             try:
-                names_new = set(sorted([
-                    (name_element.attrib['lang'],
-                     self.parse_text_node(name_element))
-                    for name_element in name_elements
-                ]))
-            except KeyError:
-                names_new = set()
-            # Extend the comparison to the names (their set vs. our set)
-            # for each matched ServiceLoc
-            for obj in existing_obj:
-                names_old = set(sorted(
-                    obj.loc_name.all().values_list('lang', 'name')
-                ))
-                # If an exact match is found, stop here;
-                # obj is the existing ServiceLoc
-                if names_old == names_new:
-                    obj_created = False
-                    break
-            # Finally if no match, let's create a new ServiceLoc
-            else:
-                obj_created = True
+                for term in [
+                        {'loc_name__{}'.format(k): v
+                         for k, v in self.parse_name(name_element).items()}
+                        for name_element in name_elements
+                ]:
+                    existing_obj = existing_obj.filter(**term)
+            except ParseNameError:
+                pass
+        if not self.edb_version.ge_version_2 and existing_obj.count() > 1:
+            try:
+                for term in [
+                        {'address__{}'.format(k): v
+                         for k, v in self.parse_address(address_element).items()}
+                        for address_element in address_elements
+                ]:
+                    existing_obj = existing_obj.filter(**term)
+            except ParseAddressError:
+                pass
+        try:
+            obj = existing_obj.get()
+            obj_created = False
+        except ServiceLoc.DoesNotExist:
+            obj_created = True
+        # ServiceLoc.MultipleObjectsReturned not handled, should not happen at
+        # this stage
 
         if obj_created:
             obj = ServiceLoc(**parameters)
