@@ -152,7 +152,7 @@ This returns 32 hex digits, which works as input for UUID.''')
         required_parameters = ['lang', 'street', 'city']
         for child_element in element.getchildren():
             try:
-                lang = element.attrib['lang']
+                lang = child_element.attrib['lang']
                 if 'lang' in parameters:
                     assert lang == parameters['lang']
                 else:
@@ -207,7 +207,7 @@ This returns 32 hex digits, which works as input for UUID.''')
                 'url':     self.parse_text_node(element),
                 'urltype': element.tag.replace('_URL', ''),
                 }
-        except:
+        except KeyError:
             self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
             return (None, False)
         for key in parameters:
@@ -352,7 +352,7 @@ This returns 32 hex digits, which works as input for UUID.''')
                 continue
             if self.edb_version.is_version_1 and tag == 'wired':
                 parameters['wired_no'] = \
-                    getattr(settings, '_SERVICELOC_DERIVE_WIRED_NO').get(
+                    getattr(settings, 'SERVICELOC_DERIVE_WIRED_NO').get(
                         child_element.text in ('true', '1')
                     )
                 continue
@@ -691,7 +691,9 @@ This returns 32 hex digits, which works as input for UUID.''')
         ]
         if self.edb_version.ge_version_2:
             instdetails_defaults.append('venue_info')
-        instdetails_defaults = {x: parameters[x] for x in instdetails_defaults}
+        instdetails_defaults = {
+            x: parameters[x] for x in instdetails_defaults if x in parameters
+        }
         instdetails_obj, instdetails_created = \
             InstitutionDetails.objects.update_or_create(
                 defaults=instdetails_defaults,
@@ -732,7 +734,7 @@ This returns 32 hex digits, which works as input for UUID.''')
                 self.parse_and_create_address(
                     instdetails_obj, address_element)
 
-        for idx, coord in enumerate(parameters['coordinates']):
+        for idx, coord in enumerate(parameters.get('coordinates', [])):
             cobj, cobj_created = \
                 instdetails_obj.coordinates.get_or_create(**coord)
             self.stdout.write_maybe('%s %s: %s' %
