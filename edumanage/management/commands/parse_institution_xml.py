@@ -253,32 +253,39 @@ This returns 32 hex digits, which works as input for UUID.''')
             if child_element.tag in tags:
                 parameters[child_element.tag] = \
                     self.parse_text_node(child_element)
-        if 'name' not in parameters or not parameters['name']:
-            self.stdout.write_maybe('Skipping %s: invalid name' % element.tag)
+        if not all([tag in parameters and parameters[tag] for tag in tags]):
+            self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
+            return None
+        if not all([tag in tags for tag in parameters]):
+            self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
             return None
         if isinstance(relobj, Institution):
-            #### revisit this vs. defaults=... +
-            parameters['institutioncontactpool__institution'] = relobj
+            instobj = relobj
         elif isinstance(relobj, ServiceLoc):
-            parameters['institutioncontactpool__institution'] = \
-            relobj.institutionid
+            instobj = relobj.institutionid
         else:
             self.stdout.write_maybe('Skipping %s: invalid argument %s' %
                                     (element.tag,
                                      relobj))
             return None
-        instobj = parameters['institutioncontactpool__institution']
-        obj, obj_created = \
-          Contact.objects.get_or_create(**parameters)
-        if obj_created or \
-          not hasattr(obj, 'institutioncontactpool'):
-            contactpool_obj, contactpool_obj_created = \
-              InstitutionContactPool.objects.\
-              get_or_create(contact=obj, institution=instobj)
+        parameters['institutioncontactpool__institution'] = instobj
+        # should matching also consider email, phone?
+        id_parameters = {
+            k: parameters.pop(k)
+            for k in ['name', 'institutioncontactpool__institution']
+            if k in parameters
+        }
+        obj, obj_created = Contact.objects.update_or_create(
+            defaults=parameters,
+            **id_parameters
+        )
+        if obj_created or not hasattr(obj, 'institutioncontactpool'):
+            InstitutionContactPool.objects.get_or_create(
+                contact=obj, institution=instobj)
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if obj_created else 'Found',
                                  type_str(obj),
-                                six.text_type(obj)))
+                                 six.text_type(obj)))
         return obj
 
     def parse_and_create_serviceloc(self, instobj, element):
