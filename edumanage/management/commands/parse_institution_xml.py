@@ -41,6 +41,13 @@ from utils.edb_versioning import (
 )
 
 
+class ParseInstitutionXMLError(Exception):
+    pass
+class ParseAddressError(ParseInstitutionXMLError):
+    pass
+class ParseNameError(ParseInstitutionXMLError):
+    pass
+
 class Command(BaseCommand):
     help = '''
     Parses an institution XML file and creates institution,
@@ -118,21 +125,27 @@ This returns 32 hex digits, which works as input for UUID.''')
             institution_list.append(institution_obj)
         return True
 
-    def parse_and_create_name(self, relobj_or_model, element):
-        self.stdout.write_maybe('Parsing %s' % element.tag)
+    def parse_name(self, element):
         try:
             parameters = {
                 'lang': element.attrib['lang'],
                 'name': self.parse_text_node(element)
                 }
-        except:
-            self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
-            return (None, False)
+        except KeyError:
+            raise ParseNameError('invalid')
         for key in parameters:
             if not parameters[key]:
-                self.stdout.write_maybe('Skipping %s: empty %s' %
-                                        (element.tag, key))
-                return (None, False)
+                raise ParseNameError('empty %s' % key)
+        return parameters
+
+    def parse_and_create_name(self, relobj_or_model, element):
+        self.stdout.write_maybe('Parsing %s' % element.tag)
+        try:
+            parameters = self.parse_name(element)
+        except ParseNameError as pn_e:
+            self.stdout.write_maybe('Skipping %s: %s' % (
+                element.tag, pn_e))
+            return None, False
         try:
             parameters['content_type'] = \
               ContentType.objects.get_for_model(type(relobj_or_model))
@@ -153,8 +166,7 @@ This returns 32 hex digits, which works as input for UUID.''')
                                 six.text_type(object_tuple[0])))
         return object_tuple
 
-    def parse_and_create_address(self, relobj_or_model, element):
-        self.stdout.write_maybe('Parsing %s' % element.tag)
+    def parse_address(self, element):
         parameters = {}
         required_parameters = ['lang', 'street', 'city']
         for child_element in element.getchildren():
@@ -165,27 +177,28 @@ This returns 32 hex digits, which works as input for UUID.''')
                 else:
                     parameters['lang'] = lang
             except KeyError:
-                self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
-                return None, False
+                raise ParseAddressError('invalid')
             except AssertionError:
-                self.stdout.write_maybe(
-                    'Skipping %s: different languages not supported' %
-                    element.tag
+                raise ParseAddressError(
+                    'different languages not supported'
                 )
-                return None, False
-            parameters[child_element.tag] = \
-                self.parse_text_node(child_element)
+            parameters[child_element.tag] = self.parse_text_node(child_element)
         if not all([key in parameters for key in required_parameters]):
-            self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
-            return None, False
+            raise ParseAddressError('incomplete')
         if not all([key in required_parameters for key in parameters]):
-            self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
-            return None, False
+            raise ParseAddressError('invalid')
         for key in parameters:
             if not parameters[key]:
-                self.stdout.write_maybe('Skipping %s: empty %s' %
-                                        (element.tag, key))
-                return None, False
+                raise ParseAddressError('empty %s' % key)
+        return parameters
+    def parse_and_create_address(self, relobj_or_model, element):
+        self.stdout.write_maybe('Parsing %s' % element.tag)
+        try:
+            parameters = self.parse_address(element)
+        except ParseAddressError as pa_e:
+            self.stdout.write_maybe('Skipping %s: %s' % (
+                element.tag, pa_e))
+            return None, False
         try:
             parameters['content_type'] = \
               ContentType.objects.get_for_model(type(relobj_or_model))
