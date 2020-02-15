@@ -57,7 +57,8 @@ schema.''')
             '--eduroam-database-version',
             dest='edb_version',
             type=EduroamDatabaseVersion,
-            default=DEFAULT_EDUROAM_DATABASE_VERSION
+            default=DEFAULT_EDUROAM_DATABASE_VERSION,
+            help='''eduroam database schema version to use for parsing input'''
         )
         parser.add_argument('--derive-uuids-with-md5',
                             dest='derive_uuids',
