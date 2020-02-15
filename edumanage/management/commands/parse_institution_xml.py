@@ -61,7 +61,6 @@ class Command(BaseCommand):
         parser.add_argument('--strict-empty-text-nodes',
                             dest='strict',
                             action='store_true',
-                            default=False,
                             help='''Parse empty text nodes as None instead of an
 empty string. This will break if a target field does not accept null values, but
 it is useful if you want to enforce that the input XML aligns with the database
@@ -73,13 +72,13 @@ schema.''')
             default=DEFAULT_EDUROAM_DATABASE_VERSION,
             help='''eduroam database schema version to use for parsing input'''
         )
-        parser.add_argument('--derive-uuids-with-md5',
+        parser.add_argument('--no-derive-uuids-with-md5',
                             dest='derive_uuids',
-                            action='store_true',
-                            default=True,
-                            help='''Derive UUID values (for instid, locationid),
-if necessary, by obtaining the hexdigest for the MD5 hash of the original value.
-This returns 32 hex digits, which works as input for UUID.''')
+                            action='store_false',
+                            help='''By default, UUID values (for instid,
+locationid) are derived, if necessary, by obtaining the hexdigest for the MD5
+hash of the original value. This returns 32 hex digits, which works as input
+for UUID. This can be disabled by using this option.''')
 
     def handle(self, **options):
         '''
