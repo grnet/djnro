@@ -43,7 +43,10 @@ class DelegateVersion(type):
             if isinstance(_func, property):
                 return DelegateVersion.wrap_property(_func)
             return DelegateVersion.wrap_method(attr)
-        default_attrs = dir(object)
+        default_attrs = [
+            m for m in dir(object)
+            if len(m.strip('_')) != 2 # exclude comparisons: eq, ne, gt...
+        ]
         for attr in dir(Version):
             if attr in default_attrs or attr in dct:
                 continue
