@@ -2043,7 +2043,7 @@ def ourPoints(institution=None, cache_flush=False):
             #       for attr in ['name', 'phone', 'email'] }
             #     for contact in sl.contact.all()
             #     ]
-            for loc_tag, _ in ServiceLoc.LOCATION_TAGS:
+            for loc_tag, __ in ServiceLoc.LOCATION_TAGS:
                 point[loc_tag] = str(loc_tag in sl.tag)
             point['wired_no'] = u"%s" % (sl.wired_no)
             point['SSID'] = u"%s" % (sl.SSID)
