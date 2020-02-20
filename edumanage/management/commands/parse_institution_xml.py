@@ -21,7 +21,13 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.utils import six
+from django.db.models.signals import post_save
 from edumanage.models import *
+from edumanage.views import ourPoints
+from edumanage.signals import (
+    disable_signals,
+    DUID_RECACHE_OURPOINTS, DUID_SAVE_SERVICELOC_LATLON_CACHE
+)
 from lxml.etree import parse
 from collections import defaultdict
 import argparse
@@ -757,10 +763,16 @@ This returns 32 hex digits, which works as input for UUID.''')
               self.parse_and_create_instrealm(institution_obj,
                                               instrealm_element)
 
-        for idx, serviceloc_element in enumerate(parameters.get('location', [])):
-            parameters['location'][idx] = \
-              self.parse_and_create_serviceloc(institution_obj,
-                                               serviceloc_element)
+        with disable_signals(
+                (post_save,
+                 (DUID_RECACHE_OURPOINTS, DUID_SAVE_SERVICELOC_LATLON_CACHE))
+        ):
+            for idx, serviceloc_element in \
+                enumerate(parameters.get('location', [])):
+                parameters['location'][idx] = \
+                    self.parse_and_create_serviceloc(institution_obj,
+                                                     serviceloc_element)
+        ourPoints(institution=institution_obj, cache_flush=True)
 
         return institution_obj
 
