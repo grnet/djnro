@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+from collections import defaultdict
 from django.db.models.signals import (
     post_save, pre_delete, post_delete, m2m_changed
 )
@@ -9,13 +10,37 @@ from django.utils.translation import ugettext_lazy as _
 from edumanage.models import ServiceLoc, Coordinates
 from edumanage.views import ourPoints
 
+class disable_signals(object): # pylint: disable=invalid-name
+    def __init__(self, *signals_dispatch_uids):
+        self.signals = signals_dispatch_uids
+        self.stashed_receivers = defaultdict(list)
+
+    def __enter__(self):
+        for signal, dispatch_uids in self.signals:
+            if not isinstance(dispatch_uids, (tuple, list)):
+                dispatch_uids = [dispatch_uids]
+            for dispatch_uid in dispatch_uids:
+                for idx, rcvr in enumerate(list(signal.receivers)):
+                    (signal_dispatch_uid, __), __ = rcvr
+                    if signal_dispatch_uid == dispatch_uid:
+                        self.stashed_receivers[signal].append(rcvr)
+                        del signal.receivers[idx]
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        for signal in self.stashed_receivers:
+            for rcvr in self.stashed_receivers[signal]:
+                signal.receivers.append(rcvr)
+
+
 @receiver(pre_delete, sender=ServiceLoc,
           dispatch_uid="edumanage.models.ServiceLoc.clean_orphan_coordinates")
 def clean_serviceloc_coordinates(sender, instance, **kwargs):
     instance.coordinates.all().delete()
 
+DUID_RECACHE_OURPOINTS = "edumanage.views.ourpoints.recache"
+
 @receiver([post_save, post_delete], sender=ServiceLoc,
-              dispatch_uid="edumanage.views.ourpoints.recache")
+          dispatch_uid=DUID_RECACHE_OURPOINTS)
 def recache_ourpoints(sender, instance, **kwargs):
     if isinstance(instance, ServiceLoc):
         inst = instance.institutionid
@@ -24,8 +49,12 @@ def recache_ourpoints(sender, instance, **kwargs):
 
     ourPoints(institution=inst, cache_flush=True)
 
+
+DUID_SAVE_SERVICELOC_LATLON_CACHE = \
+    "edumanage.models.ServiceLoc.save_latlon_cache"
+
 @receiver(post_save, sender=ServiceLoc,
-          dispatch_uid="edumanage.models.ServiceLoc.save_latlon_cache")
+          dispatch_uid=DUID_SAVE_SERVICELOC_LATLON_CACHE)
 def save_latlon_cache(sender, instance, **kwargs):
     if not isinstance(instance, ServiceLoc):
         return
