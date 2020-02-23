@@ -17,7 +17,7 @@
 			{% endfor %}
 			</table>
 		{% endif %}
-{% if institution.ertype == 2 or institution.ertype == 3 %}
+{% if institution.ertype in ERTYPE_ROLES.SP %}
 	{% if services %}
 		<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="table">
 			<thead>
@@ -34,7 +34,8 @@
 			{% for service in services %}
 		    	<tr class="GradeC">
 		        	<td><a href="{% url 'services' service.pk %}">{% tolocale service LANGUAGE_CODE %}</a></td>
-		        	<td>{{service.address_street}}<br>{{service.address_city}}</td>
+		        	{% tolocale service LANGUAGE_CODE get="address" as service_address %}
+		        	<td>{{service_address.street}}<br>{{service_address.city}}</td>
 		        	<td>{{service.SSID}}</td>
 		            <td>{% for enc in service.enc_level %}{% if enc == '' %}-{% else %}{{enc}}{% if not forloop.last%},{% endif %}{% endif %}{% endfor %}</td>
 		        	<td>{{service.AP_no}}</td>
@@ -63,7 +64,7 @@
 	</div>
 </div>
 <div>
-	{% if institution.ertype == 2 or institution.ertype == 3 %}
+	{% if institution.ertype in ERTYPE_ROLES.SP %}
 		<a href="{% url 'edit-services' %}" class="btn btn-primary">
 			+ {% trans "Add a new location" %}
 		</a>

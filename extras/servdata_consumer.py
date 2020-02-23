@@ -27,6 +27,11 @@ configuration for various software using the respective
 templates."""
     }
 
+class ErtypeRoles:
+    IDP = (1, 3)
+    SP = (2, 3)
+    ALL = (1, 2, 3)
+
 def exit_with_error(msg = ""):
     sys.stderr.write(msg + "\n")
     sys.exit(1)
@@ -141,7 +146,8 @@ directory (may be used more than once) [default: %s]"""
         tpls['parmap'][t] = {
             "insts": sr.get_data('institutions'),
             "clients": sr.get_data('clients'),
-            "servers": sr.get_data('servers')
+            "servers": sr.get_data('servers'),
+            "ERTYPE_ROLES": ErtypeRoles
             }
 
     if opts.tpl_dir is None:

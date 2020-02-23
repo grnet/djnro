@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load edb_version %}
 {% block currentpagetitle %}{% trans "Management" %}{% endblock %}
 {% block homepage %}{% endblock %}
 {% block hometop %}{% endblock %}
@@ -37,6 +38,6 @@
         <p>{% blocktrans %}After the first login, administrators are asked to associate their account with the institution they want to manage. Their choice must then be ratified by the operators of their management application. Following that, they will be notified through e-mail and they will then be able to start using the management application.{% endblocktrans %}</p>
         <h5>Metadata</h5>
         <hr>
-        <p>{% blocktrans %}Among other things, the metadata provided by administrators through the management application are used to compile database data for the federation{% endblocktrans %}: <a href="{% url 'instxml' %}">institution.xml</a>, <a href="{% url 'realmxml' %}">realm.xml</a>, <a href="{% url 'realmdataxml' %}">realm_data.xml</a></p>
+        <p>{% blocktrans %}Among other things, the metadata provided by administrators through the management application are used to compile database data for the federation{% endblocktrans %}: <a href="{% url 'instxml' %}">institution.xml</a>, <a href="{% edb_realm_resource as resource %}{% url 'realmxml' resource=resource %}">realm.xml</a>, <a href="{% url 'realmdataxml' %}">realm_data.xml</a></p>
 </div>
 {% endblock %}

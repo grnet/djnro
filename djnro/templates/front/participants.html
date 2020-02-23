@@ -18,8 +18,9 @@
 	<div class="col-md-6">
 		<address>
 			<strong>{% tolocale i.institution LANGUAGE_CODE %}</strong><br/>
-			{{i.address_street}}<br>
-			{{i.address_city}}
+			{% tolocale i LANGUAGE_CODE get="address" as i_address %}
+			{{i_address.street}}<br>
+			{{i_address.city}}
 			{% if i.url.all|length > 0 or catexists %}
 		    <dl style="margin-top: 10px;">
 				<dt style="font-weight: normal;">URLs:</dt>

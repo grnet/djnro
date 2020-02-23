@@ -91,7 +91,7 @@
 				                	<td>{% tolocale institution LANGUAGE_CODE %}</td>
 				                	<td>{{institution.get_ertype_display}}</td>
 				                	<td>{% if institution.institutiondetails.contact.all %}{% for contact in institution.institutiondetails.contact.all %}{{contact}}<br>{% endfor %}{% endif %}</td>
-			                        <td>{{institution.institutiondetails.address_street}}<br>{{institution.institutiondetails.address_city}}</td>
+			                        <td>{% tolocale institution.institutiondetails LANGUAGE_CODE get="address" as institution_institutiondetails_address %}{{institution_institutiondetails_address.street}}<br>{{institution_institutiondetails_address.city}}</td>
 				                	<td>{% if institution.userprofile_set.all %}{% for admuser in institution.userprofile_set.all %}{{admuser.user}}<br>{% endfor %}{% endif %}</td>
 
 				                </tr>

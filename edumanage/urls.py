@@ -16,8 +16,8 @@ urlpatterns = [
     url(r'^cat-api(?:/(?P<cat_instance>[^/]+))?/?$', edumanage.views.cat_user_api_proxy, name="cat-api"),
 
     # eduroam db views
-    url(r'^general/institution.xml', edumanage.views.instxml, name="instxml"),
-    url(r'^general/realm.xml', edumanage.views.realmxml, name="realmxml"),
+    url(r'^general(?:/v?(?P<version>[^/]+))?/institution.xml', edumanage.views.instxml, name="instxml"),
+    url(r'^general(?:/v?(?P<version>[^/]+))?/(?P<resource>(realm|ro)).xml', edumanage.views.realmxml, name="realmxml"),
     url(r'^usage/realm_data.xml', edumanage.views.realmdataxml, name="realmdataxml"),
 
     # The next two lines enable views that expose private/sensitive data:

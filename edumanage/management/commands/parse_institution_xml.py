@@ -21,13 +21,32 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
 from django.utils import six
+from django.db.models.signals import post_save
 from edumanage.models import *
+from edumanage.views import ourPoints
+from edumanage.signals import (
+    disable_signals,
+    DUID_RECACHE_OURPOINTS, DUID_SAVE_SERVICELOC_LATLON_CACHE
+)
 from lxml.etree import parse
+from collections import defaultdict
 import argparse
 import sys
 import traceback
 import re
+import uuid
+import hashlib
+from utils.edb_versioning import (
+    EduroamDatabaseVersion, DEFAULT_EDUROAM_DATABASE_VERSION
+)
 
+
+class ParseInstitutionXMLError(Exception):
+    pass
+class ParseAddressError(ParseInstitutionXMLError):
+    pass
+class ParseNameError(ParseInstitutionXMLError):
+    pass
 
 class Command(BaseCommand):
     help = '''
@@ -47,6 +66,20 @@ class Command(BaseCommand):
 empty string. This will break if a target field does not accept null values, but
 it is useful if you want to enforce that the input XML aligns with the database
 schema.''')
+        parser.add_argument(
+            '--eduroam-database-version',
+            dest='edb_version',
+            type=EduroamDatabaseVersion,
+            default=DEFAULT_EDUROAM_DATABASE_VERSION,
+            help='''eduroam database schema version to use for parsing input'''
+        )
+        parser.add_argument('--derive-uuids-with-md5',
+                            dest='derive_uuids',
+                            action='store_true',
+                            default=True,
+                            help='''Derive UUID values (for instid, locationid),
+if necessary, by obtaining the hexdigest for the MD5 hash of the original value.
+This returns 32 hex digits, which works as input for UUID.''')
 
     def handle(self, **options):
         '''
@@ -59,6 +92,10 @@ schema.''')
             self.stdout.write_maybe = lambda *args: None
 
         self.strict_empty_text_nodes = options['strict']
+
+        self.edb_version = options['edb_version']
+
+        self.derive_uuids = options['derive_uuids']
 
         self.parse_and_create(options['file'])
 
@@ -88,21 +125,27 @@ schema.''')
             institution_list.append(institution_obj)
         return True
 
-    def parse_and_create_name(self, relobj_or_model, element):
-        self.stdout.write_maybe('Parsing %s' % element.tag)
+    def parse_name(self, element):
         try:
             parameters = {
                 'lang': element.attrib['lang'],
                 'name': self.parse_text_node(element)
                 }
-        except:
-            self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
-            return (None, False)
+        except KeyError:
+            raise ParseNameError('invalid')
         for key in parameters:
             if not parameters[key]:
-                self.stdout.write_maybe('Skipping %s: empty %s' %
-                                        (element.tag, key))
-                return (None, False)
+                raise ParseNameError('empty %s' % key)
+        return parameters
+
+    def parse_and_create_name(self, relobj_or_model, element):
+        self.stdout.write_maybe('Parsing %s' % element.tag)
+        try:
+            parameters = self.parse_name(element)
+        except ParseNameError as pn_e:
+            self.stdout.write_maybe('Skipping %s: %s' % (
+                element.tag, pn_e))
+            return None, False
         try:
             parameters['content_type'] = \
               ContentType.objects.get_for_model(type(relobj_or_model))
@@ -123,6 +166,59 @@ schema.''')
                                 six.text_type(object_tuple[0])))
         return object_tuple
 
+    def parse_address(self, element):
+        parameters = {}
+        required_parameters = ['lang', 'street', 'city']
+        for child_element in element.getchildren():
+            try:
+                lang = child_element.attrib['lang']
+                if 'lang' in parameters:
+                    assert lang == parameters['lang']
+                else:
+                    parameters['lang'] = lang
+            except KeyError:
+                raise ParseAddressError('invalid')
+            except AssertionError:
+                raise ParseAddressError(
+                    'different languages not supported'
+                )
+            parameters[child_element.tag] = self.parse_text_node(child_element)
+        if not all([key in parameters for key in required_parameters]):
+            raise ParseAddressError('incomplete')
+        if not all([key in required_parameters for key in parameters]):
+            raise ParseAddressError('invalid')
+        for key in parameters:
+            if not parameters[key]:
+                raise ParseAddressError('empty %s' % key)
+        return parameters
+    def parse_and_create_address(self, relobj_or_model, element):
+        self.stdout.write_maybe('Parsing %s' % element.tag)
+        try:
+            parameters = self.parse_address(element)
+        except ParseAddressError as pa_e:
+            self.stdout.write_maybe('Skipping %s: %s' % (
+                element.tag, pa_e))
+            return None, False
+        try:
+            parameters['content_type'] = \
+              ContentType.objects.get_for_model(type(relobj_or_model))
+            parameters['object_id'] = relobj_or_model.pk
+            bound = True
+        # (ModelClass) object has no attribute '_meta'
+        except AttributeError:
+            parameters['content_type'] = \
+              ContentType.objects.get_for_model(relobj_or_model)
+            bound = False
+        object_tuple = Address_i18n.objects.get_or_create(**parameters)
+        created_or_found = 'Created' if object_tuple[1] else 'Found'
+        if object_tuple[1] and not bound:
+            created_or_found += ' (preliminary)'
+        self.stdout.write_maybe('%s %s: %s' %
+                                (created_or_found,
+                                 type_str(object_tuple[0]),
+                                 six.text_type(object_tuple[0])))
+        return object_tuple
+
     def parse_and_create_url(self, relobj, element):
         self.stdout.write_maybe('Parsing %s' % element.tag)
         try:
@@ -131,7 +227,7 @@ schema.''')
                 'url':     self.parse_text_node(element),
                 'urltype': element.tag.replace('_URL', ''),
                 }
-        except:
+        except KeyError:
             self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
             return (None, False)
         for key in parameters:
@@ -169,36 +265,46 @@ schema.''')
     def parse_and_create_contact(self, relobj, element):
         self.stdout.write_maybe('Parsing %s' % element.tag)
         parameters = {}
+        tags = ['name', 'email', 'phone']
+        if self.edb_version.ge_version_2:
+            tags += ['type', 'privacy']
         for child_element in element.getchildren():
-            if child_element.tag in ['name', 'email', 'phone']:
+            if child_element.tag in tags:
                 parameters[child_element.tag] = \
                     self.parse_text_node(child_element)
-        if not 'name' in parameters or not parameters['name']:
-            self.stdout.write_maybe('Skipping %s: invalid name' % element.tag)
+        if not all([tag in parameters and parameters[tag] for tag in tags]):
+            self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
+            return None
+        if not all([tag in tags for tag in parameters]):
+            self.stdout.write_maybe('Skipping %s: invalid' % element.tag)
             return None
         if isinstance(relobj, Institution):
-            #### revisit this vs. defaults=... +
-            parameters['institutioncontactpool__institution'] = relobj
+            instobj = relobj
         elif isinstance(relobj, ServiceLoc):
-            parameters['institutioncontactpool__institution'] = \
-            relobj.institutionid
+            instobj = relobj.institutionid
         else:
             self.stdout.write_maybe('Skipping %s: invalid argument %s' %
                                     (element.tag,
                                      relobj))
             return None
-        instobj = parameters['institutioncontactpool__institution']
-        obj, obj_created = \
-          Contact.objects.get_or_create(**parameters)
-        if obj_created or \
-          not hasattr(obj, 'institutioncontactpool'):
-            contactpool_obj, contactpool_obj_created = \
-              InstitutionContactPool.objects.\
-              get_or_create(contact=obj, institution=instobj)
+        parameters['institutioncontactpool__institution'] = instobj
+        # should matching also consider email, phone?
+        id_parameters = {
+            k: parameters.pop(k)
+            for k in ['name', 'institutioncontactpool__institution']
+            if k in parameters
+        }
+        obj, obj_created = Contact.objects.update_or_create(
+            defaults=parameters,
+            **id_parameters
+        )
+        if obj_created or not hasattr(obj, 'institutioncontactpool'):
+            InstitutionContactPool.objects.get_or_create(
+                contact=obj, institution=instobj)
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if obj_created else 'Found',
                                  type_str(obj),
-                                six.text_type(obj)))
+                                 six.text_type(obj)))
         return obj
 
     def parse_and_create_serviceloc(self, instobj, element):
@@ -206,15 +312,53 @@ schema.''')
         name_elements = []
         contact_elements = []
         url_elements = []
-        # eduroam db XSD says these are optional, but unfortunately
-        # they are not optional in our schema, so use some defaults
-        parameters = {k : False for k in ['port_restrict', 'transp_proxy',
-                                          'IPv6', 'NAT', 'wired']}
-        parameters['AP_no'] = 0
+        address_elements = []
+        parameters = {
+            'AP_no': 0,
+            'tag': [],
+        }
+        if self.edb_version.is_version_1:
+            edb_v1_tags = ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']
+            coordinates = defaultdict(list)
+        else:
+            coordinates = []
+        coordinate_fields = [f.name for f in Coordinates._meta.get_fields()
+                             if not f.auto_created]
+        serviceloc_field_map = {
+            f.db_column: f.name
+            for f in ServiceLoc._meta.get_fields()
+            if f.db_column is not None and not f.auto_created
+        }
         for child_element in element.getchildren():
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
-            if tag in ['longitude', 'latitude', 'SSID']:
+            if self.edb_version.ge_version_2 and tag == 'locationid':
+                try:
+                    parameters[tag] = \
+                        self.parse_uuid_node(child_element)
+                except ValueError as uuid_e:
+                    self.stdout.write_maybe('Skipping %s: %s' % (
+                        child_element.tag, uuid_e))
+                continue
+            if self.edb_version.ge_version_2 and tag in ('stage', 'type'):
+                parameters[tag] = int(child_element.text)
+                continue
+            if self.edb_version.ge_version_2 and tag == 'location_type':
+                parameters[tag] = self.parse_text_node(child_element)
+                continue
+            if self.edb_version.is_version_1 and tag in coordinate_fields[:2]:
+                coordinates[tag].append(
+                    self.parse_text_node(child_element)
+                )
+                continue
+            if self.edb_version.ge_version_2 and tag == 'coordinates':
+                for coord in self.parse_text_node(child_element).split(';'):
+                    coordinates.append({
+                        k: v for k, v in
+                        zip(coordinate_fields, coord.split(',', 2))
+                    })
+                continue
+            if tag == 'SSID':
                 parameters[tag] = self.parse_text_node(child_element)
                 continue
             if tag == 'loc_name':
@@ -224,72 +368,159 @@ schema.''')
                 contact_elements.append(child_element)
                 continue
             if tag == 'address':
-                for sub_element in child_element.getchildren():
-                    if sub_element.tag in ['street', 'city']:
-                        parameters['address_' + sub_element.tag] = \
-                            self.parse_text_node(sub_element)
+                if self.edb_version.is_version_1:
+                    for sub_element in child_element.getchildren():
+                        sub_element.attrib['lang'] = 'en'
+                address_elements.append(child_element)
                 continue
             if tag == 'enc_level':
-                parameters['enc_level'] = \
-                  re.split(r'\s*,\s*', self.parse_text_node(child_element))
-                continue
-            if tag in ['port_restrict', 'transp_proxy',
-                       'IPv6', 'NAT', 'wired']:
                 parameters[tag] = \
-                  child_element.text in ('true', '1')
+                    self.parse_multi_value_text_node(child_element)
+                continue
+            if self.edb_version.is_version_1 and tag == 'wired':
+                parameters['wired_no'] = \
+                    getattr(settings, 'SERVICELOC_DERIVE_WIRED_NO').get(
+                        child_element.text in ('true', '1')
+                    )
+                continue
+            if self.edb_version.is_version_1 and tag in edb_v1_tags:
+                if child_element.text in ('true', '1'):
+                    parameters['tag'].append(tag)
+                continue
+            if self.edb_version.ge_version_2 and tag == 'tag':
+                parameters[tag] = \
+                    self.parse_multi_value_text_node(child_element)
                 continue
             if tag == 'AP_no':
-                parameters['AP_no'] = \
-                  int(child_element.text)
+                parameters[tag] = int(child_element.text)
+                continue
+            if self.edb_version.ge_version_2 and tag == 'wired_no':
+                parameters[tag] = int(child_element.text)
                 continue
             if tag == 'info_URL':
                 url_elements.append(child_element)
+        parameters['tag'] = sorted(set(parameters['tag']))
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
-        if False in [x in parameters
-                     for x in ['longitude', 'latitude',
-                               'address_street', 'address_city',
-                               'SSID', 'enc_level']]:
+        required_tags = ['SSID']
+        if self.edb_version.is_version_1:
+            required_tags.append('enc_level')
+        else:
+            required_tags += ['locationid', 'stage', 'type']
+        if not all([tag in parameters for tag in required_tags]):
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
+        if self.edb_version.is_version_1 and len(address_elements) > 1:
+            self.stdout.write_maybe('Skipping %s: invalid multiple addresses' %
+                                    element.tag)
+            return None
+        if self.edb_version.is_version_1 and not all(
+                [len(coordinates[k]) == 1 for k in coordinate_fields[:2]]
+        ):
+            self.stdout.write_maybe('Skipping %s: invalid longitude/latitude' %
+                                    element.tag)
+            return None
+        if self.edb_version.ge_version_2 and not all(
+                [2 <= len(coord) <= 3 for coord in coordinates]
+        ):
+            self.stdout.write_maybe('Skipping %s: invalid coordinates' %
+                                    element.tag)
+            return None
+        if self.edb_version.ge_version_2 and len(coordinates) > 1:
+            self.stdout.write_maybe('Transforming %s: multiple coordinates '
+                                    'not supported currently, keeping the '
+                                    'first one' %
+                                    element.tag)
+            coordinates = coordinates[:1]
+        parameters = {
+            serviceloc_field_map.get(k, k): parameters[k]
+            for k in parameters
+        }
         parameters['institutionid'] = instobj
-        # try to find "identical" ServiceLoc (lat, lon, address, ssid...)
-        existing_obj = ServiceLoc.objects.filter(**parameters).\
+        if self.edb_version.is_version_1:
+            coordinates = [{k: coordinates[k][0] for k in coordinates}]
+
+        id_parameters = ['institutionid']
+        if self.edb_version.ge_version_2:
+            id_parameters.append('locationid')
+        id_parameters = {
+            k: parameters[k]
+            for k in id_parameters if k in parameters
+        }
+        # try to find "identical" ServiceLoc (based on subset of own fields)
+        existing_obj = ServiceLoc.objects.filter(**id_parameters).\
           prefetch_related('loc_name')
-        # Prepare list of unique loc_name's for the location we are parsing.
-        # Don't use self.parse_and_create_name(ServiceLoc, name_element)
-        # as it may find existing Name_i18n objects by the same name, but
-        # unrelated to this location; also we'd rather not create Name_i18n
-        # objects that may go away after all
-        names_new = set([self.parse_text_node(name_element)
-                         for name_element in name_elements])
-        # No ServiceLoc objects matching these parameters
-        if not existing_obj.exists():
+        # for edb v1, chain filter for coordinates (lat, lon, alt)
+        if not self.edb_version.ge_version_2:
+            for term in [
+                    {'coordinates__{}'.format(k): coord[k] for k in coord}
+                    for coord in coordinates
+            ]:
+                existing_obj = existing_obj.filter(**term)
+        if not self.edb_version.ge_version_2 and existing_obj.count() > 1:
+            try:
+                for term in [
+                        {'loc_name__{}'.format(k): v
+                         for k, v in self.parse_name(name_element).items()}
+                        for name_element in name_elements
+                ]:
+                    existing_obj = existing_obj.filter(**term)
+            except ParseNameError:
+                pass
+        if not self.edb_version.ge_version_2 and existing_obj.count() > 1:
+            try:
+                for term in [
+                        {'address__{}'.format(k): v
+                         for k, v in self.parse_address(address_element).items()}
+                        for address_element in address_elements
+                ]:
+                    existing_obj = existing_obj.filter(**term)
+            except ParseAddressError:
+                pass
+        try:
+            obj = existing_obj.get()
+            obj_created = False
+        except ServiceLoc.DoesNotExist:
             obj_created = True
-        else:
-            # Extend the comparison to the names (their set vs. our set)
-            # for each matched ServiceLoc
-            for obj in existing_obj:
-                names_old = set(obj.loc_name.all().\
-                                values_list('name', flat=True))
-                # If an exact match is found, stop here;
-                # obj is the existing ServiceLoc
-                if names_old == names_new:
-                    obj_created = False
-                    break
-            # Finally if no match, let's create a new ServiceLoc
-            else:
-                obj_created = True
+        # ServiceLoc.MultipleObjectsReturned not handled, should not happen at
+        # this stage
+
         if obj_created:
             obj = ServiceLoc(**parameters)
             obj.save()
             for name_element in name_elements:
                 self.parse_and_create_name(obj, name_element)
-        self.stdout.write_maybe('%s %s: %s' %
-                                ('Created' if obj_created else 'Found',
-                                 type_str(obj),
-                                six.text_type(obj)))
+        else:
+            parameters = {
+                k: parameters[k] for k in parameters
+                if k not in id_parameters
+            }
+            if parameters:
+                for attr in parameters:
+                    setattr(obj, attr, parameters[attr])
+                obj.save()
+
+        self.stdout.write_maybe(
+            '%s %s: %s' % (
+                'Created' if obj_created else 'Found',
+                type_str(obj),
+                six.text_type(obj)
+            )
+        )
+        if obj_created:
+            for coord in coordinates:
+                cobj, cobj_created = \
+                    obj.coordinates.get_or_create(**coord)
+                self.stdout.write_maybe(
+                    '%s %s: %s' % (
+                        'Created' if cobj_created else 'Found',
+                        type_str(cobj),
+                        six.text_type(cobj)
+                    )
+                )
+        for address_element in address_elements:
+            self.parse_and_create_address(obj, address_element)
         for url_element in url_elements:
             self.parse_and_create_url(obj, url_element)
         contacts_new = []
@@ -301,7 +532,7 @@ schema.''')
         contacts_add = set(contacts_new) - set(contacts_db)
         for c in contacts_add:
             obj.contact.add(c)
-        if len(contacts_add) > 0:
+        if contacts_add:
             self.stdout.write_maybe('Linked %s contacts: %s' % (
                 type_str(obj),
                 ' '.join([six.text_type(c) for c in contacts_add])
@@ -310,7 +541,7 @@ schema.''')
         for c in contacts_remove:
             # c.delete()
             obj.contact.remove(c)
-        if len(contacts_remove) > 0:
+        if contacts_remove:
             self.stdout.write_maybe('Removed %s contacts: %s' % (
                 type_str(obj),
                 ' '.join([six.text_type(c) for c in contacts_remove])
@@ -321,110 +552,177 @@ schema.''')
         self.stdout.write_maybe('Walking %s' % element.tag)
         parameters = {}
         # parameters['number_id'] = 1
+        coordinate_fields = [f.name for f in Coordinates._meta.get_fields()
+                             if not f.auto_created]
+        field_map = {
+            f.db_column: f.name
+            for f in Institution._meta.get_fields() +
+            InstitutionDetails._meta.get_fields()
+            if getattr(f, 'db_column', None) is not None and not f.auto_created
+        }
+        name_tag = 'org_name' if self.edb_version.is_version_1 else 'inst_name'
         for child_element in element.getchildren():
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
-            # hardcode to self.nrorealm, ignore country
-            if tag == 'country':
+            if self.edb_version.ge_version_2 and tag == 'instid':
+                try:
+                    parameters[tag] = \
+                        self.parse_uuid_node(child_element)
+                except ValueError as uuid_e:
+                    self.stdout.write_maybe('Skipping %s: %s' % (
+                        child_element.tag, uuid_e))
+                continue
+            # hardcode to self.nrorealm, ignore country/ROid
+            if self.edb_version.is_version_1 and tag == 'country':
+                continue
+            if self.edb_version.ge_version_2 and tag == "ROid":
                 continue
             if tag == 'type':
+                if self.edb_version.is_version_1:
+                    parameters[tag] = int(child_element.text)
+                else:
+                    parameters[tag] = get_ertype_number(child_element.text)
+                continue
+            if self.edb_version.ge_version_2 and tag == 'stage':
                 parameters[tag] = int(child_element.text)
                 continue
-            if tag in ['inst_realm', 'org_name', 'contact',
-                       'info_URL', 'policy_URL', 'location']:
+            if self.edb_version.ge_version_2 and tag == 'inst_type':
+                parameters[tag] = self.parse_text_node(child_element)
+                continue
+            if tag in ['inst_realm', name_tag, 'contact',
+                       'info_URL', 'policy_URL', 'location',
+                       'address']:
+                if tag == 'address' and self.edb_version.is_version_1:
+                    for sub_element in child_element.getchildren():
+                        sub_element.attrib['lang'] = 'en'
                 if not tag in parameters:
                     parameters[tag] = []
                 parameters[tag].append(child_element)
                 continue
-            if tag == 'address':
-                for sub_element in child_element.getchildren():
-                    if sub_element.tag in ['street', 'city']:
-                        parameters['address_' + sub_element.tag] = \
-                          self.parse_text_node(sub_element)
+            if self.edb_version.ge_version_2 and tag == 'coordinates':
+                parameters[tag] = [
+                    {k: v for k, v in
+                     zip(coordinate_fields, coord.split(',', 2))}
+                    for coord in self.parse_text_node(child_element).split(';')
+                ]
         self.stdout.write_maybe('Done walking %s' % element.tag)
 
         # abort if required data not present
-        if False in \
-          [x in parameters
-           for x in ['type', 'org_name',
-                     'address_street', 'address_city',
-                     'info_URL']]:
+        required_tags = ['type', name_tag, 'info_URL', 'address']
+        if self.edb_version.ge_version_2:
+            required_tags += ['instid', 'stage']
+        if not all([tag in parameters for tag in required_tags]):
             self.stdout.write_maybe('Skipping %s: incomplete' % element.tag)
             return None
-        if parameters['type'] not in [1, 2, 3]:
+        if self.edb_version.is_version_1 and len(parameters['address']) > 1:
+            self.stdout.write_maybe('Skipping %s: invalid multiple addresses' %
+                                    element.tag)
+            return None
+        if self.edb_version.ge_version_2 and parameters.get('coordinates', []):
+            if len(parameters['coordinates']) != 1:
+                self.stdout.write_maybe('Skipping %s: invalid multiple '
+                                        'coordinates' % element.tag)
+                return None
+            if not all([2 <= len(coord) <= 3
+                        for coord in parameters['coordinates']]):
+                self.stdout.write_maybe('Skipping %s: invalid coordinates' %
+                                        element.tag)
+                return None
+        if parameters['type'] not in ERTYPES:
             self.stdout.write_maybe('Skipping %s: invalid type %d' %
                                     (element.tag,
                                      parameters['type']))
             return None
-        if parameters['type'] != 2 and 'inst_realm' not in parameters:
+        if parameters['type'] in ERTYPE_ROLES.IDP and 'inst_realm' not in parameters:
             self.stdout.write_maybe('Skipping %s: type %d but no "inst_realm"' %
                                     (element.tag,
                                      parameters['type']))
             return None
-        if parameters['type'] != 1 and 'location' not in parameters:
+        if parameters['type'] in ERTYPE_ROLES.SP and 'location' not in parameters:
             self.stdout.write_maybe('Skipping %s: type %d but no "location"' %
                                     (element.tag,
                                      parameters['type']))
             return None
 
-        for idx, name_element in enumerate(parameters['org_name']):
-            parameters['org_name'][idx] = \
-              self.parse_and_create_name(Institution, name_element)
-        if [True] * len(parameters['org_name']) == [x[1] for x in
-                                                     parameters['org_name']]:
+        parameters = {
+            field_map.get(k, k): parameters[k]
+            for k in parameters
+        }
+        try:
+            institution_obj = Institution.objects.get(
+                realmid=self.nrorealm, instid=parameters['instid']
+            )
+        except (Institution.DoesNotExist, KeyError):
+            institution_obj = None
+        for idx, name_element in enumerate(parameters[name_tag]):
+            parameters[name_tag][idx] = \
+                self.parse_and_create_name(
+                    institution_obj if institution_obj is not None
+                    else Institution,
+                    name_element
+                )
+        if not institution_obj and all([
+                created for _, created in parameters[name_tag]
+        ]):
             institution_obj = Institution(realmid=self.nrorealm,
-                                          ertype=parameters['type'])
+                                          ertype=parameters['ertype'])
             institution_obj.save()
-            for name, created in parameters['org_name']:
+            for name, _ in parameters[name_tag]:
                 name.content_object = institution_obj
                 name.save()
             self.stdout.write_maybe('%s %s: %s' %
                                     ('Created',
                                      type_str(institution_obj),
-                                    six.text_type(institution_obj)))
+                                     six.text_type(institution_obj)))
         else:
-            institution_obj = parameters['org_name'][0][0].content_object
+            institution_obj = parameters[name_tag][0][0].content_object
             if institution_obj is None:
                 raise Exception(
                     'The following institution names were found but they ' +
                     'are not associated with an institution (only tried the ' +
                     'first one)! This must be fixed (e.g. by removing ' +
                     'duplicate objects) before we can proceed.\n' +
-                    '\n'.join([six.text_type(x[0]) for x in parameters['org_name']])
+                    '\n'.join([
+                        six.text_type(n) for n, _ in parameters[name_tag]
+                        ])
                     )
-            if not [institution_obj] * len(parameters['org_name']) == \
-              [getattr(x[0], 'content_object')
-               for x in parameters['org_name']]:
+            if not [institution_obj] * len(parameters[name_tag]) == \
+              [getattr(n, 'content_object')
+               for n, _ in parameters[name_tag]]:
                 raise Exception(
                     'The following institution names were found but they ' +
                     'are not associated with the same institution. ' +
                     'This must be fixed (e.g. by removing duplicate objects) ' +
                     'before we can proceed.\n' +
-                    '\n'.join([six.text_type(x[0]) for x in parameters['org_name']])
+                    '\n'.join([
+                        six.text_type(n) for n, _ in parameters[name_tag]
+                        ])
                     )
             self.stdout.write_maybe('%s %s: %s' %
                                     ('Found',
                                      type_str(institution_obj),
-                                    six.text_type(institution_obj)))
+                                     six.text_type(institution_obj)))
 
         for idx, contact_element in enumerate(parameters['contact']):
             parameters['contact'][idx] = \
               self.parse_and_create_contact(institution_obj, contact_element)
-        instdetails_defaults={x: parameters[x]
-                              for x in ['address_street',
-                                        'address_city']}
-                                        # 'number_id']
+        instdetails_defaults = [
+            # 'number_id',
+        ]
+        if self.edb_version.ge_version_2:
+            instdetails_defaults.append('venue_info')
+        instdetails_defaults = {
+            x: parameters[x] for x in instdetails_defaults if x in parameters
+        }
         instdetails_obj, instdetails_created = \
-          InstitutionDetails.objects.\
-          get_or_create(defaults=instdetails_defaults,
-                        institution=institution_obj)
-        if not instdetails_created:
-            for attr in instdetails_defaults:
-                setattr(instdetails_obj, attr, instdetails_defaults[attr])
+            InstitutionDetails.objects.update_or_create(
+                defaults=instdetails_defaults,
+                institution=institution_obj
+            )
         self.stdout.write_maybe('%s %s: %s' %
                                 ('Created' if instdetails_created else 'Found',
                                  type_str(instdetails_obj),
-                                six.text_type(instdetails_obj)))
+                                 six.text_type(instdetails_obj)))
 
         contacts_db = instdetails_obj.contact.all()
         contacts_add = set(parameters['contact']) - set(contacts_db)
@@ -451,17 +749,56 @@ schema.''')
                     url_obj = \
                       self.parse_and_create_url(instdetails_obj, url_element)
 
+        for idx, address_element in enumerate(parameters['address']):
+            parameters['address'][idx] = \
+                self.parse_and_create_address(
+                    instdetails_obj, address_element)
+
+        for idx, coord in enumerate(parameters.get('coordinates', [])):
+            cobj, cobj_created = \
+                instdetails_obj.coordinates.get_or_create(**coord)
+            self.stdout.write_maybe('%s %s: %s' %
+                                    ('Created' if cobj_created
+                                     else 'Found',
+                                     type_str(cobj),
+                                     six.text_type(cobj)))
+            parameters['coordinates'][idx] = (cobj, cobj_created)
+
         for idx, instrealm_element in enumerate(parameters.get('inst_realm', [])):
             parameters['inst_realm'][idx] = \
               self.parse_and_create_instrealm(institution_obj,
                                               instrealm_element)
 
-        for idx, serviceloc_element in enumerate(parameters.get('location', [])):
-            parameters['location'][idx] = \
-              self.parse_and_create_serviceloc(institution_obj,
-                                               serviceloc_element)
+        with disable_signals(
+                (post_save,
+                 (DUID_RECACHE_OURPOINTS, DUID_SAVE_SERVICELOC_LATLON_CACHE))
+        ):
+            for idx, serviceloc_element in \
+                enumerate(parameters.get('location', [])):
+                parameters['location'][idx] = \
+                    self.parse_and_create_serviceloc(institution_obj,
+                                                     serviceloc_element)
+        ourPoints(institution=institution_obj, cache_flush=True)
 
         return institution_obj
+
+    def parse_uuid_node(self, node, **kwargs):
+        uuid_text = self.parse_text_node(node, **kwargs)
+        try:
+            return uuid.UUID(hex=uuid_text)
+        except ValueError:
+            if not self.derive_uuids:
+                raise
+            if not uuid_text:
+                raise ValueError("Can not derive UUID from empty string")
+            uuid_derived = hashlib.md5(uuid_text).hexdigest()
+            self.stdout.write_maybe('Transforming %s: Derive UUID with MD5: '
+                                    '%s -> %s' % (
+                                        node.tag,
+                                        uuid_text,
+                                        uuid_derived
+                                    ))
+            return uuid.UUID(hex=uuid_derived)
 
     def parse_text_node(self, node, **kwargs):
         return_none_on_empty = kwargs.get('strict') if 'strict' in kwargs \
@@ -472,6 +809,11 @@ schema.''')
             return ''
         else:
             return None
+
+    def parse_multi_value_text_node(self, *args, **kwargs):
+        value = self.parse_text_node(*args, **kwargs)
+        value = re.split(r'\s*,\s*', value)
+        return sorted(set(value))
 
 def type_str(obj):
     return type(obj).__name__

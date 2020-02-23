@@ -136,6 +136,8 @@ MAP_CENTER = (36.97, 23.71)
 
 # Variable used to determine the active Realm object (in views and context processor)
 NRO_COUNTRY_CODE = 'tld'
+# ROID for the active Realm (assigned by eduroam OT)
+NRO_ROID = 'ROID'
 # main domain url used in right top icon, eg. http://www.grnet.gr
 NRO_DOMAIN_MAIN_URL = "http://www.example.com"
 # NRO federation name

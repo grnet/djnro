@@ -1,6 +1,7 @@
 {% extends "edumanage/welcome.html"%}
 {% load staticfiles %}
 {% load i18n %}
+{% load join_with_linebreaks %}
 
 
 {% block management_content %}
@@ -23,7 +24,7 @@
 			<label class="control-label" for="id_ertype"><b>{% trans "Type" %}</b></label>
 			<div class="controls">
 				{{ form.ertype }}
-				{% if form.ertype.errors %} <div class="alert-danger"> {{ form.ertype.errors|join:", " }} </div>
+				{% if form.ertype.errors %} <div class="alert-danger"> {{ form.ertype.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.ertype.help_text }}</span>
 			</div>
 		</div>
@@ -33,7 +34,7 @@
 			<label class="control-label" for="id_addr_type"><b>{% trans "Address Family" %}</b></label>
 			<div class="controls">
 				{{ form.addr_type }}
-				{% if form.addr_type.errors %} <div class="alert-danger"> {{ form.addr_type.errors|join:", " }} </div>
+				{% if form.addr_type.errors %} <div class="alert-danger"> {{ form.addr_type.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.addr_type.help_text }}</span>
 			</div>
 		</div>
@@ -43,7 +44,7 @@
 			<label class="control-label" for="id_host"><b>{% trans "Hostname" %}</b></label>
 			<div class="controls">
 				{{ form.host }}
-				{% if form.host.errors %} <div class="alert-danger"> {{ form.host.errors|join:", " }} </div>
+				{% if form.host.errors %} <div class="alert-danger"> {{ form.host.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.host.help_text }}</span>
 			</div>
 		</div>
@@ -53,18 +54,18 @@
 			<label class="control-label" for="id_name">{% trans "Label" %}</label>
 			<div class="controls">
 				{{ form.name }}
-				{% if form.name.errors %} <div class="alert-danger"> {{ form.name.errors|join:", " }} </div>
+				{% if form.name.errors %} <div class="alert-danger"> {{ form.name.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.name.help_text }}</span>
 			</div>
 		</div>
 	</div>
-	{% if institution.ertype == 1 or institution.ertype == 3 %}
+	{% if institution.ertype in ERTYPE_ROLES.IDP %}
 	<div class="col-md-6">
 		<div class="form-group {% if form.rad_pkt_type.errors %} error {% endif %}">
 			<label class="control-label" for="id_rad_pkt_type"><b>{% trans "RADIUS Packet Types" %}</b></label>
 			<div class="controls">
 				{{ form.rad_pkt_type }}
-				{% if form.rad_pkt_type.errors %} <div class="alert-danger"> {{ form.rad_pkt_type.errors|join:", " }} </div>
+				{% if form.rad_pkt_type.errors %} <div class="alert-danger"> {{ form.rad_pkt_type.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.rad_pkt_type.help_text }}</span>
 			</div>
 		</div>
@@ -74,7 +75,7 @@
 			<label class="control-label" for="id_auth_port"><b>{% trans "Authentication Port" %}</b></label>
 			<div class="controls">
 				{{ form.auth_port }}
-				{% if form.auth_port.errors %} <div class="alert-danger"> {{ form.auth_port.errors|join:", " }} </div>
+				{% if form.auth_port.errors %} <div class="alert-danger"> {{ form.auth_port.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.auth_port.help_text }}</span>
 			</div>
 		</div>
@@ -84,7 +85,7 @@
 			<label class="control-label" for="id_acct_port"><b>{% trans "Accounting Port" %}</b></label>
 			<div class="controls">
 				{{ form.acct_port }}
-				{% if form.acct_port.errors %} <div class="alert-danger"> {{ form.acct_port.errors|join:", " }} </div>
+				{% if form.acct_port.errors %} <div class="alert-danger"> {{ form.acct_port.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.acct_port.help_text }}</span>
 			</div>
 		</div>
@@ -95,7 +96,7 @@
 			<label class="control-label" for="id_status_server">{% trans "Status-Server" %}</label>
 			<div class="controls">
 				{{ form.status_server }}
-				{% if form.status_server.errors %} <div class="alert-danger"> {{ form.status_server.errors|join:", " }} </div>
+				{% if form.status_server.errors %} <div class="alert-danger"> {{ form.status_server.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.status_server.help_text }}</span>
 			</div>
 		</div>
@@ -105,7 +106,7 @@
 			<label class="control-label" for="id_secret"><b>{% trans "Secret" %}</b></label>
 			<div class="controls">
 				<input type="password" maxlength="80" name="secret" id="id_secret" {% if edit %}value='{{form.instance.secret}}'{% endif %} {% if form.data.secret %}value='{{form.data.secret}}'{% endif %}>
-				{% if form.secret.errors %} <div class="alert-danger"> {{ form.secret.errors|join:", " }} </div>
+				{% if form.secret.errors %} <div class="alert-danger"> {{ form.secret.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.secret.help_text }}</span>
 			</div>
 		</div>
@@ -115,7 +116,7 @@
 			<label class="control-label" for="id_proto"><b>{% trans "Protocol" %}</b></label>
 			<div class="controls">
 				{{ form.proto }}
-				{% if form.proto.errors %} <div class="alert-danger"> {{ form.proto.errors|join:", " }} </div>
+				{% if form.proto.errors %} <div class="alert-danger"> {{ form.proto.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.proto.help_text }}</span>
 			</div>
 		</div>

@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load join_with_linebreaks %}
 
     <form id="add_user_form" method="POST"  class="">
     {% csrf_token %}
@@ -6,7 +7,7 @@
 		<label class="control-label" for="id_name"><b>{% trans "Name" %}</b></label>
 		<div class="controls">
 			{{ form.name }}
-			{% if form.name.errors %} <div class="alert-danger"> {{ form.name.errors|join:", " }} </div>
+			{% if form.name.errors %} <div class="alert-danger"> {{ form.name.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.name.help_text }}</span>
 		</div>
 		</div>
@@ -14,7 +15,7 @@
 		<label class="control-label" for="id_email"><b>{% trans "Email" %}</b></label>
 		<div class="controls">
 			{{ form.email }}
-			{% if form.email.errors %} <div class="alert-danger"> {{ form.email.errors|join:", " }} </div>
+			{% if form.email.errors %} <div class="alert-danger"> {{ form.email.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.email.help_text }}</span>
 		</div>
 		</div>
@@ -22,8 +23,24 @@
 		<label class="control-label" for="id_phone"><b>{% trans "Phone" %}</b></label>
 		<div class="controls">
 			{{ form.phone }}
-			{% if form.phone.errors %} <div class="alert-danger"> {{ form.phone.errors|join:", " }} </div>
+			{% if form.phone.errors %} <div class="alert-danger"> {{ form.phone.errors|join_with_linebreaks }} </div>
 			{% endif %} <span class="help-block"> {{ form.phone.help_text }}</span>
+		</div>
+		</div>
+		<div class="control-group {% if form.type.errors %} error {% endif %}">
+		<label class="control-label" for="id_type"><b>{% trans "Type" %}</b></label>
+		<div class="controls">
+			{{ form.type }}
+			{% if form.type.errors %} <div class="alert-danger"> {{ form.type.errors|join_with_linebreaks }} </div>
+			{% endif %} <span class="help-block"> {{ form.type.help_text }}</span>
+		</div>
+		</div>
+		<div class="control-group {% if form.privacy.errors %} error {% endif %}">
+		<label class="control-label" for="id_privacy"><b>{% trans "Privacy" %}</b></label>
+		<div class="controls">
+			{{ form.privacy }}
+			{% if form.privacy.errors %} <div class="alert-danger"> {{ form.privacy.errors|join_with_linebreaks }} </div>
+			{% endif %} <span class="help-block"> {{ form.privacy.help_text }}</span>
 		</div>
 		</div>
     </form>

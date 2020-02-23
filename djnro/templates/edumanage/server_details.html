@@ -44,7 +44,7 @@
 			{{ server.host }}
 		</div>
 	</div>
-	{% if institution.ertype == 1 or institution.ertype == 3 %}
+	{% if institution.ertype in ERTYPE_ROLES.IDP %}
 	<div class="control-group">
 		<label class="control-label" for="id_port">{% trans "RADIUS Packet Types" %}</label>
 		<div class="controls">

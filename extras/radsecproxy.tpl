@@ -20,7 +20,7 @@ def deduplicated_list(seq):
 %>\
 <%
 for inst in insts:
-    if inst['type'] in (2, 3) and 'clients' in inst:
+    if inst['type'] in ERTYPE_ROLES.SP and 'clients' in inst:
         for client in inst['clients']:
             if 'usecount' in clients[client]:
                 clients[client]['usecount'] = clients[client]['usecount'] + 1
@@ -30,7 +30,7 @@ for inst in insts:
 % for inst in insts:
 % if True in [c in inst for c in ['clients', 'realms']]:
 #{{{${' ' + inst['id'] if 'id' in inst else ''}
-% if inst['type'] in (2, 3) and 'clients' in inst:
+% if inst['type'] in ERTYPE_ROLES.SP and 'clients' in inst:
 % for client in inst['clients']:
 % if 'seen' in clients[client]:
 # client ${client} defined previously
@@ -58,7 +58,7 @@ clients[client]['seen'] = True
 %>\
 % endfor
 % endif
-% if inst['type'] in (1, 3) and 'realms' in inst:
+% if inst['type'] in ERTYPE_ROLES.IDP and 'realms' in inst:
 <%doc>
 The following one-liner does the equivalent of:
 

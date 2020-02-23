@@ -95,7 +95,7 @@ $.get(servicesUrl, function(data){
 			"<dt>transp_proxy</dt><dd>"+jsonMarker.transp_proxy+"&nbsp;</dd>"+
 			"<dt>IPv6</dt><dd>"+jsonMarker.IPv6+"&nbsp;</dd>"+
 			"<dt>NAT</dt><dd>"+jsonMarker.NAT+"&nbsp;</dd>"+
-			"<dt>Wired</dt><dd>"+jsonMarker.wired+"&nbsp;</dd></dl>"+
+			"<dt>Wired Number</dt><dd>"+jsonMarker.wired_no+"&nbsp;</dd></dl>"+
     "</div>"+
     "</div>"+
     "</div>"+

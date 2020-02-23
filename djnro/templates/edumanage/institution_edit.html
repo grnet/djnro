@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load tolocale %}
+{% load join_with_linebreaks %}
 {% block management_content %}
 
 <h4>{% tolocale institution LANGUAGE_CODE%} {% trans "Edit" %}</h4>
@@ -29,28 +30,38 @@
 					<input class="input" id="disabledInput2" type="text" placeholder="{{institution.get_ertype_display}}" disabled>
 				</div>
 			</div>
-			<div class="form-group {% if form.address_street.errors %} error {% endif %}">
-				<label class="control-label" for="id_address_street"><b>{% trans "Address Street" %}</b></label>
+			<div class="form-group">
+				<label class="control-label" for="id_instid"><b>{% trans "ID" %}</b></label>
 				<div class="controls">
-					{{ form.address_street }}
-					{% if form.address_street.errors %} <div class="alert-danger" > {{ form.address_street.errors|join:", " }} </div>
-					{% endif %} <span class="help-block"> {{ form.address_street.help_text }}</span>
+					<input class="input" id="disabledInput3" type="text" value="{{institution.instid}}" readonly>
 				</div>
 			</div>
-			<div class="form-group {% if form.address_city.errors %} error {% endif %}">
-				<label class="control-label" for="id_address_city"><b>{% trans "Address City" %}</b></label>
-				<div class="controls" >
-					{{ form.address_city }}
-					{% if form.address_city.errors %} <div class="alert-danger" > {{ form.address_city.errors|join:", " }} </div>
-					{% endif %} <span class="help-block"> {{ form.address_city.help_text }}</span>
-				</div>
-			</div>
+		    <div class="form-group {% for err in addrs_form.errors %}{% if err|length > 0 %}error{% endif %}{% endfor %}{% if addrs_form.non_form_errors %}error{% endif %}">
+		        <label class="control-label" for="id_addrs"><b>{% trans "Address" %}</b></label>
+		        {{addrs_form.management_form}}
+		        <div class="controls">
+		        {% if addrs_form.non_form_errors %} <div class="alert-danger">{{ addrs_form.non_form_errors|join_with_linebreaks }}</div>{% endif %}
+		            <table id="addrsform"><thead><tr><td>{% trans "Street" %}</td><td>{% trans "City" %}</td><td>{% trans "Language" %}</td></tr></thead><tbody>
+		        {% for formset in addrs_form.forms %}
+		        {{ formset.id }}
+
+
+		            <tr id="{{ formset.prefix }}-row">
+		            <td> {% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.street }}{% if formset.street.errors %}<br><div class="alert-danger">  {{ formset.street.errors|join_with_linebreaks }} </div>{% endif %}</td>
+		             <td>{{formset.city}}{% if formset.city.errors %}<br><div class="alert-danger">  {{ formset.city.errors|join_with_linebreaks }} </div>{% endif %}</td>
+		             <td>{{formset.lang}}{% if formset.lang.errors %}<br><div class="alert-danger">  {{ formset.lang.errors|join_with_linebreaks }} </div>{% endif %}</td>
+
+		        </tr>
+		        {% endfor %}
+		        </tbody></table>
+		        </div>
+		    </div>
 			<div class="form-group {% if form.contact.errors %} error {% endif %}">
 				<label class="control-label" for="id_contact"><b>{% trans "Contacts" %}</b></label>
 				<div class="controls">
 					<div class="">{{ form.contact }}</div>
 					<button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
-					  {% if form.contact.errors %} <div class="alert-danger"> {{ form.contact.errors|join:", " }} </div>
+					  {% if form.contact.errors %} <div class="alert-danger"> {{ form.contact.errors|join_with_linebreaks }} </div>
                                        {% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
 
 					<span class="help-block"> {{ form.contact.help_text }}</span>
@@ -60,38 +71,46 @@
 		        <label class="control-label" for="id_urls"><b>{% trans "Urls" %}</b></label>
 		        {{urls_form.management_form}}
 		        <div class="controls">
-		        {% if urls_form.non_form_errors %} <div class="alert-danger"> {{ urls_form.non_form_errors|join:", "}}</div>{% endif %}
+		        {% if urls_form.non_form_errors %} <div class="alert-danger">{{ urls_form.non_form_errors|join_with_linebreaks }}</div>{% endif %}
 		            <table id="urlsform"><thead><tr><td>url</td><td>type</td><td>language</td></tr></thead><tbody>
 		        {% for formset in urls_form.forms %}
 		        {{ formset.id }}
 
 
 		            <tr id="{{ formset.prefix }}-row">
-		            <td> {% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="alert-danger">  {{ formset.url.errors|join:", " }} </div>{% endif %}</td>
-		             <td>{{formset.urltype}}{% if formset.urltype.errors %}<br><div class="alert-danger">  {{ formset.urltype.errors|join:", " }} </div>{% endif %}</td>
-		             <td>{{formset.lang}}{% if formset.lang.errors %}<br><div class="alert-danger">  {{ formset.lang.errors|join:", " }} </div>{% endif %}</td>
+		            <td> {% if formset.instance.pk %}{{ formset.DELETE }}{% endif %}{{ formset.url }}{% if formset.url.errors %}<br><div class="alert-danger">  {{ formset.url.errors|join_with_linebreaks }} </div>{% endif %}</td>
+		             <td>{{formset.urltype}}{% if formset.urltype.errors %}<br><div class="alert-danger">  {{ formset.urltype.errors|join_with_linebreaks }} </div>{% endif %}</td>
+		             <td>{{formset.lang}}{% if formset.lang.errors %}<br><div class="alert-danger">  {{ formset.lang.errors|join_with_linebreaks }} </div>{% endif %}</td>
 
 		        </tr>
 		        {% endfor %}
 		        </tbody></table>
 		        </div>
 		    </div>
-		    {% if institution.ertype == 2 or institution.ertype == 3 %}
+			<div class="form-group {% if form.venue_info.errors %} error {% endif %}">
+				<label for="id_venue_info">{% trans "Institution Type" %}</label>
+				<div class="controls">
+					{{ form.venue_info }}
+					{% if form.venue_info.errors %} <div class="alert-danger"> {{ form.venue_info.errors|join_with_linebreaks }} </div>
+					{% endif %} <span class="help-block"> {{ form.venue_info.help_text }}</span>
+				</div>
+			</div>
+		    {% if institution.ertype in ERTYPE_ROLES.SP %}
 			<div class="form-group {% if form.oper_name.errors %} error {% endif %}">
 				<label class="control-label" for="id_oper_name"><b>{% trans "Domain Name" %}</b></label>
 				<div class="controls" >
 					{{ form.oper_name }}
-					{% if form.oper_name.errors %} <div class="alert-danger" >  {{ form.oper_name.errors|join:", " }} </div>
+					{% if form.oper_name.errors %} <div class="alert-danger" >  {{ form.oper_name.errors|join_with_linebreaks }} </div>
 					{% endif %} <span class="help-block">{% autoescape off %}{{ form.oper_name.help_text }}{% endautoescape %}</span>
 				</div>
 			</div>
 			{% endif %}
-			{% if institution.ertype == 1 or institution.ertype == 3 %}
+			{% if institution.ertype in ERTYPE_ROLES.IDP %}
 			<div class="form-group {% if form.number_user.errors %} error {% endif %}">
 				<label class="control-label" for="id_number_user">{% trans "Number of Users" %}</label>
 				<div class="controls">
 					{{ form.number_user }}
-					{% if form.number_user.errors %} <div class="alert-danger">  {{ form.number_user.errors|join:", " }} </div>
+					{% if form.number_user.errors %} <div class="alert-danger">  {{ form.number_user.errors|join_with_linebreaks }} </div>
 					{% endif %} <span class="help-block"> {{ form.number_user.help_text }}</span>
 				</div>
 			</div>
@@ -100,7 +119,7 @@
 				<label class="control-label" for="id_number_id">{% trans "Number of IDs" %}</label>
 				<div class="controls">
 					{{ form.number_id }}
-					{% if form.number_id.errors %} <div class="alert-danger">  {{ form.number_id.errors|join:", " }} </div>
+					{% if form.number_id.errors %} <div class="alert-danger">  {{ form.number_id.errors|join_with_linebreaks }} </div>
 					{% endif %} <span class="help-block"> {{ form.number_id.help_text }}</span>
 				</div>
 			</div>
@@ -180,6 +199,12 @@ $(document).ready(function() {
 	 $('#urlsform tbody tr').formset({
         prefix: '{{urls_form.prefix}}',
         formCssClass: "dynamic-formset1",
+        added: addButton,
+    });
+
+	 $('#addrsform tbody tr').formset({
+        prefix: '{{addrs_form.prefix}}',
+        formCssClass: "dynamic-formset2",
         added: addButton,
     });
 

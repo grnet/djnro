@@ -4,7 +4,7 @@ import re
 %>\
 <%
 for inst in insts:
-    if inst['type'] in (2, 3) and 'clients' in inst:
+    if inst['type'] in ERTYPE_ROLES.SP and 'clients' in inst:
         for client in inst['clients']:
             if 'usecount' in clients[client]:
                 clients[client]['usecount'] = clients[client]['usecount'] + 1
@@ -12,7 +12,7 @@ for inst in insts:
                 clients[client]['usecount'] = 1
 %>\
 % for inst in insts:
-% if inst['type'] in (2, 3) and 'clients' in inst:
+% if inst['type'] in ERTYPE_ROLES.SP and 'clients' in inst:
 #{{{${' ' + inst['id'] if 'id' in inst else ''}
 % for client in inst['clients']:
 % if 'seen' in clients[client]:

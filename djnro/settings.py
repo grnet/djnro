@@ -26,6 +26,7 @@
 
 from django.utils.translation import ugettext_lazy as _
 import os
+from utils.edb_versioning import EduroamDatabaseVersionDef
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
@@ -161,6 +162,8 @@ INSTALLED_APPS = (
     'django.contrib.flatpages',
     'django.contrib.admin',
     'django.contrib.admindocs',
+    'widget_tweaks',
+    'sortedm2m',
     'social_django',
     'edumanage',
     'accounts',
@@ -291,6 +294,21 @@ LINKEDIN_EXTRA_DATA = [('id', 'id'),
 
 CAT_INSTANCES = ()
 
+# How to convert ServiceLoc.wired to wired_no
+# Default: Use a magic number for True, NULL for False
+SERVICELOC_DERIVE_WIRED_NO = {
+    True: 42,
+    False: None,
+}
+
+EDUROAM_DATABASE_VERSIONS = {
+    'default': EduroamDatabaseVersionDef.version_2,
+    'allowed': (
+        EduroamDatabaseVersionDef.version_1,
+        EduroamDatabaseVersionDef.version_2,
+    ),
+}
+
 SENTRY = dict()
 
 import _version
@@ -298,7 +316,7 @@ SW_VERSION = _version.VERSION
 
 def _dictmerge(a, b):
     """ deep merge two dictionaries """
-    ret = dict(a.items() + b.items())
+    ret = dict(list(a.items()) + list(b.items()))
     for key in set(a.keys()) & set(b.keys()):
         if isinstance(a[key], dict) and isinstance(b[key], dict):
             ret[key] = _dictmerge(a[key], b[key])

@@ -5,7 +5,7 @@ warnings.simplefilter("ignore", DeprecationWarning)
 
 from optparse import make_option
 from django.core.management.base import BaseCommand
-from edumanage.models import InstServer, Institution
+from edumanage.models import InstServer, Institution, ERTYPES, ERTYPE_ROLES
 
 
 class Command(BaseCommand):
@@ -64,7 +64,7 @@ def servdata():
     hosts = InstServer.objects.all()
     insts = Institution.objects.all()
 
-    clients = hosts.filter(ertype__in=[2,3])
+    clients = hosts.filter(ertype__in=ERTYPE_ROLES.SP)
     if clients:
         root['clients'] = {}
     for srv in clients:
@@ -76,7 +76,7 @@ def servdata():
         srv_dict['secret'] = srv.secret
         root['clients'].update({srv_id: srv_dict})
 
-    servers = hosts.filter(ertype__in=[1,3])
+    servers = hosts.filter(ertype__in=ERTYPE_ROLES.IDP)
     if servers:
         root['servers'] = {}
     for srv in servers:
@@ -104,12 +104,12 @@ def servdata():
                 inst.institutiondetails.oper_name:
             inst_dict['id'] = inst.institutiondetails.oper_name
         inst_dict['type'] = inst.ertype
-        if inst.ertype in (2, 3):
-            inst_clients = inst.servers.filter(ertype__in=[2, 3])
+        if inst.ertype in ERTYPE_ROLES.SP:
+            inst_clients = inst.servers.filter(ertype__in=ERTYPE_ROLES.SP)
             if inst_clients:
                 inst_dict['clients'] = [srv_identifier(srv, "client_") for
                                         srv in inst_clients]
-        if inst.ertype in (1, 3):
+        if inst.ertype in ERTYPE_ROLES.IDP:
             inst_realms = inst.instrealm_set.all()
             if inst_realms:
                 inst_dict['realms'] = {}

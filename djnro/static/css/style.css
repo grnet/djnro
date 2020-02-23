@@ -134,3 +134,8 @@ footer.auth {
 .closest footer {
 	display: none;
 }
+
+/* bootstrap color #333 + opacity 0.5 */
+input[readonly].input {
+	color: rgba(51, 51, 51, 0.5);
+}

@@ -50,30 +50,37 @@ from edumanage.models import (
     InstRealm,
     Contact,
     Name_i18n,
+    Address_i18n,
+    Coordinates,
+    ERTYPES,
+    ERTYPE_ROLES,
 )
+from .models import get_ertype_string
 from accounts.models import UserProfile
 from edumanage.forms import (
     InstDetailsForm,
-    UrlFormSetFactInst,
     InstRealmForm,
     UserProfileForm,
     ContactForm,
+    URL_i18nForm,
     MonLocalAuthnParamForm,
     InstRealmMonForm,
     ServiceLocForm,
-    NameFormSetFact,
-    UrlFormSetFact,
+    i18nFormSetDefaultLang,
+    URL_i18nFormSet,
     InstServerForm
 )
 from registration.models import RegistrationProfile
 from edumanage.decorators import (social_active_required,
-                                  cache_page_ifreq)
+                                  cache_page_ifreq,
+                                  detect_eduroam_db_version)
 from django.utils.cache import (
     get_max_age, patch_response_headers, patch_vary_headers
 )
 from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
 from utils.locale import setlocale, compat_strxfrm
+from utils.functional import partialclass
 
 
 # Almost verbatim copy of django.views.i18n.set_language; however:
@@ -182,21 +189,16 @@ def manage(request):
 @never_cache
 def institutions(request):
     user = request.user
-    dict = {}
     try:
         profile = user.userprofile
         inst = profile.institution
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    dict['institution'] = inst.pk
-    form = InstDetailsForm(initial=dict)
-    form.fields['institution'].widget.attrs['readonly'] = True
     return render(
         request,
         'edumanage/institution.html',
         context=merge_dicts({
             'institution': inst,
-            'form': form,
         }, base_response(request))
     )
 
@@ -220,67 +222,93 @@ def add_institution_details(request, institution_pk):
         )
         return HttpResponseRedirect(reverse("institutions"))
 
-    if request.method == "GET":
-        try:
-            inst_details = InstitutionDetails.objects.get(institution=inst)
-            form = InstDetailsForm(instance=inst_details)
-            UrlFormSet = generic_inlineformset_factory(
-                URL_i18n,
-                extra=2,
-                formset=UrlFormSetFactInst,
-                can_delete=True
-            )
-            urls_form = UrlFormSet(prefix='urlsform', instance=inst_details)
-        except InstitutionDetails.DoesNotExist:
-            form = InstDetailsForm()
-            form.fields['institution'] = forms.ModelChoiceField(
-                queryset=Institution.objects.filter(pk=institution_pk),
-                empty_label=None
-            )
-            UrlFormSet = generic_inlineformset_factory(
-                URL_i18n,
-                extra=2,
-                can_delete=True
-            )
-            urls_form = UrlFormSet(prefix='urlsform')
-
-        form.fields['contact'] = forms.ModelMultipleChoiceField(
+    formset_params = (
+        ('url', URL_i18n, {
+            'formset': partialclass(URL_i18nFormSet,
+                                    obj_descr=_('institution URL')),
+            'min_num': 2,
+            'validate_min': True,
+        }),
+        ('addr', Address_i18n, {
+            'formset': partialclass(i18nFormSetDefaultLang,
+                                    obj_descr=_('institution address')),
+            'min_num': 1,
+            'validate_min': True,
+        }),
+    )
+    _fsf_kwargs = {'extra': 2}
+    formsets = {}
+    # Determine add or edit
+    try:
+        inst_details = InstitutionDetails.objects.get(institution=inst)
+        form_kwargs = {'instance': inst_details}
+    except InstitutionDetails.DoesNotExist:
+        inst_details = None
+        form_kwargs = {}
+    form_fields = {
+        'institution': forms.ModelChoiceField(
+            queryset=Institution.objects.filter(pk=institution_pk),
+            empty_label=None
+        ),
+        'contact': forms.ModelMultipleChoiceField(
             queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
-        )
+        ),
+    }
+    if request.method == "GET":
+        form = InstDetailsForm(**form_kwargs)
+        if not inst_details:
+            form.fields['institution'] = form_fields['institution']
+        form.fields['contact'] = form_fields['contact']
+        for form_key, model, fsf_kwargs_bound in formset_params:
+            fsf_kwargs = _fsf_kwargs.copy()
+            fs_kwargs = {'prefix': '%ssform' % form_key}
+            if inst_details:
+                fsf_kwargs.update(fsf_kwargs_bound)
+                fs_kwargs['instance'] = inst_details
+            formsets[form_key] = generic_inlineformset_factory(
+                model, **fsf_kwargs
+            )(**fs_kwargs)
         return render(
             request,
             'edumanage/institution_edit.html',
-            context=merge_dicts({'institution': inst, 'form': form, 'urls_form': urls_form}, base_response(request))
+            context=merge_dicts({
+                'institution': inst,
+                'form': form,
+                'urls_form': formsets['url'],
+                'addrs_form': formsets['addr']
+            }, base_response(request))
         )
-    elif request.method == 'POST':
+    if request.method == 'POST':
         request_data = request.POST.copy()
-        UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
-        try:
-            inst_details = InstitutionDetails.objects.get(institution=inst)
-            form = InstDetailsForm(request_data, instance=inst_details)
-            urls_form = UrlFormSet(request_data, instance=inst_details, prefix='urlsform')
-        except InstitutionDetails.DoesNotExist:
-            form = InstDetailsForm(request_data)
-            urls_form = UrlFormSet(request_data, prefix='urlsform')
-        UrlFormSet = generic_inlineformset_factory(URL_i18n, extra=2, formset=UrlFormSetFactInst, can_delete=True)
-        if form.is_valid() and urls_form.is_valid():
+        form = InstDetailsForm(request_data, **form_kwargs)
+        for form_key, model, fsf_kwargs_extra in formset_params:
+            fsf_kwargs = _fsf_kwargs.copy()
+            fsf_kwargs.update(fsf_kwargs_extra)
+            fs_kwargs = {'prefix': '%ssform' % form_key}
+            if inst_details:
+                fs_kwargs.update(form_kwargs)
+            formsets[form_key] = generic_inlineformset_factory(
+                model, **fsf_kwargs
+            )(request_data, **fs_kwargs)
+        if form.is_valid() and all(
+                [formsets[form_key].is_valid() for form_key in formsets]):
             instdets = form.save()
-            urls_form.instance = instdets
-            urls_form.save()
+            for form_key in formsets:
+                formsets[form_key].instance = instdets
+                formsets[form_key].save()
             return HttpResponseRedirect(reverse("institutions"))
-        else:
-            form.fields['institution'] = forms.ModelChoiceField(
-                queryset=Institution.objects.filter(pk=institution_pk),
-                empty_label=None
-            )
-            form.fields['contact'] = forms.ModelMultipleChoiceField(
-                queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
-            )
-            return render(
-                request,
-                'edumanage/institution_edit.html',
-                context=merge_dicts({'institution': inst, 'form': form, 'urls_form': urls_form}, base_response(request))
-            )
+        # invalid form data, render page with errors
+        form.fields.update(form_fields)
+        return render(
+            request,
+            'edumanage/institution_edit.html',
+            context=merge_dicts({
+                'institution': inst,
+                'form': form,
+                'urls_form': formsets['url'],
+                'addrs_form': formsets['addr']
+            }, base_response(request))
+        )
 
 
 @login_required
@@ -297,7 +325,7 @@ def services(request, service_pk):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [2, 3]:
+    if inst.ertype not in ERTYPE_ROLES.SP:
         messages.add_message(
             request,
             messages.ERROR,
@@ -358,7 +386,7 @@ def add_services(request, service_pk):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [2, 3]:
+    if inst.ertype not in ERTYPE_ROLES.SP:
         messages.add_message(
             request,
             messages.ERROR,
@@ -369,138 +397,105 @@ def add_services(request, service_pk):
             'edumanage/services_edit.html',
             context=merge_dicts({'edit': edit}, base_response(request))
         )
-    if request.method == "GET":
-
-        # Determine add or edit
-        try:
-            service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
-            form = ServiceLocForm(instance=service)
-        except ServiceLoc.DoesNotExist:
-            form = ServiceLocForm()
-            if service_pk:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    'You have no rights to edit this location'
-                )
-                return HttpResponseRedirect(reverse("services"))
-        form.fields['institutionid'] = forms.ModelChoiceField(
+    formset_params = (
+        ('url', URL_i18n, {
+            'form': partialclass(URL_i18nForm,
+                                 valid_urltypes='info'),
+        }),
+        ('name', Name_i18n, {
+            'formset': partialclass(i18nFormSetDefaultLang,
+                                    obj_descr=_('location name')),
+            'extra': 1,
+        }),
+        ('addr', Address_i18n, {
+            'formset': partialclass(i18nFormSetDefaultLang,
+                                    obj_descr=_('institution address')),
+            'min_num': 1,
+            'validate_min': True,
+        }),
+    )
+    _fsf_kwargs = {'extra': 2}
+    formsets = {}
+    # Determine add or edit
+    try:
+        service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
+        form_kwargs = {'instance': service}
+    except ServiceLoc.DoesNotExist:
+        form_kwargs = {}
+        if service_pk:
+            messages.add_message(
+                request,
+                messages.ERROR,
+                'You have no rights to edit this location'
+            )
+            return HttpResponseRedirect(reverse("services"))
+    form_fields = {
+        'institutionid': forms.ModelChoiceField(
             queryset=Institution.objects.filter(pk=inst.pk),
             empty_label=None
-        )
-        UrlFormSet = generic_inlineformset_factory(
-            URL_i18n,
-            extra=2,
-            can_delete=True
-        )
-        NameFormSet = generic_inlineformset_factory(
-            Name_i18n,
-            extra=2,
-            can_delete=True
-        )
-        urls_form = UrlFormSet(prefix='urlsform')
-        names_form = NameFormSet(prefix='namesform')
-        if (service):
-            NameFormSet = generic_inlineformset_factory(
-                Name_i18n,
-                extra=1,
-                formset=NameFormSetFact, can_delete=True
-            )
-            names_form = NameFormSet(instance=service, prefix='namesform')
-            UrlFormSet = generic_inlineformset_factory(
-                URL_i18n,
-                extra=2,
-                formset=UrlFormSetFact,
-                can_delete=True
-            )
-            urls_form = UrlFormSet(instance=service, prefix='urlsform')
-        form.fields['contact'] = forms.ModelMultipleChoiceField(
-            queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
-        )
+        ),
+        'contact': forms.ModelMultipleChoiceField(
+            queryset=Contact.objects.filter(pk__in=getInstContacts(inst)),
+            required=False,
+        ),
+    }
+    if request.method == "GET":
+        form = ServiceLocForm(**form_kwargs)
+        form.fields.update(form_fields)
+        for form_key, model, fsf_kwargs_bound in formset_params:
+            fsf_kwargs = _fsf_kwargs.copy()
+            fs_kwargs = {'prefix': '%ssform' % form_key}
+            if service:
+                fsf_kwargs.update(fsf_kwargs_bound)
+                fs_kwargs['instance'] = service
+            formsets[form_key] = generic_inlineformset_factory(
+                model, **fsf_kwargs)(**fs_kwargs)
         if service:
             edit = True
-        for url_form in urls_form.forms:
-            url_form.fields['urltype'] = forms.ChoiceField(
-                choices=(('', '----------'), ('info', 'Info'),)
-            )
         return render(
             request,
             'edumanage/services_edit.html',
             context=merge_dicts({
                 'form': form,
-                'services_form': names_form,
-                'urls_form': urls_form,
+                'services_form': formsets['name'],
+                'urls_form': formsets['url'],
+                'addrs_form': formsets['addr'],
                 "edit": edit
             }, base_response(request))
         )
-    elif request.method == 'POST':
+    if request.method == 'POST':
         request_data = request.POST.copy()
-        NameFormSet = generic_inlineformset_factory(
-            Name_i18n,
-            extra=1,
-            formset=NameFormSetFact,
-            can_delete=True
-        )
-        UrlFormSet = generic_inlineformset_factory(
-            URL_i18n,
-            extra=2,
-            formset=UrlFormSetFact,
-            can_delete=True
-        )
-        try:
-            service = ServiceLoc.objects.get(institutionid=inst, pk=service_pk)
-            form = ServiceLocForm(request_data, instance=service)
-            names_form = NameFormSet(
-                request_data,
-                instance=service,
-                prefix='namesform'
-            )
-            urls_form = UrlFormSet(
-                request_data,
-                instance=service,
-                prefix='urlsform'
-            )
-        except ServiceLoc.DoesNotExist:
-            form = ServiceLocForm(request_data)
-            names_form = NameFormSet(request_data, prefix='namesform')
-            urls_form = UrlFormSet(request_data, prefix='urlsform')
-            if service_pk:
-                messages.add_message(
-                    request,
-                    messages.ERROR,
-                    'You have no rights to edit this location'
-                )
-                return HttpResponseRedirect(reverse("services"))
-        if form.is_valid() and names_form.is_valid() and urls_form.is_valid():
+        form = ServiceLocForm(request_data, **form_kwargs)
+        for form_key, model, fsf_kwargs_extra in formset_params:
+            fsf_kwargs = _fsf_kwargs.copy()
+            fsf_kwargs.update(fsf_kwargs_extra)
+            fs_kwargs = {'prefix': '%ssform' % form_key}
+            if service:
+                fs_kwargs.update(form_kwargs)
+            formsets[form_key] = generic_inlineformset_factory(
+                model, **fsf_kwargs
+            )(request_data, **fs_kwargs)
+        if form.is_valid() and all(
+                [formsets[form_key].is_valid() for form_key in formsets]):
             serviceloc = form.save()
             service = serviceloc
-            names_form.instance = service
-            urls_form.instance = service
-            names_form.save()
-            urls_form.save()
+            for form_key in formsets:
+                formsets[form_key].instance = service
+                formsets[form_key].save()
             return HttpResponseRedirect(reverse("services"))
-        else:
-            form.fields['institutionid'] = forms.ModelChoiceField(
-                queryset=Institution.objects.filter(pk=inst.pk),
-                empty_label=None
-            )
-            form.fields['contact'] = forms.ModelMultipleChoiceField(
-                queryset=Contact.objects.filter(pk__in=getInstContacts(inst))
-            )
+        # invalid form data, render page with errors
+        form.fields.update(form_fields)
         if service:
             edit = True
-        for url_form in urls_form.forms:
-            url_form.fields['urltype'] = forms.ChoiceField(
-                choices=(('', '----------'), ('info', 'Info'),)
-            )
         return render(
             request,
             'edumanage/services_edit.html',
             context=merge_dicts({
                 'institution': inst,
                 'form': form,
-                'services_form': names_form,
-                'urls_form': urls_form,
+                'services_form': formsets['name'],
+                'urls_form': formsets['url'],
+                'addrs_form': formsets['addr'],
                 'edit': edit
             }, base_response(request))
         )
@@ -663,7 +658,7 @@ def cat_enroll(request):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [1, 3]:
+    if inst.ertype not in ERTYPE_ROLES.IDP:
         messages.add_message(
             request,
             messages.ERROR,
@@ -815,7 +810,7 @@ def realms(request):
         return HttpResponseRedirect(reverse("manage"))
     if inst:
         realms = InstRealm.objects.filter(instid=inst)
-    if inst.ertype not in [1, 3]:
+    if inst.ertype not in ERTYPE_ROLES.IDP:
         messages.add_message(
             request,
             messages.ERROR,
@@ -844,7 +839,7 @@ def add_realm(request, realm_pk):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    if inst.ertype not in [1, 3]:
+    if inst.ertype not in ERTYPE_ROLES.IDP:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
         return render(
             request,
@@ -1455,7 +1450,7 @@ def base_response(request):
     except:
         instututiondetails = False
     try:
-        institution_canhaveservicelocs = institution.ertype in [2, 3]
+        institution_canhaveservicelocs = institution.ertype in ERTYPE_ROLES.SP
     except:
         pass
     return {
@@ -1469,6 +1464,8 @@ def base_response(request):
         'institutiondetails': instututiondetails,
         'institution_exists': institution_exists,
         'institution_canhaveservicelocs': institution_canhaveservicelocs,
+        'ERTYPES': ERTYPES,
+        'ERTYPE_ROLES': ERTYPE_ROLES,
     }
 
 
@@ -1700,7 +1697,7 @@ def participants(request):
 
 @never_cache
 def connect(request):
-    institutions = Institution.objects.filter(ertype__in=[1,3],
+    institutions = Institution.objects.filter(ertype__in=ERTYPE_ROLES.IDP,
                                               institutiondetails__isnull=False).\
         select_related('institutiondetails')
     cat_instance = 'production'
@@ -2016,10 +2013,21 @@ def ourPoints(institution=None, cache_flush=False):
             point = {}
             point['lat'] = u"%s" % sl.latitude
             point['lng'] = u"%s" % sl.longitude
-            point['address'] = u"%s<br>%s" % (
-                sl.address_street, sl.address_city
+            addrs = {
+                lang: [
+                    ', '.join([f for f in (addr.street, addr.city) if f])
+                    for addr in group
+                ]
+                for lang, group in itertools.groupby(
+                    sl.address.order_by('lang'),
+                    key=lambda addr: addr.lang
                 )
-            if len(sl.enc_level[0]) != 0:
+            }
+            point['address'] = {
+                lang: '<br>'.join(addrs[lang])
+                for lang in addrs
+            }
+            if sl.enc_level:
                 point['enc'] = u"%s" % (
                     ','.join(sl.enc_level)
                     )
@@ -2035,11 +2043,9 @@ def ourPoints(institution=None, cache_flush=False):
             #       for attr in ['name', 'phone', 'email'] }
             #     for contact in sl.contact.all()
             #     ]
-            point['port_restrict'] = u"%s" % (sl.port_restrict)
-            point['transp_proxy'] = u"%s" % (sl.transp_proxy)
-            point['IPv6'] = u"%s" % (sl.IPv6)
-            point['NAT'] = u"%s" % (sl.NAT)
-            point['wired'] = u"%s" % (sl.wired)
+            for loc_tag, __ in ServiceLoc.LOCATION_TAGS:
+                point[loc_tag] = str(loc_tag in sl.tag)
+            point['wired_no'] = u"%s" % (sl.wired_no)
             point['SSID'] = u"%s" % (sl.SSID)
             point['key'] = u"%s" % sl.pk
             points[cache_key].append(point)
@@ -2058,7 +2064,7 @@ def ourPoints(institution=None, cache_flush=False):
 
 def localizePointNames(points, lang='en'):
     for point in points:
-        for key in ['inst', 'name']:
+        for key in ['inst', 'name', 'address']:
             if key not in point:
                 continue
             try:
@@ -2068,45 +2074,117 @@ def localizePointNames(points, lang='en'):
     return points
 
 
+def xml_address_elements(elem, obj, version):
+    addr_objs = obj.address.all()
+    if version.is_version_1:
+        addr_objs = addr_objs.filter(lang="en")[:1]
+    for addr_obj in addr_objs:
+        addr_elem = ElementTree.SubElement(elem, "address")
+        for prop in ["street", "city"]:
+            prop_elem = ElementTree.SubElement(addr_elem, prop)
+            prop_elem.text = getattr(addr_obj, prop)
+            if version.is_version_2:
+                prop_elem.attrib["lang"] = addr_obj.lang
+
+def xml_coordinates_elements(elem, obj, version):
+    if version.is_version_1 and not isinstance(obj, ServiceLoc):
+        return
+    coord_objs = obj.coordinates
+    if isinstance(coord_objs, Coordinates):
+        coord_objs = [coord_objs]
+    elif coord_objs is None:
+        coord_objs = []
+    else:
+        coord_objs = coord_objs.all()
+    coords_elem_vals = []
+    coordinate_fields = [f.name for f in Coordinates._meta.get_fields()
+                         if not f.auto_created]
+    for coord_obj in coord_objs:
+        if version.is_version_1:
+            for prop in coordinate_fields[:2]:
+                prop_elem = ElementTree.SubElement(elem, prop)
+                prop_elem.text = six.text_type(getattr(coord_obj, prop))
+            break # only render the first coord_obj
+        else:
+            coords_elem_vals.append(','.join([
+                six.text_type(prop)
+                for prop in [
+                    getattr(coord_obj, attr)
+                    for attr in coordinate_fields
+                ]
+                if prop is not None
+            ]))
+    if coords_elem_vals:
+        coords_elem = ElementTree.SubElement(elem, "coordinates")
+        coords_elem.text = ';'.join(coords_elem_vals)
+
 @never_cache
-def instxml(request):
+@detect_eduroam_db_version
+def instxml(request, version):
     ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
     root = ElementTree.Element("institutions")
     ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
     root.set(ns_xsi + "noNamespaceSchemaLocation", "institution.xsd")
-    institutions = Institution.objects.all()
+    institutions = Institution.objects.all().select_related(
+        'institutiondetails', 'realmid'
+    ).prefetch_related(
+        'org_name', 'institutiondetails__contact',
+        'institutiondetails__address', 'institutiondetails__coordinates',
+        'institutiondetails__url', 'instrealm_set')
+    servicelocs = ServiceLoc.objects.all().prefetch_related(
+        'coordinates', 'loc_name', 'address', 'contact', 'url'
+    ).order_by('institutionid')
+    servicelocs = {
+        instid: list(group) for instid, group in
+        itertools.groupby(servicelocs, lambda sloc: sloc.institutionid_id)
+        if instid is not None
+    }
     for institution in institutions:
         try:
             inst = institution.institutiondetails
-            if not inst:
-                continue
         except InstitutionDetails.DoesNotExist:
             continue
 
         instElement = ElementTree.SubElement(root, "institution")
 
-        instCountry = ElementTree.SubElement(instElement, "country")
-        instCountry.text = ("%s" % inst.institution.realmid.country).upper()
+        if version.is_version_1:
+            instCountry = ElementTree.SubElement(instElement, "country")
+            instCountry.text = institution.realmid.country.upper()
+
+        if version.ge_version_2:
+            instId = ElementTree.SubElement(instElement, "instid")
+            instId.text = six.text_type(institution.instid.hex)
+            roId = ElementTree.SubElement(instElement, "ROid")
+            roId.text = institution.realmid.roid
 
         instType = ElementTree.SubElement(instElement, "type")
-        instType.text = "%s" % inst.institution.ertype
+        ertype = institution.ertype
+        if version.is_version_1:
+            instType.text = six.text_type(ertype)
+        else:
+            instType.text = get_ertype_string(ertype)
+
+        if version.ge_version_2:
+            instStage = ElementTree.SubElement(instElement, "stage")
+            instStage.text = six.text_type(institution.stage)
 
         for realm in institution.instrealm_set.all():
             instRealm = ElementTree.SubElement(instElement, "inst_realm")
             instRealm.text = realm.realm
 
-        for name in inst.institution.org_name.all():
-            instOrgName = ElementTree.SubElement(instElement, "org_name")
+        for name in inst.institution.inst_name.all():
+            name_tag = 'org_name' if version.is_version_1 else 'inst_name'
+            instOrgName = ElementTree.SubElement(instElement, name_tag)
             instOrgName.attrib["lang"] = name.lang
             instOrgName.text = u"%s" % name.name
 
-        instAddress = ElementTree.SubElement(instElement, "address")
+        xml_address_elements(instElement, inst, version=version)
 
-        instAddrStreet = ElementTree.SubElement(instAddress, "street")
-        instAddrStreet.text = inst.address_street
+        xml_coordinates_elements(instElement, inst, version=version)
 
-        instAddrCity = ElementTree.SubElement(instAddress, "city")
-        instAddrCity.text = inst.address_city
+        if version.ge_version_2 and inst.venue_info:
+            instVenueInfo = ElementTree.SubElement(instElement, "inst_type")
+            instVenueInfo = inst.venue_info
 
         for contact in inst.contact.all():
             instContact = ElementTree.SubElement(instElement, "contact")
@@ -2119,6 +2197,15 @@ def instxml(request):
 
             instContactPhone = ElementTree.SubElement(instContact, "phone")
             instContactPhone.text = contact.phone
+
+            if version.ge_version_2:
+                instContactType = ElementTree.SubElement(instContact,
+                                                         "type")
+                instContactType.text = six.text_type(contact.type)
+
+                instContactPrivacy = ElementTree.SubElement(instContact,
+                                                            "privacy")
+                instContactPrivacy.text = six.text_type(contact.privacy)
 
         url_map = {}
         for url in inst.url.all():
@@ -2139,27 +2226,33 @@ def instxml(request):
         instTs.text = "%s" % inst.ts.isoformat()
         #Let's go to Institution Service Locations
 
-        for serviceloc in inst.institution.serviceloc_set.all():
+        for serviceloc in servicelocs[institution.id]:
+
             instLocation = ElementTree.SubElement(instElement, "location")
 
-            instLong = ElementTree.SubElement(instLocation, "longitude")
-            instLong.text = "%s" % serviceloc.longitude
+            if version.ge_version_2:
+                locId = ElementTree.SubElement(instLocation, "locationid")
+                locId.text = six.text_type(serviceloc.locationid.hex)
 
-            instLat = ElementTree.SubElement(instLocation, "latitude")
-            instLat.text = "%s" % serviceloc.latitude
+            xml_coordinates_elements(instLocation, serviceloc, version=version)
+
+            if version.ge_version_2:
+                locStage = ElementTree.SubElement(instLocation, "stage")
+                locStage.text = six.text_type(serviceloc.stage)
+                locType = ElementTree.SubElement(instLocation, "type")
+                locType.text = six.text_type(serviceloc.geo_type)
 
             for instlocname in serviceloc.loc_name.all():
                 instLocName = ElementTree.SubElement(instLocation, "loc_name")
                 instLocName.attrib["lang"] = instlocname.lang
                 instLocName.text = instlocname.name
 
-            instLocAddress = ElementTree.SubElement(instLocation, "address")
+            xml_address_elements(instLocation, serviceloc, version=version)
 
-            instLocAddrStreet = ElementTree.SubElement(instLocAddress, "street")
-            instLocAddrStreet.text = serviceloc.address_street
-
-            instLocAddrCity = ElementTree.SubElement(instLocAddress, "city")
-            instLocAddrCity.text = serviceloc.address_city
+            if version.ge_version_2 and serviceloc.venue_info:
+                instLocVenueInfo = ElementTree.SubElement(
+                    instLocation, "location_type")
+                instLocVenueInfo = serviceloc.venue_info
 
             for contact in serviceloc.contact.all():
                 instLocContact = ElementTree.SubElement(instLocation, "contact")
@@ -2173,29 +2266,64 @@ def instxml(request):
                 instLocContactPhone = ElementTree.SubElement(instLocContact, "phone")
                 instLocContactPhone.text = contact.phone
 
+                if version.ge_version_2:
+                    instLocContactType = ElementTree.SubElement(
+                        instLocContact, "type")
+                    instLocContactType.text = six.text_type(contact.type)
+
+                    instLocContactPrivacy = ElementTree.SubElement(
+                        instLocContact, "privacy")
+                    instLocContactPrivacy.text = six.text_type(contact.privacy)
+
             instLocSSID = ElementTree.SubElement(instLocation, "SSID")
             instLocSSID.text = serviceloc.SSID
 
-            instLocEncLevel = ElementTree.SubElement(instLocation, "enc_level")
-            instLocEncLevel.text = ', '.join(serviceloc.enc_level)
+            # required only under eduroam db v1 schema
+            if version.is_version_1 or serviceloc.enc_level:
+                instLocEncLevel = ElementTree.SubElement(instLocation,
+                                                         "enc_level")
+                instLocEncLevel.text = ', '.join(serviceloc.enc_level)
 
-            instLocPortRestrict = ElementTree.SubElement(instLocation, "port_restrict")
-            instLocPortRestrict.text = ("%s" % serviceloc.port_restrict).lower()
+            if version.is_version_1:
+                for tag in ['port_restrict', 'transp_proxy', 'IPv6', 'NAT']:
+                    tag_set = tag in serviceloc.tag
+                    # eduroam db v1 schema caveat: port_restrict not optional
+                    if not tag_set and tag != 'port_restrict':
+                        continue
+                    instLocTagSubElement = ElementTree.SubElement(
+                        instLocation, tag)
+                    instLocTagSubElement.text = six.text_type(
+                        1 if tag_set else 0
+                    )
 
-            instLocTransProxy = ElementTree.SubElement(instLocation, "transp_proxy")
-            instLocTransProxy.text = ("%s" % serviceloc.transp_proxy).lower()
+            if serviceloc.AP_no is not None:
+                instLocAP_no = ElementTree.SubElement(instLocation, "AP_no")
+                instLocAP_no.text = "%s" % int(serviceloc.AP_no)
 
-            instLocIpv6 = ElementTree.SubElement(instLocation, "IPv6")
-            instLocIpv6.text = ("%s" % serviceloc.IPv6).lower()
+            if version.is_version_1:
+                instLocWired = ElementTree.SubElement(instLocation, "wired")
+                instLocWired.text = ("%s" % bool(serviceloc.wired_no)).lower()
+            if version.ge_version_2 and serviceloc.wired_no is not None:
+                instLocWired_no = ElementTree.SubElement(
+                    instLocation, "wired_no")
+                instLocWired_no.text = six.text_type(serviceloc.wired_no)
 
-            instLocNAT = ElementTree.SubElement(instLocation, "NAT")
-            instLocNAT.text = ("%s" % serviceloc.NAT).lower()
+            if version.ge_version_2:
+                if serviceloc.tag:
+                    instLocTagElement = ElementTree.SubElement(instLocation,
+                                                               'tag')
+                    instLocTagElement.text = ','.join(serviceloc.tag)
 
-            instLocAP_no = ElementTree.SubElement(instLocation, "AP_no")
-            instLocAP_no.text = "%s" % int(serviceloc.AP_no)
+                instLocAvailElement = ElementTree.SubElement(
+                    instLocation, 'availability')
+                instLocAvailElement.text = six.text_type(
+                    serviceloc.physical_avail)
 
-            instLocWired = ElementTree.SubElement(instLocation, "wired")
-            instLocWired.text = ("%s" % serviceloc.wired).lower()
+                if serviceloc.operation_hours:
+                    instLocOperHoursElement = ElementTree.SubElement(
+                        instLocation, 'operation_hours')
+                    instLocOperHoursElement.text = \
+                        serviceloc.operation_hours
 
             for url in serviceloc.url.all():
                 instLocUrl = ElementTree.SubElement(
@@ -2216,32 +2344,38 @@ def instxml(request):
 
 
 @never_cache
-def realmxml(request):
+@detect_eduroam_db_version
+def realmxml(request, version):
     realm = Realm.objects.all()[0]
     ElementTree._namespace_map["http://www.w3.org/2001/XMLSchema-instance"] = 'xsi'
-    root = ElementTree.Element("realms")
+    root = ElementTree.Element("realms" if version.is_version_1 else "ROs")
     ns_xsi = "{http://www.w3.org/2001/XMLSchema-instance}"
-    root.set(ns_xsi + "noNamespaceSchemaLocation", "realm.xsd")
-    realmElement = ElementTree.SubElement(root, "realm")
+    root.set(ns_xsi + "noNamespaceSchemaLocation", "realm.xsd" if version.is_version_1 else "ro.xsd")
+    realmElement = ElementTree.SubElement(root, "realm" if version.is_version_1 else "RO")
+
+    if version.ge_version_2:
+        realmROid = ElementTree.SubElement(realmElement, "ROid")
+        realmROid.text = realm.roid
 
     realmCountry = ElementTree.SubElement(realmElement, "country")
     realmCountry.text = realm.country.upper()
 
-    realmStype = ElementTree.SubElement(realmElement, "stype")
-    realmStype.text = "%s" % realm.stype
+    if version.is_version_1:
+        realmStype = ElementTree.SubElement(realmElement, "stype")
+        realmStype.text = "%s" % realm.stype
+
+    if version.ge_version_2:
+        realmStage = ElementTree.SubElement(realmElement, "stage")
+        realmStage.text = six.text_type(realm.stage)
 
     for name in realm.org_name.all():
         realmOrgName = ElementTree.SubElement(realmElement, "org_name")
         realmOrgName.attrib["lang"] = name.lang
         realmOrgName.text = u"%s" % name.name
 
-    realmAddress = ElementTree.SubElement(realmElement, "address")
+    xml_address_elements(realmElement, realm, version=version)
 
-    realmAddrStreet = ElementTree.SubElement(realmAddress, "street")
-    realmAddrStreet.text = realm.address_street
-
-    realmAddrCity = ElementTree.SubElement(realmAddress, "city")
-    realmAddrCity.text = realm.address_city
+    xml_coordinates_elements(realmElement, realm, version=version)
 
     for contact in realm.contact.all():
         realmContact = ElementTree.SubElement(realmElement, "contact")
@@ -2254,6 +2388,15 @@ def realmxml(request):
 
         realmContactPhone = ElementTree.SubElement(realmContact, "phone")
         realmContactPhone.text = contact.phone
+
+        if version.ge_version_2:
+            realmContactType = ElementTree.SubElement(realmContact,
+                                                      "type")
+            realmContactType.text = six.text_type(contact.type)
+
+            realmContactPrivacy = ElementTree.SubElement(realmContact,
+                                                         "privacy")
+            realmContactPrivacy.text = six.text_type(contact.privacy)
 
     url_map = {}
     for url in realm.url.all():
@@ -2290,13 +2433,13 @@ def realmdataxml(request):
     realmCountry.text = realm.country.upper()
 
     nIdpCountry = ElementTree.SubElement(realmdataElement, "number_IdP")
-    nIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=1))
+    nIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=ERTYPES.IDP))
 
     nSPCountry = ElementTree.SubElement(realmdataElement, "number_SP")
-    nSPCountry.text = "%s" % len(realm.institution_set.filter(ertype=2))
+    nSPCountry.text = "%s" % len(realm.institution_set.filter(ertype=ERTYPES.SP))
 
     nSPIdpCountry = ElementTree.SubElement(realmdataElement, "number_SPIdP")
-    nSPIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=3))
+    nSPIdpCountry.text = "%s" % len(realm.institution_set.filter(ertype=ERTYPES.IDPSP))
 
     ninstCountry = ElementTree.SubElement(realmdataElement, "number_inst")
     ninstCountry.text = "%s" % len(realm.institution_set.all())
@@ -2351,7 +2494,7 @@ def servdata(request):
     hosts = InstServer.objects.all()
     insts = Institution.objects.all()
 
-    clients = hosts.filter(ertype__in=[2, 3])
+    clients = hosts.filter(ertype__in=ERTYPE_ROLES.SP)
     if clients:
         root['clients'] = {}
     for srv in clients:
@@ -2363,7 +2506,7 @@ def servdata(request):
         srv_dict['secret'] = srv.secret
         root['clients'].update({srv_id: srv_dict})
 
-    servers = hosts.filter(ertype__in=[1, 3])
+    servers = hosts.filter(ertype__in=ERTYPE_ROLES.IDP)
     if servers:
         root['servers'] = {}
     for srv in servers:
@@ -2391,12 +2534,12 @@ def servdata(request):
                 inst.institutiondetails.oper_name:
             inst_dict['id'] = inst.institutiondetails.oper_name
         inst_dict['type'] = inst.ertype
-        if inst.ertype in (2, 3):
-            inst_clients = inst.servers.filter(ertype__in=[2, 3])
+        if inst.ertype in ERTYPE_ROLES.SP:
+            inst_clients = inst.servers.filter(ertype__in=ERTYPE_ROLES.SP)
             if inst_clients:
                 inst_dict['clients'] = [getSrvIdentifier(srv, "client_") for
                                         srv in inst_clients]
-        if inst.ertype in (1, 3):
+        if inst.ertype in ERTYPE_ROLES.IDP:
             inst_realms = inst.instrealm_set.all()
             if inst_realms:
                 inst_dict['realms'] = {}
@@ -2606,7 +2749,7 @@ def getInstContacts(inst):
 def getInstServers(inst, idpsp=False):
     servers = InstServer.objects.filter(instid=inst)
     if idpsp:
-        servers = servers.filter(ertype__in=[1, 3])
+        servers = servers.filter(ertype__in=ERTYPE_ROLES.IDP)
     server_pks = []
     for server in servers:
         server_pks.append(server.pk)
