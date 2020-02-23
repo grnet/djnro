@@ -181,6 +181,50 @@ class DelimitedValueExactLookup(models.lookups.PatternLookup):
             params[0] = pattern % connection.ops.prep_for_like_query(params[0])
         return rhs, params
 
+class CharField(models.CharField):
+    pass
+
+@CharField.register_lookup
+class MysqlCollateBinExactLookup(models.lookups.Exact):
+    lookup_name = 'bexact'
+
+    def get_mysql_collation(self, conn):
+        try:
+            collation = self.lhs._mysql_collation # pylint: disable=protected-access
+        except AttributeError:
+            statement = "SHOW FULL COLUMNS FROM {} WHERE field = %s".format(
+                self.lhs.alias)
+            field = self.lhs.field
+            column = field.db_column or field.name
+            with conn.cursor() as cursor:
+                cursor.execute(statement, (column,))
+                nt_result = namedtuple(
+                    'res', [c[0] for c in cursor.description])
+                row = cursor.fetchone()
+            collation = nt_result(*row).Collation
+            self.lhs._mysql_collation = collation # pylint: disable=protected-access
+        charset, _collation = collation.split('_', 1)
+        if _collation.endswith('_ci'):
+            _collation = 'bin'
+        new_collation = '_'.join((charset, _collation))
+        return collation, new_collation
+
+    def as_mysql(self, compiler, connection):
+        orig_collation, new_collation = self.get_mysql_collation(connection)
+        if orig_collation == new_collation:
+            sup = super(MysqlCollateBinExactLookup, self)
+            parent = getattr(sup, 'as_mysql', sup.as_sql)
+            self.lookup_name = 'exact'
+            return parent(compiler, connection)
+        self.lookup_name = 'exact'
+        lhs, lhs_params = compiler.compile(self.lhs)
+        rhs, rhs_params = self.process_rhs(compiler, connection)
+        params = lhs_params + rhs_params
+        sql = '%s %s COLLATE %s' % (lhs, self.get_rhs_op(connection, rhs),
+                                    new_collation)
+        self.lookup_name = MysqlCollateBinExactLookup.lookup_name
+        return sql, params
+
 # https://www.djangosnippets.org/snippets/2402/
 def get_namedtuple_choices(*choices_tuples):
     """
@@ -277,7 +321,7 @@ class Name_i18n(models.Model):
     Name in a particular language
     '''
 
-    name = models.CharField(max_length=255)
+    name = CharField(max_length=255)
     lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
@@ -316,7 +360,7 @@ class Contact(models.Model):
     Contact
     '''
 
-    name = models.CharField(max_length=255, db_column='contact_name')
+    name = CharField(max_length=255, db_column='contact_name')
     email = models.CharField(max_length=80, db_column='contact_email')
     phone = models.CharField(max_length=80, db_column='contact_phone')
     type = models.PositiveIntegerField(
@@ -408,8 +452,8 @@ class Address_i18n(models.Model):
     Address in a particular language
     '''
 
-    street = models.CharField(max_length=255)
-    city = models.CharField(max_length=255)
+    street = CharField(max_length=255)
+    city = CharField(max_length=255)
     lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     content_type = models.ForeignKey(ContentType, blank=True, null=True)
     object_id = models.PositiveIntegerField(blank=True, null=True)
