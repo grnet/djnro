@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-24 01:37+0200\n"
+"POT-Creation-Date: 2020-02-26 01:05+0200\n"
 "PO-Revision-Date: 2017-04-01 23:40+0000\n"
 "Last-Translator: Zenon Mousmoulas <zenon@mousmoulas.gr>, 2020\n"
 "Language-Team: Greek (https://www.transifex.com/eduroam_devel/teams/11799/el/)\n"
@@ -44,6 +44,10 @@ msgid "English"
 msgstr "Αγγλικά"
 
 #: djnro/settings.py:41
+msgid "Spanish"
+msgstr "Ισπανικά"
+
+#: djnro/settings.py:42
 msgid "Hungarian"
 msgstr "Ουγγρικά"
 
