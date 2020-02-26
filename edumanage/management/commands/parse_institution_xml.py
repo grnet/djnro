@@ -461,7 +461,8 @@ This returns 32 hex digits, which works as input for UUID.''')
         if not self.edb_version.ge_version_2 and existing_obj.count() > 1:
             try:
                 for term in [
-                        {'loc_name__{}'.format(k): v
+                        {'loc_name__{}{}'.format(
+                            k, '__bexact' if k == 'name' else ''): v
                          for k, v in self.parse_name(name_element).items()}
                         for name_element in name_elements
                 ]:
@@ -471,7 +472,8 @@ This returns 32 hex digits, which works as input for UUID.''')
         if not self.edb_version.ge_version_2 and existing_obj.count() > 1:
             try:
                 for term in [
-                        {'address__{}'.format(k): v
+                        {'address__{}{}'.format(
+                            k, '__bexact' if k in ('street', 'city') else ''): v
                          for k, v in self.parse_address(address_element).items()}
                         for address_element in address_elements
                 ]:
