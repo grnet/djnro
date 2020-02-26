@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-26 01:05+0200\n"
+"POT-Creation-Date: 2020-02-28 11:17+0200\n"
 "PO-Revision-Date: 2017-04-01 23:40+0000\n"
 "Last-Translator: Zenon Mousmoulas <zenon@mousmoulas.gr>, 2020\n"
 "Language-Team: Hungarian (https://www.transifex.com/eduroam_devel/teams/11799/hu/)\n"
@@ -50,6 +50,10 @@ msgstr "Spanyol"
 #: djnro/settings.py:42
 msgid "Hungarian"
 msgstr "Magyar"
+
+#: djnro/settings.py:43
+msgid "Romanian"
+msgstr "Románul"
 
 #: djnro/templates/base.html:37
 #: djnro/templates/edumanage/server_details.html:4
@@ -600,7 +604,7 @@ msgid "Proxy to Servers"
 msgstr "A használt proxy"
 
 #: djnro/templates/edumanage/realms_edit.html:41 edumanage/forms.py:212
-#: edumanage/models.py:455
+#: edumanage/models.py:499
 msgid "Only IdP and IdP/SP server types are allowed"
 msgstr "Csak IdP és IdP / SP szerver típusok engedélyezettek"
 
@@ -1377,44 +1381,44 @@ msgstr ""
 "IEEE 802.11-2012, clause 8.4.1.34 Venue Info. Ez \",\"-el elválasztott egész"
 " számpárok, melyek midegyike 0 és 255 közötti"
 
-#: edumanage/models.py:345
+#: edumanage/models.py:389
 msgid "Longitude in decimal degrees, up to 8 decimal places"
 msgstr "hoszzúsági fok decimális formában maximum 8 tizedes jegyyel"
 
-#: edumanage/models.py:349
+#: edumanage/models.py:393
 msgid "Latitude in decimal degrees, up to 8 decimal places"
 msgstr "szélességi fok decimális formában maximum 8 tizedes jegyyel "
 
-#: edumanage/models.py:353
+#: edumanage/models.py:397
 msgid "Altitude, up to 9999 meters with millimeter precision"
 msgstr "magasság, 9999 méterig legfeljebb mm potosággal"
 
-#: edumanage/models.py:483 edumanage/models.py:574
+#: edumanage/models.py:527 edumanage/models.py:618
 msgid "Descriptive label"
 msgstr "leíró címke"
 
-#: edumanage/models.py:486 edumanage/models.py:581
+#: edumanage/models.py:530 edumanage/models.py:625
 msgid "IP address | FQDN hostname"
 msgstr "IP-cím | FQDN hostname"
 
-#: edumanage/models.py:490
+#: edumanage/models.py:534
 msgid "Default for RADIUS: 1812"
 msgstr "Alapértelmezett RADIUS: 1812"
 
-#: edumanage/models.py:491
+#: edumanage/models.py:535
 msgid "Default for RADIUS: 1813"
 msgstr "Alapértelmezett RADIUS: 1813"
 
-#: edumanage/models.py:492
+#: edumanage/models.py:536
 msgid "Do you accept Status-Server requests?"
 msgstr "Elfogadja Status-szerver kéréseket?"
 
-#: edumanage/models.py:503
+#: edumanage/models.py:547
 #, python-format
 msgid "Server: %(servername)s, Type: %(ertype)s"
 msgstr "Kiszolgáló: %(servername)s , Típus: %(ertype)s"
 
-#: edumanage/models.py:525
+#: edumanage/models.py:569
 #, python-format
 msgid ""
 "You cannot change this server to %(ertype)s (it is used by realms "
@@ -1423,12 +1427,12 @@ msgstr ""
 "Nem tudod megváltoztatni ezt a szervert %(ertype)s (i%(realms)s realm "
 "használja)"
 
-#: edumanage/models.py:593
+#: edumanage/models.py:637
 #, python-format
 msgid "Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s"
 msgstr "Felügylet Realm: %(monrealm)s, Proxyback Ügyfél: %(servername)s"
 
-#: edumanage/models.py:637
+#: edumanage/models.py:681
 #, python-format
 msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
@@ -1437,11 +1441,11 @@ msgstr ""
 "Felügyelt Realm: %(monrealm)s, EAP-módszer: %(eapmethod)s, 2. fázis: "
 "%(phase2)s, név: %(username)s"
 
-#: edumanage/models.py:714
+#: edumanage/models.py:758
 msgid "Restrictions regarding physical access to the service area"
 msgstr "A szolgáltatási területhez való fizikai hozzáférés korlátozva van. "
 
-#: edumanage/models.py:718
+#: edumanage/models.py:762
 msgid ""
 "Free text description of opening hours, if service is not available 24 hours"
 " per day"
@@ -1449,12 +1453,12 @@ msgstr ""
 "A nyitvatartás idő szöveges leírása, ha a szolgáltatás nem elérhető napi 24 "
 "órában"
 
-#: edumanage/models.py:730
+#: edumanage/models.py:774
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr "Intézmény: %(inst)s, Szolgáltatás helyszín: %(locname)s"
 
-#: edumanage/models.py:834
+#: edumanage/models.py:878
 msgid ""
 "The primary, registered domain name for your institution, eg. "
 "example.com.<br>This is used to derive the Operator-Name attribute according"
@@ -1464,7 +1468,7 @@ msgstr ""
 "Ez  Operator-Name attribútum készítéséhez használjuk  RFC5580, par.4.1 "
 "alapján."
 
-#: edumanage/models.py:844
+#: edumanage/models.py:888
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -1472,7 +1476,7 @@ msgstr ""
 "A felhasználók száma (magánszemélyek), amelyek jogosultak részt venni "
 "eduroam szolgáltatásban"
 
-#: edumanage/models.py:845
+#: edumanage/models.py:889
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
@@ -1480,17 +1484,17 @@ msgstr ""
 "A kibocsátott azonosítók száma (hitelesítő adat) amelyet eduroam "
 "szolgáltatásra lehet használni"
 
-#: edumanage/models.py:856
+#: edumanage/models.py:900
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr "Intézmény: %(inst)s, Típus: %(ertype)s"
 
-#: edumanage/models.py:907
+#: edumanage/models.py:951
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr "Ország:%(country)s, NRO: %(orgname)s"
 
-#: edumanage/models.py:940
+#: edumanage/models.py:984
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "

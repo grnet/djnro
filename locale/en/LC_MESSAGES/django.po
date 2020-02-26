@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-26 01:05+0200\n"
+"POT-Creation-Date: 2020-02-28 11:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,6 +44,10 @@ msgstr ""
 
 #: djnro/settings.py:42
 msgid "Hungarian"
+msgstr ""
+
+#: djnro/settings.py:43
+msgid "Romanian"
 msgstr ""
 
 #: djnro/templates/base.html:37 djnro/templates/edumanage/server_details.html:4
@@ -591,7 +595,7 @@ msgid "Proxy to Servers"
 msgstr ""
 
 #: djnro/templates/edumanage/realms_edit.html:41 edumanage/forms.py:212
-#: edumanage/models.py:455
+#: edumanage/models.py:499
 msgid "Only IdP and IdP/SP server types are allowed"
 msgstr ""
 
@@ -1279,106 +1283,106 @@ msgid ""
 "each between 0 and 255, separated with \",\"."
 msgstr ""
 
-#: edumanage/models.py:345
+#: edumanage/models.py:389
 msgid "Longitude in decimal degrees, up to 8 decimal places"
 msgstr ""
 
-#: edumanage/models.py:349
+#: edumanage/models.py:393
 msgid "Latitude in decimal degrees, up to 8 decimal places"
 msgstr ""
 
-#: edumanage/models.py:353
+#: edumanage/models.py:397
 msgid "Altitude, up to 9999 meters with millimeter precision"
 msgstr ""
 
-#: edumanage/models.py:483 edumanage/models.py:574
+#: edumanage/models.py:527 edumanage/models.py:618
 msgid "Descriptive label"
 msgstr ""
 
-#: edumanage/models.py:486 edumanage/models.py:581
+#: edumanage/models.py:530 edumanage/models.py:625
 msgid "IP address | FQDN hostname"
 msgstr ""
 
-#: edumanage/models.py:490
+#: edumanage/models.py:534
 msgid "Default for RADIUS: 1812"
 msgstr ""
 
-#: edumanage/models.py:491
+#: edumanage/models.py:535
 msgid "Default for RADIUS: 1813"
 msgstr ""
 
-#: edumanage/models.py:492
+#: edumanage/models.py:536
 msgid "Do you accept Status-Server requests?"
 msgstr ""
 
-#: edumanage/models.py:503
+#: edumanage/models.py:547
 #, python-format
 msgid "Server: %(servername)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:525
+#: edumanage/models.py:569
 #, python-format
 msgid ""
 "You cannot change this server to %(ertype)s (it is used by realms %(realms)s)"
 msgstr ""
 
-#: edumanage/models.py:593
+#: edumanage/models.py:637
 #, python-format
 msgid "Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s"
 msgstr ""
 
-#: edumanage/models.py:637
+#: edumanage/models.py:681
 #, python-format
 msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
 "%(phase2)s, Username: %(username)s"
 msgstr ""
 
-#: edumanage/models.py:714
+#: edumanage/models.py:758
 msgid "Restrictions regarding physical access to the service area"
 msgstr ""
 
-#: edumanage/models.py:718
+#: edumanage/models.py:762
 msgid ""
 "Free text description of opening hours, if service is not available 24 hours "
 "per day"
 msgstr ""
 
-#: edumanage/models.py:730
+#: edumanage/models.py:774
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr ""
 
-#: edumanage/models.py:834
+#: edumanage/models.py:878
 msgid ""
 "The primary, registered domain name for your institution, eg. example.com."
 "<br>This is used to derive the Operator-Name attribute according to RFC5580, "
 "par.4.1, using the REALM namespace."
 msgstr ""
 
-#: edumanage/models.py:844
+#: edumanage/models.py:888
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
 msgstr ""
 
-#: edumanage/models.py:845
+#: edumanage/models.py:889
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
 msgstr ""
 
-#: edumanage/models.py:856
+#: edumanage/models.py:900
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr ""
 
-#: edumanage/models.py:907
+#: edumanage/models.py:951
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr ""
 
-#: edumanage/models.py:940
+#: edumanage/models.py:984
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "

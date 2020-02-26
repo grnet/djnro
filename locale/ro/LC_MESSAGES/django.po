@@ -6,15 +6,16 @@
 # Translators:
 # Valeriu Vraciu <valeriu@roedu.net>, 2020
 # Raul Opruta <raul.opruta@roedu.net>, 2020
+# Zenon Mousmoulas <zenon@mousmoulas.gr>, 2020
 # 
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-26 01:05+0200\n"
+"POT-Creation-Date: 2020-02-28 11:17+0200\n"
 "PO-Revision-Date: 2017-04-01 23:40+0000\n"
-"Last-Translator: Raul Opruta <raul.opruta@roedu.net>, 2020\n"
+"Last-Translator: Zenon Mousmoulas <zenon@mousmoulas.gr>, 2020\n"
 "Language-Team: Romanian (https://www.transifex.com/eduroam_devel/teams/11799/ro/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -50,6 +51,10 @@ msgstr "Spaniolă"
 #: djnro/settings.py:42
 msgid "Hungarian"
 msgstr "Maghiară"
+
+#: djnro/settings.py:43
+msgid "Romanian"
+msgstr "Română"
 
 #: djnro/templates/base.html:37
 #: djnro/templates/edumanage/server_details.html:4
@@ -600,7 +605,7 @@ msgid "Proxy to Servers"
 msgstr "Proxy spre servere"
 
 #: djnro/templates/edumanage/realms_edit.html:41 edumanage/forms.py:212
-#: edumanage/models.py:455
+#: edumanage/models.py:499
 msgid "Only IdP and IdP/SP server types are allowed"
 msgstr "Sunt permise numai servere de tip IdP sau IdP/SP"
 
@@ -1377,44 +1382,44 @@ msgstr ""
 "IEEE 802.11-2012, clause 8.4.1.34 Venue Info. Acesta este o pereche de "
 "numere întregi, fiecare între 0 și 255, separate prin virgulă."
 
-#: edumanage/models.py:345
+#: edumanage/models.py:389
 msgid "Longitude in decimal degrees, up to 8 decimal places"
 msgstr "Longitudine în grade zecimale, cu până la 8 cifre zecimale"
 
-#: edumanage/models.py:349
+#: edumanage/models.py:393
 msgid "Latitude in decimal degrees, up to 8 decimal places"
 msgstr "Latitudinea în grade zecimale, cu până la 8 cifre zecimale"
 
-#: edumanage/models.py:353
+#: edumanage/models.py:397
 msgid "Altitude, up to 9999 meters with millimeter precision"
 msgstr "Altitudinea, până la 9999 m, cu precizie milimetrică"
 
-#: edumanage/models.py:483 edumanage/models.py:574
+#: edumanage/models.py:527 edumanage/models.py:618
 msgid "Descriptive label"
 msgstr "Etichetă descriptivă"
 
-#: edumanage/models.py:486 edumanage/models.py:581
+#: edumanage/models.py:530 edumanage/models.py:625
 msgid "IP address | FQDN hostname"
 msgstr "Adresă IP / nume FQDN"
 
-#: edumanage/models.py:490
+#: edumanage/models.py:534
 msgid "Default for RADIUS: 1812"
 msgstr "Implicit pentru RADIUS: 1812"
 
-#: edumanage/models.py:491
+#: edumanage/models.py:535
 msgid "Default for RADIUS: 1813"
 msgstr "Implicit pentru RADIUS: 1813"
 
-#: edumanage/models.py:492
+#: edumanage/models.py:536
 msgid "Do you accept Status-Server requests?"
 msgstr "Acceptați cererile de tip Status-Server ?"
 
-#: edumanage/models.py:503
+#: edumanage/models.py:547
 #, python-format
 msgid "Server: %(servername)s, Type: %(ertype)s"
 msgstr "Server: %(servername)s, Tip: %(ertype)s"
 
-#: edumanage/models.py:525
+#: edumanage/models.py:569
 #, python-format
 msgid ""
 "You cannot change this server to %(ertype)s (it is used by realms "
@@ -1423,12 +1428,12 @@ msgstr ""
 "Nu puteți modifica acest server în %(ertype)s (este utilizat pentru "
 "realms/domeniile %(realms)s)"
 
-#: edumanage/models.py:593
+#: edumanage/models.py:637
 #, python-format
 msgid "Monitored Realm: %(monrealm)s, Proxyback Client: %(servername)s"
 msgstr "Realm monitorizat: %(monrealm)s, Client Proxyback: %(servername)s"
 
-#: edumanage/models.py:637
+#: edumanage/models.py:681
 #, python-format
 msgid ""
 "Monitored Realm: %(monrealm)s, EAP Method: %(eapmethod)s, Phase 2: "
@@ -1437,23 +1442,23 @@ msgstr ""
 "Realm Monitorizat: %(monrealm)s, Metoda EAP: %(eapmethod)s, Faza 2: "
 "%(phase2)s, Nume de utilizator: %(username)s"
 
-#: edumanage/models.py:714
+#: edumanage/models.py:758
 msgid "Restrictions regarding physical access to the service area"
 msgstr "Restricții pentru accesul fizic la zona de acoperire a serviciului"
 
-#: edumanage/models.py:718
+#: edumanage/models.py:762
 msgid ""
 "Free text description of opening hours, if service is not available 24 hours"
 " per day"
 msgstr ""
 "Descrierea programului de lucru, dacă serviciul nu este disponibil 24 h/zi"
 
-#: edumanage/models.py:730
+#: edumanage/models.py:774
 #, python-format
 msgid "Institution: %(inst)s, Service Location: %(locname)s"
 msgstr "Instituție: %(inst)s, Localizarea Serviciului: %(locname)s"
 
-#: edumanage/models.py:834
+#: edumanage/models.py:878
 msgid ""
 "The primary, registered domain name for your institution, eg. "
 "example.com.<br>This is used to derive the Operator-Name attribute according"
@@ -1463,7 +1468,7 @@ msgstr ""
 "exemplu domeniu.ro.<br>Acesta este utilizat pentru a deduce atributul "
 "Operator-Name, conform cu RFC5580, par.4.1, folosind spațiul de nume REALM."
 
-#: edumanage/models.py:844
+#: edumanage/models.py:888
 msgid ""
 "Number of users (individuals) that are eligible to participate in eduroam "
 "service"
@@ -1471,7 +1476,7 @@ msgstr ""
 "Numărul de utilizatori (persoane) eligibili pentru acces la serviciul "
 "eduroam"
 
-#: edumanage/models.py:845
+#: edumanage/models.py:889
 msgid ""
 "Number of issued e-identities (credentials) that may be used for "
 "authentication in eduroam service"
@@ -1479,17 +1484,17 @@ msgstr ""
 "Numărul de e-identities (credențiale) emise care pot fi utilizate pentru "
 "autentificare în cadrul serviciului eduroam"
 
-#: edumanage/models.py:856
+#: edumanage/models.py:900
 #, python-format
 msgid "Institution: %(inst)s, Type: %(ertype)s"
 msgstr "Instituție: %(inst)s, Tip: %(ertype)s"
 
-#: edumanage/models.py:907
+#: edumanage/models.py:951
 #, python-format
 msgid "Country: %(country)s, NRO: %(orgname)s"
 msgstr "Țară: %(country)s, NRO: %(orgname)s"
 
-#: edumanage/models.py:940
+#: edumanage/models.py:984
 #, python-format
 msgid ""
 "Country: %(country)s, NRO: %(orgname)s, Institutions: %(inst)s, IdPs: "
