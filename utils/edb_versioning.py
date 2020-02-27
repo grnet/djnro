@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+import operator
 from semantic_version import Version
 from django.conf import settings
 from django.utils import six
 from django.utils.encoding import python_2_unicode_compatible
-from django.utils.functional import SimpleLazyObject
+from django.utils.functional import SimpleLazyObject, new_method_proxy
 from .functional import partialmethod
 
 class EduroamDatabaseVersionDef(object):
@@ -46,6 +47,7 @@ class DelegateVersion(type):
         default_attrs = [
             m for m in dir(object)
             if len(m.strip('_')) != 2 # exclude comparisons: eq, ne, gt...
+            and m.strip('_') != 'hash'
         ]
         for attr in dir(Version):
             if attr in default_attrs or attr in dct:
@@ -105,6 +107,11 @@ class LazyEDBVersion(SimpleLazyObject):
             lambda: EduroamDatabaseVersion(getter(obj)))
     # def __repr__(self):
     #     return repr(self._wrapped)
+    __lt__ = new_method_proxy(operator.lt)
+    __le__ = new_method_proxy(operator.le)
+    __gt__ = new_method_proxy(operator.gt)
+    __ge__ = new_method_proxy(operator.ge)
+    __hash__ = new_method_proxy(operator.methodcaller('__hash__'))
 
 DEFAULT_EDUROAM_DATABASE_VERSION = LazyEDBVersion(
     settings, lambda x: x.EDUROAM_DATABASE_VERSIONS['default']
