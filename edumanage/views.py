@@ -2226,7 +2226,7 @@ def instxml(request, version):
         instTs.text = "%s" % inst.ts.isoformat()
         #Let's go to Institution Service Locations
 
-        for serviceloc in servicelocs[institution.id]:
+        for serviceloc in servicelocs.get(institution.id, []):
 
             instLocation = ElementTree.SubElement(instElement, "location")
 
