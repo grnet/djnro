@@ -55,10 +55,10 @@ There are two alternative workarounds for this issue:
 * Install the last version (before the split) of `python-social-auth`
 **before** installing DjNRO v1.2 and run migrations:
 
-      # if you are using an older version of pip, you may need to run it
-      # with --index-url=https://pypi.python.org/simple/
-      pip install python-social-auth==0.2.21
-      ./manage.py migrate
+        # if you are using an older version of pip, you may need to run it
+        # with --index-url=https://pypi.python.org/simple/
+        pip install python-social-auth==0.2.21
+        ./manage.py migrate
 
 * After installing DjNRO v1.2, run `./manage.py shell` and use the
 following commands to get the migrations recorded in the database as
@@ -121,6 +121,9 @@ EXTRA_EDUROAM_DATABASE_VERSIONS = {
     'default': EduroamDatabaseVersionDef.version_1,
 }
 ```
+
+* JSON, as specified for eduroam database version 2, is not supported yet,
+  neither for db views nor for parsing.
 
 ## See Also
 
