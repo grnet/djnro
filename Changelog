@@ -1,3 +1,10 @@
+Version 1.2.0
+==============
+
+	- Django 1.11
+	- Python >= 3.4 compatibility
+	- eduroam database version 2 adaptation
+
 Version 1.1.1
 ==============
 
