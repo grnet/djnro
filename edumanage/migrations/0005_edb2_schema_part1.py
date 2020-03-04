@@ -66,21 +66,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='institution',
-            name='instid',
-            field=models.UUIDField(default=None, null=True),
-        ),
-        AppAwareRunPython(
-            Backfill('institution', 'instid', uuid.uuid4),
-            reverse_code=AppAwareRunPython.noop,
-            hints={'model_name': 'institution'},
-        ),
-        migrations.AlterField(
-            model_name='institution',
-            name='instid',
-            field=models.UUIDField(default=uuid.uuid4, unique=True, editable=False),
-        ),
-        migrations.AddField(
-            model_name='institution',
             name='stage',
             field=models.PositiveIntegerField(choices=[(0, 'preproduction/test'), (1, 'active')], default=1),
         ),
@@ -103,21 +88,6 @@ class Migration(migrations.Migration):
             model_name='serviceloc',
             name='geo_type',
             field=models.PositiveIntegerField(choices=[(0, 'single spot'), (1, 'area'), (2, 'mobile')], db_column='type', default=0),
-        ),
-        migrations.AddField(
-            model_name='serviceloc',
-            name='locationid',
-            field=models.UUIDField(default=None, null=True),
-        ),
-        AppAwareRunPython(
-            Backfill('serviceloc', 'locationid', uuid.uuid4),
-            reverse_code=AppAwareRunPython.noop,
-            hints={'model_name': 'serviceloc'},
-        ),
-        migrations.AlterField(
-            model_name='serviceloc',
-            name='locationid',
-            field=models.UUIDField(default=uuid.uuid4, unique=True, editable=False),
         ),
         migrations.AlterField(
             model_name='serviceloc',
@@ -213,5 +183,25 @@ class Migration(migrations.Migration):
             model_name='serviceloc',
             name='wired',
             field=models.NullBooleanField(),
+        ),
+        migrations.AddField(
+            model_name='institution',
+            name='instid',
+            field=models.UUIDField(default=None, null=True),
+        ),
+        AppAwareRunPython(
+            Backfill('institution', 'instid', uuid.uuid4),
+            reverse_code=AppAwareRunPython.noop,
+            hints={'model_name': 'institution'},
+        ),
+        migrations.AddField(
+            model_name='serviceloc',
+            name='locationid',
+            field=models.UUIDField(default=None, null=True),
+        ),
+        AppAwareRunPython(
+            Backfill('serviceloc', 'locationid', uuid.uuid4),
+            reverse_code=AppAwareRunPython.noop,
+            hints={'model_name': 'serviceloc'},
         ),
     ]
