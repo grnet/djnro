@@ -159,4 +159,59 @@ class Migration(migrations.Migration):
             name='AP_no',
             field=models.PositiveIntegerField(blank=True, null=True),
         ),
+        migrations.AlterField(
+            model_name='institutiondetails',
+            name='address_street',
+            field=models.CharField(max_length=96, null=True),
+        ),
+        migrations.AlterField(
+            model_name='institutiondetails',
+            name='address_city',
+            field=models.CharField(max_length=64, null=True),
+        ),
+        migrations.AlterField(
+            model_name='realm',
+            name='address_street',
+            field=models.CharField(max_length=32, null=True),
+        ),
+        migrations.AlterField(
+            model_name='realm',
+            name='address_city',
+            field=models.CharField(max_length=24, null=True),
+        ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='address_city',
+            field=models.CharField(max_length=64, null=True),
+        ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='address_street',
+            field=models.CharField(max_length=96, null=True),
+        ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='IPv6',
+            field=models.NullBooleanField(),
+        ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='NAT',
+            field=models.NullBooleanField(),
+        ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='port_restrict',
+            field=models.NullBooleanField(),
+        ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='transp_proxy',
+            field=models.NullBooleanField(),
+        ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='wired',
+            field=models.NullBooleanField(),
+        ),
     ]

@@ -14,6 +14,16 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='latitude',
+            field=models.DecimalField(decimal_places=8, max_digits=12, null=True),
+        ),
+        migrations.AlterField(
+            model_name='serviceloc',
+            name='longitude',
+            field=models.DecimalField(decimal_places=8, max_digits=12, null=True),
+        ),
         migrations.CreateModel(
             name='Coordinates',
             fields=[
