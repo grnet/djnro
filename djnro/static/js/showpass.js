@@ -19,7 +19,7 @@ showPassword: function() {
 
 var input_password	= $(this);
 //create the icon and assign
-var icon_password = $('<span tabindex="100" class="add-on"><i class="icon-eye-open"></i></span>').css('cursor', 'help').tooltip({trigger:'click'});
+var icon_password = $('<span tabindex="100" class="add-on"><i class="fa fa-eye"></i></span>').css('cursor', 'help').tooltip({trigger:'click'});
 icon_password.attr('data-original-title', $(this).attr('value'));
 input_password.on({
 input	: function() {
