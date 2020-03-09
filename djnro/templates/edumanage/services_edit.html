@@ -135,7 +135,7 @@
 		<div class="form-group {% if form.contact.errors %} error {% endif %}">
 			<label for="id_contact">{% trans "Contacts" %}</label>
 			<div class="controls">
-				{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="icon-plus-sign icon-white"></i>Add...</button>
+				{{ form.contact }} <button class="btn btn-small btn-info" id="add_contact"><i class="fa fa-plus-circle" aria-hidden="true"></i> Add...</button>
 				{% if form.contact.errors %} <div class="alert-danger"> {{ form.contact.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block"> {{ form.contact.help_text }}</span>
 			</div>
@@ -584,8 +584,8 @@
 		            added: addButton
 		        });
 
-			 $(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
-			 $(".add-row").prepend('<i class="icon-plus-sign icon-white"></i> ').addClass('btn btn-small btn-info');
+			 $(".delete-row").prepend('<i class="fa fa-times-circle" aria-hidden="true"></i> ').addClass('btn btn-small btn-warning');
+			 $(".add-row").prepend('<i class="fa fa-plus-circle" aria-hidden="true"></i> ').addClass('btn btn-small btn-info');
 
 			 $("#adduserSubmit").click(function(){
 					$.ajax({
@@ -628,7 +628,7 @@
 
 		});
 		function addButton(row){
-			$(row).find(".delete-row").prepend('<i class="icon-remove-sign icon-white"></i> ').addClass('btn btn-small btn-warning');
+			$(row).find(".delete-row").prepend('<i class="fa fa-times-circle" aria-hidden="true"></i> ').addClass('btn btn-small btn-warning');
 		}
 
 
