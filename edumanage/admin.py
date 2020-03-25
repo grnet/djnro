@@ -3,6 +3,7 @@ from django.contrib import admin
 from edumanage.models import (
     Name_i18n,
     URL_i18n,
+    Address_i18n,
     Contact,
     InstitutionContactPool,
     InstRealm,
@@ -17,6 +18,7 @@ from edumanage.models import (
     RealmData,
     CatEnrollment
 )
+from edumanage.forms import ServiceLocForm
 
 from django.contrib.contenttypes import admin as contenttype_admin
 
@@ -29,16 +31,21 @@ class UrlInline(contenttype_admin.GenericTabularInline):
     model = URL_i18n
 
 
+class AddressInline(contenttype_admin.GenericTabularInline):
+    model = Address_i18n
+
+
 class InstitutionAdmin(admin.ModelAdmin):
     inlines = [
         NameInline,
     ]
     list_filter = ('ertype',)
+    readonly_fields = ('instid',)
 
 
 class InstitutionDetailsAdmin(admin.ModelAdmin):
     inlines = [
-        UrlInline,
+        AddressInline, UrlInline,
     ]
     list_filter = ('institution__ertype',)
 
@@ -46,9 +53,11 @@ class InstitutionDetailsAdmin(admin.ModelAdmin):
 class ServiceLocAdmin(admin.ModelAdmin):
     list_display = ('get_name', 'institutionid')
     inlines = [
-        UrlInline, NameInline,
+        UrlInline, NameInline, AddressInline,
     ]
     list_filter = ('SSID', 'enc_level', 'tag')
+    form = ServiceLocForm
+    readonly_fields = ('locationid',)
 
 
 class RealmInLine(admin.ModelAdmin):
@@ -79,6 +88,7 @@ class CatEnrollmentAdmin(admin.ModelAdmin):
     list_filter = ('cat_instance',)
 
 admin.site.register(Name_i18n)
+admin.site.register(Address_i18n)
 admin.site.register(Contact)
 admin.site.register(InstitutionContactPool)
 admin.site.register(URL_i18n)
