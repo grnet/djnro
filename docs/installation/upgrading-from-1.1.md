@@ -55,10 +55,12 @@ There are two alternative workarounds for this issue:
 * Install the last version (before the split) of `python-social-auth`
 **before** installing DjNRO v1.2 and run migrations:
 
-        # if you are using an older version of pip, you may need to run it
-        # with --index-url=https://pypi.python.org/simple/
-        pip install python-social-auth==0.2.21
-        ./manage.py migrate
+```
+# if you are using an older version of pip, you may need to run it
+# with --index-url=https://pypi.python.org/simple/
+pip install python-social-auth==0.2.21
+./manage.py migrate
+```
 
 * After installing DjNRO v1.2, run `./manage.py shell` and use the
 following commands to get the migrations recorded in the database as
@@ -74,6 +76,13 @@ for m in MigrationRecorder.Migration.objects.filter(app='default'):
 ```
 
 After applying either of these workarounds you can then run `./manage.py migrate`.
+
+## Static files
+
+As with every upgrade, it is necessary to *collect* static files
+from DjNRO and other sources to the folder the HTTP server will serve
+them from. See the particular section in the chapter
+[Installing DjNRO](install.md).
 
 ## Implementation notes: eduroam database version 2 adaptation
 
