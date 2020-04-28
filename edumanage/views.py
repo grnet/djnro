@@ -62,12 +62,14 @@ from edumanage.forms import (
     InstRealmForm,
     UserProfileForm,
     ContactForm,
-    URL_i18nForm,
     MonLocalAuthnParamForm,
     InstRealmMonForm,
     ServiceLocForm,
-    i18nFormSetDefaultLang,
-    URL_i18nFormSet,
+    ServiceLocURL_i18nForm,
+    ServiceLocName_i18nFormSet,
+    InstitutionAddress_i18nFormSet,
+    ServiceLocAddress_i18nFormSet,
+    InstitutionURL_i18nFormSet,
     InstServerForm
 )
 from registration.models import RegistrationProfile
@@ -80,7 +82,6 @@ from django.utils.cache import (
 from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
 from utils.locale import setlocale, compat_strxfrm
-from utils.functional import partialclass
 
 
 # Almost verbatim copy of django.views.i18n.set_language; however:
@@ -224,14 +225,12 @@ def add_institution_details(request, institution_pk):
 
     formset_params = (
         ('url', URL_i18n, {
-            'formset': partialclass(URL_i18nFormSet,
-                                    obj_descr=_('institution URL')),
+            'formset': InstitutionURL_i18nFormSet,
             'min_num': 2,
             'validate_min': True,
         }),
         ('addr', Address_i18n, {
-            'formset': partialclass(i18nFormSetDefaultLang,
-                                    obj_descr=_('institution address')),
+            'formset': InstitutionAddress_i18nFormSet,
             'min_num': 1,
             'validate_min': True,
         }),
@@ -399,17 +398,14 @@ def add_services(request, service_pk):
         )
     formset_params = (
         ('url', URL_i18n, {
-            'form': partialclass(URL_i18nForm,
-                                 valid_urltypes='info'),
+            'form': ServiceLocURL_i18nForm,
         }),
         ('name', Name_i18n, {
-            'formset': partialclass(i18nFormSetDefaultLang,
-                                    obj_descr=_('location name')),
+            'formset': ServiceLocName_i18nFormSet,
             'extra': 1,
         }),
         ('addr', Address_i18n, {
-            'formset': partialclass(i18nFormSetDefaultLang,
-                                    obj_descr=_('institution address')),
+            'formset': ServiceLocAddress_i18nFormSet,
             'min_num': 1,
             'validate_min': True,
         }),
