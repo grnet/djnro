@@ -18,26 +18,75 @@ from edumanage.models import (
     RealmData,
     CatEnrollment
 )
-from edumanage.forms import ServiceLocForm
+from edumanage.forms import (
+    ServiceLocForm,
+    ServiceLocURL_i18nForm,
+    RealmName_i18nFormSet,
+    InstitutionName_i18nFormSet,
+    ServiceLocName_i18nFormSet,
+    RealmAddress_i18nFormSet,
+    InstitutionAddress_i18nFormSet,
+    ServiceLocAddress_i18nFormSet,
+    RealmURL_i18nFormSet,
+    InstitutionURL_i18nFormSet,
+)
 
 from django.contrib.contenttypes import admin as contenttype_admin
 
 
-class NameInline(contenttype_admin.GenericTabularInline):
+class GenericTabularInlineValidateMin(contenttype_admin.GenericTabularInline):
+    def get_formset(self, *args, **kwargs): # pylint: disable=arguments-differ
+        if hasattr(self, 'validate_min'):
+            kwargs['validate_min'] = self.validate_min # pylint: disable=no-member
+        return super(GenericTabularInlineValidateMin, self).get_formset(
+            *args, **kwargs)
+
+class NameInline(GenericTabularInlineValidateMin):
     model = Name_i18n
 
+class RealmNameInline(NameInline):
+    formset = RealmName_i18nFormSet
+    min_num = 1
+    validate_min = True
 
-class UrlInline(contenttype_admin.GenericTabularInline):
+class InstitutionNameInline(RealmNameInline):
+    formset = InstitutionName_i18nFormSet
+
+class ServiceLocNameInline(NameInline):
+    formset = ServiceLocName_i18nFormSet
+
+class UrlInline(GenericTabularInlineValidateMin):
     model = URL_i18n
 
+class RealmUrlInline(UrlInline):
+    formset = RealmURL_i18nFormSet
+    min_num = 2
+    validate_min = True
 
-class AddressInline(contenttype_admin.GenericTabularInline):
+class InstitutionDetailsUrlInline(RealmUrlInline):
+    formset = InstitutionURL_i18nFormSet
+
+class ServiceLocUrlInline(UrlInline):
+    form = ServiceLocURL_i18nForm
+
+class AddressInline(GenericTabularInlineValidateMin):
     model = Address_i18n
+
+class RealmAddressInline(AddressInline):
+    formset = RealmAddress_i18nFormSet
+    min_num = 1
+    validate_min = True
+
+class InstitutionDetailsAddressInline(RealmAddressInline):
+    formset = InstitutionAddress_i18nFormSet
+
+class ServiceLocAddressInline(AddressInline):
+    formset = ServiceLocAddress_i18nFormSet
 
 
 class InstitutionAdmin(admin.ModelAdmin):
     inlines = [
-        NameInline,
+        InstitutionNameInline,
     ]
     list_filter = ('ertype',)
     readonly_fields = ('instid',)
@@ -45,7 +94,7 @@ class InstitutionAdmin(admin.ModelAdmin):
 
 class InstitutionDetailsAdmin(admin.ModelAdmin):
     inlines = [
-        AddressInline, UrlInline,
+        InstitutionDetailsAddressInline, InstitutionDetailsUrlInline,
     ]
     list_filter = ('institution__ertype',)
 
@@ -53,7 +102,7 @@ class InstitutionDetailsAdmin(admin.ModelAdmin):
 class ServiceLocAdmin(admin.ModelAdmin):
     list_display = ('get_name', 'institutionid')
     inlines = [
-        UrlInline, NameInline, AddressInline,
+        ServiceLocUrlInline, ServiceLocNameInline, ServiceLocAddressInline,
     ]
     list_filter = ('SSID', 'enc_level', 'tag')
     form = ServiceLocForm
@@ -62,7 +111,7 @@ class ServiceLocAdmin(admin.ModelAdmin):
 
 class RealmInLine(admin.ModelAdmin):
     inlines = [
-        UrlInline, NameInline
+        RealmUrlInline, RealmNameInline, RealmAddressInline,
     ]
 
 

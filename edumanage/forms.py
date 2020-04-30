@@ -59,7 +59,8 @@ class URL_i18nForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        valid_urltypes = kwargs.pop('valid_urltypes', [])
+        valid_urltypes = getattr(self, 'valid_urltypes',
+                                 kwargs.pop('valid_urltypes', []))
         super(URL_i18nForm, self).__init__(*args, **kwargs)
         if not valid_urltypes:
             return
@@ -72,6 +73,9 @@ class URL_i18nForm(forms.ModelForm):
         new_choices = tuple(choice for choice in choices
                             if not choice[0] or choice[0] in valid_urltypes)
         urltype_field.choices = urltype_field.widget.choices = new_choices
+
+class ServiceLocURL_i18nForm(URL_i18nForm):
+    valid_urltypes = 'info'
 
 
 class MonLocalAuthnParamForm(forms.ModelForm):
@@ -296,6 +300,26 @@ class i18nFormSetDefaultLang(i18nFormSet): # pylint: disable=invalid-name
     )
 
 
+class RealmName_i18nFormSet(i18nFormSetDefaultLang): # pylint: disable=invalid-name
+    obj_descr = _('realm name')
+
+class InstitutionName_i18nFormSet(i18nFormSetDefaultLang): # pylint: disable=invalid-name
+    obj_descr = _('institution name')
+
+class ServiceLocName_i18nFormSet(i18nFormSetDefaultLang): # pylint: disable=invalid-name
+    obj_descr = _('location name')
+
+
+class RealmAddress_i18nFormSet(i18nFormSetDefaultLang): # pylint: disable=invalid-name
+    obj_descr = _('realm address')
+
+class InstitutionAddress_i18nFormSet(i18nFormSetDefaultLang): # pylint: disable=invalid-name
+    obj_descr = _('institution address')
+
+class ServiceLocAddress_i18nFormSet(i18nFormSetDefaultLang): # pylint: disable=invalid-name
+    obj_descr = _('location address')
+
+
 class URL_i18nFormSet(i18nFormSet): # pylint: disable=invalid-name
     required_value_sets = tuple(
         (
@@ -306,3 +330,10 @@ class URL_i18nFormSet(i18nFormSet): # pylint: disable=invalid-name
              urltype),
         ) for urltype in URL_i18n.URLTYPES
     )
+
+
+class RealmURL_i18nFormSet(URL_i18nFormSet): # pylint: disable=invalid-name
+    obj_descr = _('realm URL')
+
+class InstitutionURL_i18nFormSet(URL_i18nFormSet): # pylint: disable=invalid-name
+    obj_descr = _('institution URL')
