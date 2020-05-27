@@ -54,6 +54,7 @@ from edumanage.models import (
     Coordinates,
     ERTYPES,
     ERTYPE_ROLES,
+    PRODUCTION_STATES,
 )
 from .models import get_ertype_string
 from accounts.models import UserProfile
@@ -1669,7 +1670,8 @@ def api(request):
 
 @never_cache
 def participants(request):
-    institutions = Institution.objects.filter(institutiondetails__isnull=False).\
+    institutions = Institution.objects.filter(stage=PRODUCTION_STATES.ACTIVE,
+                                              institutiondetails__isnull=False).\
       select_related('institutiondetails')
     cat_instance = 'production'
     dets = []
