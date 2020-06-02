@@ -2786,6 +2786,9 @@ def to_xml(ele, encoding="UTF-8"):
     with specified *encoding*.'''
     # on python3, we need to get a string, not bytestring - so if requesting unicode, request it as "unicode"
     xml = ElementTree.tostring(ele, "unicode" if six.PY3 and encoding.lower()=="utf-8" else encoding)
+    # pretty print the XML to make reporting from the OT more meaningful
+    from xml.dom import minidom
+    xml = minidom.parseString(xml).toprettyxml(indent = "  ")
     return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
 
 
