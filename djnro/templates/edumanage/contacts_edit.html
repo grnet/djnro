@@ -40,7 +40,23 @@
 			{% endif %} <span class="help-block"> {{ form.phone.help_text }}</span>
 		</div>
 		</div>
-	<div class="control-group">
+		<div class="control-group {% if form.type.errors %} error {% endif %}">
+		<label class="control-label" for="id_type"><b>{% trans "Type" %}</b></label>
+		<div class="controls">
+			{{ form.type }}
+			{% if form.type.errors %} <div class="alert-danger"> {{ form.type.errors|join_with_linebreaks }} </div>
+			{% endif %} <span class="help-block"> {{ form.type.help_text }}</span>
+		</div>
+		</div>
+		<div class="control-group {% if form.privacy.errors %} error {% endif %}">
+		<label class="control-label" for="id_privacy"><b>{% trans "Privacy" %}</b></label>
+		<div class="controls">
+			{{ form.privacy }}
+			{% if form.privacy.errors %} <div class="alert-danger"> {{ form.privacy.errors|join_with_linebreaks }} </div>
+			{% endif %} <span class="help-block"> {{ form.privacy.help_text }}</span>
+		</div>
+		</div>
+		<div class="control-group">
 		<div class="controls">
 			<button type="submit" id="applybutton" value="Apply" class="btn btn-primary">
 			{% trans "Apply" %}</button>
