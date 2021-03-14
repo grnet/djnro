@@ -1867,8 +1867,14 @@ def closest(request):
             pointlat = i['lat']
             pointtext = i['text']
             plainname = i['name']
-            dLat = rad(float(pointlat) - float(lat))
-            dLong = rad(float(pointlng) - float(lng))
+
+            try:
+                dLat = rad(float(pointlat) - float(lat))
+                dLong = rad(float(pointlng) - float(lng))
+
+            except ValueError:
+                continue # shrug: parsing error
+
             a = math.sin(dLat / 2) * math.sin(dLat / 2) + math.cos(rad(lat)) *\
                 math.cos(rad(float(pointlat))) * math.sin(dLong / 2) *\
                 math.sin(dLong / 2)
