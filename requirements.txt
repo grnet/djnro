@@ -1,6 +1,6 @@
 Django>=1.11,<2.0
 argparse>=1.2.1
-django-registration==2.0.4
+django-registration==3.1.2
 django-tinymce>=2.3.0,<3.0a
 ipaddress==1.0.22
 social-auth-app-django>=3.1.0,<4.0
