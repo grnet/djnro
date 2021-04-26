@@ -138,11 +138,6 @@ def manage_login_front(request):
             request,
             'edumanage/welcome_manage.html'
         )
-        # return render(
-        #     request,
-        #     'edumanage/welcome_manage.html',
-        #     context=base_response(request)
-        # )
     except AttributeError:
         return render(
             request,
@@ -174,11 +169,6 @@ def manage(request):
             request,
             'edumanage/welcome.html'
         )
-        # return render(
-        #     request,
-        #     'edumanage/welcome.html',
-        #     context=base_response(request)
-        # )
     services = ServiceLoc.objects.filter(institutionid=inst)
     services_list.extend([s for s in services])
     servers = InstServer.objects.filter(instid=inst)
@@ -191,15 +181,6 @@ def manage(request):
             'servers': servers_list,
         }
     )
-    # return render(
-    #     request,
-    #     'edumanage/welcome.html',
-    #     context=merge_dicts({
-    #         'institution': inst,
-    #         'services': services_list,
-    #         'servers': servers_list,
-    #     }, base_response(request))
-    # )
 
 
 @login_required
@@ -216,13 +197,6 @@ def institutions(request):
         request,
         'edumanage/institution.html'
     )
-    # return render(
-    #     request,
-    #     'edumanage/institution.html',
-    #     context=merge_dicts({
-    #         'institution': inst,
-    #     }, base_response(request))
-    # )
 
 
 @login_required
@@ -297,16 +271,6 @@ def add_institution_details(request, institution_pk):
                 'addrs_form': formsets['addr']
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/institution_edit.html',
-        #     context=merge_dicts({
-        #         'institution': inst,
-        #         'form': form,
-        #         'urls_form': formsets['url'],
-        #         'addrs_form': formsets['addr']
-        #     }, base_response(request))
-        # )
     if request.method == 'POST':
         request_data = request.POST.copy()
         form = InstDetailsForm(request_data, **form_kwargs)
@@ -337,16 +301,6 @@ def add_institution_details(request, institution_pk):
                 'addrs_form': formsets['addr']
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/institution_edit.html',
-        #     context=merge_dicts({
-        #         'institution': inst,
-        #         'form': form,
-        #         'urls_form': formsets['url'],
-        #         'addrs_form': formsets['addr']
-        #     }, base_response(request))
-        # )
 
 
 @login_required
@@ -373,11 +327,6 @@ def services(request, service_pk):
             request,
             'edumanage/services.html'
         )
-        # return render(
-        #     request,
-        #     'edumanage/services.html',
-        #     context=merge_dicts({'institution': inst}, base_response(request))
-        # )
     try:
         services = ServiceLoc.objects.filter(institutionid=inst)
     except ServiceLoc.DoesNotExist:
@@ -400,14 +349,6 @@ def services(request, service_pk):
                 'service': services,
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/service_details.html',
-        #     context=merge_dicts({
-        #         'institution': inst,
-        #         'service': services,
-        #     }, base_response(request))
-        # )
 
     return render_with_base_ctx(
         request,
@@ -416,14 +357,6 @@ def services(request, service_pk):
             'services': services,
         }
     )
-    # return render(
-    #     request,
-    #     'edumanage/services.html',
-    #     context=merge_dicts({
-    #         'institution': inst,
-    #         'services': services,
-    #     }, base_response(request))
-    # )
 
 
 @login_required
@@ -453,11 +386,6 @@ def add_services(request, service_pk):
             'edumanage/services_edit.html',
             context={'edit': edit}
         )
-        # return render(
-        #     request,
-        #     'edumanage/services_edit.html',
-        #     context=merge_dicts({'edit': edit}, base_response(request))
-        # )
     formset_params = (
         ('url', URL_i18n, {
             'form': ServiceLocURL_i18nForm,
@@ -521,17 +449,6 @@ def add_services(request, service_pk):
                 "edit": edit
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/services_edit.html',
-        #     context=merge_dicts({
-        #         'form': form,
-        #         'services_form': formsets['name'],
-        #         'urls_form': formsets['url'],
-        #         'addrs_form': formsets['addr'],
-        #         "edit": edit
-        #     }, base_response(request))
-        # )
     if request.method == 'POST':
         request_data = request.POST.copy()
         form = ServiceLocForm(request_data, **form_kwargs)
@@ -567,18 +484,6 @@ def add_services(request, service_pk):
                 'edit': edit
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/services_edit.html',
-        #     context=merge_dicts({
-        #         'institution': inst,
-        #         'form': form,
-        #         'services_form': formsets['name'],
-        #         'urls_form': formsets['url'],
-        #         'addrs_form': formsets['addr'],
-        #         'edit': edit
-        #     }, base_response(request))
-        # )
 
 
 @login_required
@@ -636,14 +541,6 @@ def servers(request, server_pk):
                 'server': servers,
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/server_details.html',
-        #     context=merge_dicts({
-        #         'institution': inst,
-        #         'server': servers,
-        #     }, base_response(request))
-        # )
     return render_with_base_ctx(
         request,
         'edumanage/servers.html',
@@ -651,13 +548,6 @@ def servers(request, server_pk):
             'servers': servers
         }
     )
-    # return render(
-    #     request,
-    #     'edumanage/servers.html',
-    #     context=merge_dicts({
-    #         'servers': servers
-    #     }, base_response(request))
-    # )
 
 
 @login_required
@@ -701,14 +591,6 @@ def add_server(request, server_pk):
                 'edit': edit
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/servers_edit.html',
-        #     context=merge_dicts({
-        #         'form': form,
-        #         'edit': edit
-        #     }, base_response(request))
-        # )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
@@ -741,15 +623,6 @@ def add_server(request, server_pk):
                 'edit': edit
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/servers_edit.html',
-        #     context=merge_dicts({
-        #         'institution': inst,
-        #         'form': form,
-        #         'edit': edit
-        #     }, base_response(request))
-        # )
 
 
 @login_required
@@ -779,11 +652,6 @@ def cat_enroll(request):
             'edumanage/catenroll.html',
             context={'status': False}
         )
-        # return render(
-        #     request,
-        #     'edumanage/catenroll.html',
-        #     context=merge_dicts({'status': False}, base_response(request))
-        # )
     if request.method == "GET":
         current_enrollments = inst.catenrollment_set.all()
         current_enrollments_list = current_enrollments.values_list(
@@ -804,11 +672,6 @@ def cat_enroll(request):
                 'edumanage/catenroll.html',
                 context={'status': False}
             )
-            # return render(
-            #     request,
-            #     'edumanage/catenroll.html',
-            #     context=merge_dicts({'status': False}, base_response(request))
-            # )
         return render_with_base_ctx(
             request,
             'edumanage/catenroll.html',
@@ -818,15 +681,6 @@ def cat_enroll(request):
                 'cat_instances': available_enrollments
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/catenroll.html',
-        #     context=merge_dicts({
-        #         'status': True,
-        #         'current_enrollments': current_enrollments,
-        #         'cat_instances': available_enrollments
-        #     }, base_response(request))
-        # )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         instance = request_data['catinstance']
@@ -896,17 +750,6 @@ def cat_enroll(request):
                 'inst_uid': inst_uid
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/catenroll.html',
-        #     context=merge_dicts({
-        #         'status': True,
-        #         'response_status': status,
-        #         'response': response,
-        #         'cat_url': cat_url,
-        #         'inst_uid': inst_uid
-        #     }, base_response(request))
-        # )
 
 
 @login_required
@@ -961,11 +804,6 @@ def realms(request):
         'edumanage/realms.html',
         context={'realms': realms}
     )
-    # return render(
-    #     request,
-    #     'edumanage/realms.html',
-    #     context=merge_dicts({'realms': realms}, base_response(request))
-    # )
 
 
 @login_required
@@ -991,11 +829,6 @@ def add_realm(request, realm_pk):
             'edumanage/realms_edit.html',
             context={'edit': edit}
         )
-        # return render(
-        #     request,
-        #     'edumanage/realms_edit.html',
-        #     context=merge_dicts({'edit': edit}, base_response(request))
-        # )
     if request.method == "GET":
 
         # Determine add or edit
@@ -1027,11 +860,6 @@ def add_realm(request, realm_pk):
             'edumanage/realms_edit.html',
             context={'form': form, 'edit': edit}
         )
-        # return render(
-        #     request,
-        #     'edumanage/realms_edit.html',
-        #     context=merge_dicts({'form': form, 'edit': edit}, base_response(request))
-        # )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
@@ -1066,11 +894,6 @@ def add_realm(request, realm_pk):
             'edumanage/realms_edit.html',
             context={'form': form, 'edit': edit}
         )
-        # return render(
-        #     request,
-        #     'edumanage/realms_edit.html',
-        #     context=merge_dicts({'institution': inst, 'form': form, 'edit': edit}, base_response(request))
-        # )
 
 
 @login_required
@@ -1129,11 +952,6 @@ def contacts(request):
         'edumanage/contacts.html',
         context={'contacts': contacts}
     )
-    # return render(
-    #     request,
-    #     'edumanage/contacts.html',
-    #     context=merge_dicts({'contacts': contacts}, base_response(request))
-    # )
 
 
 @login_required
@@ -1181,14 +999,6 @@ def add_contact(request, contact_pk):
                 'edit': edit
             }
         )
-        # return render(
-        #     request,
-        #     'edumanage/contacts_edit.html',
-        #     context=merge_dicts({
-        #         'form': form,
-        #         'edit': edit
-        #     }, base_response(request))
-        # )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
@@ -1223,11 +1033,6 @@ def add_contact(request, contact_pk):
             'edumanage/contacts_edit.html',
             context={'form': form, "edit": edit}
         )
-        # return render(
-        #     request,
-        #     'edumanage/contacts_edit.html',
-        #     context=merge_dicts({'form': form, "edit": edit}, base_response(request))
-        # )
 
 
 @login_required
@@ -1307,11 +1112,6 @@ def instrealmmon(request):
         'edumanage/instrealmmons.html',
         context={'realms': instrealmmons}
     )
-    # return render(
-    #     request,
-    #     'edumanage/instrealmmons.html',
-    #     context=merge_dicts({'realms': instrealmmons}, base_response(request))
-    # )
 
 
 @login_required
@@ -1360,11 +1160,6 @@ def add_instrealmmon(request, instrealmmon_pk):
             'edumanage/instrealmmon_edit.html',
             context={'form': form, 'edit': edit}
         )
-        # return render(
-        #     request,
-        #     'edumanage/instrealmmon_edit.html',
-        #     context=merge_dicts({'form': form, 'edit': edit}, base_response(request))
-        # )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
@@ -1398,11 +1193,6 @@ def add_instrealmmon(request, instrealmmon_pk):
             'edumanage/instrealmmon_edit.html',
             context={'form': form, "edit": edit}
         )
-        # return render(
-        #     request,
-        #     'edumanage/instrealmmon_edit.html',
-        #     context=merge_dicts({'form': form, "edit": edit}, base_response(request))
-        # )
 
 
 @login_required
@@ -1489,11 +1279,6 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
             'edumanage/monlocauthpar_edit.html',
             context={'form': form,"edit" : edit, "realm":instrealmmon}
         )
-        # return render(
-        #     request,
-        #     'edumanage/monlocauthpar_edit.html',
-        #     context=merge_dicts({'form': form,"edit" : edit, "realm":instrealmmon}, base_response(request))
-        # )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         try:
@@ -1537,11 +1322,6 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
             'edumanage/monlocauthpar_edit.html',
             context={'form': form, "edit": edit, "realm":instrealmmon}
         )
-        # return render(
-        #     request,
-        #     'edumanage/monlocauthpar_edit.html',
-        #     context=merge_dicts({'form': form, "edit": edit, "realm":instrealmmon}, base_response(request))
-        # )
 
 
 @login_required
@@ -1590,11 +1370,6 @@ def adduser(request):
             'edumanage/add_user.html',
             context={'form': form}
         )
-        # return render(
-        #     request,
-        #     'edumanage/add_user.html',
-        #     context=merge_dicts({'form': form}, base_response(request))
-        # )
     elif request.method == 'POST':
         request_data = request.POST.copy()
         form = ContactForm(request_data)
@@ -1618,11 +1393,6 @@ def adduser(request):
                 'edumanage/add_user.html',
                 context={'form': form}
             )
-            # return render(
-            #     request,
-            #     'edumanage/add_user.html',
-            #     context=merge_dicts({'form': form}, base_response(request))
-            # )
 
 
 def base_response(request):
@@ -3024,7 +2794,3 @@ def settings_dict_get(setting, *keys, **opts):
     if dct == {}:
         dct = opts.get('default', None)
     return dct
-
-# utility function to merge two dictionaries
-def merge_dicts(dict1, dict2):
-    return dict(itertools.chain(dict1.items(), dict2.items()))
