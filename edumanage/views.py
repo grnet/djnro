@@ -134,10 +134,9 @@ def manage_login_front(request):
     try:
         profile = user.userprofile
     except UserProfile.DoesNotExist:
-        return render(
+        return render_with_base_ctx(
             request,
-            'edumanage/welcome_manage.html',
-            context=base_response(request)
+            'edumanage/welcome_manage.html'
         )
     except AttributeError:
         return render(
@@ -166,23 +165,21 @@ def manage(request):
         profile = user.userprofile
         inst = profile.institution
     except UserProfile.DoesNotExist:
-        return render(
+        return render_with_base_ctx(
             request,
-            'edumanage/welcome.html',
-            context=base_response(request)
+            'edumanage/welcome.html'
         )
     services = ServiceLoc.objects.filter(institutionid=inst)
     services_list.extend([s for s in services])
     servers = InstServer.objects.filter(instid=inst)
     servers_list.extend([s for s in servers])
-    return render(
+    return render_with_base_ctx(
         request,
         'edumanage/welcome.html',
-        context=merge_dicts({
-            'institution': inst,
+        context={
             'services': services_list,
             'servers': servers_list,
-        }, base_response(request))
+        }
     )
 
 
@@ -196,12 +193,9 @@ def institutions(request):
         inst = profile.institution
     except UserProfile.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    return render(
+    return render_with_base_ctx(
         request,
-        'edumanage/institution.html',
-        context=merge_dicts({
-            'institution': inst,
-        }, base_response(request))
+        'edumanage/institution.html'
     )
 
 
@@ -268,15 +262,14 @@ def add_institution_details(request, institution_pk):
             formsets[form_key] = generic_inlineformset_factory(
                 model, **fsf_kwargs
             )(**fs_kwargs)
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/institution_edit.html',
-            context=merge_dicts({
-                'institution': inst,
+            context={
                 'form': form,
                 'urls_form': formsets['url'],
                 'addrs_form': formsets['addr']
-            }, base_response(request))
+            }
         )
     if request.method == 'POST':
         request_data = request.POST.copy()
@@ -299,15 +292,14 @@ def add_institution_details(request, institution_pk):
             return HttpResponseRedirect(reverse("institutions"))
         # invalid form data, render page with errors
         form.fields.update(form_fields)
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/institution_edit.html',
-            context=merge_dicts({
-                'institution': inst,
+            context={
                 'form': form,
                 'urls_form': formsets['url'],
                 'addrs_form': formsets['addr']
-            }, base_response(request))
+            }
         )
 
 
@@ -331,10 +323,9 @@ def services(request, service_pk):
             messages.ERROR,
             'Cannot add/edit Location. Your institution should be either SP or IdP/SP'
         )
-        return render(
+        return render_with_base_ctx(
             request,
-            'edumanage/services.html',
-            context=merge_dicts({'institution': inst}, base_response(request))
+            'edumanage/services.html'
         )
     try:
         services = ServiceLoc.objects.filter(institutionid=inst)
@@ -351,22 +342,20 @@ def services(request, service_pk):
                 'You have no rights to view this location'
             )
             return HttpResponseRedirect(reverse("services"))
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/service_details.html',
-            context=merge_dicts({
-                'institution': inst,
+            context={
                 'service': services,
-            }, base_response(request))
+            }
         )
 
-    return render(
+    return render_with_base_ctx(
         request,
         'edumanage/services.html',
-        context=merge_dicts({
-            'institution': inst,
+        context={
             'services': services,
-        }, base_response(request))
+        }
     )
 
 
@@ -392,10 +381,10 @@ def add_services(request, service_pk):
             messages.ERROR,
             'Cannot add/edit Service. Your institution should be either SP or IdP/SP'
         )
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/services_edit.html',
-            context=merge_dicts({'edit': edit}, base_response(request))
+            context={'edit': edit}
         )
     formset_params = (
         ('url', URL_i18n, {
@@ -449,16 +438,16 @@ def add_services(request, service_pk):
                 model, **fsf_kwargs)(**fs_kwargs)
         if service:
             edit = True
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/services_edit.html',
-            context=merge_dicts({
+            context={
                 'form': form,
                 'services_form': formsets['name'],
                 'urls_form': formsets['url'],
                 'addrs_form': formsets['addr'],
                 "edit": edit
-            }, base_response(request))
+            }
         )
     if request.method == 'POST':
         request_data = request.POST.copy()
@@ -484,17 +473,16 @@ def add_services(request, service_pk):
         form.fields.update(form_fields)
         if service:
             edit = True
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/services_edit.html',
-            context=merge_dicts({
-                'institution': inst,
+            context={
                 'form': form,
                 'services_form': formsets['name'],
                 'urls_form': formsets['url'],
                 'addrs_form': formsets['addr'],
                 'edit': edit
-            }, base_response(request))
+            }
         )
 
 
@@ -546,20 +534,19 @@ def servers(request, server_pk):
         servers = InstServer.objects.filter(instid=inst)
     if server_pk:
         servers = servers.get(pk=server_pk)
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/server_details.html',
-            context=merge_dicts({
-                'institution': inst,
+            context={
                 'server': servers,
-            }, base_response(request))
+            }
         )
-    return render(
+    return render_with_base_ctx(
         request,
         'edumanage/servers.html',
-        context=merge_dicts({
+        context={
             'servers': servers
-        }, base_response(request))
+        }
     )
 
 
@@ -596,13 +583,13 @@ def add_server(request, server_pk):
         if server:
             edit = True
 
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/servers_edit.html',
-            context=merge_dicts({
+            context={
                 'form': form,
                 'edit': edit
-            }, base_response(request))
+            }
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -628,14 +615,13 @@ def add_server(request, server_pk):
             return HttpResponseRedirect(reverse("servers"))
         if server:
             edit = True
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/servers_edit.html',
-            context=merge_dicts({
-                'institution': inst,
+            context={
                 'form': form,
                 'edit': edit
-            }, base_response(request))
+            }
         )
 
 
@@ -661,10 +647,10 @@ def cat_enroll(request):
             messages.ERROR,
             'Cannot add/edit Enrollments. Your institution should be either IdP or IdP/SP'
         )
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/catenroll.html',
-            context=merge_dicts({'status': False}, base_response(request))
+            context={'status': False}
         )
     if request.method == "GET":
         current_enrollments = inst.catenrollment_set.all()
@@ -681,19 +667,19 @@ def cat_enroll(request):
                 messages.ERROR,
                 'There are no available CAT instances for your institution enrollment'
             )
-            return render(
+            return render_with_base_ctx(
                 request,
                 'edumanage/catenroll.html',
-                context=merge_dicts({'status': False}, base_response(request))
+                context={'status': False}
             )
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/catenroll.html',
-            context=merge_dicts({
+            context={
                 'status': True,
                 'current_enrollments': current_enrollments,
                 'cat_instances': available_enrollments
-            }, base_response(request))
+            }
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -753,16 +739,16 @@ def cat_enroll(request):
         else:
             status = enroll.status
             response = enroll.response
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/catenroll.html',
-            context=merge_dicts({
+            context={
                 'status': True,
                 'response_status': status,
                 'response': response,
                 'cat_url': cat_url,
                 'inst_uid': inst_uid
-            }, base_response(request))
+            }
         )
 
 
@@ -813,10 +799,10 @@ def realms(request):
             messages.ERROR,
             'Cannot add/edit Realms. Your institution should be either IdP or IdP/SP'
         )
-    return render(
+    return render_with_base_ctx(
         request,
         'edumanage/realms.html',
-        context=merge_dicts({'realms': realms}, base_response(request))
+        context={'realms': realms}
     )
 
 
@@ -838,10 +824,10 @@ def add_realm(request, realm_pk):
         return HttpResponseRedirect(reverse("manage"))
     if inst.ertype not in ERTYPE_ROLES.IDP:
         messages.add_message(request, messages.ERROR, 'Cannot add/edit Realm. Your institution should be either IdP or IdP/SP')
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/realms_edit.html',
-            context=merge_dicts({'edit': edit}, base_response(request))
+            context={'edit': edit}
         )
     if request.method == "GET":
 
@@ -869,10 +855,10 @@ def add_realm(request, realm_pk):
         )
         if realm:
             edit = True
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/realms_edit.html',
-            context=merge_dicts({'form': form, 'edit': edit}, base_response(request))
+            context={'form': form, 'edit': edit}
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -903,10 +889,10 @@ def add_realm(request, realm_pk):
             )
         if realm:
             edit = True
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/realms_edit.html',
-            context=merge_dicts({'institution': inst, 'form': form, 'edit': edit}, base_response(request))
+            context={'form': form, 'edit': edit}
         )
 
 
@@ -961,10 +947,10 @@ def contacts(request):
             )
         ])
         contacts = Contact.objects.filter(pk__in=instcontacts)
-    return render(
+    return render_with_base_ctx(
         request,
         'edumanage/contacts.html',
-        context=merge_dicts({'contacts': contacts}, base_response(request))
+        context={'contacts': contacts}
     )
 
 
@@ -1005,13 +991,13 @@ def add_contact(request, contact_pk):
                 return HttpResponseRedirect(reverse("contacts"))
         if contact:
             edit = True
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/contacts_edit.html',
-            context=merge_dicts({
+            context={
                 'form': form,
                 'edit': edit
-            }, base_response(request))
+            }
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -1042,10 +1028,10 @@ def add_contact(request, contact_pk):
             return HttpResponseRedirect(reverse("contacts"))
         if contact:
             edit = True
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/contacts_edit.html',
-            context=merge_dicts({'form': form, "edit": edit}, base_response(request))
+            context={'form': form, "edit": edit}
         )
 
 
@@ -1121,10 +1107,10 @@ def instrealmmon(request):
         return HttpResponseRedirect(reverse("manage"))
     if inst:
         instrealmmons = InstRealmMon.objects.filter(realm__instid=inst)
-    return render(
+    return render_with_base_ctx(
         request,
         'edumanage/instrealmmons.html',
-        context=merge_dicts({'realms': instrealmmons}, base_response(request))
+        context={'realms': instrealmmons}
     )
 
 
@@ -1169,10 +1155,10 @@ def add_instrealmmon(request, instrealmmon_pk):
             ),
             empty_label=None
         )
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/instrealmmon_edit.html',
-            context=merge_dicts({'form': form, 'edit': edit}, base_response(request))
+            context={'form': form, 'edit': edit}
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -1202,10 +1188,10 @@ def add_instrealmmon(request, instrealmmon_pk):
             ),
             empty_label=None
         )
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/instrealmmon_edit.html',
-            context=merge_dicts({'form': form, "edit": edit}, base_response(request))
+            context={'form': form, "edit": edit}
         )
 
 
@@ -1288,10 +1274,10 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
             queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk),
             empty_label=None
         )
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/monlocauthpar_edit.html',
-            context=merge_dicts({'form': form,"edit" : edit, "realm":instrealmmon}, base_response(request))
+            context={'form': form,"edit" : edit, "realm":instrealmmon}
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -1331,10 +1317,10 @@ def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
             queryset=InstRealmMon.objects.filter(pk=instrealmmon.pk),
             empty_label=None
         )
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/monlocauthpar_edit.html',
-            context=merge_dicts({'form': form, "edit": edit, "realm":instrealmmon}, base_response(request))
+            context={'form': form, "edit": edit, "realm":instrealmmon}
         )
 
 
@@ -1379,10 +1365,10 @@ def adduser(request):
 
     if request.method == "GET":
         form = ContactForm()
-        return render(
+        return render_with_base_ctx(
             request,
             'edumanage/add_user.html',
-            context=merge_dicts({'form': form}, base_response(request))
+            context={'form': form}
         )
     elif request.method == 'POST':
         request_data = request.POST.copy()
@@ -1402,15 +1388,13 @@ def adduser(request):
                 content_type='application/json'
             )
         else:
-            return render(
+            return render_with_base_ctx(
                 request,
                 'edumanage/add_user.html',
-                context=merge_dicts({'form': form}, base_response(request))
+                context={'form': form}
             )
 
 
-@login_required
-@social_active_required
 def base_response(request):
     user = request.user
     inst = []
@@ -1464,6 +1448,13 @@ def base_response(request):
         'ERTYPES': ERTYPES,
         'ERTYPE_ROLES': ERTYPE_ROLES,
     }
+
+
+def render_with_base_ctx(request, *args, **kwargs):
+    ctx = base_response(request)
+    ctx.update(kwargs.get("context", {}))
+    kwargs['context'] = ctx
+    return render(request, *args, **kwargs)
 
 
 @login_required
@@ -2803,7 +2794,3 @@ def settings_dict_get(setting, *keys, **opts):
     if dct == {}:
         dct = opts.get('default', None)
     return dct
-
-# utility function to merge two dictionaries
-def merge_dicts(dict1, dict2):
-    return dict(itertools.chain(dict1.items(), dict2.items()))
