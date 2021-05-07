@@ -6,6 +6,12 @@
 {% block management_content %}
 <h4>{% if edit %}{{realm.realm}} {% trans 'parameters' %} ({% trans "edit" %}){% else %}{% trans "Add Monitored Realm Parameters" %} ({{realm.realm}}){% endif %}</h4>
 <hr>
+<div class="alert alert-info alert-dismissible" role="alert">
+Changes you make here will be automatically deployed to our <a class="alert-link" href="/status/technical/">monitoring system</a> within an hour, and will immediately update your <a class="alert-link" href="/faq/testing/#sp">test credentials</a>.
+</div>
+<div class="alert alert-warning alert-dismissible" role="alert">
+Note: The account you provide here only needs to be able to authenticate for eduroam and <strong>should not</strong> have privileged access to any other enterprise system.
+</div>
 <form method="POST" class="">
 	{% csrf_token %}
 	{% if form.non_field_errors %}
@@ -44,7 +50,7 @@
 			{% endif %} <span class="help-block"> {{ form.username.help_text }}</span>
 		</div>
 	</div>
-	<div class="control-group {% if form.passwp.errors %} error {% endif %}">
+	<div class="form-group control-group {% if form.passwp.errors %} error {% endif %}">
 		<label class="control-label" for="id_passwp"><b>{% trans "Password" %}</b></label>
 		<div class="controls">
 			<input type="password" maxlength="80" name="passwp" id="id_passwp" {% if edit %}value='{{form.instance.passwp}}'{% endif %} {% if form.data.passwp %}value='{{form.data.passwp}}'{% endif %}>
@@ -64,9 +70,14 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{% static 'js/showpass.js' %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" integrity="sha512-TZlMGFY9xKj38t/5m2FzJ+RM/aD5alMHDe26p0mYUMoCF5G7ibfHUQILq0qQPV3wlsnCwL+TPRNK4vIWGLOkUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pwstrength-bootstrap/3.1.1/pwstrength-bootstrap.min.js" integrity="sha512-VMd5IUFVM9MRhGzKSpKVZu/Rm4Wm3i8dC6eYqEtOcTaG1vn5RmwUWFiYfh4nagbeQRhQuSnHULnZ9B+st2rZ0g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+	$('#id_passwp').pwstrength({ common: { minChar: 12, maxChar: 64, usernameField: '#id_username', zxcvbn: true }, ui: {showProgressBar: false, showStatus: true, bootstrap3:true} });
 	$('#id_passwp').showPassword();
+	$('#id_passwp').attr('required',1);
+	$('.password-verdict').addClass('help-block');
 });
 </script>
 {% endblock %}
