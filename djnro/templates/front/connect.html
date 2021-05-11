@@ -377,12 +377,21 @@
     return function($, ConfigurationAssistantTool, ConfigurationAssistantToolUI, NProgress) {
 	var overrides = {
 	    exthandlers: {
+		cidp_bind_selector: function() {
+		    var $el = $(this),
+			_cidp = $el.data('_catidp');
+		    $.when(_cidp.getKeywords()).then(function(ret){
+			$el.data('_catidp_keywords', ret);
+		    });
+		    return this;
+		},
 		cidp_unbind_selector: function() {
 		    var $el = $(this),
 			idu_href = $el.data('idu');
 		    if (idu_href) {
 			$el.attr('href', idu_href);
 		    }
+		    $el.removeData('_catidp_keywords');
 		    return this;
 		},
 		modal_title: function(title) {

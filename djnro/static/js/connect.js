@@ -39,17 +39,24 @@
 	    var elem = this,
 		$title_elem = $('.title', elem),
 		title = $title_elem.text().trim().toLowerCase(),
+		$a_elem = $('a[data-catidp]', elem),
 		oper_name = ($title_elem.data('on') || '').trim()
-		.toLowerCase();
+		.toLowerCase(),
+		keywords = ($a_elem.data('_catidp_keywords') || []).map(function(kw){
+			return kw.toLowerCase();
+		});
 	    if (have_appear) {
 		prev[$(this).hasClass('match') ? 'shown' : 'hidden'] += 1;
 	    }
-	    if (needles.reduce(function(carry, item) {
-		var item_lc = item.toLowerCase();
-		return (carry &&
-			(item.length == 0 ||
-			 title.indexOf(item_lc) > -1 ||
-			 oper_name.indexOf(item_lc) > -1));
+	    if (needles.reduce(function(acc_ndl, cur_ndl) {
+		var cur_ndl_lc = cur_ndl.toLowerCase();
+		return acc_ndl &&
+			(cur_ndl.length == 0 ||
+			 (title.indexOf(cur_ndl_lc) > -1 ||
+			  oper_name.indexOf(cur_ndl_lc) > -1) ||
+			 keywords.some(function(kw) {
+				 return kw.length == 0 || kw.indexOf(cur_ndl_lc) > -1;
+			 }));
 	    }, true)) {
 		// $(this).show();
 		$(this).addClass('match');
