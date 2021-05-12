@@ -204,6 +204,14 @@
 		},
 		from: {}
 	    },
+	    sendFedLogo:
+	    {
+		to:
+		{
+		    id: 'idp'
+		},
+		from: {}
+	    },
 	    deviceInfo:
 	    {
 		to:
@@ -365,6 +373,7 @@
 	    });
 	    break;
 	case 'sendLogoUri':
+	case 'sendFedLogoUri':
 	    qro.action = qro.action.replace(/Uri$/, '');
 	    directUri = [ep, getQueryString(qro)].join('?');
 	    return $.when().then(function(){
@@ -372,6 +381,7 @@
 	    });
 	    break;
 	case 'sendLogo':
+	case 'sendFedLogo':
 	    // delete dtype;
 	    return $.when().then(function(){
 		return $('<img>').attr('src', directUri);
@@ -850,6 +860,20 @@
 	}
 	return this._qry2args(act, 'id', idpid, lang);
     }
+    CAT.prototype.sendFedLogo = function(countryid, dryrun) {
+	var act = 'sendFedLogo';
+	if (!!dryrun) {
+	    act += 'Uri';
+	}
+	return this._qry2args(act, 'federation', countryid);
+    }
+    CAT.prototype.sendFedLogoByID = function(idpid, dryrun) {
+	var act = 'sendFedLogo';
+	if (!!dryrun) {
+	    act += 'Uri';
+	}
+	return this._qry2args(act, 'id', idpid);
+    }
     CAT.prototype.locateUser = function() {
 	return this._qry0args('locateUser');
     }
@@ -935,12 +959,42 @@
 	    this._getProp(this.getRaw, 'icon')
 	).then(cb, cb);
     }
+    CatIdentityProvider.prototype.getFedIconURL = function() {
+	var returnUrlOnly = true;
+	return this.getFedIcon(returnUrlOnly);
+    }
+    CatIdentityProvider.prototype.getFedIcon = function(returnUrl) {
+	var $idp = this,
+	    returnUrl = !!returnUrl;
+	return $idp.cat.sendFedLogoByID(this.id, returnUrl);
+    }
     CatIdentityProvider.prototype.getTitle = function() {
 	return this._getProp(this.getRaw, 'title');
     }
     CatIdentityProvider.prototype.getDisplay = function() {
 	return this._getProp(this.getRaw, 'title');
     }
+	CatIdentityProvider.prototype.getKeywords = function() {
+		var cb = function(ret) {
+			if (!Array.isArray(ret)) {
+				return null;
+			}
+			function flatten_dedupe(what, initial) {
+				return what.reduce(function(carry, item) {
+					if (Array.isArray(item)) {
+						flatten_dedupe(item, carry);
+					} else if (carry.indexOf(item) == -1) {
+						carry.push(item);
+					}
+					return carry;
+				}, initial);
+			}
+			return flatten_dedupe(ret, []);
+		}
+		return $.when(
+			this._getProp(this.getRaw, 'keywords')
+		).then(cb, cb);
+	}
     CatIdentityProvider.prototype.getGeo = function() {
 	var cb = function(ret) {
 	    if (Array.isArray(ret)) {
