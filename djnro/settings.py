@@ -246,8 +246,9 @@ KML_FILE = os.path.join(PROJECT_DIR, 'all.kml')
 
 EDUROAM_KML_URL = 'https://monitor.eduroam.org/kml/all.kml'
 
-# Request session cookies to be marked as secure
+# Request session and CSRF cookies to be marked as secure
 SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 
 TINYMCE_COMPRESSOR = True
 
