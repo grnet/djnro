@@ -2685,7 +2685,7 @@ def cat_user_api_proxy(request, cat_instance):
     except (KeyError, ValueError):
         cl = len(r.content)
     cd = r.headers.get('content-disposition', None)
-    if ct.startswith('text/html') and cl > 0 and r.content[0] in ['{', '[']:
+    if ct.startswith('text/html') and cl > 0 and r.content[0:1] in [b'{', b'[']:
         ct = ct.replace('text/html', 'application/json')
     resp = HttpResponse(r.content, content_type=ct)
     resp.status_code = r.status_code
