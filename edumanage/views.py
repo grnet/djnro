@@ -2396,6 +2396,14 @@ def realmxml(request, version):
 
     xml_coordinates_elements(realmElement, realm, version=version)
 
+    if version.ge_version_2:
+        for server in realm.servers.all():
+            realmServer = ElementTree.SubElement(realmElement, "server")
+            realmServerName = ElementTree.SubElement(realmServer, "server_name")
+            realmServerName.text = "%s" % (server.server_name)
+            realmServerType = ElementTree.SubElement(realmServer, "server_type")
+            realmServerType.text = "%d" % (server.server_type)
+
     for contact in realm.contact.all():
         realmContact = ElementTree.SubElement(realmElement, "contact")
 
