@@ -659,12 +659,14 @@ class MonLocalAuthnParam(models.Model):
     EAPTYPES = (
         ('PEAP', 'EAP-PEAP'),
         ('TTLS', 'EAP-TTLS'),
-        # ('TLS', 'EAP-TLS'),
+        ('TLS', 'EAP-TLS'),
+        ('PWD', 'EAP-PWD'),
     )
     EAP2TYPES = (
         ('PAP', 'PAP'),
         ('CHAP', 'CHAP'),
         ('MS-CHAPv2', 'MS-CHAPv2'),
+        ('EAP-GTC', 'GTC'),
     )
 #    MONRESPTYPES = (
 #                ('accept', 'Access-Accept expected' ),
