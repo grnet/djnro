@@ -56,6 +56,7 @@ from edumanage.models import (
     ERTYPE_ROLES,
     PRODUCTION_STATES,
     RADPROTOS,
+    EDB_SERVER_TYPES,
 )
 from .models import get_ertype_string
 from accounts.models import UserProfile
@@ -2170,19 +2171,18 @@ def instxml(request, version):
 
         if version.ge_version_2:
             for server in institution.servers.all():
-                # 0 = UDP, 1 = TLS, 2 = F-Ticks
                 if server.proto in RADPROTOS:
-                    server_type = 0
+                    server_type = EDB_SERVER_TYPES.UDP
                 else:
                     continue
                 try:
                     if server.proto == RADPROTOS.TLS:
-                        server_type = 1
+                        server_type = EDB_SERVER_TYPES.TLS
                 except:
                     pass
                 try:
                     if server.proto == RADPROTOS.DTLS:
-                        server_type = 1
+                        server_type = EDB_SERVER_TYPES.TLS
                 except:
                     pass
                 instServer = ElementTree.SubElement(instElement, "server")
