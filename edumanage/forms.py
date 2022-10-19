@@ -14,6 +14,7 @@ from edumanage.models import (
     InstRealm,
     ServiceLoc,
     Coordinates,
+    RealmServer,
     ERTYPES,
     ERTYPE_ROLES,
 )
@@ -337,3 +338,23 @@ class RealmURL_i18nFormSet(URL_i18nFormSet): # pylint: disable=invalid-name
 
 class InstitutionURL_i18nFormSet(URL_i18nFormSet): # pylint: disable=invalid-name
     obj_descr = _('institution URL')
+
+class RealmServerForm(forms.ModelForm):
+
+    class Meta:
+        model = RealmServer
+        fields = '__all__'
+
+    def clean_server_name(self):
+        server_name = self.cleaned_data['server_name']
+        if server_name:
+            match = re.match(FQDN_RE, server_name)
+            if not match:
+                try:
+                    address = ipaddress.ip_address(server_name)
+                except Exception:
+                        error_text = _('Invalid network address/hostname format')
+                        raise forms.ValidationError(error_text)
+        else:
+            raise forms.ValidationError(_('This field is required.'))
+        return self.cleaned_data["server_name"]

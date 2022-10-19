@@ -313,6 +313,11 @@ CONTACT_PRIVACY = get_namedtuple_choices(
     ('PRIVATE', 0, 'private'),
     ('PUBLIC', 1, 'public'),
 )
+EDB_SERVER_TYPES = get_namedtuple_choices(
+    ('UDP', 0, 'UDP'),
+    ('TLS', 1, 'TLS'),
+    ('FTICKS', 2, 'F-ticks'),
+)
 
 
 @python_2_unicode_compatible
@@ -991,6 +996,29 @@ class RealmData(models.Model):
             'idpsp': self.number_IdPSP,
             'numuser': self.number_user,
             'numid': self.number_id,
+        }
+
+
+@python_2_unicode_compatible
+class RealmServer(models.Model):
+    '''NRO realm servers'''
+
+    realm = models.ForeignKey(Realm, on_delete=models.CASCADE, related_name='servers')
+    server_name = models.CharField(max_length=80, help_text=_("IP address | FQDN hostname"))
+    server_type = models.PositiveIntegerField(
+        choices=EDB_SERVER_TYPES,
+        help_text=_("Realm server type")
+    )
+
+    class Meta:
+        verbose_name = "Realm Server"
+        verbose_name_plural = "Realms' Servers"
+
+    def __str__(self):
+        return _('ROid: %(roid)s, Server: %(servername)s, Type: %(type)s') % {
+            'roid': self.realm.roid,
+            'servername': self.server_name,
+            'type': next((t[1] for t in EDB_SERVER_TYPES if t[0] == self.server_type), self.server_type),
         }
 
 
