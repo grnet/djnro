@@ -149,3 +149,8 @@ button.btnlogin {
 	background-color: transparent;
 	color: #337ab7;
 }
+
+/* differentiate pre-production sites */
+dd.preproduction {
+	color: rgb(230, 93, 0);
+}
