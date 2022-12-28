@@ -14,12 +14,12 @@
 
 	function initialize() {
 		image = new google.maps.MarkerImage(pinImg,
-		// This marker is 29 pixels wide by 40 pixels tall.
-		new google.maps.Size(29, 40),
-		// The origin for this image is 0,0.
-		new google.maps.Point(0, 0),
-		// The anchor for this image is the base of the flagpole at 18,42.
-		new google.maps.Point(14, 40));
+			new google.maps.Size(50, 80),
+			new google.maps.Point(0, 0),
+			// The anchor for this image is the base of the flagpole at 18,42.
+			new google.maps.Point(12, 40),
+			new google.maps.Size(25, 40)
+		);
 
 		var styleArray = [ {
 			featureType : "all",
@@ -203,7 +203,7 @@
 			'map' : map,
 			'title' : title,
 			'address' : address,
-			'icon' : pinImg,
+			'icon' : image,
 		});
 		return marker
 	}
