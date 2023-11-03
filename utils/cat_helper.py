@@ -3,6 +3,10 @@ from lxml import objectify
 from lxml.etree import XMLSyntaxError
 import re
 
+# Define names matching Institution ERType values exactly as expected by CAT API
+# https://github.com/GEANT/CAT/blob/master/core/IdP.php#L55-L57
+ERTYPE_CAT_API_NAMES = { 1: 'IdP', 2: 'SP', 3: 'IdPSP' }
+
 # http://code.activestate.com/recipes/135435-sort-a-string-using-numeric-order/
 def string_split_by_numbers(x):
     r = re.compile('(\d+)')

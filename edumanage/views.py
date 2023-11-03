@@ -81,7 +81,7 @@ from django.utils.cache import (
     get_max_age, patch_response_headers, patch_vary_headers
 )
 from django_dont_vary_on.decorators import dont_vary_on
-from utils.cat_helper import CatQuery
+from utils.cat_helper import CatQuery, ERTYPE_CAT_API_NAMES
 from utils.locale import setlocale, compat_strxfrm
 
 
@@ -706,9 +706,13 @@ def cat_enroll(request):
 
         enroll = CatQuery(cat_api_key, cat_api_url)
         params = {
+            # Does not need to be encoded - is picked up by CatEnroll.newinst directly
             'NEWINST_PRIMARYADMIN': u"%s" % user.email,
+            # Encode InstType in "uglify" notation
+            'option[S1]': 'ATTRIB-INSTITUTION-TYPE',
+            'value[S1-0]': ERTYPE_CAT_API_NAMES[inst.ertype],
             }
-        cq_counter=1
+        cq_counter=2 # start from 2 - one entry added above
         for iname in inst.org_name.all():
             params['option[S%d]' % cq_counter] = 'general:instname'
             params['value[S%d-0]' % cq_counter] = iname.name
