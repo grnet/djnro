@@ -81,7 +81,7 @@ from django.utils.cache import (
     get_max_age, patch_response_headers, patch_vary_headers
 )
 from django_dont_vary_on.decorators import dont_vary_on
-from utils.cat_helper import CatQuery, ERTYPE_CAT_API_NAMES
+from utils.cat_helper import CatQuery
 from utils.locale import setlocale, compat_strxfrm
 
 
@@ -710,7 +710,8 @@ def cat_enroll(request):
             'NEWINST_PRIMARYADMIN': u"%s" % user.email,
             # Encode InstType in "uglify" notation
             'option[S1]': 'ATTRIB-INSTITUTION-TYPE',
-            'value[S1-0]': ERTYPE_CAT_API_NAMES[inst.ertype],
+            # CAT ADMIN API expects IdP+SP as IdPSP
+            'value[S1-0]': get_ertype_string(inst.ertype).replace("+", ""),
             }
         cq_counter=2 # start from 2 - one entry added above
         for iname in inst.org_name.all():
