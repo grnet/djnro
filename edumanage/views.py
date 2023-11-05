@@ -708,22 +708,26 @@ def cat_enroll(request):
         params = {
             # Does not need to be encoded - is picked up by CatEnroll.newinst directly
             'NEWINST_PRIMARYADMIN': u"%s" % user.email,
-            # Encode InstType in "uglify" notation
-            'option[S1]': 'ATTRIB-INSTITUTION-TYPE',
-            # CAT ADMIN API expects IdP+SP as IdPSP
-            'value[S1-0]': get_ertype_string(inst.ertype).replace("+", ""),
             }
-        cq_counter=2 # start from 2 - one entry added above
+        def add_option_to_params(params, cq_counter, option, value, lang=None):
+            """Add (uglified) 2/3-tuple option to parameters for CAT admin API request"""
+            params['option[S%d]' % cq_counter] = option
+            params['value[S%d-0]' % cq_counter] = value
+            if lang is not None:
+                params['value[S%d-lang]'] = lang
+            return cq_counter + 1
+        cq_counter = 1
+        cq_counter = add_option_to_params(params, cq_counter, 'ATTRIB-INSTITUTION-TYPE', get_ertype_string(
+            inst.ertype).replace("+", "")) # CAT ADMIN API expects IdP+SP as IdPSP
+        added_lang_c = False
         for iname in inst.org_name.all():
-            params['option[S%d]' % cq_counter] = 'general:instname'
-            params['value[S%d-0]' % cq_counter] = iname.name
-            params['value[S%d-lang]' % cq_counter] = iname.lang
-            cq_counter += 1
-            if iname.lang == 'en':
-                params['option[S%d]' % cq_counter] = 'general:instname'
-                params['value[S%d-0]' % cq_counter] = iname.name
-                params['value[S%d-lang]' % cq_counter] = 'C'
-                cq_counter += 1
+            langs = [iname.lang]
+            if iname.lang == 'en' and not added_lang_c:
+                langs.append('C')
+                added_lang_c = True
+            for lang in langs:
+                cq_counter = add_option_to_params(
+                    params, cq_counter, 'general:instname', iname.name, lang=lang)
         newinst = enroll.newinst(params)
         cat_url = None
         inst_uid = None
