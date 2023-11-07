@@ -714,7 +714,7 @@ def cat_enroll(request):
             params['option[S%d]' % cq_counter] = option
             params['value[S%d-0]' % cq_counter] = value
             if lang is not None:
-                params['value[S%d-lang]'] = lang
+                params['value[S%d-lang]' % cq_counter] = lang
             return cq_counter + 1
         cq_counter = 1
         cq_counter = add_option_to_params(params, cq_counter, 'ATTRIB-INSTITUTION-TYPE', get_ertype_string(
