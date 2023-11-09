@@ -503,21 +503,3 @@ If you want to use LDAP authentication, local_settings.py must be amended:
 	}
 
 
-## Pebble Watch Application (pebduroam)
-
-The closest point API allows for development of location aware-applications.
-Pebduroam is a proof-of-concept Pebble watch application that fetches the closest eduroam service location and provides walking instructions on how to reach it.
-Installing the application on your Pebble watch can be done in 2 ways:
-
-* You can install the application via the Pebble App Store: [pebduroam](https://apps.getpebble.com/applications/5384b2119c84af48350000c7)
-
-* You can get the application and contribute to its' development on [GitHub](https://github.com/leopoul/pebduroam).
-
-  * You need to have a Cloudpebble account to accomplish this.
-
-  * Once logged-in you need to select *Import - Import from github* and paste the pebduroam github repo url in the corresponding text box.
-
-  * Having configured your Pebble watch in developer mode will allow you to build and install your cloned project source directly on your watch.
-
-   **Attention: By default pebduroam uses GRNET servers for the closest point API. To switch the Pebble app to your djnro installation you need to follow the second method of installation.**
-
