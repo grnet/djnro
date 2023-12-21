@@ -8,7 +8,7 @@ from django import forms
 from functools import wraps
 from django.utils.decorators import available_attrs
 from django.views.decorators.cache import (never_cache, cache_page)
-from django.utils import six
+import six
 
 from accounts.models import UserProfile
 from edumanage.forms import UserProfileForm

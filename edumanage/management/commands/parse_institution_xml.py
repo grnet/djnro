@@ -20,7 +20,7 @@
 # SOFTWARE.
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from django.utils import six
+import six
 from django.db.models.signals import post_save
 from edumanage.models import *
 from edumanage.views import ourPoints

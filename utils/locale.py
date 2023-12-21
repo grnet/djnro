@@ -4,7 +4,7 @@ from __future__ import absolute_import
 import locale
 import threading
 from contextlib import contextmanager
-from django.utils import six
+import six
 
 # http://stackoverflow.com/a/24070673
 

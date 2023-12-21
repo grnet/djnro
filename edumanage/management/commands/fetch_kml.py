@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 import time
 from django.conf import settings
 from django.core.cache import cache
-from django.utils import six
+import six
 from xml.etree import ElementTree
 import json
 import bz2

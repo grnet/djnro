@@ -3,21 +3,23 @@
 from collections import namedtuple
 from functools import partial
 import uuid
-from django.utils.inspect import getargspec
+from inspect import getfullargspec
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy  as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import fields
-from django.utils.functional import curry
+from functools import partial as curry
 from django.utils.text import capfirst
-from django.utils import six
+import six
 from django.core import exceptions
 from django.conf import settings
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.encoding import (
-    force_text, python_2_unicode_compatible
+from six import (
+     python_2_unicode_compatible
 )
+from django.utils.encoding import force_str as force_text
+
 from sortedm2m.fields import SortedManyToManyField
 from utils.functional import cached_property
 

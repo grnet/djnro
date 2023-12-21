@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 from django.db.models import OuterRef, Subquery, F
-from django.utils.functional import curry
+from functools import partial as curry
 
 from . import AppAwareRunPython
 

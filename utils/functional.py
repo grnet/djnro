@@ -1,5 +1,5 @@
 from functools import partial
-from django.utils.inspect import getargspec
+from inspect import getfullargspec
 try:
     from functools import partialmethod
 except ImportError:

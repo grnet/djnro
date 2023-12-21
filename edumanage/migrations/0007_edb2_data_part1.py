@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import migrations
 from django.db.models import OuterRef, Subquery, F, When, Case, Value
 from django.db.models.fields import BooleanField, PositiveIntegerField
-from django.utils.functional import curry
+from functools import partial as curry
 
 from . import AppAwareRunPython
 
