@@ -2078,6 +2078,7 @@ def ourPoints(institution=None, cache_flush=False):
             point['SSID'] = u"%s" % (sl.SSID)
             point['key'] = u"%s" % sl.pk
             point['stage'] = u"%s" % (sl.stage)
+            point['nro_has_tested'] = u"%s" % (sl.nro_has_tested)
             points[cache_key].append(point)
 
         points_ret.extend(points[cache_key])

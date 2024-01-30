@@ -775,6 +775,7 @@ class ServiceLoc(models.Model):
     ))
     # only urltype = 'info' should be accepted here
     url = fields.GenericRelation(URL_i18n, blank=True, null=True)
+    nro_has_tested = models.DateField(null=True, blank=True)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:

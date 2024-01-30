@@ -147,6 +147,7 @@
 												+ "<dl class='dl-horizontal'>"
 												+ "<dt>Name</dt><dd>"
 												+ jsonMarker.name
+												+ (jsonMarker.nro_has_tested == 'None' ? '' : ' <span class="nro_has_tested nro_has_tested_yes" title="NRO tested on ' + jsonMarker.nro_has_tested + '">&check;</span>')
 												+ "&nbsp;</dd>"
 												+ "<dt>Address</dt><dd>"
 												+ jsonMarker.address
@@ -176,6 +177,9 @@
 												+ "&nbsp;</dd>"
 												+ "<dt>NAT</dt><dd>"
 												+ jsonMarker.NAT
+												+ "&nbsp;</dd>"
+												+ '<dt>Location tested</td><dd class="nro_has_tested '
+												+ (jsonMarker.nro_has_tested == 'None' ? 'nro_has_tested_no">&#x274C;' : 'nro_has_tested_yes">' + jsonMarker.nro_has_tested)
 												+ "&nbsp;</dd>"
 												+ "<dt>Wired Number</dt><dd>"
 												+ jsonMarker.wired_no
