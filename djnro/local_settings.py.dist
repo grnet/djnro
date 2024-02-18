@@ -245,12 +245,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 #     },
 #     'testing': {
 #         "CAT_API_KEY": "<provided API key>",
-#         "CAT_API_URL": "https://cat-test.eduroam.org/test/admin/API.php",
-#         "CAT_USER_API_URL": "https://cat-test.eduroam.org/test/user/API.php",
+#         "CAT_API_URL": "https://cat-test.eduroam.org/admin/API.php",
+#         "CAT_USER_API_URL": "https://cat-test.eduroam.org/user/API.php",
 #         "CAT_USER_API_VERSION": 2,
-#         "CAT_USER_API_LOCAL_DOWNLOADS": "https://cat-test.eduroam.org/test/",
-#         "CAT_PROFILES_URL": "https://cat-test.eduroam.org/test",
-#         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/test/admin/overview_idp.php"
+#         "CAT_USER_API_LOCAL_DOWNLOADS": "https://cat-test.eduroam.org/",
+#         "CAT_PROFILES_URL": "https://cat-test.eduroam.org/",
+#         "CAT_IDPMGMT_URL": "https://cat-test.eduroam.org/admin/overview_idp.php"
 #     },
 # }
 
