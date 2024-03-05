@@ -167,7 +167,7 @@
 			<div class="controls">
 				{{ form.venue_info }}
 				{% if form.venue_info.errors %} <div class="alert-danger"> {{ form.venue_info.errors|join_with_linebreaks }} </div>
-				{% endif %} <span class="help-block"> {{ form.venue_info.help_text }}</span>
+				{% endif %} <span class="help-block"> {{ form.venue_info.help_text }} <p> {% trans 'An indicative list of assigned codes is also available at the <a href="https://wiki.geant.org/x/kgByKQ" target="_blank">Location data</a> page in the GÉANT eduroam documentation.' %}</span>
 			</div>
 		</div>
 	</div>
