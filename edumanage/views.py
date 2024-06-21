@@ -2842,7 +2842,11 @@ def lookupShibAttr(attrmap, requestMeta):
     for attr in attrmap:
         if (attr in requestMeta.keys()):
             if len(requestMeta[attr]) > 0:
-                return requestMeta[attr]
+                # HTTP headers are encoded in latin1 (RFC2616). However, by default
+                # Shibboleth SP ignores this and puts UTF-8 encoded values into its
+                # request headers with ShibUseHeaders. So we need to fix up the
+                # resulting misencoding of accented characters
+                return bytearray(requestMeta[attr], "iso-8859-1").decode("utf-8")
     return ''
 
 # def get_i18n_name(i18n_name, lang, default_lang='en', default_name='unknown'):
