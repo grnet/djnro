@@ -55,6 +55,8 @@ from edumanage.models import (
     ERTYPES,
     ERTYPE_ROLES,
     PRODUCTION_STATES,
+    RADPROTOS,
+    EDB_SERVER_TYPES,
 )
 from .models import get_ertype_string
 from accounts.models import UserProfile
@@ -2176,6 +2178,28 @@ def instxml(request, version):
             instRealm = ElementTree.SubElement(instElement, "inst_realm")
             instRealm.text = realm.realm
 
+        if version.ge_version_2:
+            for server in institution.servers.all():
+                if server.proto in RADPROTOS:
+                    server_type = EDB_SERVER_TYPES.UDP
+                else:
+                    continue
+                try:
+                    if server.proto == RADPROTOS.TLS:
+                        server_type = EDB_SERVER_TYPES.TLS
+                except:
+                    pass
+                try:
+                    if server.proto == RADPROTOS.DTLS:
+                        server_type = EDB_SERVER_TYPES.TLS
+                except:
+                    pass
+                instServer = ElementTree.SubElement(instElement, "server")
+                instServerName = ElementTree.SubElement(instServer, "server_name")
+                instServerName.text = "%s" % (server.host)
+                instServerType = ElementTree.SubElement(instServer, "server_type")
+                instServerType.text = "%d" % (server_type)
+
         for name in inst.institution.inst_name.all():
             name_tag = 'org_name' if version.is_version_1 else 'inst_name'
             instOrgName = ElementTree.SubElement(instElement, name_tag)
@@ -2380,6 +2404,14 @@ def realmxml(request, version):
     xml_address_elements(realmElement, realm, version=version)
 
     xml_coordinates_elements(realmElement, realm, version=version)
+
+    if version.ge_version_2:
+        for server in realm.servers.all():
+            realmServer = ElementTree.SubElement(realmElement, "server")
+            realmServerName = ElementTree.SubElement(realmServer, "server_name")
+            realmServerName.text = "%s" % (server.server_name)
+            realmServerType = ElementTree.SubElement(realmServer, "server_type")
+            realmServerType.text = "%d" % (server.server_type)
 
     for contact in realm.contact.all():
         realmContact = ElementTree.SubElement(realmElement, "contact")
