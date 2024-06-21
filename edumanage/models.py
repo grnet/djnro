@@ -282,7 +282,7 @@ get_ertype_number = partial(get_ertype_string, reverse=True) # pylint: disable=i
 RADPROTOS = get_namedtuple_choices(
     ('UDP', 'radius', 'traditional RADIUS over UDP'),
     # ('TCP', 'radius-tcp', 'RADIUS over TCP (RFC6613)'),
-    # ('TLS', 'radius-tls', 'RADIUS over TLS (RFC6614)'),
+     ('TLS', 'radius-tls', 'RADIUS over TLS (RFC6614)'),
     # ('DTLS', 'radius-dtls', 'RADIUS over datagram TLS (RESERVED)'),
 )
 
