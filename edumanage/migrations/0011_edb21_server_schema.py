@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('server_name', models.CharField(help_text='IP address | FQDN hostname', max_length=80)),
                 ('server_type', models.PositiveIntegerField(choices=[(0, 'UDP'), (1, 'TLS'), (2, 'F-ticks')], help_text='Realm server type')),
-                ('realm', models.ForeignKey(blank=True, on_delete=django.db.models.deletion.CASCADE, to='edumanage.Realm')),
+                ('realm', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='servers', to='edumanage.Realm')),
             ],
             options={
                 'verbose_name': 'Realm Server',
