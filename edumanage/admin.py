@@ -16,6 +16,7 @@ from edumanage.models import (
     InstitutionDetails,
     Realm,
     RealmData,
+    RealmServer,
     CatEnrollment
 )
 from edumanage.forms import (
@@ -29,6 +30,7 @@ from edumanage.forms import (
     ServiceLocAddress_i18nFormSet,
     RealmURL_i18nFormSet,
     InstitutionURL_i18nFormSet,
+    RealmServerForm,
 )
 
 from django.contrib.contenttypes import admin as contenttype_admin
@@ -109,9 +111,17 @@ class ServiceLocAdmin(admin.ModelAdmin):
     readonly_fields = ('locationid',)
 
 
+class RealmServerInline(admin.TabularInline):
+    model = RealmServer
+    form = RealmServerForm
+
+class RealmServerAdmin(admin.ModelAdmin):
+    form = RealmServerForm
+
+
 class RealmInLine(admin.ModelAdmin):
     inlines = [
-        RealmUrlInline, RealmNameInline, RealmAddressInline,
+        RealmUrlInline, RealmNameInline, RealmAddressInline, RealmServerInline
     ]
 
 
@@ -150,6 +160,7 @@ admin.site.register(ServiceLoc, ServiceLocAdmin)
 admin.site.register(Institution, InstitutionAdmin)
 admin.site.register(InstitutionDetails, InstitutionDetailsAdmin)
 admin.site.register(Realm, RealmInLine)
+admin.site.register(RealmServer, RealmServerAdmin)
 admin.site.register(RealmData)
 admin.site.register(CatEnrollment, CatEnrollmentAdmin)
 
