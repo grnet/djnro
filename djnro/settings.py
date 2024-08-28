@@ -250,6 +250,12 @@ EDUROAM_KML_URL = 'https://monitor.eduroam.org/kml/all.kml'
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 
+# Restrict session and CSRF cookie lifetime to 1 hour
+# (but let session auto-extend while there's activity)
+SESSION_COOKIE_AGE = 3600
+SESSION_SAVE_EVERY_REQUEST = True
+CSRF_COOKIE_AGE = 3600
+
 TINYMCE_COMPRESSOR = True
 
 TINYMCE_DEFAULT_CONFIG = {
