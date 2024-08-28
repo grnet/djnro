@@ -36,4 +36,3 @@ The eduroam web site of GRNET (the eduroam NRO in Greece) is a living example of
 * Allow for eduroam CAT institution enrollments
 * Extract contact info for mailing list creation
 * Server monitoring data
-* Pebble watch app with closest eduroam walking instructions
