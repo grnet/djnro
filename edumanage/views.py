@@ -2251,7 +2251,11 @@ def instxml(request, version):
             instUrl.text = '-'
 
         instTs = ElementTree.SubElement(instElement, "ts")
-        instTs.text = "%s" % inst.ts.isoformat()
+        instMaxTs = max( [inst.ts] +
+                [srv.ts for srv in institution.servers.all()] +
+                [sl.ts for sl in servicelocs.get(institution.id, [])]
+                )
+        instTs.text = "%s" % instMaxTs.isoformat()
         #Let's go to Institution Service Locations
 
         for serviceloc in servicelocs.get(institution.id, []):
