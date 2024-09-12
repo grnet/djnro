@@ -7,7 +7,7 @@ from django.db.models.signals import (
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from edumanage.models import ServiceLoc, Coordinates
+from edumanage.models import ServiceLoc, Coordinates, RealmServer
 from edumanage.views import ourPoints
 
 class disable_signals(object): # pylint: disable=invalid-name
@@ -130,3 +130,9 @@ def sloc_coordinates_enforce_one(sender, instance, **kwargs):
                 'Only one set of coordinates per ServiceLoc is allowed'
             )}
         )
+
+# Update Realm TS whenever a RealmServer is added/changed/deleted
+@receiver((post_save, post_delete), sender=RealmServer,
+          dispatch_uid="edumanage.models.RealmServer.update_realm_ts")
+def realmserver_update_realm_ts(sender, instance, **kwargs):
+    instance.realm.save()
