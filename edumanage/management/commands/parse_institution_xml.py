@@ -26,7 +26,11 @@ from edumanage.models import *
 from edumanage.views import ourPoints
 from edumanage.signals import (
     disable_signals,
-    DUID_RECACHE_OURPOINTS, DUID_SAVE_SERVICELOC_LATLON_CACHE
+    DUID_RECACHE_OURPOINTS, DUID_SAVE_SERVICELOC_LATLON_CACHE,
+    DUID_INSTREALM_UPDATE_INST_TS,
+    DUID_SERVICELOC_UPDATE_INST_TS,
+    DUID_INSTSERVER_UPDATE_INST_TS,
+    DUID_CONTACT_UPDATE_TS
 )
 from lxml.etree import parse
 from collections import defaultdict
@@ -772,7 +776,11 @@ for UUID. This can be disabled by using this option.''')
 
         with disable_signals(
                 (post_save,
-                 (DUID_RECACHE_OURPOINTS, DUID_SAVE_SERVICELOC_LATLON_CACHE))
+                 (DUID_RECACHE_OURPOINTS, DUID_SAVE_SERVICELOC_LATLON_CACHE,
+                     DUID_INSTREALM_UPDATE_INST_TS,
+                     DUID_SERVICELOC_UPDATE_INST_TS,
+                     DUID_INSTSERVER_UPDATE_INST_TS,
+                     DUID_CONTACT_UPDATE_TS))
         ):
             for idx, serviceloc_element in \
                 enumerate(parameters.get('location', [])):

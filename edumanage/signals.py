@@ -148,24 +148,30 @@ def realmserver_update_realm_ts(sender, instance, **kwargs):
 # * MonLocalAuthnParam
 # * CatEnrollment
 
+DUID_INSTREALM_UPDATE_INST_TS = "edumanage.models.InstRealm.update_inst_ts"
+
 @receiver((post_save, post_delete), sender=InstRealm,
-          dispatch_uid="edumanage.models.InstRealm.update_inst_ts")
+          dispatch_uid=DUID_INSTREALM_UPDATE_INST_TS)
 def instrealm_update_inst_ts(sender, instance, **kwargs):
     try:
         instance.instid.institutiondetails.save()
     except InstitutionDetails.DoesNotExist:
         pass
 
+DUID_SERVICELOC_UPDATE_INST_TS = "edumanage.models.serviceloc.update_inst_ts"
+
 @receiver((post_save, post_delete), sender=ServiceLoc,
-          dispatch_uid="edumanage.models.serviceloc.update_inst_ts")
+          dispatch_uid=DUID_SERVICELOC_UPDATE_INST_TS)
 def serviceloc_update_inst_ts(sender, instance, **kwargs):
     try:
         instance.institutionid.institutiondetails.save()
     except InstitutionDetails.DoesNotExist:
         pass
 
+DUID_INSTSERVER_UPDATE_INST_TS = "edumanage.models.instserver.update_inst_ts"
+
 @receiver((post_save, post_delete), sender=InstServer,
-          dispatch_uid="edumanage.models.instserver.update_inst_ts")
+          dispatch_uid=DUID_INSTSERVER_UPDATE_INST_TS)
 def instserver_update_inst_ts(sender, instance, **kwargs):
     for inst in instance.instid.all():
         try:
@@ -173,10 +179,12 @@ def instserver_update_inst_ts(sender, instance, **kwargs):
         except InstitutionDetails.DoesNotExist:
             pass
 
+DUID_CONTACT_UPDATE_TS = "edumanage.models.contact.update_ts"
+
 # For Contacts (linked from Realm InstitutionDetails or ServiceLoc as ManyToManyField),
 # listen for pre_delete instead of post_delete to still see the linked objects
 @receiver((post_save, pre_delete), sender=Contact,
-          dispatch_uid="edumanage.models.contact.update_ts")
+          dispatch_uid=DUID_CONTACT_UPDATE_TS)
 def contact_update_inst_ts(sender, instance, **kwargs):
     for inst in instance.institutiondetails_set.all():
         inst.save()
