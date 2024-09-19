@@ -7,7 +7,7 @@ from django.db.models.signals import (
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
-from edumanage.models import ServiceLoc, Coordinates
+from edumanage.models import ServiceLoc, Coordinates, RealmServer, InstRealm, InstServer, Contact, InstitutionDetails
 from edumanage.views import ourPoints
 
 class disable_signals(object): # pylint: disable=invalid-name
@@ -130,3 +130,65 @@ def sloc_coordinates_enforce_one(sender, instance, **kwargs):
                 'Only one set of coordinates per ServiceLoc is allowed'
             )}
         )
+
+# Update Realm TS whenever a RealmServer is added/changed/deleted
+@receiver((post_save, post_delete), sender=RealmServer,
+          dispatch_uid="edumanage.models.RealmServer.update_realm_ts")
+def realmserver_update_realm_ts(sender, instance, **kwargs):
+    instance.realm.save()
+
+# Update Institution TS whenever any object of the following is added/changed/deleted
+# * InstRealm
+# * InstServer
+# * ServiceLoc
+# * Contact (for Institution, Realm, or ServiceLoc))
+# Ignoring (as not visible in export to eduroamDB):
+# * InstRealmMon
+# * MonProxybackClient
+# * MonLocalAuthnParam
+# * CatEnrollment
+
+DUID_INSTREALM_UPDATE_INST_TS = "edumanage.models.InstRealm.update_inst_ts"
+
+@receiver((post_save, post_delete), sender=InstRealm,
+          dispatch_uid=DUID_INSTREALM_UPDATE_INST_TS)
+def instrealm_update_inst_ts(sender, instance, **kwargs):
+    try:
+        instance.instid.institutiondetails.save()
+    except InstitutionDetails.DoesNotExist:
+        pass
+
+DUID_SERVICELOC_UPDATE_INST_TS = "edumanage.models.serviceloc.update_inst_ts"
+
+@receiver((post_save, post_delete), sender=ServiceLoc,
+          dispatch_uid=DUID_SERVICELOC_UPDATE_INST_TS)
+def serviceloc_update_inst_ts(sender, instance, **kwargs):
+    try:
+        instance.institutionid.institutiondetails.save()
+    except InstitutionDetails.DoesNotExist:
+        pass
+
+DUID_INSTSERVER_UPDATE_INST_TS = "edumanage.models.instserver.update_inst_ts"
+
+@receiver((post_save, post_delete), sender=InstServer,
+          dispatch_uid=DUID_INSTSERVER_UPDATE_INST_TS)
+def instserver_update_inst_ts(sender, instance, **kwargs):
+    for inst in instance.instid.all():
+        try:
+            inst.institutiondetails.save()
+        except InstitutionDetails.DoesNotExist:
+            pass
+
+DUID_CONTACT_UPDATE_TS = "edumanage.models.contact.update_ts"
+
+# For Contacts (linked from Realm InstitutionDetails or ServiceLoc as ManyToManyField),
+# listen for pre_delete instead of post_delete to still see the linked objects
+@receiver((post_save, pre_delete), sender=Contact,
+          dispatch_uid=DUID_CONTACT_UPDATE_TS)
+def contact_update_inst_ts(sender, instance, **kwargs):
+    for inst in instance.institutiondetails_set.all():
+        inst.save()
+    for realm in instance.realm_set.all():
+        realm.save()
+    for serviceloc in instance.serviceloc_set.all():
+        serviceloc.save() # will cascade to institution
