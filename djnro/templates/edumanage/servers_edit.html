@@ -144,37 +144,74 @@ Changes you make to your RADIUS servers must be reviewed by the Roaming Operator
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3{% if GOOGLE_MAPS_API_KEY %}&amp;key={{ GOOGLE_MAPS_API_KEY }}{% endif %}"></script>
 <script type="text/javascript">
 function updateHostFieldExpectations() {
-	$('#id_host').attr('required',1);
-	$('#id_host').attr('pattern', '((^|\.)((25[0-5])|(2[0-4][0-9])|(1[0-9][0-9])|([1-9]?[0-9]))){4}$');
-	$('#id_host').attr('title', 'Please supply a valid IP address').attr('required',1);
-	$('label[for="id_host"] b').text('Host External IP Address');
-	$('#id_host + .help-block').text('IP address of RADIUS server');
 	$('#id_name').attr('required',1);
-	$('#id_secret').attr('required',1);
-	$('#id_secret').attr('title', 'Please supply a strong, random string longer than 20 characters');
-	$('#id_secret').attr('minlength', 20);
-	$('#id_secret').attr('maxlength', 64);
-	/* https://github.com/ablanco/jquery.pwstrength.bootstrap */
-	$('#id_secret').pwstrength({
-		common: {
-			minChar: 20,
-			maxChar: 64,
-			usernameField: '#id_name',
-			invalidCharsRegExp: new RegExp(/[\s,'"%]/),
-			userInputs: [ '#id_address', '#id_name' ],
-			zxcvbn: true
-		}, 
-		ui: {
-			showProgressBar: false,
-			showStatus: true,
-			bootstrap3: true
+	/* change the semantics of the host field depending on TLS */
+	var proto = $('#id_proto').val();
+	if (proto.match('tls')) {
+		$('#id_host').attr('pattern', '^[a-zA-Z][a-zA-Z0-9]{1,62}(\.[a-zA-Z0-9]{1,63}){1,}$');
+		$('#id_host').attr('title', 'Please supply a valid FQDN (DNS hostname)').attr('required',1);
+		$('label[for="id_host"] b').text('External Hostname');
+		$('#id_host + .help-block').html('FQDN hostname (<strong>must</strong> resolve in DNS)');
+		if ($('#id_auth_port').val() == '1812') {
+			$('#id_auth_port').val('2083');
 		}
-	});
-	$('.password-verdict').addClass('help-block');
+		if ($('#id_acct_port').val() == '1813') {
+			$('#id_acct_port').val('2083');
+		}
+		/* secret is fixed for radsec */
+		$('#id_secret').data('original_password', $('#id_secret').val());
+		$('#id_secret').val('radsec');
+		$('#id_secret').attr('title', 'For ' + proto.toUpperCase() + ' the secret must be "radsec"').attr('required',1);
+		try {
+			$('#id_secret').pwstrength('destroy');
+		} catch {
+			// ignore error when pwstrength doesn't exist
+		}
+		$('#id_secret').closest('.form-group').removeClass('has-error').removeClass('has-warning').removeClass('has-success');
+		$('#id_secret + span[class="add-on"]').remove();
+		$('#id_secret').get(0).type = 'text';
+	} else {
+		$('#id_host').attr('pattern', '((^|\.)((25[0-5])|(2[0-4][0-9])|(1[0-9][0-9])|([1-9]?[0-9]))){4}$');
+		$('#id_host').attr('title', 'Please supply a valid IP address').attr('required',1);
+		$('label[for="id_host"] b').text('Host External IP Address');
+		$('#id_host + .help-block').text('IP address of RADIUS server');
+		if ($('#id_auth_port').val() == '2083') {
+			$('#id_auth_port').val('1812');
+		}
+		if ($('#id_acct_port').val() == '2083') {
+			$('#id_acct_port').val('1813');
+		}
+		if ($('#id_secret').val() == 'radsec') {
+			/* try restore the original secret if we can */
+			$('#id_secret').get(0).type = 'password';
+			$('#id_secret').val($('#id_secret').data('original_password'));
+		}
+		$('#id_secret').attr('title', 'Please supply a strong, random string longer than 20 characters').attr('required',1);
+		$('#id_secret').attr('minlength', 20).attr('maxlength', 64);
+		/* https://github.com/ablanco/jquery.pwstrength.bootstrap */
+		$('#id_secret').pwstrength({
+			common: {
+				minChar: 20,
+				maxChar: 64,
+				usernameField: '#id_name',
+				invalidCharsRegExp: new RegExp(/[\s,'"%]/),
+				userInputs: [ '#id_address', '#id_name' ],
+				zxcvbn: true
+			}, 
+			ui: {
+				showProgressBar: false,
+				showStatus: true,
+				bootstrap3: true
+			}
+		});
+		$('.password-verdict').addClass('help-block');
+		$('#id_secret').showPassword();
+	}
 }
 
 $(document).ready(function() {
-	$('#id_secret').showPassword();
+	// $('#id_secret').showPassword();
+	$('#id_proto').on('change', updateHostFieldExpectations);
 	updateHostFieldExpectations();
 });
 </script>
