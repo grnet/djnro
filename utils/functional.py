@@ -1,5 +1,5 @@
 from functools import partial
-from django.utils.inspect import getargspec
+from inspect import signature
 try:
     from functools import partialmethod
 except ImportError:
@@ -81,7 +81,7 @@ class cached_property(object):
         else:
             if self.fdel is not None:
                 fdel_args = [obj]
-                if len(getargspec(self.fdel)[0]) == 2:
+                if len(signature(self.fdel).parameters) == 2:
                     fdel_args.append(value)
                 self.fdel(*fdel_args)
 
