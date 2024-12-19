@@ -1,4 +1,4 @@
-Django==1.11.1
+Django==1.11.29
 argparse>=1.2.1
 django-registration==2.0.4
 django-tinymce>=2.3.0,<3.0a
