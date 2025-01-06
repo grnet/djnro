@@ -3,7 +3,7 @@
 from collections import namedtuple
 from functools import partial
 import uuid
-from django.utils.inspect import getargspec
+from inspect import signature
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -47,9 +47,9 @@ class MultiSelectFormField(forms.MultipleChoiceField):
     def __init__(self, *args, **kwargs):
         supercls = super(MultiSelectFormField, self)
         # remove TypedChoiceField extra args
-        supercls_init_args = getargspec(supercls.__init__)[0]
-        if supercls_init_args[0:0] == ['self']:
-            del supercls_init_args[0]
+        supercls_init_args = signature(supercls.__init__).parameters
+        if 'self' in supercls_init_args:
+            supercls_init_args.pop('self', None)
         supercls.__init__(
             *args,
             **{key: val for (key, val) in kwargs.items()
