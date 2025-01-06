@@ -7,6 +7,9 @@
 {% block management_content %}
 <h4>{% if edit %}{{form.instance.realm}} ({% trans "edit" %}){% else %}{% trans "Add Realm" %}{% endif %}</h4>
 <hr>
+<div class="alert alert-info alert-dismissible" role="alert">
+Changes you make to your realm routing must be reviewed by the Roaming Operator before they are pushed into production. Your changes here will be queued, and will typically be processed within one working day. You will be contacted once this has happened.
+</div>
 {% if messages %}
 	<table class="table table-condensed">
 	    {% for message in messages %}

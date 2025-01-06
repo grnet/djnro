@@ -191,6 +191,16 @@
         </div>
     </div>
     <div class="control-group">
+        <label class="control-label" for="id_nro_has_tested">{% trans "NRO has tested" %}</label>
+        <div class="controls">
+            {% if service.nro_has_tested %}
+                <span class="nro_has_tested nro_has_tested_yes">&#x2714; {{ service.nro_has_tested }}</span>
+            {% else %}
+                <span class="nro_has_tested nro_has_tested_no">&#x274C;</span>
+            {% endif %}
+        </div>
+    </div>
+    <div class="control-group">
         <label class="control-label" for="id_ap_no">{% trans "AP number" %}</label>
         <div class="controls">
             {{ service.AP_no }}

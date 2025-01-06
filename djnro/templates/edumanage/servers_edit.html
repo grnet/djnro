@@ -7,6 +7,9 @@
 {% block management_content %}
 <h4>{% if edit %}{{form.instance.get_name}} ({% trans "edit" %}){% else %}{% trans "Add Server" %}{% endif %}</h4>
 <hr>
+<div class="alert alert-info alert-dismissible" role="alert">
+Changes you make to your RADIUS servers must be reviewed by the Roaming Operator before they are pushed into production. Your changes here will be queued, and will typically be processed within one working day. You will be contacted once this has happened. If you need to co-ordinate a service-affecting change (e.g. to change a shared secret), please make the change here first and then <a href="/contact" class="alert-link">contact us</a> to schedule a time before making the change on your infrastructure.
+</div>
 <form method="POST" class="form-horizontal">
 	{% if form.non_field_errors %}
 	<ul>
@@ -41,11 +44,11 @@
 	</div>
 	<div class="col-md-6">
 		<div class="form-group {% if form.host.errors %} error {% endif %}">
-			<label class="control-label" for="id_host"><b>{% trans "Hostname" %}</b></label>
+			<label class="control-label" for="id_host"><b>{% trans "Host IP Address" %}</b></label>
 			<div class="controls">
 				{{ form.host }}
 				{% if form.host.errors %} <div class="alert-danger"> {{ form.host.errors|join_with_linebreaks }} </div>
-				{% endif %} <span class="help-block">{{ form.host.help_text }}</span>
+				{% endif %} <span class="help-block">IP address of RADIUS server</span>
 			</div>
 		</div>
 	</div>
@@ -55,7 +58,7 @@
 			<div class="controls">
 				{{ form.name }}
 				{% if form.name.errors %} <div class="alert-danger"> {{ form.name.errors|join_with_linebreaks }} </div>
-				{% endif %} <span class="help-block">{{ form.name.help_text }}</span>
+				{% endif %} <span class="help-block">FQDN hostname | {{ form.name.help_text }}</span>
 			</div>
 		</div>
 	</div>
@@ -97,13 +100,13 @@
 			<div class="controls">
 				{{ form.status_server }}
 				{% if form.status_server.errors %} <div class="alert-danger"> {{ form.status_server.errors|join_with_linebreaks }} </div>
-				{% endif %} <span class="help-block">{{ form.status_server.help_text }}</span>
+				{% endif %} <span class="help-block">{{ form.status_server.help_text }}}<br>(Do <strong>not</strong> tick this if you use Windows NPS)</span>
 			</div>
 		</div>
 	</div>
 	<div class="col-md-6">
 		<div class="form-group {% if form.secret.errors %} error {% endif %}">
-			<label class="control-label" for="id_secret"><b>{% trans "Secret" %}</b></label>
+			<label class="control-label" for="id_secret"><b>{% trans "RADIUS Shared Secret" %}</b></label>
 			<div class="controls">
 				<input type="password" maxlength="80" name="secret" id="id_secret" {% if edit %}value='{{form.instance.secret}}'{% endif %} {% if form.data.secret %}value='{{form.data.secret}}'{% endif %}>
 				{% if form.secret.errors %} <div class="alert-danger"> {{ form.secret.errors|join_with_linebreaks }} </div>
@@ -117,7 +120,7 @@
 			<div class="controls">
 				{{ form.proto }}
 				{% if form.proto.errors %} <div class="alert-danger"> {{ form.proto.errors|join_with_linebreaks }} </div>
-				{% endif %} <span class="help-block">{{ form.proto.help_text }}</span>
+				{% endif %} <!-- <span class="help-block">{{ form.proto.help_text }}</span> -->
 			</div>
 		</div>
 	</div>
@@ -136,10 +139,80 @@
 
 {% block extrajs %}
 <script type="text/javascript" src="{% static 'js/showpass.js' %}"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.4.2/zxcvbn.js" integrity="sha512-TZlMGFY9xKj38t/5m2FzJ+RM/aD5alMHDe26p0mYUMoCF5G7ibfHUQILq0qQPV3wlsnCwL+TPRNK4vIWGLOkUQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/pwstrength-bootstrap/3.1.1/pwstrength-bootstrap.min.js" integrity="sha512-VMd5IUFVM9MRhGzKSpKVZu/Rm4Wm3i8dC6eYqEtOcTaG1vn5RmwUWFiYfh4nagbeQRhQuSnHULnZ9B+st2rZ0g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3{% if GOOGLE_MAPS_API_KEY %}&amp;key={{ GOOGLE_MAPS_API_KEY }}{% endif %}"></script>
 <script type="text/javascript">
+function updateHostFieldExpectations() {
+	$('#id_name').attr('required',1);
+	/* change the semantics of the host field depending on TLS */
+	var proto = $('#id_proto').val();
+	if (proto.match('tls')) {
+		$('#id_host').attr('pattern', '^[a-zA-Z][a-zA-Z0-9]{1,62}(\.[a-zA-Z0-9]{1,63}){1,}$');
+		$('#id_host').attr('title', 'Please supply a valid FQDN (DNS hostname)').attr('required',1);
+		$('label[for="id_host"] b').text('External Hostname');
+		$('#id_host + .help-block').html('FQDN hostname (<strong>must</strong> resolve in DNS)');
+		if ($('#id_auth_port').val() == '1812') {
+			$('#id_auth_port').val('2083');
+		}
+		if ($('#id_acct_port').val() == '1813') {
+			$('#id_acct_port').val('2083');
+		}
+		/* secret is fixed for radsec */
+		$('#id_secret').data('original_password', $('#id_secret').val());
+		$('#id_secret').val('radsec');
+		$('#id_secret').attr('title', 'For ' + proto.toUpperCase() + ' the secret must be "radsec"').attr('required',1);
+		try {
+			$('#id_secret').pwstrength('destroy');
+		} catch {
+			// ignore error when pwstrength doesn't exist
+		}
+		$('#id_secret').closest('.form-group').removeClass('has-error').removeClass('has-warning').removeClass('has-success');
+		$('#id_secret + span[class="add-on"]').remove();
+		$('#id_secret').get(0).type = 'text';
+	} else {
+		$('#id_host').attr('pattern', '((^|\.)((25[0-5])|(2[0-4][0-9])|(1[0-9][0-9])|([1-9]?[0-9]))){4}$');
+		$('#id_host').attr('title', 'Please supply a valid IP address').attr('required',1);
+		$('label[for="id_host"] b').text('Host External IP Address');
+		$('#id_host + .help-block').text('IP address of RADIUS server');
+		if ($('#id_auth_port').val() == '2083') {
+			$('#id_auth_port').val('1812');
+		}
+		if ($('#id_acct_port').val() == '2083') {
+			$('#id_acct_port').val('1813');
+		}
+		if ($('#id_secret').val() == 'radsec') {
+			/* try restore the original secret if we can */
+			$('#id_secret').get(0).type = 'password';
+			$('#id_secret').val($('#id_secret').data('original_password'));
+		}
+		$('#id_secret').attr('title', 'Please supply a strong, random string longer than 20 characters').attr('required',1);
+		$('#id_secret').attr('minlength', 20).attr('maxlength', 64);
+		/* https://github.com/ablanco/jquery.pwstrength.bootstrap */
+		$('#id_secret').pwstrength({
+			common: {
+				minChar: 20,
+				maxChar: 64,
+				usernameField: '#id_name',
+				invalidCharsRegExp: new RegExp(/[\s,'"%]/),
+				userInputs: [ '#id_address', '#id_name' ],
+				zxcvbn: true
+			}, 
+			ui: {
+				showProgressBar: false,
+				showStatus: true,
+				bootstrap3: true
+			}
+		});
+		$('.password-verdict').addClass('help-block');
+		$('#id_secret').showPassword();
+	}
+}
+
 $(document).ready(function() {
-	$('#id_secret').showPassword();
+	// $('#id_secret').showPassword();
+	$('#id_proto').on('change', updateHostFieldExpectations);
+	updateHostFieldExpectations();
 });
 </script>
 {% endblock %}

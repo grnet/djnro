@@ -33,7 +33,9 @@
 			<tbody>
 			{% for service in services %}
 		    	<tr class="GradeC">
-		        	<td><a href="{% url 'services' service.pk %}">{% tolocale service LANGUAGE_CODE %}</a></td>
+		        	<td><a href="{% url 'services' service.pk %}">{% tolocale service LANGUAGE_CODE %}</a>
+		        	{% if service.nro_has_tested %}&nbsp;<span class="nro_has_tested nro_has_tested_yes" title="NRO tested on {{ service.nro_has_tested }}">&check;</span>{% endif %}
+		        	</td>
 		        	{% tolocale service LANGUAGE_CODE get="address" as service_address %}
 		        	<td>{{service_address.street}}<br>{{service_address.city}}</td>
 		        	<td>{{service.SSID}}</td>

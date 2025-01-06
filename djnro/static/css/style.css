@@ -139,3 +139,7 @@ footer.auth {
 input[readonly].input {
 	color: rgba(51, 51, 51, 0.5);
 }
+
+dd.preproduction {
+	color: rgb(230, 93, 0);
+}

@@ -262,6 +262,7 @@ def get_namedtuple_choices(*choices_tuples):
 
 # Last member in choices tuples maps numeric to string (EDB2) ERTYPE
 _ERTYPES = (
+    ('NONE', 0, 'None (Stats Only)', 'None'),
     ('IDP', 1, 'IdP only', 'IdP'),
     ('SP', 2, 'SP only', 'SP'),
     ('IDPSP', 3, 'IdP and SP', 'IdP+SP'),
@@ -269,7 +270,7 @@ _ERTYPES = (
 ERTYPES = get_namedtuple_choices(*_ERTYPES)
 ERTYPE_ROLES = get_namedtuple_choices(*(
     (cat.upper(), [val for val, descr in ERTYPES if cat in descr])
-    for cat in ('IdP', 'SP')
+    for cat in ('IdP', 'SP', 'None')
 ))
 def get_ertype_string(ertype, reverse=False):
     """
@@ -349,7 +350,7 @@ class Name_i18n(models.Model):
                     manager.all()
                 return ', '.join([n.name for n in names_qs])
             if not lang:
-                return all_names()
+                lang = getattr(settings, 'LANGUAGE_CODE', 'en')
             try:
                 return manager.get(lang=lang).name
             except Name_i18n.DoesNotExist:
@@ -385,6 +386,7 @@ class Contact(models.Model):
     class Meta:
         verbose_name = "Contact"
         verbose_name_plural = "Contacts"
+        ordering = ['name']
 
 
 @python_2_unicode_compatible
@@ -424,6 +426,7 @@ class InstitutionContactPool(models.Model):
     class Meta:
         verbose_name = "Instutution Contact (Pool)"
         verbose_name_plural = "Instutution Contacts (Pool)"
+        ordering = ['contact__name']
 
 
 @python_2_unicode_compatible
@@ -506,6 +509,7 @@ class InstRealm(models.Model):
     class Meta:
         verbose_name = "Institution Realm"
         verbose_name_plural = "Institutions' Realms"
+        ordering = ['realm']
 
     def __str__(self):
         return '%s' % self.realm
@@ -655,12 +659,14 @@ class MonLocalAuthnParam(models.Model):
     EAPTYPES = (
         ('PEAP', 'EAP-PEAP'),
         ('TTLS', 'EAP-TTLS'),
-        # ('TLS', 'EAP-TLS'),
+        ('TLS', 'EAP-TLS'),
+        ('PWD', 'EAP-PWD'),
     )
     EAP2TYPES = (
         ('PAP', 'PAP'),
         ('CHAP', 'CHAP'),
         ('MS-CHAPv2', 'MS-CHAPv2'),
+        ('EAP-GTC', 'GTC'),
     )
 #    MONRESPTYPES = (
 #                ('accept', 'Access-Accept expected' ),
@@ -769,6 +775,7 @@ class ServiceLoc(models.Model):
     ))
     # only urltype = 'info' should be accepted here
     url = fields.GenericRelation(URL_i18n, blank=True, null=True)
+    nro_has_tested = models.DateField(null=True, blank=True)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -839,7 +846,7 @@ class Institution(models.Model):
     )
 
     def __str__(self):
-        return "%s" % ', '.join([i.name for i in self.org_name.all()])
+        return "%s" % ', '.join([i.name for i in self.org_name.filter(lang=getattr(settings, 'LANGUAGE_CODE', 'en'))])
 
     get_name = Name_i18n.get_name_factory('org_name')
 
@@ -904,12 +911,12 @@ class InstitutionDetails(models.Model):
     def __str__(self):
         return _('Institution: %(inst)s, Type: %(ertype)s') % {
             # but name is many-to-many from institution
-            'inst': ', '.join([i.name for i in self.institution.org_name.all()]),
+            'inst': ', '.join([i.name for i in self.institution.org_name.filter(lang=getattr(settings, 'LANGUAGE_CODE', 'en'))]),
             'ertype': self.institution.get_ertype_display(),
         }
 
     def get_inst_name(self):
-        return ", ".join([i.name for i in self.institution.org_name.all()])
+        return ", ".join([i.name for i in self.institution.org_name.filter(lang=getattr(settings, 'LANGUAGE_CODE', 'en'))])
     get_inst_name.short_description = "Institution Name"
 
 
