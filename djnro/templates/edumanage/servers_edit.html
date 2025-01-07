@@ -105,7 +105,7 @@
 		<div class="form-group {% if form.secret.errors %} error {% endif %}">
 			<label class="control-label" for="id_secret"><b>{% trans "Secret" %}</b></label>
 			<div class="controls">
-				<input type="password" maxlength="80" name="secret" id="id_secret" {% if edit %}value='{{form.instance.secret}}'{% endif %} {% if form.data.secret %}value='{{form.data.secret}}'{% endif %}>
+				<input type="password" autocomplete="off" maxlength="80" name="secret" id="id_secret" {% if edit %}value='{{form.instance.secret}}'{% endif %} {% if form.data.secret %}value='{{form.data.secret}}'{% endif %}>
 				{% if form.secret.errors %} <div class="alert-danger"> {{ form.secret.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.secret.help_text }}</span>
 			</div>
@@ -118,6 +118,39 @@
 				{{ form.proto }}
 				{% if form.proto.errors %} <div class="alert-danger"> {{ form.proto.errors|join_with_linebreaks }} </div>
 				{% endif %} <span class="help-block">{{ form.proto.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	{% if institution.ertype in ERTYPE_ROLES.IDP %}
+	<div class="col-md-6"{% if form.proto.value not in RADPROTOS.TLSPSK %} style="display: none"{% endif %}>
+		<div class="form-group {% if form.psk_identity.errors %} error {% endif %}">
+			<label class="control-label" for="id_psk_identity"><b>{% trans "Your TLS-PSK Identity" %}</b></label>
+			<div class="controls">
+				{{ form.psk_identity }}
+				{% if form.psk_identity.errors %} <div class="alert-danger"> {{ form.psk_identity.errors|join_with_linebreaks }} </div>
+				{% endif %} <span class="help-block">{{ form.psk_identity.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+	{% if institution.ertype in ERTYPE_ROLES.SP %}
+	<div class="col-md-6"{% if form.proto.value not in RADPROTOS.TLSPSK %} style="display: none"{% endif %}>
+		<div class="form-group">
+			<label class="control-label" for="our_psk_identity"><b>{% trans "Our TLS-PSK Identity" %}</b></label>
+			<div class="controls">
+				<input type="text" id="our_psk_identity" value="{{ institution.instid }}@{{ OUR_TLSPSK_REALM }}" disabled>
+				<span class="help-block">{{ form.psk_identity.help_text }}</span>
+			</div>
+		</div>
+	</div>
+	{% endif %}
+	<div class="col-md-6"{% if form.proto.value not in RADPROTOS.TLSPSK %} style="display: none"{% endif %}>
+		<div class="form-group {% if form.psk_key.errors %} error {% endif %}">
+			<label class="control-label" for="id_psk_key"><b>{% trans "TLS-PSK Pre-Shared Key" %}</b></label>
+			<div class="controls">
+				{{ form.psk_key }}
+				{% if form.psk_key.errors %} <div class="alert-danger"> {{ form.psk_key.errors|join_with_linebreaks }} </div>
+				{% endif %} <span class="help-block">{{ form.psk_key.help_text }}</span>
 			</div>
 		</div>
 	</div>
@@ -140,6 +173,18 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	$('#id_secret').showPassword();
+	$('#id_proto').on('change', function() {
+		proto = $(this).val();
+		if (proto.match('psk')) {
+			$('.col-md-6:has(.form-group #id_psk_identity)').show();
+			$('.col-md-6:has(.form-group #our_psk_identity)').show();
+			$('.col-md-6:has(.form-group #id_psk_key)').show();
+		} else {
+			$('.col-md-6:has(.form-group #id_psk_identity)').hide();
+			$('.col-md-6:has(.form-group #our_psk_identity)').hide();
+			$('.col-md-6:has(.form-group #id_psk_key)').hide();
+		}
+	});
 });
 </script>
 {% endblock %}

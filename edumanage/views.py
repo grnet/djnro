@@ -1458,6 +1458,7 @@ def base_response(request):
         'institution_canhaveservicelocs': institution_canhaveservicelocs,
         'ERTYPES': ERTYPES,
         'ERTYPE_ROLES': ERTYPE_ROLES,
+        'RADPROTOS': RADPROTOS,
     }
 
 
@@ -2194,6 +2195,11 @@ def instxml(request, version):
                         server_type = EDB_SERVER_TYPES.TLS
                 except:
                     pass
+                try:
+                    if server.proto == RADPROTOS.TLSPSK:
+                        server_type = EDB_SERVER_TYPES.TLS
+                except:
+                    pass
                 instServer = ElementTree.SubElement(instElement, "server")
                 instServerName = ElementTree.SubElement(instServer, "server_name")
                 instServerName.text = "%s" % (server.host)
@@ -2544,6 +2550,13 @@ def servdata(request):
         if srv.name:
             srv_dict['label'] = srv.name
         srv_dict['secret'] = srv.secret
+        srv_dict['addr_type'] = srv.addr_type
+        srv_dict['proto'] = srv.proto
+        if srv.proto == RADPROTOS.TLSPSK:
+            tlspsk_realm = settings.NRO_TLSPSK_REALM if hasattr(settings,"NRO_TLSPSK_REALM") else 'localhost'
+            # assuming the ManyToManyField is really many-to-one institution, which is true unless people play in the admin interface
+            srv_dict['psk_identity'] = "%s@%s" % (srv.instid.first().instid, tlspsk_realm)
+            srv_dict['psk_key'] = srv.psk_key
         root['clients'].update({srv_id: srv_dict})
 
     servers = hosts.filter(ertype__in=ERTYPE_ROLES.IDP)
@@ -2562,6 +2575,11 @@ def servdata(request):
             srv_dict['label'] = srv.name
         srv_dict['secret'] = srv.secret
         srv_dict['status_server'] = bool(srv.status_server)
+        srv_dict['addr_type'] = srv.addr_type
+        srv_dict['proto'] = srv.proto
+        if srv.proto == RADPROTOS.TLSPSK:
+            srv_dict['psk_identity'] = srv.psk_identity
+            srv_dict['psk_key'] = srv.psk_key
         root['servers'].update({srv_id: srv_dict})
 
     if insts:
