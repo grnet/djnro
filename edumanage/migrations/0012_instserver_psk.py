@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='instserver',
             name='psk_key',
-            field=models.CharField(blank=True, max_length=80, null=True),
+            field=models.CharField(blank=True, help_text='Randomly-generated string', max_length=80, null=True),
         ),
     ]
