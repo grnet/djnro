@@ -2212,7 +2212,7 @@ def instxml(request, version):
 
         if version.ge_version_2 and inst.venue_info:
             instVenueInfo = ElementTree.SubElement(instElement, "inst_type")
-            instVenueInfo = inst.venue_info
+            instVenueInfo.text = inst.venue_info
 
         for contact in inst.contact.all():
             instContact = ElementTree.SubElement(instElement, "contact")
@@ -2284,7 +2284,7 @@ def instxml(request, version):
             if version.ge_version_2 and serviceloc.venue_info:
                 instLocVenueInfo = ElementTree.SubElement(
                     instLocation, "location_type")
-                instLocVenueInfo = serviceloc.venue_info
+                instLocVenueInfo.text = serviceloc.venue_info
 
             for contact in serviceloc.contact.all():
                 instLocContact = ElementTree.SubElement(instLocation, "contact")
