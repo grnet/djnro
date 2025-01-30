@@ -17,8 +17,8 @@ class Migration(SchemaMigration):
         # Adding M2M table for field org_name on 'Institution'
         db.create_table('edumanage_institution_org_name', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False)),
-            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False))
+            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False, on_delete=models.CASCADE)),
+            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_institution_org_name', ['institution_id', 'name_i18n_id'])
     

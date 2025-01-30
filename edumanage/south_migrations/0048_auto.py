@@ -17,8 +17,8 @@ class Migration(SchemaMigration):
         m2m_table_name = db.shorten_name('edumanage_instserver_instid_m2m')
         db.create_table(m2m_table_name, (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('instserver', models.ForeignKey(orm['edumanage.instserver'], null=False)),
-            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False))
+            ('instserver', models.ForeignKey(orm['edumanage.instserver'], null=False, on_delete=models.CASCADE)),
+            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique(m2m_table_name, ['instserver_id', 'institution_id'])
 
