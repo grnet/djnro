@@ -9,7 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from accounts.models import User
 from django.views.decorators.cache import never_cache
 from django import forms
-from registration.models import RegistrationProfile
+from django_registration.backends.activation.views import ActivationView
+from django_registration.exceptions import ActivationError
 from accounts.models import UserProfile
 
 from edumanage.forms import UserProfileForm
@@ -23,10 +24,10 @@ def activate(request, activation_key):
     account = None
     if request.method == "GET":
         # Normalize before trying anything with it.
-        activation_key = activation_key.lower()
+        activation_view = ActivationView()
         try:
-            rp = RegistrationProfile.objects.get(activation_key=activation_key)
-        except RegistrationProfile.DoesNotExist:
+            username = activation_view.validate_key(activation_key=activation_key)
+        except ActivationError:
             return render(
                 request,
                 'registration/activate.html',
@@ -36,8 +37,16 @@ def activate(request, activation_key):
                 }
             )
         try:
-            user_profile = rp.user.userprofile
-        except UserProfile.DoesNotExist:
+            # NOTE: This fix works for now but isn't that clean.
+            # This is required because when a new user is created with google-oauth2,
+            # they are marked with is_active = True, which will cause the call to
+            # get_user to fail because it only works when is_active = False.
+            temp_user = User.objects.get(username__exact=username)
+            if temp_user.is_active:
+                temp_user.is_active = False
+                temp_user.save()
+            user_profile = activation_view.get_user(username)
+        except ActivationError:
             return render(
                 request,
                 'registration/activate.html',
@@ -48,7 +57,7 @@ def activate(request, activation_key):
             )
         form = UserProfileForm(instance=user_profile)
         form.fields['user'] = forms.ModelChoiceField(
-            queryset=User.objects.filter(pk=rp.user.pk), empty_label=None
+            queryset=User.objects.filter(pk=user_profile.pk), empty_label=None
         )
         form.fields['institution'] = forms.ModelChoiceField(
             queryset=Institution.objects.all(), empty_label=None
@@ -64,6 +73,7 @@ def activate(request, activation_key):
         )
     if request.method == "POST":
         request_data = request.POST.copy()
+        activation_view = ActivationView()
         try:
             user = User.objects.get(pk=request_data['user'])
             up = user.userprofile
@@ -72,7 +82,7 @@ def activate(request, activation_key):
             )
             up.save()
 
-        except:
+        except Exception as e:
             return render(
                 request,
                 'registration/activate_edit.html',
@@ -82,15 +92,16 @@ def activate(request, activation_key):
                 }
             )
         # Normalize before trying anything with it.
-        activation_key = activation_key.lower()
         try:
-            rp = RegistrationProfile.objects.get(activation_key=activation_key)
-            account = RegistrationProfile.objects.activate_user(activation_key)
+            username = activation_view.validate_key(activation_key=activation_key)
+            account = activation_view.get_user(username)
+            user.is_active = True
+            user.save()
             up.is_social_active = True
             up.save()
-            logger.info('Activating user %s' % rp.user.username)
+            logger.info('Activating user {account}')
         except Exception as e:
-            logger.info('An error occured: %s' % e)
+            logger.info('POST: An error occured: %s' % e)
             pass
 
         if account:
@@ -108,6 +119,7 @@ def activate(request, activation_key):
                 settings.SERVER_EMAIL,
                 account.email.split(';')
             )
+
         return render(
             request,
             'registration/activate.html',

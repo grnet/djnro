@@ -8,6 +8,7 @@ from xml.etree import ElementTree
 import itertools
 import locale
 import requests
+import traceback
 
 from django.shortcuts import redirect, render
 from django.http import (
@@ -17,10 +18,11 @@ from django.http import (
     HttpResponseBadRequest
 )
 from django.template import RequestContext
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.views import logout as logout_view
+from django.contrib.auth.views import LoginView, LogoutView
+
 from django import forms
 from django.contrib.contenttypes.forms import generic_inlineformset_factory
 from django.core.mail.message import EmailMessage
@@ -31,6 +33,7 @@ from django.contrib import messages
 from django.db.models import Max
 from django.views.decorators.cache import never_cache
 from django.utils.translation import ugettext as _
+from django.utils.translation import get_language
 from django.utils import six
 from accounts.models import User
 from django.core.cache import cache
@@ -75,14 +78,13 @@ from edumanage.forms import (
     InstitutionURL_i18nFormSet,
     InstServerForm
 )
-from registration.models import RegistrationProfile
+from django_registration.backends.activation.views import RegistrationView
 from edumanage.decorators import (social_active_required,
                                   cache_page_ifreq,
                                   detect_eduroam_db_version)
 from django.utils.cache import (
     get_max_age, patch_response_headers, patch_vary_headers
 )
-from django_dont_vary_on.decorators import dont_vary_on
 from utils.cat_helper import CatQuery
 from utils.locale import setlocale, compat_strxfrm
 
@@ -105,15 +107,15 @@ def set_language(request):
     """
     from django.views import i18n
     next = request.POST.get('next', request.GET.get('next'))
-    if not i18n.is_safe_url(url=next, host=request.get_host()):
+    if not i18n.is_safe_url(url=next, allowed_hosts=[request.get_host()]):
         next = request.META.get('HTTP_REFERER')
-        if not i18n.is_safe_url(url=next, host=request.get_host()):
+        if not i18n.is_safe_url(url=next, allowed_hosts=[request.get_host()]):
             next = '/'
     response = HttpResponseRedirect(next)
     if request.method == 'POST':
         lang_code = request.POST.get('language', None)
         if lang_code and i18n.check_for_language(lang_code):
-            if hasattr(request, 'session') and request.user.is_authenticated():
+            if hasattr(request, 'session') and request.user.is_authenticated:
                 request.session[i18n.LANGUAGE_SESSION_KEY] = lang_code
             response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang_code,
                                 max_age=settings.LANGUAGE_COOKIE_AGE,
@@ -146,7 +148,7 @@ def manage_login_front(request):
             'edumanage/welcome_manage.html',
             context={}
         )
-    if user.is_authenticated() and user.is_active and profile.is_social_active:
+    if user.is_authenticated and user.is_active and profile.is_social_active:
         return redirect(reverse('manage'))
     else:
         return render(
@@ -1472,7 +1474,7 @@ def render_with_base_ctx(request, *args, **kwargs):
 @social_active_required
 @never_cache
 def get_service_points(request):
-    lang = request.LANGUAGE_CODE
+    lang = get_language()
     if request.method == "GET":
         user = request.user
         try:
@@ -1509,10 +1511,9 @@ def overview(request):
 
 @never_cache
 def get_all_services(request):
-    lang = request.LANGUAGE_CODE
+    lang = get_language()
     locs = localizePointNames(ourPoints(), lang)
     return HttpResponse(json.dumps(locs), content_type='application/json')
-
 
 @never_cache
 def manage_login(request, backend):
@@ -1524,7 +1525,6 @@ def manage_login(request, backend):
     if backend == 'locallogin':
         return redirect(reverse('altlogin') + qs)
     return redirect(reverse('social:begin', args=[backend]) + qs)
-
 
 @never_cache
 def user_login(request):
@@ -1570,7 +1570,7 @@ def user_login(request):
         except User.DoesNotExist:
             pass
 
-        user = authenticate(username=username, firstname=firstname, lastname=lastname, mail=mail, authsource='shibboleth')
+        user = authenticate(request=request, username=username, firstname=firstname, lastname=lastname, mail=mail, authsource='shibboleth')
         request.session['SHIB_LOGOUT'] = hasattr(settings, 'SHIB_LOGOUT_URL')
         if user is not None:
             try:
@@ -1607,7 +1607,7 @@ def user_login(request):
                     " account has remained inactive for a long time contact"
                     " your technical coordinator or %(nroname)s Helpdesk") % {
                     'username': user.username,
-                    'nroname': get_nro_name(request.LANGUAGE_CODE)
+                    'nroname': get_nro_name(get_language())
                     }
 
                 return render(
@@ -1618,15 +1618,15 @@ def user_login(request):
         else:
             error = _(
                 "Something went wrong during user authentication."
-                " Contact your administrator %s" % user
+                " Contact your administrator."
             )
             return render(
                 request,
                 'status.html',
                 context={'error': error}
             )
-    except Exception as e:
-        error = _("Invalid login procedure. Error: %s" % e)
+    except Exception:
+        error = _(traceback.format_exc())
         return render(
             request,
             'status.html',
@@ -1648,7 +1648,7 @@ def user_logout(request, **kwargs):
     elif shib_logout_url is not None and \
             request.session.get('SHIB_LOGOUT') is True:
         kwargs['next_page'] = shib_logout_url
-    return logout_view(request, **kwargs)
+    return LogoutView.as_view(next_page=kwargs['next_page'])(request, **kwargs)
 
 
 @never_cache
@@ -1682,9 +1682,9 @@ def participants(request):
         dets.append(i.institutiondetails)
         if i.get_active_cat_enrl(cat_instance):
             cat_exists = True
-    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+    with setlocale((get_language(), 'UTF-8'), locale.LC_COLLATE):
         dets.sort(key=lambda x: compat_strxfrm(
-            x.institution.get_name(lang=request.LANGUAGE_CODE)))
+            x.institution.get_name(lang=get_language())))
     return render(
         request,
         'front/participants.html',
@@ -1712,9 +1712,9 @@ def connect(request):
             # only use first inst+CAT binding (per CAT instance), even if there
             # may be more
             dets_cat[i.pk] = catids[0]
-    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+    with setlocale((get_language(), 'UTF-8'), locale.LC_COLLATE):
         dets.sort(key=lambda x: compat_strxfrm(
-            x.institution.get_name(lang=request.LANGUAGE_CODE)))
+            x.institution.get_name(lang=get_language())))
     if settings_dict_get('CAT_AUTH', cat_instance) is None:
         cat_exists = False
         cat_api_direct = None
@@ -1780,7 +1780,7 @@ def selectinst(request):
                 " has remained inactive for a long time contact your technical"
                 " coordinator or %(nroname)s Helpdesk") % {
                 'username': userprofile.user.username,
-                'nroname': get_nro_name(request.LANGUAGE_CODE)
+                'nroname': get_nro_name(get_language())
                 }
             return render(
                 request,
@@ -1820,11 +1820,12 @@ def user_activation_notify(request, userprofile):
     )
     # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
-    registration_profile = RegistrationProfile.objects.create_profile(userprofile.user)
+    #registration_profile = RegistrationProfile.objects.create_profile(userprofile.user)
+    registration_view = RegistrationView()
     message = render_to_string(
         'registration/activation_email.txt',
         {
-            'activation_key': registration_profile.activation_key,
+            'activation_key': registration_view.get_activation_key(user=userprofile.user),
             'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
             'site': current_site,
             'user': userprofile.user,
@@ -2628,14 +2629,14 @@ def adminlist(request):
     users = User.objects.filter(userprofile__isnull=False,
                                 registrationprofile__isnull=False)
     data = [
-        (u.userprofile.institution.get_name(request.LANGUAGE_CODE),
+        (u.userprofile.institution.get_name(get_language()),
          u.first_name + " " + u.last_name,
          m)
         for u in users if
         u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
         for m in u.email.split(';')
     ]
-    with setlocale((request.LANGUAGE_CODE, 'UTF-8'), locale.LC_COLLATE):
+    with setlocale((get_language(), 'UTF-8'), locale.LC_COLLATE):
         data.sort(key=lambda d: compat_strxfrm(d[0]))
     resp_body = ""
     for (foreas, onoma, email) in data:
@@ -2687,7 +2688,6 @@ def _cat_api_cache_action(request, cat_instance):
     return (timeout, cache_kwargs)
 
 @cache_page_ifreq(_cat_api_cache_action)
-@dont_vary_on('Cookie')
 def cat_user_api_proxy(request, cat_instance):
     if cat_instance is None:
         cat_instance = 'production'
