@@ -107,20 +107,21 @@ TEMPLATES = [
     },
 ]
 
-MIDDLEWARE_CLASSES = (
+# Middlware order is suggested at https://docs.djangoproject.com/en/5.1/ref/middleware/#middleware-ordering
+MIDDLEWARE = (
     'django.middleware.cache.UpdateCacheMiddleware',
-    'django_dont_vary_on.middleware.RemoveUnneededVaryHeadersMiddleware',
     'django.middleware.gzip.GZipMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
     # Simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # Recommended as last item
+    'django.middleware.cache.FetchFromCacheMiddleware'
 )
 
 AUTHENTICATION_BACKENDS = (
@@ -130,7 +131,7 @@ AUTHENTICATION_BACKENDS = (
     # 'social.backends.google.GoogleOpenIdConnect',
     # 'social.backends.facebook.FacebookOAuth2',
 
-    # 'social.backends.google.GoogleOAuth2',
+    # 'social_core.backends.google.GoogleOAuth2',
     # 'social.backends.google.GoogleOAuth',
     # 'social.backends.linkedin.LinkedinOAuth2',
     # 'social.backends.yahoo.YahooOpenId',
@@ -169,7 +170,7 @@ INSTALLED_APPS = (
     'social_django',
     'edumanage',
     'accounts',
-    'registration',
+    'django_registration',
     'tinymce',
     'utils',
     'oauthlib',
