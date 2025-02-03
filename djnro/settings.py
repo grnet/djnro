@@ -277,6 +277,140 @@ URL_NAME_LANGS = (
     ('ro', 'Română'),
 )
 
+# from IEEE Std 802.11-2020 table 9-65, https://ieeexplore.ieee.org/document/9363693
+# see also https://wiki.geant.org/display/H2eduroam/Location+data+in+eduroam+DB+v2.0.1
+# You can add to these, but don't change the existing ones from 802.11-2020
+# Not sure whether the normative names from the standard should be translatable?
+VENUE_INFO = [
+    (
+        'Unspecified',
+        [
+            ('0,0', 'Unspecified'),
+        ],
+    ),
+    (
+        'Assembly',
+        [
+            ('1,0', 'Unspecified Assembly'),
+            ('1,1', 'Arena'),
+            ('1,2', 'Stadium'),
+            ('1,3', 'Passenger Terminal (e.g., airport, bus, ferry, train station)'),
+            ('1,4', 'Amphitheater'),
+            ('1,5', 'Amusement Park'),
+            ('1,6', 'Place of Worship'),
+            ('1,7', 'Convention Center'),
+            ('1,8', 'Library'),
+            ('1,9', 'Museum'),
+            ('1,10', 'Resturant'),
+            ('1,11', 'Theater'),
+            ('1,12', 'Bar'),
+            ('1,13', 'Coffee Shop'),
+            ('1,14', 'Zoo or Aquarium'),
+            ('1,15', 'Emergency Coordination Center'),
+        ],
+    ),
+    (
+        'Business',
+        [
+            ('2,0', 'Unspecified Business'),
+            ('2,1', 'Doctor or Dentist office'),
+            ('2,2', 'Bank'),
+            ('2,3', 'Fire Station'),
+            ('2,4', 'Police Station'),
+            ('2,6', 'Post Office'),
+            ('2,7', 'Professional Office'),
+            ('2,8', 'Research and Development Facility'),
+            ('2,9', 'Attorney Office'),
+        ],
+    ),
+    (
+        'Educational',
+        [
+            ('3,0', 'Unspecified Educational'),
+            ('3,1', 'School, Primary'),
+            ('3,2', 'School, Secondary'),
+            ('3,3', 'University or College'),
+        ],
+    ),
+    (
+        'Factory and Industrial',
+        [
+            ('4,0', 'Unspecified Factory and Industrial'),
+            ('4,1', 'Factory'),
+        ],
+    ),
+    (
+        'Institutional',
+        [
+            ('5,0', 'Unspecified Institutional'),
+            ('5,1', 'Hospital'),
+            ('5,2', 'Long Term Care Facility (e.g., Nursing home, Hospice, etc.)'),
+            ('5,3', 'Alcohol and Drug Rehabilitation Center'),
+            ('5,4', 'Group Home'),
+            ('5,5', 'Prison or Jail'),
+
+        ],
+    ),
+    (
+        'Mercantile',
+        [
+            ('6,0', 'Unspecified Mercantile'),
+            ('6,1', 'Retail Store'),
+            ('6,2', 'Grocery Market'),
+            ('6,3', 'Automotive Service Station'),
+            ('6,4', 'Shopping Mall'),
+            ('6,5', 'Gas Station'),
+        ],
+    ),
+    (
+        'Residential',
+        [
+            ('7,0', 'Unspecified Residential'),
+            ('7,1', 'Private Residence'),
+            ('7,2', 'Hotel or Motel'),
+            ('7,3', 'Dormitory'),
+            ('7,4', 'Boarding House'),
+        ],
+    ),
+    (
+        'Storage',
+        [
+            ('8,0', 'Unspecified Storage'),
+        ],
+    ),
+    (
+        'Utility and Miscellaneous',
+        [
+            ('9,0', 'Unspecified Utility and Miscellaneous'),
+        ],
+    ),
+    (
+        'Vehicular',
+        [
+            ('10,0', 'Unspecified Vehicular'),
+            ('10,1', 'Automobile or Truck'),
+            ('10,2', 'Airplane'),
+            ('10,3', 'Bus'),
+            ('10,4', 'Ferry'),
+            ('10,5', 'Ship or Boat'),
+            ('10,6', 'Train'),
+            ('10,7', 'Motor Bike'),
+        ],
+    ),
+    (
+        'Outdoor',
+        [
+            ('11,0', 'Unspecified Outdoor'),
+            ('11,1', 'Muni-mesh Network'),
+            ('11,2', 'City Park'),
+            ('11,3', 'Rest Area'),
+            ('11,4', 'Traffic Control'),
+            ('11,5', 'Bus Stop'),
+            ('11,6', 'Kiosk'),
+        ],
+    ),
+]
+
 SOCIAL_AUTH_FORCE_POST_DISCONNECT = True
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
 SOCIAL_AUTH_CREATE_USERS = True

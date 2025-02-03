@@ -36,6 +36,27 @@ from edumanage.forms import (
 from django.contrib.contenttypes import admin as contenttype_admin
 
 
+class VenueInfoFilter(admin.SimpleListFilter):
+    title = 'venue info'
+    parameter_name = 'venue_info'
+
+    def lookups(self, request, model_admin):
+        qs = model_admin.get_queryset(request)
+        vis = qs.order_by('venue_info').values_list('venue_info', flat=True).distinct()
+        display = qs.model._meta.get_field('venue_info').flatchoices
+        for vi in vis:
+            title = [title for lookup, title in display if lookup == vi]
+            if title:
+                yield (vi, title[0])
+            else:
+                yield (vi, vi)
+
+    def queryset(self, request, queryset):
+        if self.value():
+            return queryset.filter(venue_info=self.value())
+        return queryset
+
+
 class GenericTabularInlineValidateMin(contenttype_admin.GenericTabularInline):
     def get_formset(self, *args, **kwargs): # pylint: disable=arguments-differ
         if hasattr(self, 'validate_min'):
@@ -98,7 +119,7 @@ class InstitutionDetailsAdmin(admin.ModelAdmin):
     inlines = [
         InstitutionDetailsAddressInline, InstitutionDetailsUrlInline,
     ]
-    list_filter = ('institution__ertype',)
+    list_filter = ('institution__ertype', VenueInfoFilter)
 
 
 class ServiceLocAdmin(admin.ModelAdmin):
@@ -106,7 +127,7 @@ class ServiceLocAdmin(admin.ModelAdmin):
     inlines = [
         ServiceLocUrlInline, ServiceLocNameInline, ServiceLocAddressInline,
     ]
-    list_filter = ('SSID', 'enc_level', 'tag')
+    list_filter = ('SSID', 'enc_level', 'tag', VenueInfoFilter)
     form = ServiceLocForm
     readonly_fields = ('locationid',)
 

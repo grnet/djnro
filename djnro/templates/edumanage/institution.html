@@ -67,7 +67,7 @@
 					<div class="col-md-2">
 						<label class="" for="id_venue_info">{% trans "Institution Type" %}</label>
 						<div class="">
-							{{ institution.institutiondetails.venue_info }}
+							{{ institution.institutiondetails.venue_info }}{% with institution.institutiondetails.get_venue_info_display as vi %} ({{ vi }}){% endwith %}
 						</div>
 					</div>
 					{% if institution.ertype in ERTYPE_ROLES.SP %}

@@ -169,7 +169,7 @@
     <div class="control-group">
         <label class="control-label" for="id_venue_info">{% trans "Location Type" %}</label>
         <div class="controls">
-            {{ service.venue_info }}
+            {{ service.venue_info }}{% with service.get_venue_info_display as vi %} ({{ vi }}){% endwith %}
         </div>
     </div>
     <div class="control-group">
