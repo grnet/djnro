@@ -47,13 +47,11 @@ class MultiSelectFormField(forms.MultipleChoiceField):
     def __init__(self, *args, **kwargs):
         supercls = super(MultiSelectFormField, self)
         # remove TypedChoiceField extra args
-        supercls_init_args = signature(supercls.__init__).parameters
-        if 'self' in supercls_init_args:
-            supercls_init_args.pop('self', None)
+        banned_args = ['self','coerce','empty_value']
         supercls.__init__(
             *args,
             **{key: val for (key, val) in kwargs.items()
-               if key in supercls_init_args}
+               if key not in banned_args}
         )
 
 class MultiSelectField(models.Field):
