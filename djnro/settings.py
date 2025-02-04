@@ -102,6 +102,7 @@ TEMPLATES = [
                 'edumanage.context_processors.manage_login_methods',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
