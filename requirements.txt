@@ -1,6 +1,4 @@
 Django==2.2.28
-argparse>=1.2.1
-ipaddress>=1.0.22
 
 # Version 3.0 supports Django 1.11 through 2.1
 django-registration==3.0
