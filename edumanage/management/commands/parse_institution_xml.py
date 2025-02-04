@@ -121,7 +121,7 @@ for UUID. This can be disabled by using this option.''')
 - a Realm object must be added, matching the NRO_COUNTRY_CODE'''))
         root = doc.getroot()
         institution_list = []
-        institutions = root.getchildren()
+        institutions = list(root)
         self.stdout.write_maybe('Walking %s' % root.tag)
         for institution in institutions:
             institution_obj = self.parse_and_create_institution(institution)
@@ -172,7 +172,7 @@ for UUID. This can be disabled by using this option.''')
     def parse_address(self, element):
         parameters = {}
         required_parameters = ['lang', 'street', 'city']
-        for child_element in element.getchildren():
+        for child_element in element:
             try:
                 lang = child_element.attrib['lang']
                 if 'lang' in parameters:
@@ -271,7 +271,7 @@ for UUID. This can be disabled by using this option.''')
         tags = ['name', 'email', 'phone']
         if self.edb_version.ge_version_2:
             tags += ['type', 'privacy']
-        for child_element in element.getchildren():
+        for child_element in element:
             if child_element.tag in tags:
                 parameters[child_element.tag] = \
                     self.parse_text_node(child_element)
@@ -332,7 +332,7 @@ for UUID. This can be disabled by using this option.''')
             for f in ServiceLoc._meta.get_fields()
             if f.db_column is not None and not f.auto_created
         }
-        for child_element in element.getchildren():
+        for child_element in element:
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
             if self.edb_version.ge_version_2 and tag == 'locationid':
@@ -372,7 +372,7 @@ for UUID. This can be disabled by using this option.''')
                 continue
             if tag == 'address':
                 if self.edb_version.is_version_1:
-                    for sub_element in child_element.getchildren():
+                    for sub_element in child_element:
                         sub_element.attrib['lang'] = 'en'
                 address_elements.append(child_element)
                 continue
@@ -566,7 +566,7 @@ for UUID. This can be disabled by using this option.''')
             if getattr(f, 'db_column', None) is not None and not f.auto_created
         }
         name_tag = 'org_name' if self.edb_version.is_version_1 else 'inst_name'
-        for child_element in element.getchildren():
+        for child_element in element:
             tag = child_element.tag
             self.stdout.write_maybe('- %s' % tag)
             if self.edb_version.ge_version_2 and tag == 'instid':
@@ -598,7 +598,7 @@ for UUID. This can be disabled by using this option.''')
                        'info_URL', 'policy_URL', 'location',
                        'address']:
                 if tag == 'address' and self.edb_version.is_version_1:
-                    for sub_element in child_element.getchildren():
+                    for sub_element in child_element:
                         sub_element.attrib['lang'] = 'en'
                 if not tag in parameters:
                     parameters[tag] = []

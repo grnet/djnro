@@ -53,12 +53,12 @@ class Command(BaseCommand):
         point_list = []
         doc = ElementTree.parse(file)
         root = doc.getroot()
-        r = root.getchildren()[0]
-        for (counter, i) in enumerate(r.getchildren()):
+        r = list(root)[0]
+        for (counter, i) in enumerate(list(r)):
             if "id" in i.keys():
-                j = i.getchildren()
+                j = list(i)
                 pointname = j[0].text
-                point = j[2].getchildren()[0].text
+                point = list(j[2])[0].text
                 pointlng, pointlat, pointele = point.split(',')
                 point_list.append(
                     {
