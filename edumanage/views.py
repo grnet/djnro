@@ -1820,7 +1820,6 @@ def user_activation_notify(request, userprofile):
     )
     # Email subject *must not* contain newlines
     subject = ''.join(subject.splitlines())
-    #registration_profile = RegistrationProfile.objects.create_profile(userprofile.user)
     registration_view = RegistrationView()
     message = render_to_string(
         'registration/activation_email.txt',
