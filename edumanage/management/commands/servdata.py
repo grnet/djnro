@@ -78,9 +78,8 @@ def servdata():
         srv_dict['addr_type'] = srv.addr_type
         srv_dict['proto'] = srv.proto
         if srv.proto == RADPROTOS.TLSPSK:
-            tlspsk_realm = settings.NRO_TLSPSK_REALM if hasattr(settings,"NRO_TLSPSK_REALM") else 'localhost'
             # assuming the ManyToManyField is really many-to-one institution, which is true unless people play in the admin interface
-            srv_dict['psk_identity'] = "%s@%s" % (srv.instid.first().instid, tlspsk_realm)
+            srv_dict['psk_identity'] = "%s@%s" % (srv.instid.first().instid, settings.NRO_TLSPSK_REALM)
             srv_dict['psk_key'] = srv.psk_key
         root['clients'].update({srv_id: srv_dict})
 
