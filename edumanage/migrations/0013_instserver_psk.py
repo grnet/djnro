@@ -4,13 +4,13 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
-        ('edumanage', '0011_edb21_server_schema'),
+        ('edumanage', '0012_venue_info_select'),
     ]
     operations = [
         migrations.AddField(
             model_name='instserver',
             name='psk_identity',
-            field=models.CharField(blank=True, help_text='Network Access Identifier (user@realm)', max_length=64, null=True),
+            field=models.CharField(blank=True, help_text='Network Access Identifier (user@realm)', max_length=128, null=True),
         ),
         migrations.AddField(
             model_name='instserver',

@@ -542,7 +542,7 @@ class InstServer(models.Model):
 
     secret = models.CharField(max_length=80)
     proto = models.CharField(max_length=12, choices=RADPROTOS, default=RADPROTOS.UDP)
-    psk_identity = models.CharField(max_length=64, null=True, blank=True, help_text=_("Network Access Identifier (user@realm)"))
+    psk_identity = models.CharField(max_length=128, null=True, blank=True, help_text=_("Network Access Identifier (user@realm)"))
     psk_key = models.CharField(max_length=80, null=True, blank=True, help_text='Randomly-generated string')
     ts = models.DateTimeField(auto_now=True)
 
