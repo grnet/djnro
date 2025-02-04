@@ -222,7 +222,7 @@ class InstServerForm(forms.ModelForm):
         proto = self.cleaned_data['proto']
         if proto in RADPROTOS.TLSPSK:
             if psk_key:
-                if len(psk_key) > 16:
+                if len(psk_key) >= 16:
                     return self.cleaned_data["psk_key"]
                 else:
                     raise forms.ValidationError(_('The PSK Key must be at least 16 octets (draft-ietf-radext-tls-psk-11)'))
