@@ -51,7 +51,11 @@ class Command(BaseCommand):
 
     def refresh_cache(self, file):
         point_list = []
-        doc = ElementTree.parse(file)
+        try:
+            doc = ElementTree.parse(file)
+        except ElementTree.ParseError as e:
+            write(f'Error parsing file {file}: {e}')
+            return False
         root = doc.getroot()
         r = list(root)[0]
         for (counter, i) in enumerate(list(r)):
