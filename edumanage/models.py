@@ -10,7 +10,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import fields
 from django.utils.functional import curry
 from django.utils.text import capfirst
-from django.utils import six
+import six
 from django.core import exceptions
 from django.conf import settings
 from django import forms
