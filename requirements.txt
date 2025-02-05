@@ -1,7 +1,7 @@
 Django==3.0.0
 
 # Version 3.2 supports Django 2.2, 3.1, and 3.2
-django-registration==3.2.0
+django-registration>=2.0.0,<4.0
 
 # Version 3.3.0 supports Django 2.2, 3.0 and 3.1
 django-tinymce==3.3.0
