@@ -6,8 +6,9 @@ import ldap
 from django.contrib.auth.models import UserManager, Permission, Group
 from accounts.models import User
 from django.conf import settings
+from  django.contrib.auth.backends import BaseBackend
 
-class ldapBackend:
+class ldapBackend(BaseBackend):
     def authenticate(self, username=None, password=None):
 
         ldap_settings = settings.LDAP_AUTH_SETTINGS
