@@ -11,7 +11,7 @@ social-auth-app-django>=3.1.0,<4.0
 social-auth-core>=3.0.0,<4.0
 
 # Requests officially supports Python 3.8+
-requests>=2.27.1,<3.0
+requests>=2.27.1
 
 lxml>=2.3.2
 PyYAML>=5.4
