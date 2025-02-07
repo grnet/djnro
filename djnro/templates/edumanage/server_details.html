@@ -76,7 +76,7 @@
 			{{ server.proto }}
 		</div>
 	</div>
-	{% if server.proto in RADPROTOS.TLSPSK %}
+	{% if server.proto == RADPROTOS.TLSPSK %}
 	{% if server.ertype in ERTYPE_ROLES.IDP %}
 	<div class="control-group">
 		<label class="control-label" for="id_psk_identity">{% trans "Your TLS-PSK Identity" %}</label>

@@ -205,7 +205,7 @@ class InstServerForm(forms.ModelForm):
         if not 'ertype' in self.cleaned_data:
                 raise forms.ValidationError(_('The Type field is required to validate this field.'))
         ertype = self.cleaned_data['ertype']
-        if proto in RADPROTOS.TLSPSK:
+        if proto == RADPROTOS.TLSPSK:
             if ertype in ERTYPE_ROLES.IDP:
                 if psk_identity:
                     match = re.match(NAI_RE, psk_identity)
@@ -220,7 +220,7 @@ class InstServerForm(forms.ModelForm):
         if not 'proto' in self.cleaned_data:
                 raise forms.ValidationError(_('The Protocol field is required to validate this field.'))
         proto = self.cleaned_data['proto']
-        if proto in RADPROTOS.TLSPSK:
+        if proto == RADPROTOS.TLSPSK:
             if psk_key:
                 if len(psk_key) >= 16:
                     return self.cleaned_data["psk_key"]
