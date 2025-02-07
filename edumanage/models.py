@@ -8,7 +8,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import fields
-from django.utils.functional import curry
+from functools import partialmethod
 from django.utils.text import capfirst
 import six
 from django.core import exceptions
@@ -116,7 +116,7 @@ class MultiSelectField(models.Field):
                     for value in values
                 ])
             setattr(cls, 'get_%s_display' % self.name,
-                    curry(_get_FIELD_display, field=self))
+                    partialmethod(_get_FIELD_display, field=self))
 
     def validate(self, value, model_instance):
         # assume value should be a list
