@@ -76,7 +76,25 @@
 			{{ server.proto }}
 		</div>
 	</div>
-	 <div class="control-group">
+	{% if server.proto == RADPROTOS.TLSPSK %}
+	{% if server.ertype in ERTYPE_ROLES.IDP %}
+	<div class="control-group">
+		<label class="control-label" for="id_psk_identity">{% trans "Your TLS-PSK Identity" %}</label>
+		<div class="controls">
+			{{ server.psk_identity }}
+		</div>
+	</div>
+	{% endif %}
+	{% if server.ertype in ERTYPE_ROLES.SP %}
+	<div class="control-group">
+		<label class="control-label" for="id_psk_identity">{% trans "Our TLS-PSK Identity" %}</label>
+		<div class="controls">
+			{{ institution.instid }}@{{ OUR_TLSPSK_REALM }}
+		</div>
+	</div>
+	{% endif %}
+	{% endif %}
+    <div class="control-group">
         <div class="controls">
             <a class="btn btn-primary" href="{% url 'edit-servers' server.pk %}">{% trans "Edit" %}</a>
         </div>

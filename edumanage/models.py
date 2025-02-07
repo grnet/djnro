@@ -281,8 +281,9 @@ get_ertype_number = partial(get_ertype_string, reverse=True) # pylint: disable=i
 RADPROTOS = get_namedtuple_choices(
     ('UDP', 'radius', 'traditional RADIUS over UDP'),
     # ('TCP', 'radius-tcp', 'RADIUS over TCP (RFC6613)'),
-     ('TLS', 'radius-tls', 'RADIUS over TLS (RFC6614)'),
+    ('TLS', 'radius-tls', 'RADIUS over TLS (RadSec, RFC6614)'),
     # ('DTLS', 'radius-dtls', 'RADIUS over datagram TLS (RESERVED)'),
+    ('TLSPSK', 'radius-psk', 'RADIUS over TLS (PSK)'), # should be radius-tlspsk, but fit within 12 chars
 )
 
 
@@ -541,6 +542,8 @@ class InstServer(models.Model):
 
     secret = models.CharField(max_length=80)
     proto = models.CharField(max_length=12, choices=RADPROTOS, default=RADPROTOS.UDP)
+    psk_identity = models.CharField(max_length=128, null=True, blank=True, help_text=_("Network Access Identifier (user@realm)"))
+    psk_key = models.CharField(max_length=80, null=True, blank=True, help_text='Randomly-generated string')
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:

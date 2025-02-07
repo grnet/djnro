@@ -17,6 +17,7 @@ from edumanage.models import (
     RealmServer,
     ERTYPES,
     ERTYPE_ROLES,
+    RADPROTOS,
 )
 from accounts.models import UserProfile
 from edumanage.fields import MultipleEmailsField
@@ -27,6 +28,7 @@ import re
 
 FQDN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
 DN_RE = r'(^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
+NAI_RE = r'(^([^@]+)@(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$)'
 
 def get_model_field(model, field_name):
     fields = forms.models.fields_for_model(
@@ -194,6 +196,38 @@ class InstServerForm(forms.ModelForm):
         else:
             raise forms.ValidationError(_('This field is required.'))
         return self.cleaned_data["host"]
+
+    def clean_psk_identity(self):
+        psk_identity = self.cleaned_data['psk_identity']
+        if not 'proto' in self.cleaned_data:
+                raise forms.ValidationError(_('The Protocol field is required to validate this field.'))
+        proto = self.cleaned_data['proto']
+        if not 'ertype' in self.cleaned_data:
+                raise forms.ValidationError(_('The Type field is required to validate this field.'))
+        ertype = self.cleaned_data['ertype']
+        if proto == RADPROTOS.TLSPSK:
+            if ertype in ERTYPE_ROLES.IDP:
+                if psk_identity:
+                    match = re.match(NAI_RE, psk_identity)
+                    if not match:
+                        raise forms.ValidationError(_('Invalid Network Access Identifier format.'))
+                    return self.cleaned_data["psk_identity"]
+                else:
+                    raise forms.ValidationError(_('This field is required for IdPs.'))
+
+    def clean_psk_key(self):
+        psk_key = self.cleaned_data['psk_key']
+        if not 'proto' in self.cleaned_data:
+                raise forms.ValidationError(_('The Protocol field is required to validate this field.'))
+        proto = self.cleaned_data['proto']
+        if proto == RADPROTOS.TLSPSK:
+            if psk_key:
+                if len(psk_key) >= 16:
+                    return self.cleaned_data["psk_key"]
+                else:
+                    raise forms.ValidationError(_('The PSK Key must be at least 16 octets (draft-ietf-radext-tls-psk-11)'))
+            else:
+                raise forms.ValidationError(_('This field is required.'))
 
 
 class ContactForm(forms.ModelForm):
