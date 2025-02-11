@@ -17,12 +17,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userprofile',
             name='institution',
-            field=models.ForeignKey(to='edumanage.Institution'),
+            field=models.ForeignKey(to='edumanage.Institution', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='userprofile',
             name='user',
-            field=models.OneToOneField(to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='user',

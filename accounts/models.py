@@ -34,8 +34,8 @@ patch_username_maxlen(User._meta.get_field('username'))
 
 @python_2_unicode_compatible
 class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL)
-    institution = models.ForeignKey(Institution)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    institution = models.ForeignKey(Institution, on_delete=models.CASCADE)
     is_social_active = models.BooleanField(default=False)
 
     class Meta:

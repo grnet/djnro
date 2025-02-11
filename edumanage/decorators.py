@@ -9,6 +9,7 @@ from functools import wraps
 from django.utils.decorators import available_attrs
 from django.views.decorators.cache import (never_cache, cache_page)
 from django.utils import six
+from django.utils.translation import get_language
 
 from accounts.models import UserProfile
 from edumanage.forms import UserProfileForm
@@ -38,7 +39,7 @@ def social_active_required(function):
                     " account has remained inactive for a long time contact"
                     " your technical coordinator or %(nroname)s Helpdesk") % {
                     'username': user.username,
-                    'nroname': edumanage.views.get_nro_name(request.LANGUAGE_CODE)
+                    'nroname': edumanage.views.get_nro_name(get_language())
                     }
                 return render(
                     request,

@@ -46,8 +46,8 @@ class Migration(SchemaMigration):
         # Adding M2M table for field proxyto on 'InstRealm'
         db.create_table('edumanage_instrealm_proxyto', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('instrealm', models.ForeignKey(orm['edumanage.instrealm'], null=False)),
-            ('instserver', models.ForeignKey(orm['edumanage.instserver'], null=False))
+            ('instrealm', models.ForeignKey(orm['edumanage.instrealm'], null=False, on_delete=models.CASCADE)),
+            ('instserver', models.ForeignKey(orm['edumanage.instserver'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_instrealm_proxyto', ['instrealm_id', 'instserver_id'])
 
@@ -127,24 +127,24 @@ class Migration(SchemaMigration):
         # Adding M2M table for field loc_name on 'ServiceLoc'
         db.create_table('edumanage_serviceloc_loc_name', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False)),
-            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False))
+            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False, on_delete=models.CASCADE)),
+            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_serviceloc_loc_name', ['serviceloc_id', 'name_i18n_id'])
 
         # Adding M2M table for field url on 'ServiceLoc'
         db.create_table('edumanage_serviceloc_url', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False)),
-            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False))
+            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False, on_delete=models.CASCADE)),
+            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_serviceloc_url', ['serviceloc_id', 'url_i18n_id'])
 
         # Adding M2M table for field contact on 'ServiceLoc'
         db.create_table('edumanage_serviceloc_contact', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False)),
-            ('contact', models.ForeignKey(orm['edumanage.contact'], null=False))
+            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False, on_delete=models.CASCADE)),
+            ('contact', models.ForeignKey(orm['edumanage.contact'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_serviceloc_contact', ['serviceloc_id', 'contact_id'])
 
@@ -165,24 +165,24 @@ class Migration(SchemaMigration):
         # Adding M2M table for field org_name on 'Institution'
         db.create_table('edumanage_institution_org_name', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False)),
-            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False))
+            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False, on_delete=models.CASCADE)),
+            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_institution_org_name', ['institution_id', 'name_i18n_id'])
 
         # Adding M2M table for field url on 'Institution'
         db.create_table('edumanage_institution_url', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False)),
-            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False))
+            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False, on_delete=models.CASCADE)),
+            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_institution_url', ['institution_id', 'url_i18n_id'])
 
         # Adding M2M table for field contact on 'Institution'
         db.create_table('edumanage_institution_contact', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False)),
-            ('contact', models.ForeignKey(orm['edumanage.contact'], null=False))
+            ('institution', models.ForeignKey(orm['edumanage.institution'], null=False, on_delete=models.CASCADE)),
+            ('contact', models.ForeignKey(orm['edumanage.contact'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_institution_contact', ['institution_id', 'contact_id'])
 
@@ -200,24 +200,24 @@ class Migration(SchemaMigration):
         # Adding M2M table for field org_name on 'Realm'
         db.create_table('edumanage_realm_org_name', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('realm', models.ForeignKey(orm['edumanage.realm'], null=False)),
-            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False))
+            ('realm', models.ForeignKey(orm['edumanage.realm'], null=False, on_delete=models.CASCADE)),
+            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_realm_org_name', ['realm_id', 'name_i18n_id'])
 
         # Adding M2M table for field url on 'Realm'
         db.create_table('edumanage_realm_url', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('realm', models.ForeignKey(orm['edumanage.realm'], null=False)),
-            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False))
+            ('realm', models.ForeignKey(orm['edumanage.realm'], null=False, on_delete=models.CASCADE)),
+            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_realm_url', ['realm_id', 'url_i18n_id'])
 
         # Adding M2M table for field contact on 'Realm'
         db.create_table('edumanage_realm_contact', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('realm', models.ForeignKey(orm['edumanage.realm'], null=False)),
-            ('contact', models.ForeignKey(orm['edumanage.contact'], null=False))
+            ('realm', models.ForeignKey(orm['edumanage.realm'], null=False, on_delete=models.CASCADE)),
+            ('contact', models.ForeignKey(orm['edumanage.contact'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_realm_contact', ['realm_id', 'contact_id'])
 

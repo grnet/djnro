@@ -1,14 +1,22 @@
-Django>=1.11,<2.0
+Django==2.1.5
 argparse>=1.2.1
-django-registration==2.0.4
-django-tinymce>=2.3.0,<3.0a
-ipaddress==1.0.22
+ipaddress>=1.0.22
+
+# Version 3.0 supports Django 1.11 through 2.1
+django-registration==3.0
+
+# Version 2.7.0 supports Django 2.0
+django-tinymce==3.0.*
+
 social-auth-app-django>=3.1.0,<4.0
+
 social-auth-core>=3.0.0,<4.0
-requests==2.31.0
+
+# Requests officially supports Python 3.8+
+requests>=2.27.1,<3.0
+
 lxml>=2.3.2
-PyYAML~=5.4
-django-dont-vary-on>=1.0.0
+PyYAML>=5.4
 django-sortedm2m>=2.0.0
 django-widget-tweaks
 semantic_version

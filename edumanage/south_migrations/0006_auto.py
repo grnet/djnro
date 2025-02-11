@@ -17,8 +17,8 @@ class Migration(SchemaMigration):
         # Adding M2M table for field loc_name on 'ServiceLoc'
         db.create_table('edumanage_serviceloc_loc_name', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False)),
-            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False))
+            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False, on_delete=models.CASCADE)),
+            ('name_i18n', models.ForeignKey(orm['edumanage.name_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_serviceloc_loc_name', ['serviceloc_id', 'name_i18n_id'])
     

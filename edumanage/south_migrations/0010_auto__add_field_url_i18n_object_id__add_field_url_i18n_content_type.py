@@ -29,24 +29,24 @@ class Migration(SchemaMigration):
         # Adding M2M table for field url on 'Realm'
         db.create_table('edumanage_realm_url', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('realm', models.ForeignKey(orm['edumanage.realm'], null=False)),
-            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False))
+            ('realm', models.ForeignKey(orm['edumanage.realm'], null=False, on_delete=models.CASCADE)),
+            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=Fals, on_delete=models.CASCADEe))
         ))
         db.create_unique('edumanage_realm_url', ['realm_id', 'url_i18n_id'])
 
         # Adding M2M table for field url on 'InstitutionDetails'
         db.create_table('edumanage_institutiondetails_url', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('institutiondetails', models.ForeignKey(orm['edumanage.institutiondetails'], null=False)),
-            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False))
+            ('institutiondetails', models.ForeignKey(orm['edumanage.institutiondetails'], null=False, on_delete=models.CASCADE)),
+            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_institutiondetails_url', ['institutiondetails_id', 'url_i18n_id'])
 
         # Adding M2M table for field url on 'ServiceLoc'
         db.create_table('edumanage_serviceloc_url', (
             ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
-            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False)),
-            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False))
+            ('serviceloc', models.ForeignKey(orm['edumanage.serviceloc'], null=False, on_delete=models.CASCADE)),
+            ('url_i18n', models.ForeignKey(orm['edumanage.url_i18n'], null=False, on_delete=models.CASCADE))
         ))
         db.create_unique('edumanage_serviceloc_url', ['serviceloc_id', 'url_i18n_id'])
 

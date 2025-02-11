@@ -6,8 +6,7 @@ from accounts.models import User
 from django.conf import settings
 
 class shibauthBackend:
-    def authenticate(self, **kwargs):
-        username = kwargs.get('username')
+    def authenticate(self, request, username=None, password=None, **kwargs):
         firstname = kwargs.get('firstname')
         lastname = kwargs.get('lastname')
         mail = kwargs.get('mail')
