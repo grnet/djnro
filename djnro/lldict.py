@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.utils.functional import SimpleLazyObject
-from django.utils.encoding import smart_text, python_2_unicode_compatible
+from django.utils.encoding import smart_text
+from six import python_2_unicode_compatible
 
 @python_2_unicode_compatible
 class LazyLangDict(SimpleLazyObject):

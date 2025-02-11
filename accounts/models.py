@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib import admin
 from django.conf import settings
 from django.core import validators
-from django.utils.encoding import python_2_unicode_compatible
+from six import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from edumanage.models import Institution
 import re

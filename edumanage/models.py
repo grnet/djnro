@@ -15,9 +15,8 @@ from django.core import exceptions
 from django.conf import settings
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.encoding import (
-    force_text, python_2_unicode_compatible
-)
+from django.utils.encoding import force_text
+from six import python_2_unicode_compatible
 from sortedm2m.fields import SortedManyToManyField
 from utils.functional import cached_property
 
