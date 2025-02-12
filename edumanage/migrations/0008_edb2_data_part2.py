@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 from django.db import migrations
 from django.db.models import OuterRef, Subquery, F
-from functools import partialmethod
+from functools import partial
 
 from . import AppAwareRunPython
 
@@ -43,8 +43,8 @@ class Migration(migrations.Migration):
 
     operations = [
         AppAwareRunPython(
-            partialmethod(migrate_serviceloc_coords, forwards=True),
-            reverse_code=partialmethod(migrate_serviceloc_coords, forwards=False),
+            partial(migrate_serviceloc_coords, forwards=True),
+            reverse_code=partial(migrate_serviceloc_coords, forwards=False),
             hints={'model_name': 'serviceloc'},
         ),
     ]

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.db import migrations
 from django.db.models import OuterRef, Subquery, F, When, Case, Value
 from django.db.models.fields import BooleanField, PositiveIntegerField
-from functools import partialmethod
+from functools import partial
 
 from . import AppAwareRunPython
 
@@ -91,28 +91,28 @@ class Migration(migrations.Migration):
 
     operations = [
         AppAwareRunPython(
-            partialmethod(migrate_addresses, model_name='Realm', forwards=True),
-            reverse_code=partialmethod(migrate_addresses, model_name='Realm', forwards=False),
+            partial(migrate_addresses, model_name='Realm', forwards=True),
+            reverse_code=partial(migrate_addresses, model_name='Realm', forwards=False),
             hints={'model_name': 'realm'},
         ),
         AppAwareRunPython(
-            partialmethod(migrate_addresses, model_name='InstitutionDetails', forwards=True),
-            reverse_code=partialmethod(migrate_addresses, model_name='InstitutionDetails', forwards=False),
+            partial(migrate_addresses, model_name='InstitutionDetails', forwards=True),
+            reverse_code=partial(migrate_addresses, model_name='InstitutionDetails', forwards=False),
             hints={'model_name': 'institutiondetails'},
         ),
         AppAwareRunPython(
-            partialmethod(migrate_addresses, model_name='ServiceLoc', forwards=True),
-            reverse_code=partialmethod(migrate_addresses, model_name='ServiceLoc', forwards=False),
+            partial(migrate_addresses, model_name='ServiceLoc', forwards=True),
+            reverse_code=partial(migrate_addresses, model_name='ServiceLoc', forwards=False),
             hints={'model_name': 'serviceloc'},
         ),
         AppAwareRunPython(
-            partialmethod(migrate_serviceloc_tags, forwards=True),
-            reverse_code=partialmethod(migrate_serviceloc_tags, forwards=False),
+            partial(migrate_serviceloc_tags, forwards=True),
+            reverse_code=partial(migrate_serviceloc_tags, forwards=False),
             hints={'model_name': 'serviceloc'},
         ),
         AppAwareRunPython(
-            partialmethod(migrate_serviceloc_wired, forwards=True),
-            reverse_code=partialmethod(migrate_serviceloc_wired, forwards=False),
+            partial(migrate_serviceloc_wired, forwards=True),
+            reverse_code=partial(migrate_serviceloc_wired, forwards=False),
             hints={'model_name': 'serviceloc'},
         ),
     ]
