@@ -107,9 +107,9 @@ def set_language(request):
     """
     from django.views import i18n
     next = request.POST.get('next', request.GET.get('next'))
-    if not i18n.is_safe_url(url=next, allowed_hosts=[request.get_host()]):
+    if not i18n.url_has_allowed_host_and_scheme(url=next, allowed_hosts=[request.get_host()]):
         next = request.META.get('HTTP_REFERER')
-        if not i18n.is_safe_url(url=next, allowed_hosts=[request.get_host()]):
+        if not i18n.url_has_allowed_host_and_scheme(url=next, allowed_hosts=[request.get_host()]):
             next = '/'
     response = HttpResponseRedirect(next)
     if request.method == 'POST':
