@@ -6,7 +6,7 @@ from django.db.models.signals import (
 )
 from django.dispatch import receiver
 from django.core.exceptions import ValidationError
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from edumanage.models import ServiceLoc, Coordinates, RealmServer, InstRealm, InstServer, Contact, InstitutionDetails
 from edumanage.views import ourPoints
 

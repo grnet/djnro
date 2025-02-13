@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.core import validators
 from six import python_2_unicode_compatible
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from edumanage.models import Institution
 import re
 

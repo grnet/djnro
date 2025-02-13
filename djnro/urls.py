@@ -1,4 +1,4 @@
-from django.conf.urls import include
+from django.urls import include
 from django.urls import path, re_path
 # Uncomment the next two lines to enable the django admin interface:
 from django.contrib import admin

@@ -32,7 +32,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models import Max
 from django.views.decorators.cache import never_cache
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.translation import get_language
 import six
 from accounts.models import User
@@ -108,7 +108,7 @@ def set_language(request):
     from django.views import i18n
     next = request.POST.get('next', request.GET.get('next'))
     if not i18n.url_has_allowed_host_and_scheme(url=next, allowed_hosts=[request.get_host()]):
-        next = request.META.get('HTTP_REFERER')
+        next = request.headers.get('referer')
         if not i18n.url_has_allowed_host_and_scheme(url=next, allowed_hosts=[request.get_host()]):
             next = '/'
     response = HttpResponseRedirect(next)
@@ -2608,17 +2608,17 @@ def servdata(request):
                 inst_dict['realms'].update(rdict)
         root['institutions'].append(inst_dict)
 
-    if 'HTTP_ACCEPT' in request.META:
-        if request.META.get('HTTP_ACCEPT') == "application/json":
+    if 'accept' in request.headers:
+        if request.headers.get('accept') == "application/json":
             resp_content_type = "application/json"
             resp_body = json.dumps(root)
-        elif request.META.get('HTTP_ACCEPT') in [
+        elif request.headers.get('accept') in [
             "text/yaml",
             "text/x-yaml",
             "application/yaml",
             "application/x-yaml"
         ]:
-            resp_content_type = request.META.get('HTTP_ACCEPT')
+            resp_content_type = request.headers.get('accept')
     try:
         resp_content_type
     except NameError:
@@ -2729,7 +2729,7 @@ def cat_user_api_proxy(request, cat_instance):
         return HttpResponseRedirect(cat_api_url)
     headers = {
         'X-Forwarded-For': request.META['REMOTE_ADDR'],
-        'X-Forwarded-Host': request.META['HTTP_HOST'],
+        'X-Forwarded-Host': request.headers['host'],
         'X-Forwarded-Server': request.META['SERVER_NAME']
         }
     for h in ['CONTENT_TYPE', 'HTTP_ACCEPT', 'HTTP_X_REQUESTED_WITH',
@@ -2756,8 +2756,8 @@ def cat_user_api_proxy(request, cat_instance):
                                    default=False)
     if allow_cors:
         origin = '*'
-        if allow_cors is 'origin' and 'HTTP_ORIGIN' in request.META:
-            origin = request.META['HTTP_ORIGIN']
+        if allow_cors is 'origin' and 'origin' in request.headers:
+            origin = request.headers['origin']
             patch_vary_headers(resp, ['Origin'])
         resp.setdefault('Access-Control-Allow-Origin', origin)
         resp.setdefault('Access-Control-Allow-Method', 'GET')

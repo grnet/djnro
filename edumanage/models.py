@@ -5,7 +5,7 @@ from functools import partial
 import uuid
 from inspect import signature
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import fields
 from functools import partialmethod
@@ -15,7 +15,7 @@ from django.core import exceptions
 from django.conf import settings
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from six import python_2_unicode_compatible
 from sortedm2m.fields import SortedManyToManyField
 from utils.functional import cached_property
@@ -108,7 +108,7 @@ class MultiSelectField(models.Field):
                 values = getattr(self, field.attname)
                 choices = dict(field.flatchoices)
                 return field.separator.join([
-                    force_text(
+                    force_str(
                         choices.get(value, value),
                         strings_only=True
                     )

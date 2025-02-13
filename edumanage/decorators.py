@@ -1,7 +1,7 @@
 from django.template import RequestContext
 from django.http import HttpResponseBadRequest
 from django.shortcuts import render
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from accounts.models import User
 from django import forms
 
