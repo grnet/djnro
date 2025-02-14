@@ -1,10 +1,10 @@
-Django==3.1.0
+Django==3.2.0
 
 # Version 3.2 supports Django 2.2, 3.1, and 3.2
 django-registration>=2.0.0,<4.0
 
 # Version 3.3.0 supports Django 2.2, 3.0 and 3.1
-django-tinymce==3.3.0
+django-tinymce>=3.3.0,<4.0
 
 social-auth-app-django>=3.1.0,<4.0
 
