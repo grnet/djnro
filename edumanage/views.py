@@ -310,7 +310,7 @@ def add_institution_details(request, institution_pk):
 @login_required
 @social_active_required
 @never_cache
-def services(request, service_pk):
+def services(request, service_pk=None):
     user = request.user
     try:
         profile = user.userprofile
