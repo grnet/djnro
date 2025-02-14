@@ -366,7 +366,7 @@ def services(request, service_pk=None):
 @login_required
 @social_active_required
 @never_cache
-def add_services(request, service_pk):
+def add_services(request, service_pk=None):
     user = request.user
     service = False
     edit = False
