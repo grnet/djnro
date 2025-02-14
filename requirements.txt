@@ -1,4 +1,4 @@
-Django==3.2.0
+Django==4.0.0
 
 # Version 3.2 supports Django 2.2, 3.1, and 3.2
 django-registration>=2.0.0,<4.0
