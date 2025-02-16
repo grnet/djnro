@@ -525,7 +525,7 @@ def del_service(request):
 @login_required
 @social_active_required
 @never_cache
-def servers(request, server_pk):
+def servers(request, server_pk=None):
     user = request.user
     servers = False
     try:
