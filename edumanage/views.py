@@ -557,7 +557,7 @@ def servers(request, server_pk=None):
 @login_required
 @social_active_required
 @never_cache
-def add_server(request, server_pk):
+def add_server(request, server_pk=None):
     user = request.user
     server = False
     edit = False
