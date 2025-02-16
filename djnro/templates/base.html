@@ -40,7 +40,7 @@
               </ul>
               <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Language" %}: {% for lang in LANGUAGES %}{% ifequal LANGUAGE_CODE lang.0 %}{% trans lang.1 %}{% endifequal %}{% endfor %} <span class="caret"></span></a>
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% trans "Language" %}: {% for lang in LANGUAGES %}{% if LANGUAGE_CODE == lang.0 %}{% trans lang.1 %}{% endif %}{% endfor %} <span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     <form action="{% url 'set_language' %}" method="post" id="langform">
                         {% csrf_token %}
@@ -48,7 +48,7 @@
                         <input id="langsel" name="language" type="hidden" value="" />
                     </form>
                     {% for lang in LANGUAGES %}
-                    <li class="language {% ifequal LANGUAGE_CODE lang.0 %}active{% endifequal %}" data-lang="{{ lang.0 }}" >
+                    <li class="language {% if LANGUAGE_CODE == lang.0 %}active{% endif %}" data-lang="{{ lang.0 }}" >
                         <a href="#" title="{{lang.1}}">{% trans lang.1 %}</a>
                     </li>
                     {% endfor %}
