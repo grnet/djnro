@@ -15,6 +15,8 @@ requests>=2.27.1
 # This was removed from Django in 3.0.0 and is now a separate package
 six==1.17.0
 
+pymemcache
+
 lxml>=2.3.2
 PyYAML>=5.4
 django-sortedm2m>=2.0.0
