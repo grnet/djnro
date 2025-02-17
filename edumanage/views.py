@@ -1096,7 +1096,7 @@ def instrealmmon(request):
 @login_required
 @social_active_required
 @never_cache
-def add_instrealmmon(request, instrealmmon_pk):
+def add_instrealmmon(request, instrealmmon_pk=None):
     user = request.user
     instrealmmon = False
     edit = False
@@ -1205,7 +1205,7 @@ def del_instrealmmon(request):
 @login_required
 @social_active_required
 @never_cache
-def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
+def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk=None):
     user = request.user
     monlocauthpar = False
     edit = False
