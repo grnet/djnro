@@ -936,7 +936,7 @@ def contacts(request):
 @login_required
 @social_active_required
 @never_cache
-def add_contact(request, contact_pk):
+def add_contact(request, contact_pk=None):
     user = request.user
     edit = False
     contact = False
