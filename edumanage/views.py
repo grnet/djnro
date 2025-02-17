@@ -788,7 +788,7 @@ def realms(request):
 @login_required
 @social_active_required
 @never_cache
-def add_realm(request, realm_pk):
+def add_realm(request, realm_pk=None):
     user = request.user
     realm = False
     edit = False
