@@ -89,40 +89,6 @@ from utils.cat_helper import CatQuery
 from utils.locale import setlocale, compat_strxfrm
 
 
-# Almost verbatim copy of django.views.i18n.set_language; however:
-# * we avoid creating sessions for anonymous users
-# * we want language selection to work even for requests that are not https;
-#   for session storage this breaks when SESSION_COOKIE_SECURE=True, so we
-#   always set a language cookie too
-def set_language(request):
-    """
-    Redirect to a given url while setting the chosen language in the
-    session and cookie. The session is written only for authenticated users.
-    The url and the language code need to be specified in the request parameters.
-
-    Since this view changes how the user will see the rest of the site, it must
-    only be accessed as a POST request. If called as a GET request, it will
-    redirect to the page in the request (the 'next' parameter) without changing
-    any state.
-    """
-    from django.views import i18n
-    next = request.POST.get('next', request.GET.get('next'))
-    if not i18n.url_has_allowed_host_and_scheme(url=next, allowed_hosts=[request.get_host()]):
-        next = request.headers.get('referer')
-        if not i18n.url_has_allowed_host_and_scheme(url=next, allowed_hosts=[request.get_host()]):
-            next = '/'
-    response = HttpResponseRedirect(next)
-    if request.method == 'POST':
-        lang_code = request.POST.get('language', None)
-        if lang_code and i18n.check_for_language(lang_code):
-            if hasattr(request, 'session') and request.user.is_authenticated:
-                request.session[i18n.LANGUAGE_SESSION_KEY] = lang_code
-            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang_code,
-                                max_age=settings.LANGUAGE_COOKIE_AGE,
-                                path=settings.LANGUAGE_COOKIE_PATH,
-                                domain=settings.LANGUAGE_COOKIE_DOMAIN)
-    return response
-
 
 @never_cache
 def index(request):
