@@ -120,7 +120,7 @@ $('[id^=del_contact_]').click(function(){
 
 $("#delcontactSubmit").click(function(){
 	$.ajax({
-		url:"{% url 'del-contact' %}/?contact_pk="+contact_id,
+		url:"{% url 'del-contact' %}?contact_pk="+contact_id,
 		type: "GET",
 		success: function(data){
 			if (data.error){
