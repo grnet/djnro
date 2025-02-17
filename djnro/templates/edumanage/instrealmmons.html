@@ -210,7 +210,7 @@ $('[id^=del_monlocauthpar_]').click(function(){
 
 $("#delmonlocauthparSubmit").click(function(){
     $.ajax({
-        url:"{% url 'del-monlocauthpar' %}/?monlocauthpar_pk="+monlocauthpar_pk,
+        url:"{% url 'del-monlocauthpar' %}?monlocauthpar_pk="+monlocauthpar_pk,
         type: "GET",
         success: function(data){
             if (data.error){
