@@ -2756,7 +2756,7 @@ def cat_user_api_proxy(request, cat_instance):
                                    default=False)
     if allow_cors:
         origin = '*'
-        if allow_cors is 'origin' and 'origin' in request.headers:
+        if allow_cors == 'origin' and 'origin' in request.headers:
             origin = request.headers['origin']
             patch_vary_headers(resp, ['Origin'])
         resp.setdefault('Access-Control-Allow-Origin', origin)
