@@ -3,7 +3,7 @@
 from collections import namedtuple
 from functools import partial
 import uuid
-from django.utils.inspect import getargspec
+from inspect import signature
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
@@ -46,13 +46,11 @@ class MultiSelectFormField(forms.MultipleChoiceField):
     def __init__(self, *args, **kwargs):
         supercls = super(MultiSelectFormField, self)
         # remove TypedChoiceField extra args
-        supercls_init_args = getargspec(supercls.__init__)[0]
-        if supercls_init_args[0:0] == ['self']:
-            del supercls_init_args[0]
+        banned_args = ['self','coerce','empty_value']
         supercls.__init__(
             *args,
             **{key: val for (key, val) in kwargs.items()
-               if key in supercls_init_args}
+               if key not in banned_args}
         )
 
 class MultiSelectField(models.Field):
@@ -328,7 +326,7 @@ class Name_i18n(models.Model):
 
     name = CharField(max_length=255)
     lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
-    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    content_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = fields.GenericForeignKey('content_type', 'object_id')
 
@@ -415,8 +413,8 @@ class Coordinates(models.Model):
 
 @python_2_unicode_compatible
 class InstitutionContactPool(models.Model):
-    contact = models.OneToOneField(Contact)
-    institution = models.ForeignKey("Institution")
+    contact = models.OneToOneField(Contact, on_delete=models.CASCADE)
+    institution = models.ForeignKey("Institution", on_delete=models.CASCADE)
 
     def __str__(self):
         return u"%s:%s" %(self.contact, self.institution)
@@ -439,7 +437,7 @@ class URL_i18n(models.Model):
     url = models.CharField(max_length=180, db_column='URL')
     lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
     urltype = models.CharField(max_length=10, choices=URLTYPES, db_column='type')
-    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    content_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = fields.GenericForeignKey('content_type', 'object_id')
 
@@ -460,7 +458,7 @@ class Address_i18n(models.Model):
     street = CharField(max_length=255)
     city = CharField(max_length=255)
     lang = models.CharField(max_length=5, choices=get_choices_from_settings('URL_NAME_LANGS'))
-    content_type = models.ForeignKey(ContentType, blank=True, null=True)
+    content_type = models.ForeignKey(ContentType, blank=True, null=True, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField(blank=True, null=True)
     content_object = fields.GenericForeignKey('content_type', 'object_id')
 
@@ -500,7 +498,7 @@ class InstRealm(models.Model):
     '''
     # accept if instid.ertype: 1 (idp) or 3 (idpsp)
     realm = models.CharField(max_length=160)
-    instid = models.ForeignKey("Institution", verbose_name="Institution")
+    instid = models.ForeignKey("Institution", verbose_name="Institution", on_delete=models.CASCADE)
     proxyto = models.ManyToManyField("InstServer", help_text=_("Only IdP and IdP/SP server types are allowed"))
 
     class Meta:
@@ -519,7 +517,7 @@ class InstServer(models.Model):
     '''
     Server of an Institution
     '''
-    # instid = models.ForeignKey("Institution", null=True)
+    # instid = models.ForeignKey("Institution", null=True, on_delete=models.CASCADE)
     # instid_m2m = models.ManyToManyField('Institution', related_name='servers_tmp', default = 'none')
     instid = models.ManyToManyField('Institution', related_name='servers', blank=True)
     ertype = models.PositiveIntegerField(choices=ERTYPES, db_column='type')
@@ -593,7 +591,7 @@ class InstRealmMon(models.Model):
         # ('loopback', 'Institution proxies the realm back to the NRO'),
     )
 
-    realm = models.ForeignKey(InstRealm)
+    realm = models.ForeignKey(InstRealm, on_delete=models.CASCADE)
     mon_type = models.CharField(max_length=16, choices=MONTYPES)
 
     class Meta:
@@ -618,7 +616,7 @@ class MonProxybackClient(models.Model):
     Server of an Institution that will be proxying back requests for a monitored realm
     '''
 
-    instrealmmonid = models.ForeignKey("InstRealmMon")
+    instrealmmonid = models.ForeignKey("InstRealmMon", on_delete=models.CASCADE)
     # hostname/ipaddr or descriptive label of server
     name = models.CharField(
         max_length=80,
@@ -670,7 +668,7 @@ class MonLocalAuthnParam(models.Model):
 #                ('both', 'RESERVED'),
 #               )
 
-    instrealmmonid = models.OneToOneField("InstRealmMon")
+    instrealmmonid = models.OneToOneField("InstRealmMon", on_delete=models.CASCADE)
     eap_method = models.CharField(max_length=16, choices=EAPTYPES)
     phase2 = models.CharField(max_length=16, choices=EAP2TYPES)
     # only local-part, no realm
@@ -728,7 +726,7 @@ class ServiceLoc(models.Model):
     )
 
     # accept if institutionid.ertype: 2 (sp) or 3 (idpsp)
-    institutionid = models.ForeignKey("Institution", verbose_name="Institution")
+    institutionid = models.ForeignKey("Institution", verbose_name="Institution", on_delete=models.CASCADE)
     locationid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     # single set of coordinates enforced by .signals.sloc_coordinates_enforce_one
     coordinates = SortedManyToManyField(Coordinates)
@@ -832,7 +830,7 @@ class Institution(models.Model):
     Institution
     '''
 
-    realmid = models.ForeignKey("Realm")
+    realmid = models.ForeignKey("Realm", on_delete=models.CASCADE)
     instid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     org_name = fields.GenericRelation(Name_i18n)
     inst_name = fields.GenericRelation(Name_i18n)
@@ -868,7 +866,7 @@ class InstitutionDetails(models.Model):
     '''
     Institution Details
     '''
-    institution = models.OneToOneField(Institution)
+    institution = models.OneToOneField(Institution, on_delete=models.CASCADE)
     # TODO: multiple addresses can be specified [...] address in English is required
     address = fields.GenericRelation(Address_i18n)
     coordinates = models.ForeignKey(
@@ -975,7 +973,7 @@ class RealmData(models.Model):
     Realm statistics
     '''
 
-    realmid = models.OneToOneField(Realm)
+    realmid = models.OneToOneField(Realm, on_delete=models.CASCADE)
     # db: select count(institution.id) as number_inst from institution, realm where institution.realmid == realm.realmid
     number_inst = models.PositiveIntegerField(editable=False)
     # db: select sum(institution.number_user) as number_user from institution, realm where institution.realmid == realm.realmid
@@ -1035,10 +1033,10 @@ class CatEnrollment(models.Model):
     ACTIVE = u"ACTIVE"
 
     cat_inst_id = models.PositiveIntegerField()
-    inst = models.ForeignKey(Institution)
+    inst = models.ForeignKey(Institution, on_delete=models.CASCADE)
     url = models.CharField(max_length=255, blank=True, null=True, help_text="Set to ACTIVE if institution has CAT profiles")
     cat_instance = models.CharField(max_length=50, choices=get_choices_from_settings('CAT_INSTANCES'))
-    applier = models.ForeignKey(settings.AUTH_USER_MODEL)
+    applier = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     ts = models.DateTimeField(auto_now=True)
 
     class Meta:

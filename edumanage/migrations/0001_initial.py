@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('url', models.CharField(help_text='Set to ACTIVE if institution has CAT profiles', max_length=255, null=True, blank=True)),
                 ('cat_instance', models.CharField(max_length=50, choices=edumanage.models.get_choices_from_settings('CAT_INSTANCES'))),
                 ('ts', models.DateTimeField(auto_now=True)),
-                ('applier', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('applier', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -49,8 +49,8 @@ class Migration(migrations.Migration):
             name='InstitutionContactPool',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('contact', models.OneToOneField(to='edumanage.Contact')),
-                ('institution', models.ForeignKey(to='edumanage.Institution')),
+                ('contact', models.OneToOneField(to='edumanage.Contact', on_delete=models.CASCADE)),
+                ('institution', models.ForeignKey(to='edumanage.Institution', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Instutution Contact (Pool)',
@@ -68,7 +68,7 @@ class Migration(migrations.Migration):
                 ('number_id', models.PositiveIntegerField(help_text='Number of issued e-identities (credentials) that may be used for authentication in eduroam service', null=True, blank=True)),
                 ('ts', models.DateTimeField(auto_now=True)),
                 ('contact', models.ManyToManyField(to='edumanage.Contact')),
-                ('institution', models.OneToOneField(to='edumanage.Institution')),
+                ('institution', models.OneToOneField(to='edumanage.Institution', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': "Institutions' Details",
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('realm', models.CharField(max_length=160)),
-                ('instid', models.ForeignKey(verbose_name='Institution', to='edumanage.Institution')),
+                ('instid', models.ForeignKey(verbose_name='Institution', to='edumanage.Institution', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Institution Realm',
@@ -92,7 +92,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('mon_type', models.CharField(max_length=16, choices=[('localauthn', 'Institution provides account for the NRO to monitor the realm')])),
-                ('realm', models.ForeignKey(to='edumanage.InstRealm')),
+                ('realm', models.ForeignKey(to='edumanage.InstRealm', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Institution Monitored Realm',
@@ -129,7 +129,7 @@ class Migration(migrations.Migration):
                 ('phase2', models.CharField(max_length=16, choices=[('PAP', 'PAP'), ('CHAP', 'CHAP'), ('MS-CHAPv2', 'MS-CHAPv2')])),
                 ('username', models.CharField(max_length=36)),
                 ('passwp', models.CharField(max_length=80, db_column='pass')),
-                ('instrealmmonid', models.OneToOneField(to='edumanage.InstRealmMon')),
+                ('instrealmmonid', models.OneToOneField(to='edumanage.InstRealmMon', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Monitored Realm (local authn)',
@@ -146,7 +146,7 @@ class Migration(migrations.Migration):
                 ('secret', models.CharField(max_length=80)),
                 ('proto', models.CharField(max_length=12, choices=edumanage.models.RADPROTOS)),
                 ('ts', models.DateTimeField(auto_now=True)),
-                ('instrealmmonid', models.ForeignKey(to='edumanage.InstRealmMon')),
+                ('instrealmmonid', models.ForeignKey(to='edumanage.InstRealmMon', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Institution Proxyback Client',
@@ -160,7 +160,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=80)),
                 ('lang', models.CharField(max_length=5, choices=edumanage.models.get_choices_from_settings('URL_NAME_LANGS'))),
                 ('object_id', models.PositiveIntegerField(null=True, blank=True)),
-                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
+                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Name (i18n)',
@@ -194,7 +194,7 @@ class Migration(migrations.Migration):
                 ('number_SP', models.PositiveIntegerField(editable=False)),
                 ('number_IdPSP', models.PositiveIntegerField(editable=False)),
                 ('ts', models.DateTimeField(editable=False)),
-                ('realmid', models.OneToOneField(to='edumanage.Realm')),
+                ('realmid', models.OneToOneField(to='edumanage.Realm', on_delete=models.CASCADE)),
             ],
         ),
         migrations.CreateModel(
@@ -215,7 +215,7 @@ class Migration(migrations.Migration):
                 ('wired', models.BooleanField()),
                 ('ts', models.DateTimeField(auto_now=True)),
                 ('contact', models.ManyToManyField(to='edumanage.Contact', blank=True)),
-                ('institutionid', models.ForeignKey(verbose_name='Institution', to='edumanage.Institution')),
+                ('institutionid', models.ForeignKey(verbose_name='Institution', to='edumanage.Institution', on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Service Location',
@@ -230,7 +230,7 @@ class Migration(migrations.Migration):
                 ('lang', models.CharField(max_length=5, choices=edumanage.models.get_choices_from_settings('URL_NAME_LANGS'))),
                 ('urltype', models.CharField(max_length=10, db_column='type', choices=[('info', 'Info'), ('policy', 'Policy')])),
                 ('object_id', models.PositiveIntegerField(null=True, blank=True)),
-                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True)),
+                ('content_type', models.ForeignKey(blank=True, to='contenttypes.ContentType', null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'verbose_name': 'Url (i18n)',
@@ -245,12 +245,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='institution',
             name='realmid',
-            field=models.ForeignKey(to='edumanage.Realm'),
+            field=models.ForeignKey(to='edumanage.Realm', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='catenrollment',
             name='inst',
-            field=models.ForeignKey(to='edumanage.Institution'),
+            field=models.ForeignKey(to='edumanage.Institution', on_delete=models.CASCADE),
         ),
         migrations.AlterUniqueTogether(
             name='instrealmmon',
