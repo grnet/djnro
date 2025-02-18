@@ -1,12 +1,17 @@
 Django==4.2.19
 
-django-registration>=2.0.0
+# This version supports Django 4.2, 5.0, and 5.1.
+# This version supports Python 3.9 through 3.12.
+django-registration==5.1.0
 
-# Version 3.3.0 supports Django 2.2, 3.0 and 3.1
-django-tinymce>=3.3.0
+# This version supports Django 3.2 through 5.0.
+# This version supports Python 3.8+
+django-tinymce==4.1.0
 
+# Unsure about specific versioning.
 social-auth-app-django>=3.1.0
 
+# Unsure about specific versioning.
 social-auth-core>=3.0.0
 
 # Requests officially supports Python 3.8+
