@@ -1,8 +1,8 @@
 Django==4.2.19
 
-# This version supports Django 4.2, 5.0, and 5.1.
-# This version supports Python 3.9 through 3.12.
-django-registration==5.1.0
+# This version supports Django 3.2, 4.1, and 4.2.
+# This version supports Python 3.7 through 3.11.
+django-registration==3.4
 
 # This version supports Django 3.2 through 5.0.
 # This version supports Python 3.8+
