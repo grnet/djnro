@@ -1,22 +1,18 @@
-Django==2.1.5
-argparse>=1.2.1
-ipaddress>=1.0.22
+# Django 4.2.19 is part of the Django 4.2 LTS and will reach end of life April 2026
+Django==4.2.19
 
-# Version 3.0 supports Django 1.11 through 2.1
-django-registration==3.0
+# These django packages are using versions that are known to work for Django 4.2
+django-registration==3.4
+django-tinymce==4.1.0
+social-auth-app-django==5.4.3
+social-auth-core==4.5.6
+django-sortedm2m==4.0.0
+django-widget-tweaks==1.5.0
 
-# Version 2.7.0 supports Django 2.0
-django-tinymce==3.0.*
+# These packages are all using versions that we know work for the project as of now.
+requests==2.32.3
+six==1.17.0
+lxml==5.3.1
+PyYAML==6.0.2
+semantic_version==2.10.0
 
-social-auth-app-django>=3.1.0,<4.0
-
-social-auth-core>=3.0.0,<4.0
-
-# Requests officially supports Python 3.8+
-requests>=2.27.1,<3.0
-
-lxml>=2.3.2
-PyYAML>=5.4
-django-sortedm2m>=2.0.0
-django-widget-tweaks
-semantic_version
