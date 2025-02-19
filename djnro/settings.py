@@ -24,7 +24,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 import os
 from utils.edb_versioning import EduroamDatabaseVersionDef
 
@@ -60,7 +60,6 @@ USE_I18N = True
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
-USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
@@ -102,6 +101,7 @@ TEMPLATES = [
                 'edumanage.context_processors.manage_login_methods',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },

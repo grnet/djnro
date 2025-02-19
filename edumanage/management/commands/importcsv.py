@@ -23,7 +23,7 @@ Django management command to import a CSV
 '''
 
 from django.core.management.base import BaseCommand, CommandError
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from edumanage.models import InstRealmMon, MonLocalAuthnParam, InstRealm
 import sys
 import csv

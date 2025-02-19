@@ -1,5 +1,5 @@
 from django.db import migrations
-from django.utils import six
+import six
 
 # a version of django.utils.functional.curry that *appends* extra args
 def wrapper(f, *extra_args, **extra_kwargs):

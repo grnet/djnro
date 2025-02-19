@@ -15,7 +15,7 @@ import codecs
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from accounts.models import User
-from django.utils.translation import get_language, to_locale, ugettext as _
+from django.utils.translation import get_language, to_locale, gettext as _
 from utils.locale import setlocale, compat_strxfrm
 
 

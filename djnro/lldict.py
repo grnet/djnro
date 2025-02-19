@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.utils.functional import SimpleLazyObject
-from django.utils.encoding import smart_text, python_2_unicode_compatible
+from django.utils.encoding import smart_str
+from six import python_2_unicode_compatible
 
 @python_2_unicode_compatible
 class LazyLangDict(SimpleLazyObject):
@@ -15,6 +16,6 @@ class LazyLangDict(SimpleLazyObject):
     def __str__(self):
         if len(self):
             k, v = next(iter(self.items()))
-            return smart_text(v)
+            return smart_str(v)
         else:
             return super(LazyLangDict, self).__str__()

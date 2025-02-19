@@ -3,8 +3,8 @@
 import operator
 from semantic_version import Version
 from django.conf import settings
-from django.utils import six
-from django.utils.encoding import python_2_unicode_compatible
+import six
+from six import python_2_unicode_compatible
 from django.utils.functional import SimpleLazyObject, new_method_proxy
 from .functional import partialmethod
 

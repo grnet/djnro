@@ -4,8 +4,9 @@
 from django.contrib.auth.models import UserManager, Permission, Group
 from accounts.models import User
 from django.conf import settings
+from  django.contrib.auth.backends import BaseBackend
 
-class shibauthBackend:
+class shibauthBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, **kwargs):
         firstname = kwargs.get('firstname')
         lastname = kwargs.get('lastname')

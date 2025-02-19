@@ -1,8 +1,8 @@
 from django import forms
 from django.conf import settings
 from django.utils.translation import (
-    ugettext as _,
-    ugettext_lazy as _l,
+    gettext as _,
+    gettext_lazy as _l,
 )
 from edumanage.models import (
     URL_i18n,
