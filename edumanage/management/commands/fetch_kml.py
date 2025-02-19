@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 import time
 from django.conf import settings
 from django.core.cache import cache
-from django.utils import six
+import six
 from xml.etree import ElementTree
 import json
 import bz2
@@ -51,14 +51,18 @@ class Command(BaseCommand):
 
     def refresh_cache(self, file):
         point_list = []
-        doc = ElementTree.parse(file)
+        try:
+            doc = ElementTree.parse(file)
+        except ElementTree.ParseError as e:
+            write(f'Error parsing file {file}: {e}')
+            return False
         root = doc.getroot()
-        r = root.getchildren()[0]
-        for (counter, i) in enumerate(r.getchildren()):
+        r = list(root)[0]
+        for (counter, i) in enumerate(list(r)):
             if "id" in i.keys():
-                j = i.getchildren()
+                j = list(i)
                 pointname = j[0].text
-                point = j[2].getchildren()[0].text
+                point = list(j[2])[0].text
                 pointlng, pointlat, pointele = point.split(',')
                 point_list.append(
                     {

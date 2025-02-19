@@ -3,7 +3,7 @@ import edumanage.views
 from django.contrib.flatpages import views
 
 urlpatterns = [
-    re_path(r'^$', edumanage.views.index, name="index"),
+    path('', edumanage.views.index, name="index"),
     path("geolocate/", edumanage.views.geolocate, name="geolocate"),
     path("closest/", edumanage.views.closest, name="closest"),
     path("api/", edumanage.views.api, name="api"),
@@ -30,7 +30,7 @@ urlpatterns = [
     path("manage/selectinst/", edumanage.views.selectinst, name="selectinst"),
 
     path("manage/institutions/", edumanage.views.institutions, name="institutions"),
-    re_path(r'^manage/institution/edit/(?P<institution_pk>\d+)/$', edumanage.views.add_institution_details, name="edit-institution"),
+    path('manage/institution/edit/<int:institution_pk>/', edumanage.views.add_institution_details, name="edit-institution"),
     re_path(r'^manage/services/(?P<service_pk>\d+)?$', edumanage.views.services, name="services"),
     path("manage/services/del/", edumanage.views.del_service, name="del-service"),
     re_path(r'^manage/services/edit/(?P<service_pk>\d+)?$', edumanage.views.add_services, name="edit-services"),

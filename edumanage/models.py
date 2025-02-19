@@ -5,19 +5,18 @@ from functools import partial
 import uuid
 from inspect import signature
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import fields
-from django.utils.functional import curry
+from functools import partialmethod
 from django.utils.text import capfirst
-from django.utils import six
+import six
 from django.core import exceptions
 from django.conf import settings
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.encoding import (
-    force_text, python_2_unicode_compatible
-)
+from django.utils.encoding import force_str
+from six import python_2_unicode_compatible
 from sortedm2m.fields import SortedManyToManyField
 from utils.functional import cached_property
 
@@ -109,14 +108,14 @@ class MultiSelectField(models.Field):
                 values = getattr(self, field.attname)
                 choices = dict(field.flatchoices)
                 return field.separator.join([
-                    force_text(
+                    force_str(
                         choices.get(value, value),
                         strings_only=True
                     )
                     for value in values
                 ])
             setattr(cls, 'get_%s_display' % self.name,
-                    curry(_get_FIELD_display, field=self))
+                    partialmethod(_get_FIELD_display, field=self))
 
     def validate(self, value, model_instance):
         # assume value should be a list
