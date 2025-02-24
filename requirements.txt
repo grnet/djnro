@@ -1,5 +1,5 @@
 # Django 4.2.19 is part of the Django 4.2 LTS and will reach end of life April 2026
-Django==4.2.19
+Django~=4.2.19
 
 # These django packages are using versions that are known to work for Django 4.2
 django-registration==3.4
