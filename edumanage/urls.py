@@ -31,7 +31,7 @@ urlpatterns = [
 
     path("manage/institutions/", edumanage.views.institutions, name="institutions"),
     path('manage/institution/edit/<int:institution_pk>/', edumanage.views.add_institution_details, name="edit-institution"),
-    path("manage/services/<int:service_pk>/", edumanage.views.services, name="services")
+    path("manage/services/<int:service_pk>/", edumanage.views.services, name="services"),
     path("manage/services/del/", edumanage.views.del_service, name="del-service"),
     path("manage/services/edit/<int:service_pk>/", edumanage.views.add_services, name="edit-services"),
     path("manage/services/points/", edumanage.views.get_service_points, name="get-service-points"),
