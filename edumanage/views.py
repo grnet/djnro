@@ -1205,7 +1205,7 @@ def del_instrealmmon(request):
 @login_required
 @social_active_required
 @never_cache
-def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk=None):
+def add_monlocauthpar(request, instrealmmon_pk=None, monlocauthpar_pk=None):
     user = request.user
     monlocauthpar = False
     edit = False
@@ -2670,7 +2670,7 @@ def _cat_api_cache_action(request, cat_instance):
     return (timeout, cache_kwargs)
 
 @cache_page_ifreq(_cat_api_cache_action)
-def cat_user_api_proxy(request, cat_instance):
+def cat_user_api_proxy(request, cat_instance=None):
     if cat_instance is None:
         cat_instance = 'production'
     cat_instance_name = cat_instance

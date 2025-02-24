@@ -14,7 +14,7 @@ urlpatterns = [
     path("services/allpoints/", edumanage.views.get_all_services, name="get-all-services"),
 
     path("connect/", edumanage.views.connect, name="connect"),
-    re_path(r'^cat-api(?:/(?P<cat_instance>[^/]+))?/?$', edumanage.views.cat_user_api_proxy, name="cat-api"),
+    path("cat-api/<str:cat_instance>/", edumanage.views.cat_user_api_proxy, name="cat-api"),
 
     # eduroam db views
     re_path(r'^general(?:/v?(?P<version>[^/]+))?/institution.xml', edumanage.views.instxml, name="instxml"),
@@ -31,24 +31,24 @@ urlpatterns = [
 
     path("manage/institutions/", edumanage.views.institutions, name="institutions"),
     path('manage/institution/edit/<int:institution_pk>/', edumanage.views.add_institution_details, name="edit-institution"),
-    re_path(r'^manage/services/(?P<service_pk>\d+)?$', edumanage.views.services, name="services"),
+    path("manage/services/<int:service_pk>/", edumanage.views.services, name="services")
     path("manage/services/del/", edumanage.views.del_service, name="del-service"),
-    re_path(r'^manage/services/edit/(?P<service_pk>\d+)?$', edumanage.views.add_services, name="edit-services"),
+    path("manage/services/edit/<int:service_pk>/", edumanage.views.add_services, name="edit-services"),
     path("manage/services/points/", edumanage.views.get_service_points, name="get-service-points"),
-    re_path(r'^manage/servers/(?P<server_pk>\d+)?$', edumanage.views.servers, name="servers"),
+    path("manage/servers/<int:server_pk>/", edumanage.views.servers, name="servers"),
     path("manage/servers/del/", edumanage.views.del_server, name="del-server"),
-    re_path(r'^manage/servers/edit/(?P<server_pk>\d+)?$', edumanage.views.add_server, name="edit-servers"),
+    path("manage/servers/edit/<int:server_pk>/", edumanage.views.add_server, name="edit-servers"),
     path("manage/realms/", edumanage.views.realms, name="realms"),
-    re_path(r'^manage/realms/edit/(?P<realm_pk>\d+)?$', edumanage.views.add_realm, name="edit-realms"),
+    path("manage/realms/edit/<int:realm_pk>", edumanage.views.add_realm, name="edit-realms"),
     path("manage/realms/del/", edumanage.views.del_realm, name="del-realm"),
     path("manage/contacts/", edumanage.views.contacts, name="contacts"),
-    re_path(r'^manage/contacts/edit/(?P<contact_pk>\d+)?$', edumanage.views.add_contact, name="edit-contacts"),
+    path("manage/contacts/edit/<int:contact_pk>/", edumanage.views.add_contact, name="edit-contacts"),
     path("manage/contacts/del/", edumanage.views.del_contact, name="del-contact"),
     path("manage/adduser/", edumanage.views.adduser, name="adduser"),
     path("manage/instrealmsmon/", edumanage.views.instrealmmon, name="instrealmmon"),
-    re_path(r'^manage/instrealmsmon/edit/(?P<instrealmmon_pk>\d+)?$', edumanage.views.add_instrealmmon, name="edit-instrealmmon"),
+    path("manage/instrealmsmon/edit/<int:instrealmmon_pk>/", edumanage.views.add_instrealmmon, name="edit-instrealmmon"),
     path("manage/instrealmsmon/del/", edumanage.views.del_instrealmmon, name="del-instrealmmon"),
-    re_path(r'^manage/monlocauthpar/edit/(?P<instrealmmon_pk>\d+)/(?P<monlocauthpar_pk>\d+)?$', edumanage.views.add_monlocauthpar, name="edit-monlocauthpar"),
+    path("manage/monlocauthpar/edit/<int:instrealmmon_pk>/<int:monlocauthpar_pk>/", edumanage.views.add_monlocauthpar, name="edit-monlocauthpar"),
     path("manage/monlocauthpar/del/", edumanage.views.del_monlocauthpar, name="del-monlocauthpar"),
     path("manage/catenroll/", edumanage.views.cat_enroll, name="catenroll"),
 
