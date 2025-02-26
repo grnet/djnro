@@ -11,7 +11,7 @@ import os
 # djnro.lldict.LazyLangDict ensures that an (arbitrary) string value
 # will be returned where a dict is not expected.
 from djnro.lldict import LazyLangDict as _ld
-#from django.utils.translation import ugettext_lazy as _
+#from django.utils.translation import gettext_lazy as _
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
 
