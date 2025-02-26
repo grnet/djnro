@@ -14,6 +14,7 @@ urlpatterns = [
     path("services/allpoints/", edumanage.views.get_all_services, name="get-all-services"),
 
     path("connect/", edumanage.views.connect, name="connect"),
+    path("cat-api/", edumanage.views.cat_user_api_proxy, name="cat-api"),
     path("cat-api/<str:cat_instance>/", edumanage.views.cat_user_api_proxy, name="cat-api"),
 
     # eduroam db views
