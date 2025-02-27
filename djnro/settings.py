@@ -64,6 +64,11 @@ USE_I18N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+# Default primary key field type to use for models that don’t have a field with primary_key=True.
+# Django 3.2 changed the default from AutoField to BigAutoField, which means unless we set this,
+# we will end up with a LOT of migrations in the future.
+# Basically, AutoField creates 32-bit primary keys and BigAutoField creates 64-bit primary keys.
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
