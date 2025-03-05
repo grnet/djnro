@@ -112,7 +112,7 @@ CACHES = {
 # For production instances enable memcache
 # CACHES = {
 #     'default': {
-#         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+#         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
 #         'TIMEOUT': 60, # default is 300
 #         'LOCATION': '127.0.0.1:11211',
 #     }
