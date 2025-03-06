@@ -25,7 +25,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
-# See https://docs.djangoproject.com/en/1.8/ref/settings/#allowed-hosts
+# See https://docs.djangoproject.com/en/5.1/ref/settings/
 ALLOWED_HOSTS = ['*']
 # Important: in production environments, replace the wildcard with your public hostname
 
