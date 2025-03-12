@@ -20,11 +20,19 @@ All pip packages defined in *requirements.txt* and *requirements-optional.txt* n
 
 DjNRO 1.3 adds clickjacking protection via Django's `XFrameOptionsMiddleware` middleware.
 
-### Support RADIUS over TLS (PSK)
+### Enhanced RADIUS configurations for servers
 
-A new setting called `NRO_TLSPSK_REALM` has been added to the local settings file. This setting is used in conjunction with the newly added *Radius over TLS (PSK)* option for each server. This option is added in addition to the existing *traditional RADIUS over UDP* and *RADIUS over TLS (RadSec, RFC6614)* options.
+Configured servers now have two additional options to select from under the *Protocol* option.
 
-The `NRO_TLSPSK_REALM` setting defines the RADIUS realm for the application. This is also used to create a unique Network Access Identifier for each institution.
+#### RADIUS over TLS (RadSec, RFC6614)
+
+This option enables more secure RADIUS communication using transport layer security (TLS) as defined by [RFC 6614](https://datatracker.ietf.org/doc/html/rfc6614)
+
+#### Radius over TLS (PSK)
+
+This option enables more secure RADIUS communication using TLS protected with a pre-shared key (PSK).
+
+To facilitate key creation, a new setting has been added to *local_settings.py.dist* called `NRO_TLSPSK_REALM`. The `NRO_TLSPSK_REALM` setting defines the RADIUS realm for the application. This is also used to create a unique Network Access Identifier for each institution.
 
 ### CAT Enrollment Changes
 
@@ -54,9 +62,9 @@ Additionally, see the [Cache Configuration (DjNRO Version 1.3 and Later)](instal
 
 The third-party `RemoveUnneededVaryHeadersMiddleware` middleware has been removed.
 
-### Venue info configuration
+### Venue info configuration change
 
-DjNRO now allows users to specify location types from a range of pre-defined options, such as *Professional Office* or *Research and Development Facility*.
+Venue info can now be specified from a list of descriptive messages instead of specifying a numerical code. For example, instead of specifying *2,7*, you can select *Professional Office* from a drop-down menu. This removes the need to look up the definition of each code.
 
 ### Contact type
 
@@ -69,6 +77,17 @@ Contacts can now be set to *private* or *public*.
 ### Participant display changes
 
 Only participants marked as active will be displayed under *Participating Institutions* from now on.
+
+### Timestamp fixes for InstServer and ServiceLoc
+
+Timestamps (*ts*) on the `InstServer` and `ServiceLoc` objects are now updated on every change, including changes to subordinate objects like `Contact`. This ensures that such changes are picked up by the eduroam database.
+
+### Realm-server configuration (administrative users only)
+
+DjNRO 1.3 adds the RealmServer model, which allows recording RADIUS servers operated by the NRO for the country-level Realm and exposing them in the Roaming Operator data export.
+This allows the NRO to get RadSec certificates issued by eduPKI via the admin interface in eduroam CAT.
+
+As the RealmServers will be configured only by the NRO admin, there are no dedicated UI pages for the RealmServers and they can only be managed via the Django admin pages.
 
 ## Backing up database
 
