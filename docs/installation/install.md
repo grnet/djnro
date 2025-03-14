@@ -522,7 +522,7 @@ As of DjNRO version 1.3, the `MemcacheCache` cache backend was replaced with the
 
 This change has a side effect on the command `./manage.py fetch_kml` (see [Fetch KML](#Fetch-KML)) when using the `PymemcacheCache` backend. The default maximum item size (i.e. the maximum size of a single item that can be held in cache) configured by the memached daemon is 1 Megabyte by default, but the kml file cached by DjNRO can be greater than 1 Megabyte. This can cause the command to fail due to being unable to cache the entire file.
 
-To fix this, edit the memcached configuration file (usually located at `/etc/default/memcached.conf` on Debian systems), and change or add the option that controls the maximum item size. If no such file exists, one can be created, which will overwrite memcached's default settings.
+To fix this, edit the memcached configuration file (usually located at `/etc/memcached.conf` on Debian systems), and change or add the option that controls the maximum item size. If no such file exists, one can be created, which will overwrite memcached's default settings.
 ```
 # Maximum item size. Default is 1m. Maximum is 128m.
 -I 16m

@@ -30,33 +30,13 @@ This option enables more secure RADIUS communication using transport layer secur
 
 #### Radius over TLS (PSK)
 
-This option enables more secure RADIUS communication using TLS protected with a pre-shared key (PSK).
+This option enables more secure RADIUS communication using TLS protected with a pre-shared key (PSK). This requires an additonal option in *local_settings.py.dist* to be configured.
 
-To facilitate key creation, a new setting has been added to *local_settings.py.dist* called `NRO_TLSPSK_REALM`. The `NRO_TLSPSK_REALM` setting defines the RADIUS realm for the application. This is also used to create a unique Network Access Identifier for each institution.
-
-### CAT Enrollment Changes
-
-The default values for several Configuration Assistant Tool (CAT) related settings has been updated. The following values have changed:
-
-#### Production default changes
-
-* `CAT_IDPMGMT_URL` has been changed from *https://cat.eduroam.org/admin/overview_idp.php* to *https://cat.eduroam.org/admin/overview_org.php*
-
-#### Testing default changes
-
-* `CAT_API_URL` has been changed from *https://cat-test.eduroam.org/test/admin/API.php* to *https://cat-test.eduroam.org/admin/API.php*
-
-* `CAT_USER_API_URL` has been changed from *https://cat-test.eduroam.org/test/user/API.php* to *https://cat-test.eduroam.org/user/API.php*
-
-* `CAT_USER_API_LOCAL_DOWNLOADS` has been changed from *https://cat-test.eduroam.org/test/* to *https://cat-test.eduroam.org/*
-* `CAT_PROFILES_URL` has been changed from *https://cat-test.eduroam.org/test* to *https://cat-test.eduroam.org/*
-* `CAT_IDPMGMT_URL` has been changed from *https://cat-test.eduroam.org/test/admin/overview_idp.php* to *https://cat-test.eduroam.org/admin/overview_org.php*
+**NOTE:** A new setting has been added to *local_settings.py.dist* that relates to this option. More deatails are available [here](#radius-over-tls-psk-settings).
 
 ### Caching changes
 
-The obsolete `MemcacheCache` backend has been replaced with the `PyMemcacheCache` backend in local settings.
-
-Additionally, see the [Cache Configuration (DjNRO Version 1.3 and Later)](install.md) section of the installation guide for updated cache configuration requirements.
+The obsolete `MemcacheCache` backend has been replaced with the `PyMemcacheCache` backend in local settings. To update your local settings, please follow the instructions [here](#cache-configuration-changes).
 
 ### Middleware updates
 
@@ -88,6 +68,36 @@ DjNRO 1.3 adds the RealmServer model, which allows recording RADIUS servers oper
 This allows the NRO to get RadSec certificates issued by eduPKI via the admin interface in eduroam CAT.
 
 As the RealmServers will be configured only by the NRO admin, there are no dedicated UI pages for the RealmServers and they can only be managed via the Django admin pages.
+
+## Configuration file changes
+
+The file *local_settings.py.dist* has new settings added. Please configure these before deploying the upgraded software.
+
+### Cache configuration changes
+
+If you are using the default `MemcacheCache` backend for caching, this must change to `PyMemcacheCache`. Please refer to [Cache Configuration (DjNRO Version 1.3 and Later)](install.md) in the installation instructions for more details.
+
+### RADIUS over TLS (PSK) settings
+
+If you need to support RADIUS-TLS-PSK connections, then you must set the variable `NRO_TLSPSK_REALM` in the file *local_settings.py.dist*. This setting is used to generate a TLS-PSK identity for connections from eduroam SPs. It must be set to the realm you wish to use.
+
+### CAT Enrollment Changes
+
+The default values for several Configuration Assistant Tool (CAT) related settings has been updated. If you have uncommented any of these sections from *local_settings.py.dist* without changing their default values, please update the default values as specified. The following values have changed:
+
+#### Production default changes
+
+* `CAT_IDPMGMT_URL` has been changed from *https://cat.eduroam.org/admin/overview_idp.php* to *https://cat.eduroam.org/admin/overview_org.php*
+
+#### Testing default changes
+
+* `CAT_API_URL` has been changed from *https://cat-test.eduroam.org/test/admin/API.php* to *https://cat-test.eduroam.org/admin/API.php*
+
+* `CAT_USER_API_URL` has been changed from *https://cat-test.eduroam.org/test/user/API.php* to *https://cat-test.eduroam.org/user/API.php*
+
+* `CAT_USER_API_LOCAL_DOWNLOADS` has been changed from *https://cat-test.eduroam.org/test/* to *https://cat-test.eduroam.org/*
+* `CAT_PROFILES_URL` has been changed from *https://cat-test.eduroam.org/test* to *https://cat-test.eduroam.org/*
+* `CAT_IDPMGMT_URL` has been changed from *https://cat-test.eduroam.org/test/admin/overview_idp.php* to *https://cat-test.eduroam.org/admin/overview_org.php*
 
 ## Backing up database
 
