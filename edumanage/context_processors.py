@@ -27,3 +27,6 @@ def cat_instances(context):
 
 def manage_login_methods(context):
     return {'MANAGE_LOGIN_METHODS': settings.MANAGE_LOGIN_METHODS}
+
+def nro_domain_url(context):
+    return {'NRO_DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL}
