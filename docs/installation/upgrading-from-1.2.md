@@ -34,6 +34,12 @@ This option enables more secure RADIUS communication using TLS protected with a 
 
 **NOTE:** A new setting has been added to *local_settings.py.dist* that relates to this option. More deatails are available [here](#radius-over-tls-psk-settings).
 
+### New layout for the Manage page
+
+The *Manage* login page has had its title updated from *Login* to *Login to Management Pages*, in order to clarify the page's purpose.
+
+Additionally, a new message has been added to the page that contains a hyperlink to `NRO_DOMAIN_MAIN_URL`. Please refer to [NRO_DOMAIN_MAIN_URL](#nro_domain_main_url) for more information.
+
 ### Caching changes
 
 The obsolete `MemcacheCache` backend has been replaced with the `PyMemcacheCache` backend in local settings. To update your local settings, please follow the instructions [here](#cache-configuration-changes).
@@ -76,6 +82,10 @@ The file *local_settings.py.dist* has new settings added. Please configure these
 ### Cache configuration changes
 
 If you are using the default `MemcacheCache` backend for caching, this must change to `PyMemcacheCache`. Please refer to [Cache Configuration (DjNRO Version 1.3 and Later)](install.md) in the installation instructions for more details.
+
+### NRO_DOMAIN_MAIN_URL
+
+The setting `NRO_DOMAIN_MAIN_URL` in the file *local_settings.py.dist* now has an additional use. The *Manage* tab now contains a message with a hyperlink to `NRO_DOMAIN_MAIN_URL`. This message will inform users that may have naviated to the *Manage* login page by mistake to click on this hyperlink.
 
 ### RADIUS over TLS (PSK) settings
 
