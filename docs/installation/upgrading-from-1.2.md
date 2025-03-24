@@ -85,7 +85,7 @@ If you are using the default `MemcacheCache` backend for caching, this must chan
 
 ### NRO_DOMAIN_MAIN_URL
 
-The setting `NRO_DOMAIN_MAIN_URL` in the file *local_settings.py.dist* now has an additional use. The *Manage* tab now contains a message with a hyperlink to `NRO_DOMAIN_MAIN_URL`. This message will inform users that may have naviated to the *Manage* login page by mistake to click on this hyperlink.
+The setting `NRO_DOMAIN_MAIN_URL` in the file *local_settings.py.dist* now has an additional use. The *Manage* tab now contains a message with a hyperlink to `NRO_DOMAIN_MAIN_URL`. This message will inform users that may have navigated to the *Manage* login page by mistake to click on this hyperlink.
 
 ### RADIUS over TLS (PSK) settings
 
