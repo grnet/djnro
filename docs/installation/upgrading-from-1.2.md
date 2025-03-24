@@ -109,6 +109,22 @@ The default values for several Configuration Assistant Tool (CAT) related settin
 * `CAT_PROFILES_URL` has been changed from *https://cat-test.eduroam.org/test* to *https://cat-test.eduroam.org/*
 * `CAT_IDPMGMT_URL` has been changed from *https://cat-test.eduroam.org/test/admin/overview_idp.php* to *https://cat-test.eduroam.org/admin/overview_org.php*
 
+### Removal of deprecated postgres_psycopg2 alias
+
+Prior to Django 2, one of the available database engines was `django.db.backends.postgresql_psycopg2`. As of Django 2.0 and later, this is considered deprecated. However, the value `django.db.backends.postgresql` can be substituted directly. Please refer to the [Django 2 release notes](https://docs.djangoproject.com/en/5.1/releases/2.0/#id1) for more information. The change would look like this:
+
+```
+# Before
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+# After
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+```
+
 ## Backing up database
 
 Run the following command to dump database contents in a form that Django can restore:
