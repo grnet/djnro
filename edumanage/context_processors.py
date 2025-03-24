@@ -19,6 +19,7 @@ def settings(context):
         'SHIB_AUTH_ENTITLEMENT': settings.SHIB_AUTH_ENTITLEMENT if hasattr(settings,"SHIB_AUTH_ENTITLEMENT") else None,
         'FEDERATION_DOC_URL': settings.FEDERATION_DOC_URL if hasattr(settings,"FEDERATION_DOC_URL") else None,
         'OUR_TLSPSK_REALM': settings.NRO_TLSPSK_REALM,
+        'NRO_DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL,
     }
 
 
@@ -27,6 +28,3 @@ def cat_instances(context):
 
 def manage_login_methods(context):
     return {'MANAGE_LOGIN_METHODS': settings.MANAGE_LOGIN_METHODS}
-
-def nro_domain_url(context):
-    return {'NRO_DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL}
