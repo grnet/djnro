@@ -101,7 +101,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.request',
-                'edumanage.context_processors.country_code',
+                'edumanage.context_processors.settings',
                 'edumanage.context_processors.cat_instances',
                 'edumanage.context_processors.manage_login_methods',
                 'edumanage.context_processors.nro_domain_url',
