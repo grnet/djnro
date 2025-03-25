@@ -101,7 +101,7 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.request',
-                'edumanage.context_processors.context_settings',
+                'edumanage.context_processors.app_settings',
                 'edumanage.context_processors.cat_instances',
                 'edumanage.context_processors.manage_login_methods',
                 'social_django.context_processors.backends',
