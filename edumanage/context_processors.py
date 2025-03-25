@@ -1,7 +1,7 @@
 from django.conf import settings
 
 
-def settings(context):
+def context_settings(context):
     # return the value you want as a dictionnary. you may add multiple values in there.
     return {
         'COUNTRY_CODE': settings.NRO_COUNTRY_CODE,
