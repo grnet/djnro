@@ -111,7 +111,7 @@ The default values for several Configuration Assistant Tool (CAT) related settin
 
 ### Removal of deprecated postgres_psycopg2 alias
 
-Prior to Django 2, one of the available database engines was `django.db.backends.postgresql_psycopg2`. As of Django 2.0 and later, this is considered deprecated. However, the value `django.db.backends.postgresql` can be substituted directly. Please refer to the [Django 2 release notes](https://docs.djangoproject.com/en/5.1/releases/2.0/#id1) for more information. The change would look like this:
+Prior to Django 2, one of the available database engines was `django.db.backends.postgresql_psycopg2`. As of Django 2.0 and later, the alias `postgresql_psycopg2`  is considered deprecated. However, the value `django.db.backends.postgresql` can be substituted directly. Please refer to the [Django 2 release notes](https://docs.djangoproject.com/en/5.1/releases/2.0/#id1) for more information. The change would look like this:
 
 ```
 # Before
