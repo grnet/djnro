@@ -1,5 +1,5 @@
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.core.validators import EmailValidator
 
 
@@ -17,7 +17,7 @@ class MultipleEmailsField(forms.Field):
             # * blank whitelist - no '@localhost' permitted
             # * custom error message (referring to the email address being verified in question)
             # A failed validation will raise a ValidationError - no need to check return value
-            EmailValidator(whitelist=[],message= _('%s is not a valid e-mail address.') % email)(email)
+            EmailValidator(allowlist=[],message= _('%s is not a valid e-mail address.') % email)(email)
 
         # Always return the cleaned data.
         return ';'.join(emails)

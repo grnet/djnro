@@ -1,5 +1,5 @@
 {% extends "edumanage/welcome.html"%}
-{% load staticfiles %}
+{% load static %}
 {% load i18n %}
 
 {% block management_content %}
@@ -118,7 +118,7 @@ $('[id^=del_realm_]').click(function(){
 
 $("#delrealmSubmit").click(function(){
 	$.ajax({
-		url:"{% url 'del-realm' %}/?realm_pk="+realm_id,
+		url:"{% url 'del-realm' %}?realm_pk="+realm_id,
 		type: "GET",
 		success: function(data){
 			if (data.error){

@@ -1,7 +1,7 @@
 from django.conf import settings
 
 
-def country_code(context):
+def app_settings(context):
     # return the value you want as a dictionnary. you may add multiple values in there.
     return {
         'COUNTRY_CODE': settings.NRO_COUNTRY_CODE,
@@ -19,6 +19,7 @@ def country_code(context):
         'SHIB_AUTH_ENTITLEMENT': settings.SHIB_AUTH_ENTITLEMENT if hasattr(settings,"SHIB_AUTH_ENTITLEMENT") else None,
         'FEDERATION_DOC_URL': settings.FEDERATION_DOC_URL if hasattr(settings,"FEDERATION_DOC_URL") else None,
         'OUR_TLSPSK_REALM': settings.NRO_TLSPSK_REALM,
+        'NRO_DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL,
     }
 
 

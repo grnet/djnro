@@ -66,10 +66,24 @@ NRO recipients for notifications:
 
 Set your cache backend (if you want to use one). For production instances you can go with memcached. For development you can keep the provided dummy instance:
 
+- Memcached must be configured so it can store the complete kml file (1.5Mb~ currently).
+- Reddis requires the extra dependencies ```redis``` and ```hiredis```.
+
+MemCached:
+
     CACHES = {
         'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
             'LOCATION': '127.0.0.1:11211',
+        }
+    }
+
+Redis:
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': 'redis://127.0.0.1:6379',
         }
     }
 
@@ -502,5 +516,17 @@ If you want to use LDAP authentication, local_settings.py must be amended:
 		"is_superuser": "cn=NOC, ou=Groups,dc=foo, dc=bar, dc=org"
 	}
 
+## Cache Configuration (DjNRO Version 1.3 and Later)
+
+As of DjNRO version 1.3, the `MemcacheCache` cache backend was replaced with the `PyMemcacheCache` backend, due to updating from using Django 1.11 to Django 4.2. The change was introduced in Django 3.2.
+
+This change has a side effect on the command `./manage.py fetch_kml` (see [Fetch KML](#Fetch-KML)) when using the `PymemcacheCache` backend. The default maximum item size (i.e. the maximum size of a single item that can be held in cache) configured by the memached daemon is 1 Megabyte by default, but the kml file cached by DjNRO can be greater than 1 Megabyte. This can cause the command to fail due to being unable to cache the entire file.
+
+To fix this, edit the memcached configuration file (usually located at `/etc/memcached.conf` on Debian systems), and change or add the option that controls the maximum item size. If no such file exists, one can be created, which will overwrite memcached's default settings.
+```
+# Maximum item size. Default is 1m. Maximum is 128m.
+-I 16m
+```
+This will allow DjNRO to cache files larger than one Megabyte.
 
 

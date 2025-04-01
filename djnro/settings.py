@@ -24,7 +24,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 import os
 from utils.edb_versioning import EduroamDatabaseVersionDef
 
@@ -60,11 +60,15 @@ USE_I18N = True
 
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale.
-USE_L10N = True
 
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
+# Default primary key field type to use for models that don’t have a field with primary_key=True.
+# Django 3.2 changed the default from AutoField to BigAutoField, which means unless we set this,
+# we will end up with a LOT of migrations in the future.
+# Basically, AutoField creates 32-bit primary keys and BigAutoField creates 64-bit primary keys.
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
@@ -97,11 +101,12 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.request',
-                'edumanage.context_processors.country_code',
+                'edumanage.context_processors.app_settings',
                 'edumanage.context_processors.cat_instances',
                 'edumanage.context_processors.manage_login_methods',
                 'social_django.context_processors.backends',
                 'social_django.context_processors.login_redirect',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },

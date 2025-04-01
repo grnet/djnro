@@ -32,9 +32,9 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models import Max
 from django.views.decorators.cache import never_cache
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.utils.translation import get_language
-from django.utils import six
+import six
 from accounts.models import User
 from django.core.cache import cache
 from django.contrib.auth import REDIRECT_FIELD_NAME
@@ -88,40 +88,6 @@ from django.utils.cache import (
 from utils.cat_helper import CatQuery
 from utils.locale import setlocale, compat_strxfrm
 
-
-# Almost verbatim copy of django.views.i18n.set_language; however:
-# * we avoid creating sessions for anonymous users
-# * we want language selection to work even for requests that are not https;
-#   for session storage this breaks when SESSION_COOKIE_SECURE=True, so we
-#   always set a language cookie too
-def set_language(request):
-    """
-    Redirect to a given url while setting the chosen language in the
-    session and cookie. The session is written only for authenticated users.
-    The url and the language code need to be specified in the request parameters.
-
-    Since this view changes how the user will see the rest of the site, it must
-    only be accessed as a POST request. If called as a GET request, it will
-    redirect to the page in the request (the 'next' parameter) without changing
-    any state.
-    """
-    from django.views import i18n
-    next = request.POST.get('next', request.GET.get('next'))
-    if not i18n.is_safe_url(url=next, allowed_hosts=[request.get_host()]):
-        next = request.META.get('HTTP_REFERER')
-        if not i18n.is_safe_url(url=next, allowed_hosts=[request.get_host()]):
-            next = '/'
-    response = HttpResponseRedirect(next)
-    if request.method == 'POST':
-        lang_code = request.POST.get('language', None)
-        if lang_code and i18n.check_for_language(lang_code):
-            if hasattr(request, 'session') and request.user.is_authenticated:
-                request.session[i18n.LANGUAGE_SESSION_KEY] = lang_code
-            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, lang_code,
-                                max_age=settings.LANGUAGE_COOKIE_AGE,
-                                path=settings.LANGUAGE_COOKIE_PATH,
-                                domain=settings.LANGUAGE_COOKIE_DOMAIN)
-    return response
 
 
 @never_cache
@@ -310,7 +276,7 @@ def add_institution_details(request, institution_pk):
 @login_required
 @social_active_required
 @never_cache
-def services(request, service_pk):
+def services(request, service_pk=None):
     user = request.user
     try:
         profile = user.userprofile
@@ -366,7 +332,7 @@ def services(request, service_pk):
 @login_required
 @social_active_required
 @never_cache
-def add_services(request, service_pk):
+def add_services(request, service_pk=None):
     user = request.user
     service = False
     edit = False
@@ -525,7 +491,7 @@ def del_service(request):
 @login_required
 @social_active_required
 @never_cache
-def servers(request, server_pk):
+def servers(request, server_pk=None):
     user = request.user
     servers = False
     try:
@@ -557,7 +523,7 @@ def servers(request, server_pk):
 @login_required
 @social_active_required
 @never_cache
-def add_server(request, server_pk):
+def add_server(request, server_pk=None):
     user = request.user
     server = False
     edit = False
@@ -822,7 +788,7 @@ def realms(request):
 @login_required
 @social_active_required
 @never_cache
-def add_realm(request, realm_pk):
+def add_realm(request, realm_pk=None):
     user = request.user
     realm = False
     edit = False
@@ -970,7 +936,7 @@ def contacts(request):
 @login_required
 @social_active_required
 @never_cache
-def add_contact(request, contact_pk):
+def add_contact(request, contact_pk=None):
     user = request.user
     edit = False
     contact = False
@@ -1130,7 +1096,7 @@ def instrealmmon(request):
 @login_required
 @social_active_required
 @never_cache
-def add_instrealmmon(request, instrealmmon_pk):
+def add_instrealmmon(request, instrealmmon_pk=None):
     user = request.user
     instrealmmon = False
     edit = False
@@ -1239,7 +1205,7 @@ def del_instrealmmon(request):
 @login_required
 @social_active_required
 @never_cache
-def add_monlocauthpar(request, instrealmmon_pk, monlocauthpar_pk):
+def add_monlocauthpar(request, instrealmmon_pk=None, monlocauthpar_pk=None):
     user = request.user
     monlocauthpar = False
     edit = False
@@ -1942,12 +1908,12 @@ def getPoints():
         point_list = []
         doc = ElementTree.parse(settings.KML_FILE)
         root = doc.getroot()
-        r = root.getchildren()[0]
-        for (counter, i) in enumerate(r.getchildren()):
+        r = list(root)[0]
+        for (counter, i) in enumerate(list(r)):
             if "id" in i.keys():
-                j = i.getchildren()
+                j = list(i)
                 pointname = j[0].text
-                point = j[2].getchildren()[0].text
+                point = list(j[2])[0].text
                 pointlng, pointlat, pointele = point.split(',')
                 marker = {
                     "name": pointname,
@@ -2608,17 +2574,17 @@ def servdata(request):
                 inst_dict['realms'].update(rdict)
         root['institutions'].append(inst_dict)
 
-    if 'HTTP_ACCEPT' in request.META:
-        if request.META.get('HTTP_ACCEPT') == "application/json":
+    if 'accept' in request.headers:
+        if request.headers.get('accept') == "application/json":
             resp_content_type = "application/json"
             resp_body = json.dumps(root)
-        elif request.META.get('HTTP_ACCEPT') in [
+        elif request.headers.get('accept') in [
             "text/yaml",
             "text/x-yaml",
             "application/yaml",
             "application/x-yaml"
         ]:
-            resp_content_type = request.META.get('HTTP_ACCEPT')
+            resp_content_type = request.headers.get('accept')
     try:
         resp_content_type
     except NameError:
@@ -2704,7 +2670,7 @@ def _cat_api_cache_action(request, cat_instance):
     return (timeout, cache_kwargs)
 
 @cache_page_ifreq(_cat_api_cache_action)
-def cat_user_api_proxy(request, cat_instance):
+def cat_user_api_proxy(request, cat_instance=None):
     if cat_instance is None:
         cat_instance = 'production'
     cat_instance_name = cat_instance
@@ -2729,7 +2695,7 @@ def cat_user_api_proxy(request, cat_instance):
         return HttpResponseRedirect(cat_api_url)
     headers = {
         'X-Forwarded-For': request.META['REMOTE_ADDR'],
-        'X-Forwarded-Host': request.META['HTTP_HOST'],
+        'X-Forwarded-Host': request.headers['host'],
         'X-Forwarded-Server': request.META['SERVER_NAME']
         }
     for h in ['CONTENT_TYPE', 'HTTP_ACCEPT', 'HTTP_X_REQUESTED_WITH',
@@ -2756,8 +2722,8 @@ def cat_user_api_proxy(request, cat_instance):
                                    default=False)
     if allow_cors:
         origin = '*'
-        if allow_cors is 'origin' and 'HTTP_ORIGIN' in request.META:
-            origin = request.META['HTTP_ORIGIN']
+        if allow_cors == 'origin' and 'origin' in request.headers:
+            origin = request.headers['origin']
             patch_vary_headers(resp, ['Origin'])
         resp.setdefault('Access-Control-Allow-Origin', origin)
         resp.setdefault('Access-Control-Allow-Method', 'GET')
