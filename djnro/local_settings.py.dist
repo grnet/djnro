@@ -190,10 +190,10 @@ MANAGE_LOGIN_METHODS = (
   { 'backend': 'locallogin', 'enabled': False, 'class': None, 'name': 'Local login', 'local_image': 'img/right_logo_small.png' },
   # ModelBackend class 'django.contrib.auth.backends.ModelBackend' intentionally omitted as it is always included in AUTHENTICATION_BACKENDS
   { 'backend': 'google-oauth2', 'enabled': True, 'class': 'social_core.backends.google.GoogleOAuth2', 'name': 'Google', 'fa_style': 'fa fa-google fa-2x' },
-  { 'backend': 'yahoo', 'enabled': True, 'name': 'Yahoo', 'class': 'social_core.backends.yahoo.YahooOpenId', 'local_image': 'img/yahoo_img.png' },
+  { 'backend': 'yahoo-oauth2', 'enabled': True, 'name': 'Yahoo', 'class': 'social_core.backends.yahoo.YahooOAuth2', 'local_image': 'img/yahoo_img.png' },
   { 'backend': 'amazon', 'enabled': False, 'class': 'social_core.backends.amazon.AmazonOAuth2', 'name': 'Amazon', 'fa_style': 'fa fa-amazon fa-2x' },
-  { 'backend': 'docker', 'enabled': False, 'class': 'social_core.backends.docker.DockerOAuth2', 'name': 'Docker', 'image_url': 'https://hub.docker.com/hub-static/img/nav/docker-logo-loggedin.png' },
-  { 'backend': 'dropbox-oauth2', 'enabled': False, 'class': 'social_core.backends.dropbox.DropboxOAuth2', 'name': 'Dropbox', 'fa_style': 'fa fa-dropbox fa-2x' },
+  { 'backend': 'docker', 'enabled': False, 'class': 'social_core.backends.docker.DockerOAuth2', 'name': 'Docker', 'local_image': 'img/docker-mark-blue.svg' },
+  { 'backend': 'dropbox-oauth2', 'enabled': False, 'class': 'social_core.backends.dropbox.DropboxOAuth2V2', 'name': 'Dropbox', 'fa_style': 'fa fa-dropbox fa-2x' },
   { 'backend': 'facebook', 'enabled': False, 'class': 'social_core.backends.facebook.FacebookOAuth2', 'name': 'Facebook', 'fa_style': 'fa fa-facebook fa-2x' },
   { 'backend': 'launchpad', 'enabled': False, 'class': 'social_core.backends.launchpad.LaunchpadOpenId', 'name': 'Launchpad', 'image_url': 'https://login.launchpad.net/assets/identityprovider/img/favicon.ico' },
   { 'backend': 'linkedin-oauth2', 'enabled': False, 'class': 'social_core.backends.linkedin.LinkedinOAuth2', 'name': 'LinkedIn', 'fa_style': 'fa fa-linkedin fa-2x' },
