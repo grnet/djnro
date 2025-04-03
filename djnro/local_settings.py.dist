@@ -192,7 +192,7 @@ MANAGE_LOGIN_METHODS = (
   { 'backend': 'google-oauth2', 'enabled': True, 'class': 'social_core.backends.google.GoogleOAuth2', 'name': 'Google', 'fa_style': 'fa fa-google fa-2x' },
   { 'backend': 'yahoo-oauth2', 'enabled': True, 'name': 'Yahoo', 'class': 'social_core.backends.yahoo.YahooOAuth2', 'local_image': 'img/yahoo_img.png' },
   { 'backend': 'amazon', 'enabled': False, 'class': 'social_core.backends.amazon.AmazonOAuth2', 'name': 'Amazon', 'fa_style': 'fa fa-amazon fa-2x' },
-  { 'backend': 'docker', 'enabled': False, 'class': 'social_core.backends.docker.DockerOAuth2', 'name': 'Docker', 'image_url': 'https://hub.docker.com/hub-static/img/nav/docker-logo-loggedin.png' },
+  { 'backend': 'docker', 'enabled': False, 'class': 'social_core.backends.docker.DockerOAuth2', 'name': 'Docker', 'local_image': 'img/docker-mark-blue.svg' },
   { 'backend': 'dropbox-oauth2', 'enabled': False, 'class': 'social_core.backends.dropbox.DropboxOAuth2V2', 'name': 'Dropbox', 'fa_style': 'fa fa-dropbox fa-2x' },
   { 'backend': 'facebook', 'enabled': False, 'class': 'social_core.backends.facebook.FacebookOAuth2', 'name': 'Facebook', 'fa_style': 'fa fa-facebook fa-2x' },
   { 'backend': 'launchpad', 'enabled': False, 'class': 'social_core.backends.launchpad.LaunchpadOpenId', 'name': 'Launchpad', 'image_url': 'https://login.launchpad.net/assets/identityprovider/img/favicon.ico' },
