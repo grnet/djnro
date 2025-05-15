@@ -272,7 +272,7 @@ TINYMCE_DEFAULT_CONFIG = {
     'entities': '160,nbsp,173,shy,8194,ensp,8195,emsp,8201,thinsp,8204,zwnj,8205,zwj,8206,lrm,8207,rlm',
 }
 
-# to gracefully handle upgrades, a default but definately invalid
+# to gracefully handle upgrades, a default but definitely invalid
 # ream used to generate a TLS-PSK identity for service providers
 NRO_TLSPSK_REALM = "set.tlspsk.realm.invalid"
 
