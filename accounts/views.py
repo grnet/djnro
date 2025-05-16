@@ -45,7 +45,7 @@ def activate(request, activation_key):
             if temp_user.is_active:
                 temp_user.is_active = False
                 temp_user.save()
-            user_profile = activation_view.get_user(username)
+            user_profile = activation_view.get_user(username).userprofile
         except ActivationError:
             return render(
                 request,
@@ -57,7 +57,7 @@ def activate(request, activation_key):
             )
         form = UserProfileForm(instance=user_profile)
         form.fields['user'] = forms.ModelChoiceField(
-            queryset=User.objects.filter(pk=user_profile.pk), empty_label=None
+            queryset=User.objects.filter(pk=user_profile.user.pk), empty_label=None
         )
         form.fields['institution'] = forms.ModelChoiceField(
             queryset=Institution.objects.all(), empty_label=None
