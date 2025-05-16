@@ -51,8 +51,8 @@ class Command(BaseCommand):
                 u.first_name + " " + u.last_name,
                 m
             ) for u in users if (
-                u.registrationprofile
-                and u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
+                hasattr(u, "userprofile")
+                and u.userprofile.is_social_active
             ) for m in u.email.split(';')
         ]
         with setlocale((to_locale(get_language()), 'UTF-8'),

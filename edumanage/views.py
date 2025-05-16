@@ -2615,7 +2615,7 @@ def adminlist(request):
          u.first_name + " " + u.last_name,
          m)
         for u in users if
-        u.registrationprofile.activation_key == "ALREADY_ACTIVATED"
+        u.userprofile.is_social_active
         for m in u.email.split(';')
     ]
     with setlocale((get_language(), 'UTF-8'), locale.LC_COLLATE):
