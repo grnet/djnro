@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
             name='UserProfile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('is_social_active', models.BooleanField(default=False, verbose_name="Link to institution approved")),
+                ('is_social_active', models.BooleanField(default=False, verbose_name="Approved")),
             ],
             options={
                 'permissions': (('overview', 'Can see registered user and respective institutions'),),
