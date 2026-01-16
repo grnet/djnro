@@ -17,7 +17,10 @@
 						<a href="{% url 'overview' %}">{% trans "Overview" %}</a>
 					</li>
 					<li>
-						<a href="{% url 'logout' %}">{% trans "Logout" %}</a>
+						<form method="POST" action="{% url 'logout' %}">
+							{% csrf_token %}
+							<button type="submit" class="btn btn-link">{% trans "Logout" %}</button>
+						</form>
 					</li>
 				</ul>
 			</div><!--/.well -->
