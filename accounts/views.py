@@ -9,55 +9,63 @@ from django.utils.translation import gettext_lazy as _
 from accounts.models import User
 from django.views.decorators.cache import never_cache
 from django import forms
-from django_registration.backends.activation.views import ActivationView
-from django_registration.exceptions import ActivationError
+from django.core import signing
 from accounts.models import UserProfile
 
 from edumanage.forms import UserProfileForm
 from edumanage.models import Institution
 
-logger = logging.getLogger(__name__)
+def get_user(username):
+    try:
+        user = User.objects.get(username__exact=username)
+    except User.DoesNotExist:
+        user = None
 
+    return user
+
+def render_activate_page(request, account):
+    return render(
+        request,
+        'registration/activate.html',
+        {
+            'account': account,
+            'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS
+        }
+    )
 
 @never_cache
 def activate(request, activation_key):
     account = None
+    try:
+        username = signing.loads(
+            activation_key,
+            salt=settings.REGISTRATION_SALT,
+        )
+    except signing.BadSignature:
+        return render_activate_page(request, account)
+
     if request.method == "GET":
-        # Normalize before trying anything with it.
-        activation_view = ActivationView()
-        try:
-            username = activation_view.validate_key(activation_key=activation_key)
-        except ActivationError:
-            return render(
-                request,
-                'registration/activate.html',
-                {
-                    'account': account,
-                    'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS
-                }
-            )
-        try:
-            # NOTE: This fix works for now but isn't that clean.
-            # This is required because when a new user is created with google-oauth2,
-            # they are marked with is_active = True, which will cause the call to
-            # get_user to fail because it only works when is_active = False.
-            temp_user = User.objects.get(username__exact=username)
-            if temp_user.is_active:
-                temp_user.is_active = False
-                temp_user.save()
-            user_profile = activation_view.get_user(username).userprofile
-        except ActivationError:
-            return render(
-                request,
-                'registration/activate.html',
-                {
-                    'account': account,
-                    'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS
-                }
-            )
-        form = UserProfileForm(instance=user_profile)
+
+        user = get_user(username)
+        if user is None:
+            return render_activate_page(request, account)
+
+        # NOTE: This fix works for now but isn't that clean.
+        # This is required because when a new user is created with google-oauth2,
+        # they are marked with is_active = True, which will cause the call to
+        # get_user to fail because it only works when is_active = False.
+        if user.is_active:
+            user.is_active = False
+            user.save()
+
+        # Check if the user is already activated, which we do by checking the `is_social_active` value
+        user_profile = user.userprofile
+        if user_profile.is_social_active:
+            return render_activate_page(request, account)
+
+        form = UserProfileForm(instance=user.userprofile)
         form.fields['user'] = forms.ModelChoiceField(
-            queryset=User.objects.filter(pk=user_profile.user.pk), empty_label=None
+            queryset=User.objects.filter(pk=user.pk), empty_label=None
         )
         form.fields['institution'] = forms.ModelChoiceField(
             queryset=Institution.objects.all(), empty_label=None
@@ -73,7 +81,6 @@ def activate(request, activation_key):
         )
     if request.method == "POST":
         request_data = request.POST.copy()
-        activation_view = ActivationView()
         try:
             user = User.objects.get(pk=request_data['user'])
             up = user.userprofile
@@ -92,39 +99,35 @@ def activate(request, activation_key):
                 }
             )
         # Normalize before trying anything with it.
-        try:
-            username = activation_view.validate_key(activation_key=activation_key)
-            account = activation_view.get_user(username)
-            user.is_active = True
-            user.save()
-            up.is_social_active = True
-            up.save()
-            logger.info('Activating user {account}')
-        except Exception as e:
-            logger.info('POST: An error occured: %s' % e)
-            pass
-
-        if account:
-            # A user has been activated
-            email = render_to_string(
-                'registration/activation_complete.txt',
+        account = get_user(username)
+        if account is None:
+            return render(
+                request,
+                'registration/activate_edit.html',
                 {
-                    'site': get_current_site(request),
-                    'user': account
+                    'account': account,
+                    'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS
                 }
             )
-            send_mail(
-                _('%sUser account activated') % settings.EMAIL_SUBJECT_PREFIX,
-                email,
-                settings.SERVER_EMAIL,
-                account.email.split(';')
-            )
 
-        return render(
-            request,
-            'registration/activate.html',
+        user.is_active = True
+        user.save()
+        up.is_social_active = True
+        up.save()
+
+        # A user has been activated
+        email = render_to_string(
+            'registration/activation_complete.txt',
             {
-                'account': account,
-                'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS
+                'site': get_current_site(request),
+                'user': account
             }
         )
+        send_mail(
+            _('%sUser account activated') % settings.EMAIL_SUBJECT_PREFIX,
+            email,
+            settings.SERVER_EMAIL,
+            account.email.split(';')
+        )
+
+        return render_activate_page(request, account)
