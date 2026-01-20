@@ -70,14 +70,14 @@
                         <li class="{% block api %}{% endblock %}"><a href="{% url 'api' %}">{% trans "Closest point api" %}</a>
                     </ul>
                 </li>
+                {% if request.user.is_authenticated %}
                 <li>
-                  {% if request.user.is_authenticated %}
                   <form method="POST" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-link">Logout</button>
                   </form>
-                  {% endif %}
                 </li>
+                {% endif %}
               </ul>
             </div><!--/.nav-collapse -->
           </div>
