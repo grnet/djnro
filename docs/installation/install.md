@@ -533,8 +533,10 @@ This will allow DjNRO to cache files larger than one Megabyte.
 
 DjNRO version 1.3.1 updates the project from running on Django 4.2 to Django 5.2. This required updating the package `django-registration` from version 3.4 to version 5.2.1.
 
-However, a consequence of this change is that the account registration and activation flow changed between package versions. To make DjNRO work with this change, a new setting has been added to `settings.py`. This setting is called `REGISTRATION_SALT`.
+However, a consequence of this change is that the account registration and activation flow changed between package versions. To make DjNRO work with this change, a new setting has been added called `REGISTRATION_SALT`.
 
 This setting is used during the creation of activation keys for new users. For more information about this setting, refer to [the django-registration documentarion](https://django-registration.readthedocs.io/en/stable/activation-workflow.html#security-considerations).
 
-Changing this setting is not *strictly* necessary, as per the django-registration documentation. However, we **STRONGLY** recommend changing the default value of this setting.
+This setting is defined in the file `settings.py`. If you wish to overwrite this value, you can redefine the setting in `local_settings.py`. Changing this setting is not *strictly* necessary, as per the django-registration documentation. However, we **STRONGLY** recommend changing the default value.
+
+To generate a random `REGISTRATION_SALT` value, you can use a utility such as *openssl*. A command such as `openssl rand -base64 24` is sufficient.

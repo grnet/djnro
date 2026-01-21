@@ -463,7 +463,7 @@ EDUROAM_DATABASE_VERSIONS = {
     ),
 }
 
-REGISTRATION_SALT = "customsaltvalue"
+REGISTRATION_SALT = "customise-this-value"
 
 SENTRY = dict()
 
