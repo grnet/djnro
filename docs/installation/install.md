@@ -537,6 +537,6 @@ However, a consequence of this change is that the account registration and activ
 
 This setting is used during the creation of activation keys for new users. For more information about this setting, refer to [the django-registration documentarion](https://django-registration.readthedocs.io/en/stable/activation-workflow.html#security-considerations).
 
-This setting is defined in the file `settings.py`. If you wish to overwrite this value, you can redefine the setting in `local_settings.py`. Changing this setting is not *strictly* necessary, as per the django-registration documentation. However, we **STRONGLY** recommend changing the default value.
+While `settings.py` provides a fallback value for this setting  and changing it is not *strictly* necessary, we *strongly* recommend overriding the value in `local_settings.py` to a locally generated value.  The current version of the `local_settings.py.dist` template includes a place-holder for this value.
 
 To generate a random `REGISTRATION_SALT` value, you can use a utility such as *openssl*. A command such as `openssl rand -base64 24` is sufficient.
