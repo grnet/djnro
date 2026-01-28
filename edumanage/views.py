@@ -1604,14 +1604,14 @@ def user_login(request):
 @never_cache
 def user_logout(request, **kwargs):
     shib_logout_url = getattr(settings, 'SHIB_LOGOUT_URL', None)
-    if 'return' in request.GET and \
-            'action' in request.GET and \
-            request.GET.get('action') == 'logout':
-        request_data = request.GET.copy()
+    if 'return' in request.POST and \
+            'action' in request.POST and \
+            request.POST.get('action') == 'logout':
+        request_data = request.POST.copy()
         request_data[REDIRECT_FIELD_NAME] = request_data.get('return')
         del request_data['return']
         del request_data['action']
-        request.GET = request_data
+        request.POST = request_data
     elif shib_logout_url is not None and \
             request.session.get('SHIB_LOGOUT') is True:
         kwargs['next_page'] = shib_logout_url

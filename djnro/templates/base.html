@@ -71,7 +71,12 @@
                     </ul>
                 </li>
                 {% if request.user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">Logout</a></li>
+                <li>
+                  <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-link">Logout</button>
+                  </form>
+                </li>
                 {% endif %}
               </ul>
             </div><!--/.nav-collapse -->

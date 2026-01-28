@@ -463,6 +463,8 @@ EDUROAM_DATABASE_VERSIONS = {
     ),
 }
 
+REGISTRATION_SALT = "registration"
+
 SENTRY = dict()
 
 import _version
