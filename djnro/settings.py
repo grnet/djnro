@@ -268,7 +268,7 @@ TINYMCE_COMPRESSOR = False # not compatible with django-tinymce==4.1.0 / TinyMCE
 TINYMCE_DEFAULT_CONFIG = {
     'extended_valid_elements' :  'iframe[src|width|height|name|align]',
     'plugins': 'table link list searchreplace visualchars visualblocks code',
-    'menubar': 'edit insert view format table table',
+    'menubar': 'edit insert view format table',
     'entity_encoding': 'raw',
     'entities': '160,nbsp,173,shy,8194,ensp,8195,emsp,8201,thinsp,8204,zwnj,8205,zwj,8206,lrm,8207,rlm',
     'promotion': False,
