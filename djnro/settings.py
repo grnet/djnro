@@ -262,14 +262,16 @@ SESSION_COOKIE_AGE = 3600
 SESSION_SAVE_EVERY_REQUEST = True
 CSRF_COOKIE_AGE = 3600
 
-TINYMCE_COMPRESSOR = True
+# TinyMCE settings
+TINYMCE_COMPRESSOR = False # not compatible with django-tinymce==4.1.0 / TinyMCE 6
 
 TINYMCE_DEFAULT_CONFIG = {
     'extended_valid_elements' :  'iframe[src|width|height|name|align]',
-    'plugins': "table,paste,searchreplace",
-    'theme': "advanced",
+    'plugins': 'table link list searchreplace visualchars visualblocks code',
+    'menubar': 'edit insert view format table',
     'entity_encoding': 'raw',
     'entities': '160,nbsp,173,shy,8194,ensp,8195,emsp,8201,thinsp,8204,zwnj,8205,zwj,8206,lrm,8207,rlm',
+    'promotion': False,
 }
 
 # to gracefully handle upgrades, a default but definitely invalid
