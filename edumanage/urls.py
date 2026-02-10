@@ -23,8 +23,8 @@ urlpatterns = [
     path("usage/realm_data.xml", edumanage.views.realmdataxml, name="realmdataxml"),
 
     # The next two lines enable views that expose private/sensitive data:
-    #url(r'^radius_serv_data', edumanage.views.servdata, name="servdata"),
-    #url(r'^admin_mail_list', edumanage.views.adminlist, name="adminlist"),
+    #path("radius_serv_data/", edumanage.views.servdata, name="servdata"),
+    #path("admin_mail_list/", edumanage.views.adminlist, name="adminlist"),
 
     path("manage/", edumanage.views.manage, name="manage"),
     path("manage/login/", edumanage.views.manage_login_front, name="manage_login_front"),
