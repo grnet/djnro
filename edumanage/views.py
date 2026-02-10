@@ -2609,7 +2609,7 @@ def servdata(request):
 @never_cache
 def adminlist(request):
     users = User.objects.filter(userprofile__isnull=False,
-                                registrationprofile__isnull=False)
+                                is_active=True)
     data = [
         (u.userprofile.institution.get_name(get_language()),
          u.first_name + " " + u.last_name,
