@@ -1,6 +1,5 @@
 from django.urls import path, re_path
 import edumanage.views
-from django.contrib.flatpages import views
 
 urlpatterns = [
     path('', edumanage.views.index, name="index"),
@@ -23,8 +22,8 @@ urlpatterns = [
     path("usage/realm_data.xml", edumanage.views.realmdataxml, name="realmdataxml"),
 
     # The next two lines enable views that expose private/sensitive data:
-    #url(r'^radius_serv_data', edumanage.views.servdata, name="servdata"),
-    #url(r'^admin_mail_list', edumanage.views.adminlist, name="adminlist"),
+    #path("radius_serv_data/", edumanage.views.servdata, name="servdata"),
+    #path("admin_mail_list/", edumanage.views.adminlist, name="adminlist"),
 
     path("manage/", edumanage.views.manage, name="manage"),
     path("manage/login/", edumanage.views.manage_login_front, name="manage_login_front"),
@@ -62,10 +61,4 @@ urlpatterns = [
     path("manage/catenroll/", edumanage.views.cat_enroll, name="catenroll"),
 
     path("overview/", edumanage.views.overview, name="overview"),
-
-    path("faq/el/", views.flatpage, {"url": "/faq/el/"}, name="faq-el"),
-    path("faq/en/", views.flatpage, {"url": "/faq/en/"}, name="faq-en"),
-    path("faq/mi/", views.flatpage, {"url": "/faq/mi/"}, name="faq-mi"),
-    path("what/el/", views.flatpage, {"url": "/what/el/"}, name="what-el"),
-    path("what/en/", views.flatpage, {"url": "/what/en/"}, name="what-en"),
 ]
