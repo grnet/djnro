@@ -1,4 +1,10 @@
 {% load i18n %}
+{% if not LANGUAGE_CODE %}
+{% get_current_language as LANGUAGE_CODE %}
+{% endif %}
+{% if not LANGUAGES %}
+{% get_available_languages as LANGUAGES %}
+{% endif %}
 {% load static %}
 <!DOCTYPE html>
 <html>
