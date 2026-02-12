@@ -143,3 +143,7 @@ input[readonly].input {
 .btn-link {
 	padding-top: 15px;
 }
+
+dd.preproduction {
+	color: rgb(230, 93, 0);
+}
