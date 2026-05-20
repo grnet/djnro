@@ -171,7 +171,7 @@ class Migration(migrations.Migration):
             name='Realm',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('country', models.CharField(max_length=5, choices=edumanage.models.get_choices_from_settings('REALM_COUNTRIES'))),
+                ('country', models.CharField(max_length=5, choices=edumanage.models.get_str_choices_from_settings('REALM_COUNTRIES'))),
                 ('stype', models.PositiveIntegerField(default=0, editable=False)),
                 ('address_street', models.CharField(max_length=32)),
                 ('address_city', models.CharField(max_length=24)),
