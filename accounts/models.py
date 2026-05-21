@@ -13,7 +13,7 @@ def patch_username_maxlen(field, maxlen=255):
     field.max_length = maxlen
     # try also updating the help_text
     try:
-        help_text = field.help_text._proxy____args[0]
+        help_text = str(field.help_text)
         if help_text != None:
             field.help_text = _(re.sub("[0-9]+(?= characters)",
                                        str(maxlen),

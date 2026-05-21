@@ -38,6 +38,12 @@ def validate_venue_info(value):
 def get_choices_from_settings(setting):
     return getattr(settings, setting, tuple())
 
+def get_str_choices_from_settings(setting):
+    """Return a set of choices with each name converted to a string.
+
+    This is needed for Django 5.2+ admin pages to avoid confusion with grouped choices."""
+    choices = get_choices_from_settings(setting)
+    return tuple([ (k, str(v)) for  k, v in choices])
 
 class MultiSelectFormField(forms.MultipleChoiceField):
     widget = forms.CheckboxSelectMultiple
@@ -928,7 +934,7 @@ class Realm(models.Model):
         unique=True,
         db_column='ROid'
     )
-    country = models.CharField(max_length=5, choices=get_choices_from_settings('REALM_COUNTRIES'))
+    country = models.CharField(max_length=5, choices=get_str_choices_from_settings('REALM_COUNTRIES'))
     stype = 0 # hard-coded (FLRS)
     stage = models.PositiveIntegerField(
         choices=PRODUCTION_STATES,
