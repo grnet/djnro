@@ -2021,6 +2021,7 @@ def ourPoints(institution=None, cache_flush=False):
             point['wired_no'] = u"%s" % (sl.wired_no)
             point['SSID'] = u"%s" % (sl.SSID)
             point['key'] = u"%s" % sl.pk
+            point['stage'] = u"%s" % (sl.stage)
             points[cache_key].append(point)
 
         points_ret.extend(points[cache_key])
