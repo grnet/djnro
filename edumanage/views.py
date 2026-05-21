@@ -2743,9 +2743,11 @@ def to_xml(ele, encoding="UTF-8"):
     Convert and return the XML for an *ele*
     (:class:`~xml.etree.ElementTree.Element`)
     with specified *encoding*.'''
+    # Indent the element for pretty-printing
+    ElementTree.indent(ele)
     # on python3, we need to get a string, not bytestring - so if requesting unicode, request it as "unicode"
     xml = ElementTree.tostring(ele, "unicode" if six.PY3 and encoding.lower()=="utf-8" else encoding)
-    return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>%s' % (encoding, xml)
+    return xml if xml.startswith('<?xml') else '<?xml version="1.0" encoding="%s"?>\n%s' % (encoding, xml)
 
 
 def getSrvIdentifier(srv, prefix):
