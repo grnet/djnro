@@ -20,9 +20,11 @@
 
 	function initialize() {
 		image = new google.maps.MarkerImage(pinImg,
-			new google.maps.Size(29, 40),
+			new google.maps.Size(50, 80),
 			new google.maps.Point(0, 0),
-			new google.maps.Point(14, 40)
+			// The anchor for this image is the base of the flagpole at 18,42.
+			new google.maps.Point(12, 40),
+			new google.maps.Size(25, 40)
 		);
 		var styleArray = [{
 			featureType : "all",
