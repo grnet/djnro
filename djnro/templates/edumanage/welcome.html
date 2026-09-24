@@ -60,7 +60,7 @@
 			</ul>
 			{% if request.user.is_staff %}
 			<hr>
-			<a href="/admin/" class="btn btn-default btn-block" target="_blank">{% trans "NRO admin" %}</a>
+			<a href="{{ NRO_ADMIN_URL }}" class="btn btn-default btn-block" target="_blank">{% trans "NRO admin" %}</a>
 			{% endif %}
 		</div>
 	{% endwith %}

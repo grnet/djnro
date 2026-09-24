@@ -20,6 +20,7 @@ def app_settings(context):
         'FEDERATION_DOC_URL': settings.FEDERATION_DOC_URL if hasattr(settings,"FEDERATION_DOC_URL") else None,
         'OUR_TLSPSK_REALM': settings.NRO_TLSPSK_REALM,
         'NRO_DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL,
+        'NRO_ADMIN_URL': settings.NRO_ADMIN_URL,
     }
 
 

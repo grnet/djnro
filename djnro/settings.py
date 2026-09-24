@@ -156,6 +156,12 @@ MANAGE_LOGIN_METHODS = (
 # Note: we are not explicitly adding backends from this list - they're already
 # included in AUTHENTICATION_BACKENDS anyway.
 
+# Where the "NRO admin" link on the manage welcome page points staff to.
+# Override in local_settings.py, e.g. to a full URL, if /admin/ is served
+# from a separate hostname (e.g. https://admin.example.org/) rather than
+# this same site.
+NRO_ADMIN_URL = '/admin/'
+
 ROOT_URLCONF = 'djnro.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
