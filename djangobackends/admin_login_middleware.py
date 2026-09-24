@@ -1,0 +1,30 @@
+# -*- coding: utf-8 -*- vim:encoding=utf-8:
+# vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
+
+from django.shortcuts import redirect
+from django.urls import reverse
+
+
+class AdminLoginRedirectMiddleware:
+    """
+    Sends unauthenticated requests to /admin/ to the /manage/login/ method
+    picker instead of Django's stock admin login form, carrying the original
+    /admin/... URL along as ?next=. Whichever login method staff pick there
+    (Shibboleth, local password, social) already knows how to bounce back to
+    that `next` URL on success, so this needs no Shibboleth-specific logic of
+    its own and /admin/ never has to be protected by mod_shib at the
+    webserver level.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if (
+            request.path.startswith('/admin/') and
+            not request.user.is_authenticated
+        ):
+            return redirect(
+                '%s?next=%s' % (reverse('manage_login_front'), request.path)
+            )
+        return self.get_response(request)
