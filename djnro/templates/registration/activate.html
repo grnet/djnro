@@ -1,17 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}{% trans "Activation Complete" %}{% endblock %}
-    {% block topmenu %}
-    <ul class="nav">
-        <li>
-            <a href="{% url 'index' %}">{% trans "Home" %}</a>
-        </li>
-        <li>
-            <a href="/faq/{{LANGUAGE_CODE}}/">FAQ</a>
-        </li>
-        {% include "front/management_dropdown.html" %}
-    </ul>
-    {% endblock %}
 
     {% block content %}
 	<div class="container-fluid">
