@@ -3,7 +3,7 @@
 
 {% block content %}
 {{ block.super }}
-<hr>
+<hr style="margin-top: 2em;">
 <p class="login-link" style="text-align: center;">
   <a href="{% url 'manage_login_front' %}?next={{ next|urlencode }}">
     {% trans "Or sign in via the /manage/ login" %}
