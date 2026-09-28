@@ -20,7 +20,9 @@
 		<th>{% trans "Email" %}</th>
 		<th>{% trans "Last login" %}</th>
 		<th>{% trans "Status" %}</th>
+		{% if allow_admin_removal %}
 		<th style="text-align: center;">{% trans "Action" %}</th>
+		{% endif %}
 	</tr>
 	</thead>
 
@@ -37,8 +39,9 @@
 			<span class="label label-warning">{% trans "Pending" %}</span>
 		{% endif %}
 		</td>
+		{% if allow_admin_removal %}
 		<td style="text-align: center;">
-		{% if allow_admin_removal and admin.pk != current_admin_pk %}
+		{% if admin.pk != current_admin_pk %}
 			{% if admin.user.is_staff or admin.user.is_superuser %}
 			<span data-toggle="tooltip" data-placement="left" title="{% trans 'NRO admins cannot be removed here' %}">
 				<button type="button" class="btn btn-small btn-warning disabled" disabled>{% trans "remove" %}</button>
@@ -48,6 +51,7 @@
 			{% endif %}
 		{% endif %}
 		</td>
+		{% endif %}
 	</tr>
 	{% endfor %}
 	</tbody>
@@ -97,11 +101,11 @@ $(document).ready(function(){
 			}, {
 				"bSearchable": true,
 				"bSortable": true
-			}, {
+			}{% if allow_admin_removal %}, {
 				"bVisible": true,
 				"bSearchable": false,
 				"bSortable": false
-			}],
+			}{% endif %}],
 			"aaSorting": [[0, 'desc']],
 			"iDisplayLength": 25,
 			"oSearch": {"bSmart": false, "bRegex": true},
