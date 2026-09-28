@@ -51,14 +51,16 @@
 		</td>
 		{% if allow_admin_removal %}
 		<td style="text-align: center;">
-		{% if admin.pk != current_admin_pk %}
-			{% if admin.user.is_staff or admin.user.is_superuser %}
+		{% if admin.pk == current_admin_pk %}
+			<span data-toggle="tooltip" data-placement="left" title="{% trans 'You cannot remove yourself' %}">
+				<button type="button" class="btn btn-small btn-warning disabled" disabled>{% trans "remove" %}</button>
+			</span>
+		{% elif admin.user.is_staff or admin.user.is_superuser %}
 			<span data-toggle="tooltip" data-placement="left" title="{% trans 'NRO admins cannot be removed here' %}">
 				<button type="button" class="btn btn-small btn-warning disabled" disabled>{% trans "remove" %}</button>
 			</span>
-			{% else %}
+		{% else %}
 			<a href="#" id="del_admin_{{admin.pk}}" data-adminname="{{admin.user.get_full_name|default:admin.user.username}}" class="btn btn-small btn-warning">{% trans "remove" %}</a>
-			{% endif %}
 		{% endif %}
 		</td>
 		{% endif %}
