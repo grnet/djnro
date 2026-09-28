@@ -987,6 +987,9 @@ def del_admin(request):
     except UserProfile.DoesNotExist:
         resp['error'] = "Could not get admin or you have no rights to remove them"
         return HttpResponse(json.dumps(resp), content_type='application/json')
+    if target.user.is_staff or target.user.is_superuser:
+        resp['error'] = "Cannot remove an NRO admin"
+        return HttpResponse(json.dumps(resp), content_type='application/json')
     if UserProfile.objects.filter(institution=institution).count() <= 1:
         resp['error'] = "Could not remove admin. " \
             "It is the only admin left for this institution."

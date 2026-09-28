@@ -39,7 +39,13 @@
 		</td>
 		<td style="text-align: center;">
 		{% if allow_admin_removal and admin.pk != current_admin_pk %}
+			{% if admin.user.is_staff or admin.user.is_superuser %}
+			<span data-toggle="tooltip" data-placement="left" title="{% trans 'NRO admins cannot be removed here' %}">
+				<button type="button" class="btn btn-small btn-warning disabled" disabled>{% trans "remove" %}</button>
+			</span>
+			{% else %}
 			<a href="#" id="del_admin_{{admin.pk}}" data-adminname="{{admin.user.get_full_name|default:admin.user.username}}" class="btn btn-small btn-warning">{% trans "remove" %}</a>
+			{% endif %}
 		{% endif %}
 		</td>
 	</tr>
@@ -70,6 +76,8 @@
 <script src="{% static 'js/jquery_csrf_protect.js' %}" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function(){
+	$('[data-toggle="tooltip"]').tooltip();
+
 	var oTable = $('#table')
 		.on('init.dt', function () {
 			$('.pagination ul').addClass('pagination');
