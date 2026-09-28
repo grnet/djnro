@@ -32,6 +32,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models import Max
 from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 from django.utils.translation import gettext as _
 from django.utils.translation import get_language
 import six
@@ -963,16 +964,14 @@ def admins(request):
 @login_required
 @social_active_required
 @never_cache
+@require_POST
 def del_admin(request):
-    if request.method != 'GET':
-        return HttpResponseBadRequest()
     resp = {}
     if not settings.ALLOW_ADMIN_REMOVAL:
         resp['error'] = "Admin removal is not enabled"
         return HttpResponse(json.dumps(resp), content_type='application/json')
     user = request.user
-    req_data = request.GET.copy()
-    admin_pk = req_data.get('admin_pk')
+    admin_pk = request.POST.get('admin_pk')
     try:
         profile = user.userprofile
         institution = profile.institution
