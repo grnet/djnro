@@ -948,14 +948,15 @@ def admins(request):
         inst.institutiondetails
     except InstitutionDetails.DoesNotExist:
         return HttpResponseRedirect(reverse("manage"))
-    other_admins = UserProfile.objects.filter(
+    all_admins = UserProfile.objects.filter(
         institution=inst
-    ).exclude(pk=profile.pk).select_related('user')
+    ).select_related('user')
     return render_with_base_ctx(
         request,
         'edumanage/admins.html',
         context={
-            'admins': other_admins,
+            'admins': all_admins,
+            'current_admin_pk': profile.pk,
             'allow_admin_removal': settings.ALLOW_ADMIN_REMOVAL,
         }
     )
