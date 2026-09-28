@@ -143,3 +143,9 @@ input[readonly].input {
 .btn-link {
 	padding-top: 15px;
 }
+
+/* avoid grey rectangles around login method buttons; restore link colour to match A links */
+button.btnlogin {
+	background-color: transparent;
+	color: #337ab7;
+}

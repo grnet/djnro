@@ -1491,7 +1491,10 @@ def manage_login(request, backend):
         return redirect(reverse('login') + qs)
     if backend == 'locallogin':
         return redirect(reverse('altlogin') + qs)
-    return redirect(reverse('social:begin', args=[backend]) + qs)
+    # Social login should be coming in as a POST with no query string,
+    # all parameters in the request - so not propagating qs.
+    # Redirect preserving request method (POST) - with HTTP status code 307
+    return redirect(reverse('social:begin', args=[backend]), preserve_request=True)
 
 @never_cache
 def user_login(request):
