@@ -950,7 +950,7 @@ def admins(request):
         return HttpResponseRedirect(reverse("manage"))
     all_admins = UserProfile.objects.filter(
         institution=inst
-    ).select_related('user')
+    ).select_related('user').prefetch_related('user__social_auth')
     return render_with_base_ctx(
         request,
         'edumanage/admins.html',

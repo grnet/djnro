@@ -20,6 +20,7 @@
 		<th>{% trans "Email" %}</th>
 		<th>{% trans "Last login" %}</th>
 		<th>{% trans "Status" %}</th>
+		<th>{% trans "Login method" %}</th>
 		{% if allow_admin_removal %}
 		<th style="text-align: center;">{% trans "Action" %}</th>
 		{% endif %}
@@ -37,6 +38,15 @@
 			<span class="label label-success">{% trans "Approved" %}</span>
 		{% else %}
 			<span class="label label-warning">{% trans "Pending" %}</span>
+		{% endif %}
+		</td>
+		<td>
+		{% if admin.user.social_auth.all %}
+			{% for sa in admin.user.social_auth.all %}{{ sa.provider }}{% if not forloop.last %}, {% endif %}{% endfor %}
+		{% elif not admin.user.has_usable_password %}
+			<span data-toggle="tooltip" data-placement="left" title="{% trans 'Could be Shibboleth or LDAP; not distinguished by djnro' %}">{% trans "Federated login" %}</span>
+		{% else %}
+			{% trans "Local account" %}
 		{% endif %}
 		</td>
 		{% if allow_admin_removal %}
@@ -90,6 +100,9 @@ $(document).ready(function(){
 			"sPaginationType": "bootstrap",
 			"sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
 			"aoColumns": [{
+				"bSearchable": true,
+				"bSortable": true
+			}, {
 				"bSearchable": true,
 				"bSortable": true
 			}, {
