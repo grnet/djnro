@@ -397,13 +397,22 @@ Alternatively, it is possible to use Apache with mod_proxy_http to pass the requ
 By default, `/admin/` uses Django's own username/password login form, even if
 you sign in to `/manage/` via Shibboleth SSO, a local account, or a social
 backend. DjNRO ships with
-`djangobackends.admin_login_middleware.AdminLoginRedirectMiddleware`
-(enabled by default in `MIDDLEWARE`) which sends anyone hitting `/admin/`
-without a session to the same `/manage/login/` method picker used for
-`/manage/`, carrying the original `/admin/...` URL along so they land back
-there once signed in. This reuses whichever login method they pick — no
-separate Shibboleth-specific login path for `/admin/`, and no need to protect
-`/admin` with `mod_shib` at the webserver level.
+`djangobackends.admin_login_middleware.AdminLoginRedirectMiddleware`, which
+sends anyone hitting `/admin/` without a session to the same
+`/manage/login/` method picker used for `/manage/`, carrying the original
+`/admin/...` URL along so they land back there once signed in. This reuses
+whichever login method they pick — no separate Shibboleth-specific login
+path for `/admin/`, and no need to protect `/admin` with `mod_shib` at the
+webserver level.
+
+This is opt-in and off by default (`ADMIN_LOGIN_REDIRECT_ENABLED = False`).
+Enable it in `local_settings.py` only if every login method reachable from
+`/manage/` is one you're happy to also accept for `/admin/`. Leave it off if
+you keep a local account as an SSO break-glass fallback and want it to stay
+reachable through `/admin/`'s own login form regardless of what `/manage/`
+is configured to accept:
+
+    ADMIN_LOGIN_REDIRECT_ENABLED = True
 
 It never creates new accounts or grants staff/admin permissions, so a user
 must still have `is_staff` set (e.g. via `/admin/accounts/user/`) before they

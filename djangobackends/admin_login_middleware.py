@@ -16,6 +16,8 @@ class AdminLoginRedirectMiddleware:
     that `next` URL on success, so this needs no Shibboleth-specific logic of
     its own and /admin/ never has to be protected by mod_shib at the
     webserver level.
+
+    Opt-in via settings.ADMIN_LOGIN_REDIRECT_ENABLED (off by default).
     """
 
     def __init__(self, get_response):

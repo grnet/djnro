@@ -162,6 +162,10 @@ MANAGE_LOGIN_METHODS = (
 # this same site.
 NRO_ADMIN_URL = '/admin/'
 
+# Redirect anonymous requests to /admin/ to the /manage/ login picker
+# instead of Django's own admin login form.
+ADMIN_LOGIN_REDIRECT_ENABLED = False
+
 ROOT_URLCONF = 'djnro.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
