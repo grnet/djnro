@@ -1566,8 +1566,8 @@ def user_login(request):
                 redirect_to = request.GET.get(REDIRECT_FIELD_NAME)
                 if not redirect_to or not url_has_allowed_host_and_scheme(
                     url=redirect_to,
-                    allowed_hosts={request.get_host()},
-                    require_https=request.is_secure(),
+                    allowed_hosts=settings.ALLOWED_HOSTS,
+                    require_https=settings.SESSION_COOKIE_SECURE,
                 ):
                     redirect_to = reverse('manage')
                 return HttpResponseRedirect(redirect_to)

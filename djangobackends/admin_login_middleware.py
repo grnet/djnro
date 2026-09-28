@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*- vim:encoding=utf-8:
 # vim: tabstop=4:shiftwidth=4:softtabstop=4:expandtab
 
+from django.conf import settings
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.shortcuts import redirect
 from django.urls import reverse
 
@@ -21,10 +23,15 @@ class AdminLoginRedirectMiddleware:
 
     def __call__(self, request):
         if (
+            settings.ADMIN_LOGIN_REDIRECT_ENABLED and
             request.path.startswith('/admin/') and
             not request.user.is_authenticated
         ):
             return redirect(
-                '%s?next=%s' % (reverse('manage_login_front'), request.path)
+                '%s?%s=%s' % (
+                    reverse('manage_login_front'),
+                    REDIRECT_FIELD_NAME,
+                    request.path
+                )
             )
         return self.get_response(request)
