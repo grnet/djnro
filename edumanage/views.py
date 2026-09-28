@@ -1469,7 +1469,7 @@ def base_response(request):
         instrealmmons = InstRealmMon.objects.filter(realm__instid=institution)
         admins = UserProfile.objects.filter(
             institution=institution
-        ).exclude(pk=profile.pk)
+        )
     except:
         pass
     try:
