@@ -1,6 +1,7 @@
 {% extends "edumanage/welcome.html"%}
 {% load i18n %}
 {% load static %}
+{% load login_method_name %}
 
 
 {% block management_content %}
@@ -42,7 +43,7 @@
 		</td>
 		<td>
 		{% if admin.user.social_auth.all %}
-			{% for sa in admin.user.social_auth.all %}{{ sa.provider }}{% if not forloop.last %}, {% endif %}{% endfor %}
+			{% for sa in admin.user.social_auth.all %}{{ sa.provider|login_method_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
 		{% elif not admin.user.has_usable_password %}
 			<span data-toggle="tooltip" data-placement="left" title="{% trans 'Could be Shibboleth or LDAP; not distinguished by djnro' %}">{% trans "Federated login" %}</span>
 		{% else %}
