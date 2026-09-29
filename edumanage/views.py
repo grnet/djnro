@@ -32,6 +32,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.db.models import Max
 from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST
 from django.utils.translation import gettext as _
 from django.utils.translation import get_language
 import six
@@ -936,6 +937,71 @@ def contacts(request):
 @login_required
 @social_active_required
 @never_cache
+def admins(request):
+    user = request.user
+    try:
+        profile = user.userprofile
+        inst = profile.institution
+    except UserProfile.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    try:
+        inst.institutiondetails
+    except InstitutionDetails.DoesNotExist:
+        return HttpResponseRedirect(reverse("manage"))
+    all_admins = UserProfile.objects.filter(
+        institution=inst
+    ).select_related('user').prefetch_related('user__social_auth')
+    return render_with_base_ctx(
+        request,
+        'edumanage/admins.html',
+        context={
+            'admins': all_admins,
+            'current_admin_pk': profile.pk,
+            'allow_admin_removal': settings.ALLOW_ADMIN_REMOVAL,
+        }
+    )
+
+
+@login_required
+@social_active_required
+@never_cache
+@require_POST
+def del_admin(request):
+    resp = {}
+    if not settings.ALLOW_ADMIN_REMOVAL:
+        resp['error'] = "Admin removal is not enabled"
+        return HttpResponse(json.dumps(resp), content_type='application/json')
+    user = request.user
+    admin_pk = request.POST.get('admin_pk')
+    try:
+        profile = user.userprofile
+        institution = profile.institution
+    except UserProfile.DoesNotExist:
+        resp['error'] = "Could not remove admin. Not enough rights"
+        return HttpResponse(json.dumps(resp), content_type='application/json')
+    if str(admin_pk) == str(profile.pk):
+        resp['error'] = "You cannot remove yourself"
+        return HttpResponse(json.dumps(resp), content_type='application/json')
+    try:
+        target = UserProfile.objects.get(pk=admin_pk, institution=institution)
+    except UserProfile.DoesNotExist:
+        resp['error'] = "Could not get admin or you have no rights to remove them"
+        return HttpResponse(json.dumps(resp), content_type='application/json')
+    if target.user.is_staff or target.user.is_superuser:
+        resp['error'] = "Cannot remove an NRO admin"
+        return HttpResponse(json.dumps(resp), content_type='application/json')
+    if UserProfile.objects.filter(institution=institution).count() <= 1:
+        resp['error'] = "Could not remove admin. " \
+            "It is the only admin left for this institution."
+        return HttpResponse(json.dumps(resp), content_type='application/json')
+    target.user.delete()
+    resp['success'] = "Admin successfully removed"
+    return HttpResponse(json.dumps(resp), content_type='application/json')
+
+
+@login_required
+@social_active_required
+@never_cache
 def add_contact(request, contact_pk=None):
     user = request.user
     edit = False
@@ -1382,6 +1448,7 @@ def base_response(request):
     instrealms = []
     instcontacts = []
     contacts = []
+    admins = []
     institution = False
     institution_exists = False
     institution_canhaveservicelocs = False
@@ -1403,6 +1470,9 @@ def base_response(request):
         ])
         contacts = Contact.objects.filter(pk__in=instcontacts)
         instrealmmons = InstRealmMon.objects.filter(realm__instid=institution)
+        admins = UserProfile.objects.filter(
+            institution=institution
+        )
     except:
         pass
     try:
@@ -1420,6 +1490,7 @@ def base_response(request):
         'realms_num': len(instrealms),
         'contacts_num': len(contacts),
         'monrealms_num': len(instrealmmons),
+        'admins_num': len(admins),
         'institution': institution,
         'institutiondetails': instututiondetails,
         'institution_exists': institution_exists,

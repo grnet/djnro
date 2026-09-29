@@ -227,6 +227,11 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = []
 #     'sentry_dsn': ''
 # }
 
+###### Admin self-service removal ###########
+# Allow institution admins to remove other admins of the same institution
+# from the "Admins" management page. Off by default (see settings.py).
+# ALLOW_ADMIN_REMOVAL = True
+
 ###### eduroam CAT integration ###########
 # In order to enable provisioning to CAT, you must list at least one instance and the
 # corresponding description in CAT_INSTANCES. Beware that pages accessible by end users

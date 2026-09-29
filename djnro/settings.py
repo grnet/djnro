@@ -450,6 +450,12 @@ LINKEDIN_EXTRA_DATA = [('id', 'id'),
 
 CAT_INSTANCES = ()
 
+# Whether institution admins are allowed to remove other admins of the same
+# institution from the "Admins" management page. Off by default; enable in
+# local_settings.py once you are comfortable with peer admins being able to
+# revoke each other's access.
+ALLOW_ADMIN_REMOVAL = False
+
 # How to convert ServiceLoc.wired to wired_no
 # Default: Use a magic number for True, NULL for False
 SERVICELOC_DERIVE_WIRED_NO = {
