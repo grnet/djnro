@@ -39,6 +39,7 @@ import six
 from accounts.models import User
 from django.core.cache import cache
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from edumanage.models import (
     ServiceLoc,
@@ -1636,10 +1637,14 @@ def user_login(request):
 
             if user.is_active:
                 login(request, user)
-                return HttpResponseRedirect(
-                    request.GET.get(REDIRECT_FIELD_NAME,
-                                    default=reverse('manage'))
-                )
+                redirect_to = request.GET.get(REDIRECT_FIELD_NAME)
+                if not redirect_to or not url_has_allowed_host_and_scheme(
+                    url=redirect_to,
+                    allowed_hosts=settings.ALLOWED_HOSTS,
+                    require_https=settings.SESSION_COOKIE_SECURE,
+                ):
+                    redirect_to = reverse('manage')
+                return HttpResponseRedirect(redirect_to)
             else:
                 status = _(
                     "User account <strong>%(username)s</strong> is pending"

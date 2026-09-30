@@ -1,0 +1,11 @@
+{% extends "admin/login.html" %}
+{% load i18n %}
+
+{% block content %}
+{{ block.super }}
+<p class="login-link" style="text-align: center;">
+  <a href="{{ MANAGE_LOGIN_URL }}?next={{ next|urlencode }}">
+    {% trans "Log in via the Management Pages" %}
+  </a>
+</p>
+{% endblock %}
