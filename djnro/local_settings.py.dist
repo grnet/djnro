@@ -165,6 +165,22 @@ NRO_DOMAIN_HELPDESK_DICT = {"name": _ld({'en': "Domain Helpdesk"}), 'email':'hel
 # realm used to generate a TLS-PSK identity for service providers
 NRO_TLSPSK_REALM = "example.com"
 
+# Where the "NRO admin" link on the manage welcome page points staff to.
+# Override to a full URL, e.g. if /admin/ is served from a separate
+# hostname (e.g. https://admin.example.com/) rather than this same site.
+#NRO_ADMIN_URL = '/admin/'
+
+# Redirect anonymous requests to /admin/ to the /manage/ login picker
+# instead of Django's own admin login form.
+#ADMIN_LOGIN_REDIRECT_ENABLED = False
+
+# Where the /manage/ login picker lives, for the admin login redirect above
+# and the "sign in via the management pages" link on Django's own admin
+# login form. Leave as None to resolve it on this site (the usual case);
+# override to a full URL if /admin/ is served from a separate hostname
+# (e.g. https://admin.example.com/) than /manage/.
+#MANAGE_LOGIN_URL = None
+
 #Countries for Realm model:
 REALM_COUNTRIES = (
     ('country_2letters', _ld({'en': 'Country'}) ),
