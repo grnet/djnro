@@ -405,16 +405,16 @@ whichever login method they pick — no separate Shibboleth-specific login
 path for `/admin/`, and no need to protect `/admin` with `mod_shib` at the
 webserver level.
 
-This is opt-in and off by default (`ADMIN_LOGIN_REDIRECT_ENABLED = False`).
-Enable it in `local_settings.py` only if every login method reachable from
-`/manage/` is one you're happy to also accept for `/admin/`. Leave it off if
+This automatic redirect is opt-in and off by default (`ADMIN_LOGIN_REDIRECT_ENABLED = False`).
+Enable it in `local_settings.py` only if login methods reachable from
+`/manage/` include all methods required to access `/admin/`. Leave it off if
 you keep a local account as an SSO break-glass fallback and want it to stay
 reachable through `/admin/`'s own login form regardless of what `/manage/`
 is configured to accept:
 
     ADMIN_LOGIN_REDIRECT_ENABLED = True
 
-It never creates new accounts or grants staff/admin permissions, so a user
+Note that this way of accessing /admin never grants staff/admin permissions, so a user
 must still have `is_staff` set (e.g. via `/admin/accounts/user/`) before they
 can do anything useful in `/admin/` once signed in.
 
