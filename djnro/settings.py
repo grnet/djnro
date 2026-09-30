@@ -166,6 +166,13 @@ NRO_ADMIN_URL = '/admin/'
 # instead of Django's own admin login form.
 ADMIN_LOGIN_REDIRECT_ENABLED = False
 
+# Where the /manage/ login picker lives, for the admin login redirect above
+# and the "sign in via the management pages" link on Django's own admin
+# login form. Leave as None to resolve it on this site (the usual case);
+# override in local_settings.py to a full URL, e.g. if /admin/ is served
+# from a separate hostname (e.g. https://admin.example.org/) than /manage/.
+MANAGE_LOGIN_URL = None
+
 ROOT_URLCONF = 'djnro.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.

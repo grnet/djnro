@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.urls import reverse
 
 
 def app_settings(context):
@@ -21,6 +22,7 @@ def app_settings(context):
         'OUR_TLSPSK_REALM': settings.NRO_TLSPSK_REALM,
         'NRO_DOMAIN_MAIN_URL': settings.NRO_DOMAIN_MAIN_URL,
         'NRO_ADMIN_URL': settings.NRO_ADMIN_URL,
+        'MANAGE_LOGIN_URL': settings.MANAGE_LOGIN_URL or reverse('manage_login_front'),
     }
 
 

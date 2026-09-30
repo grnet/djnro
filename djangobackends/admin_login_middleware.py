@@ -31,7 +31,7 @@ class AdminLoginRedirectMiddleware:
         ):
             return redirect(
                 '%s?%s=%s' % (
-                    reverse('manage_login_front'),
+                    settings.MANAGE_LOGIN_URL or reverse('manage_login_front'),
                     REDIRECT_FIELD_NAME,
                     request.path
                 )
