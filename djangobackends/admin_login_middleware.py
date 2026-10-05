@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.utils.http import urlencode
 
 
 class AdminLoginRedirectMiddleware:
@@ -29,11 +30,14 @@ class AdminLoginRedirectMiddleware:
             request.path.startswith('/admin/') and
             not request.user.is_authenticated
         ):
+            # Absolute, since MANAGE_LOGIN_URL may be on another host and a
+            # bare path would resolve against that host after login.
             return redirect(
-                '%s?%s=%s' % (
+                '%s?%s' % (
                     settings.MANAGE_LOGIN_URL or reverse('manage_login_front'),
-                    REDIRECT_FIELD_NAME,
-                    request.path
+                    urlencode({
+                        REDIRECT_FIELD_NAME: request.build_absolute_uri()
+                    })
                 )
             )
         return self.get_response(request)
