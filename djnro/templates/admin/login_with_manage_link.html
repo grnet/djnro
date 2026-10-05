@@ -1,11 +1,15 @@
 {% extends "admin/login.html" %}
 {% load i18n %}
+{% load absolute_uri %}
 
 {% block content %}
 {{ block.super }}
-<p class="login-link" style="text-align: center;">
-  <a href="{{ MANAGE_LOGIN_URL }}?next={{ next|urlencode }}">
+<div class="submit-row" style="text-align: center; margin-top: 1.5em;">
+  {# Absolute, since MANAGE_LOGIN_URL may be on another host: a bare path #}
+  {# would come back relative to *that* host instead of this /admin/ one. #}
+  <a class="button" style="display: inline-block; padding: 10px 15px;"
+     href="{{ MANAGE_LOGIN_URL }}?next={{ request|absolute_uri:next|urlencode }}">
     {% trans "Log in via the Management Pages" %}
   </a>
-</p>
+</div>
 {% endblock %}
