@@ -39,6 +39,7 @@ import six
 from accounts.models import User
 from django.core.cache import cache
 from django.contrib.auth import REDIRECT_FIELD_NAME
+from django.utils.http import urlencode
 
 from edumanage.models import (
     ServiceLoc,
@@ -1556,7 +1557,9 @@ def get_all_services(request):
 @never_cache
 def manage_login(request, backend):
     logout(request)
-    qs = request.GET.urlencode()
+    qs = ( urlencode({REDIRECT_FIELD_NAME: request.POST[REDIRECT_FIELD_NAME]})
+           if REDIRECT_FIELD_NAME in request.POST else ''
+         )
     qs = '?%s' % qs if qs else ''
     if backend == 'shibboleth':
         return redirect(reverse('login') + qs)
