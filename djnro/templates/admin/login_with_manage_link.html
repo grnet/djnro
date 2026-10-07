@@ -1,0 +1,20 @@
+{% extends "admin/login.html" %}
+{% load i18n %}
+{% load absolute_uri %}
+
+{% block content %}
+{{ block.super }}
+<div style="clear: both; display: flex; align-items: center; gap: 1em; margin: 0; padding-top: 1.5em; color: var(--body-quiet-color, #666);">
+  <hr style="flex: 1; border: 0; border-top: 1px solid var(--hairline-color, #ddd); margin: 0;">
+  <span>{% trans "or" %}</span>
+  <hr style="flex: 1; border: 0; border-top: 1px solid var(--hairline-color, #ddd); margin: 0;">
+</div>
+<div class="submit-row" style="text-align: center; margin-top: 1em;">
+  {# Absolute, since MANAGE_LOGIN_URL may be on another host: a bare path #}
+  {# would come back relative to *that* host instead of this /admin/ one. #}
+  <a class="button" style="display: inline-block; padding: 10px 15px;"
+     href="{{ MANAGE_LOGIN_URL }}?next={{ request|absolute_uri:next|urlencode }}">
+    {% trans "Log in via the Management Pages" %}
+  </a>
+</div>
+{% endblock %}

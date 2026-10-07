@@ -121,6 +121,7 @@ MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'djangobackends.admin_login_middleware.AdminLoginRedirectMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     # Simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -154,6 +155,23 @@ MANAGE_LOGIN_METHODS = (
 )
 # Note: we are not explicitly adding backends from this list - they're already
 # included in AUTHENTICATION_BACKENDS anyway.
+
+# Where the "NRO admin" link on the manage welcome page points staff to.
+# Override in local_settings.py, e.g. to a full URL, if /admin/ is served
+# from a separate hostname (e.g. https://admin.example.org/) rather than
+# this same site.
+NRO_ADMIN_URL = '/admin/'
+
+# Redirect anonymous requests to /admin/ to the /manage/ login picker
+# instead of Django's own admin login form.
+ADMIN_LOGIN_REDIRECT_ENABLED = False
+
+# Where the /manage/ login picker lives, for the admin login redirect above
+# and the "sign in via the management pages" link on Django's own admin
+# login form. Leave as None to resolve it on this site (the usual case);
+# override in local_settings.py to a full URL, e.g. if /admin/ is served
+# from a separate hostname (e.g. https://admin.example.org/) than /manage/.
+MANAGE_LOGIN_URL = None
 
 ROOT_URLCONF = 'djnro.urls'
 

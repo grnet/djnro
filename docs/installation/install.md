@@ -392,7 +392,30 @@ Alternatively, it is possible to use Apache with mod_proxy_http to pass the requ
 
 **It is strongly recommended to allow access to `/(admin|overview|alt-login)` ONLY from trusted subnets.**
 
-Once you are done, restart apache.
+### Easier access to `/admin/`
+
+By default, `/admin/` uses Django's own username/password login form,
+regardless of login methods configured for the Management Pages
+(even though it does accept a login session established through the management pages).
+DjNRO now comes with
+`djangobackends.admin_login_middleware.AdminLoginRedirectMiddleware`, which
+can help users accessing `/admin/` without a session either with the link
+to log in via Management Pages included on the default local account login form,
+or can automatically redirect to the Management Page login.  The original
+`/admin/...` URL is passed along so users land back there once signed in.
+
+This automatic redirect is opt-in and off by default (`ADMIN_LOGIN_REDIRECT_ENABLED = False`).
+Enable it in `local_settings.py` only if login methods reachable from
+`/manage/` include all methods required to access `/admin/`. Leave it off if
+you keep a local account as an SSO break-glass fallback and want it to stay
+reachable through `/admin/`'s own login form regardless of what `/manage/`
+is configured to accept:
+
+    ADMIN_LOGIN_REDIRECT_ENABLED = True
+
+Note that this way of accessing /admin never grants staff/admin permissions, so a user
+must still have `is_staff` set (e.g. via `/admin/accounts/user/`) before they
+can do anything useful in `/admin/` once signed in.
 
 ## Fetch KML
 A Django management command, named fetch_kml, fetches service locations from the eduroam database and updates the cache. It is recommended to periodically run this command in a cron job in order to keep the map up to date.

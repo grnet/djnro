@@ -3,6 +3,7 @@ from django.urls import path
 # Uncomment the next two lines to enable the django admin interface:
 from django.contrib import admin
 admin.autodiscover()
+admin.site.login_template = 'admin/login_with_manage_link.html'
 import social_django.urls
 from edumanage import views as edumanage_views
 import django
