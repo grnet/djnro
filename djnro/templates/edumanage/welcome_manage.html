@@ -10,10 +10,14 @@
 			<div class="well">
 				<div class="row-fluid">
 					<div class="span12">
-					    {% with qs=request.GET.urlencode %}
 					    {% for login_method in MANAGE_LOGIN_METHODS %}
 					      {% if login_method.enabled %}
-						<a class="btn btnlogin" href="{% url 'manage_login' login_method.backend %}{% if qs %}?{{qs}}{% endif %}">
+						<form method="post" action="{% url 'manage_login' login_method.backend %}" style="display: inline;">
+						{% csrf_token %}
+						{% for k,v in request.GET.items %}
+						<input type="hidden" name="{{ k }}" value="{{ v }}">
+						{% endfor %}
+						<button type="submit" class="btn btnlogin">
 						{% if login_method.local_image %}
 							<img src="{% static login_method.local_image %}" style="padding: 0px;">
 					        {% endif %}
@@ -23,10 +27,10 @@
 						{% if login_method.fa_style %}
 							<i class="fa {{ login_method.fa_style }} fa-2x"></i>
 						{% endif %}
-							<br>{{ login_method.name }}</a>
+							<br>{{ login_method.name }}</button>
+						</form>
 					      {% endif %}
 					    {% endfor %}
-					    {% endwith %}
 					</div>
 				</div>
 			</div>
