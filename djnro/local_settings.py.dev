@@ -1,0 +1,64 @@
+# -*- coding: utf-8 -*- vim:fileencoding=utf-8:
+# Development settings, installed as local_settings.py by `make settings`.
+import os
+from djnro.lldict import LazyLangDict as _ld
+
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+PROJECT_DIR = os.path.join(BASE_DIR, 'djnro')
+
+DEBUG = True
+ALLOWED_HOSTS = ['*']
+SECRET_KEY = '@@SECRET_KEY@@'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'dev.db'),
+    }
+}
+
+STATIC_URL = '/static/'
+
+# Print mails instead of sending them
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+SERVER_EMAIL = 'Dev eduroam Service <noreply@example.org>'
+EMAIL_SUBJECT_PREFIX = '[eduroam-dev] '
+ACCOUNT_ACTIVATION_DAYS = 7
+REGISTRATION_SALT = 'dev-only-salt'
+NOTIFY_ADMIN_MAILS = ['nro@example.org']
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
+TIME_ZONE = 'Europe/Stockholm'
+MAP_CENTER = (59.33, 18.07)
+
+NRO_COUNTRY_CODE = 'se'
+NRO_ROID = 'SE01'
+NRO_DOMAIN_MAIN_URL = 'http://www.example.org'
+NRO_FEDERATION_NAME = 'Dev federation'
+NRO_PROV_BY_DICT = {'name': _ld({'en': 'DEV NRO TEAM'}), 'url': 'http://noc.example.org'}
+NRO_PROV_SOCIAL_MEDIA_CONTACT = []
+NRO_DOMAIN_HELPDESK_DICT = {
+    'name': _ld({'en': 'Dev Helpdesk'}),
+    'email': 'helpdesk@example.org',
+    'phone': '0000000000',
+    'uri': 'helpdesk.example.org',
+}
+NRO_TLSPSK_REALM = 'example.org'
+
+REALM_COUNTRIES = (
+    ('se', _ld({'en': 'Sweden'})),
+)
+
+# Only local username/password login
+MANAGE_LOGIN_METHODS = (
+    {'backend': 'locallogin', 'enabled': True, 'class': None, 'name': 'Local login',
+     'local_image': 'img/right_logo_small.png'},
+)
+EXTRA_AUTHENTICATION_BACKENDS = ()
+
+ALLOW_ADMIN_REMOVAL = True
