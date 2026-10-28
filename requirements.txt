@@ -4,8 +4,8 @@ Django~=5.2.9
 # Django-related packages
 django-registration~=5.2.1
 django-tinymce~=4.1.0
-social-auth-app-django~=6.0.1
-social-auth-core~=5.1.1
+social-auth-app-django~=7.2.0
+social-auth-core~=6.2.0
 django-sortedm2m~=4.0.0
 django-widget-tweaks~=1.5.1
 
