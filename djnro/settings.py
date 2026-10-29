@@ -126,6 +126,8 @@ MIDDLEWARE = (
     # Simple clickjacking protection:
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
+    # Handle SocialAuth errrors with a proper page (instead of a generic 500)
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     # Recommended as last item
     'django.middleware.cache.FetchFromCacheMiddleware'
 )
