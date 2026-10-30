@@ -9,7 +9,7 @@ settings:
 	@if [ -e djnro/local_settings.py ]; then \
 		echo "djnro/local_settings.py exists, leaving it alone"; \
 	else \
-		$(PYTHON) -c "import secrets; print(open('djnro/local_settings.py.dev').read().replace('@@SECRET_KEY@@', secrets.token_urlsafe(50)), end='')" > djnro/local_settings.py; \
+		cp -v djnro/local_settings.py.dev djnro/local_settings.py; \
 		echo "created djnro/local_settings.py from local_settings.py.dev"; \
 	fi
 
