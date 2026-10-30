@@ -20,4 +20,4 @@ seed:
 	$(PYTHON) manage.py seed_devdata
 
 run:
-	$(PYTHON) manage.py runserver 0.0.0.0:8000
+	$(PYTHON) manage.py runserver 127.0.0.1:8000
