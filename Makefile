@@ -1,6 +1,16 @@
 PYTHON ?= uv run --with-requirements requirements.txt python
 
-.PHONY: dev settings migrate seed run
+.DEFAULT_GOAL := help
+
+.PHONY: help dev settings migrate seed run
+
+help:
+	@echo "Targets:"
+	@echo "  dev      settings + migrate + seed (bootstrap a developer environment)"
+	@echo "  settings create djnro/local_settings.py from local_settings.py.dev if missing"
+	@echo "  migrate  apply database migrations"
+	@echo "  seed     load development data"
+	@echo "  run      start the dev server on 127.0.0.1:8000"
 
 dev: settings migrate seed
 
