@@ -56,7 +56,7 @@ class Command(BaseCommand):
         for row in rows:
             self.stdout.write('%-10s %-34s %s' % row)
         self.stdout.write(
-            '\nPassword for all users: %s\nLogin: http://localhost:8000/altlogin/'
+            '\nPassword for all users: %s\nLogin: http://127.0.0.1:8000/altlogin/'
             % PASSWORD)
 
     def attach_name(self, obj, name):
