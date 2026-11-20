@@ -81,7 +81,7 @@
 				<h4>{% trans "Home" %}{% if institution_canhaveservicelocs %} - {% trans "Service Locations" %}{% endif %} </h4>
 	              		<hr>
 				{% if services %}
-					<div id="map_canvas" data-group="{% static 'img/edugroup.png' %}" data-pin="{% static 'img/edupin.png' %}" data-center-lat="{{MAP_CENTER.0}}" data-center-lng="{{MAP_CENTER.1}}" data-service="{% url 'get-service-points' %}" data-service-edit="{% url 'edit-services'  %}" style="width:100%; height:450px;"></div>
+					<div id="map_canvas" data-group="{% static 'img/edugroup.png' %}" data-pin="{% static 'img/edupin.png' %}" data-pin-preprod="{% static 'img/edupin-preprod.png' %}" data-center-lat="{{MAP_CENTER.0}}" data-center-lng="{{MAP_CENTER.1}}" data-service="{% url 'get-service-points' %}" data-service-edit="{% url 'edit-services'  %}" style="width:100%; height:450px;"></div>
 				{% else %}
 					<div>
 						{% if institutiondetails %}

@@ -5,8 +5,10 @@ var latlng = new google.maps.LatLng(lat, lng);
 var map = '';
 var bounds = '';
 var image = '';
+var imagePreProd = '';
 var infoWindow;
 var pinImg;
+var pinImgPreProd;
 var styles;
 var servicesUrl;
 var servicesEditUrl;
@@ -16,6 +18,12 @@ function initialize() {
 		new google.maps.Size(50, 80),
 		new google.maps.Point(0, 0),
 		// The anchor for this image is the base of the flagpole at 18,42.
+		new google.maps.Point(12, 40),
+		new google.maps.Size(25, 40)
+	);
+	imagePreProd = new google.maps.MarkerImage(pinImgPreProd,
+		new google.maps.Size(50, 80),
+		new google.maps.Point(0, 0),
 		new google.maps.Point(12, 40),
 		new google.maps.Size(25, 40)
 	);
@@ -86,8 +94,7 @@ function placeMarkers() {
 				bounds.extend(marker.position);
 				markers.push(marker);
 				google.maps.event.addListener(marker, 'click', function() {
-					infoWindow.setContent("<div><h4>" + jsonMarker.name + "</h4>" +
-
+					infoWindow.setContent("<div" + (jsonMarker.stage == 1 ? '' : ' class="preproduction"') + "><h4>" + jsonMarker.name + "</h4>" +
 						"<div class='tabbable'>" +
 						"<ul class='nav nav-tabs'>" +
 						"<li class='active'><a href='#tab1' data-toggle='tab'>Info</a></li>" +
@@ -101,6 +108,7 @@ function placeMarkers() {
 							"<dt>Encryption</dt><dd>" + jsonMarker.enc + "&nbsp;</dd>" +
 							"<dt>SSID</dt><dd>" + jsonMarker.SSID + "&nbsp;</dd>" +
 							"<dt>Number of APs</dt><dd>" + jsonMarker.AP_no + "&nbsp;</dd>" +
+							"<dt>Stage</dt><dd>" + (jsonMarker.stage == 1 ? 'Active' : 'Testing/Preproduction') + "&nbsp;</dd>" +
 						"</dl>" +
 						"</div>" +
 						"<div class='tab-pane' id='tab2'>" +
@@ -140,7 +148,7 @@ function createMarker(markerObj) {
 		'position': latLng,
 		'map': map,
 		'title': title,
-		'icon': image,
+		'icon': markerObj.stage == 1 ? image : imagePreProd,
 	});
 	return marker;
 }
@@ -156,6 +164,7 @@ $(document).ready(function() {
 	lat = parseFloat(lat.toString().replace(",", "."));
 	lng = parseFloat(lng.toString().replace(",", "."));
 	pinImg = mapDiv.data('pin');
+	pinImgPreProd = mapDiv.data('pin-preprod');
 	groupImg = mapDiv.data('group');
 	servicesUrl = mapDiv.data('service');
 	servicesEditUrl = mapDiv.data('service-edit');
