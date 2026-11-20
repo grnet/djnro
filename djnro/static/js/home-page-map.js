@@ -5,21 +5,29 @@
 	var map;
 	var bounds;
 	var image;
+	var imagePreProd;
 	var infoWindow;
 	var cityImg;
 	var countryImg;
 	var styles;
 	var markersUrl;
 	var pinImg;
+	var pinImgPreProd;
 
 	function initialize() {
 		image = new google.maps.MarkerImage(pinImg,
-		// This marker is 29 pixels wide by 40 pixels tall.
-		new google.maps.Size(29, 40),
-		// The origin for this image is 0,0.
-		new google.maps.Point(0, 0),
-		// The anchor for this image is the base of the flagpole at 18,42.
-		new google.maps.Point(14, 40));
+			new google.maps.Size(50, 80),
+			new google.maps.Point(0, 0),
+			// The anchor for this image is the base of the flagpole at 18,42.
+			new google.maps.Point(12, 40),
+			new google.maps.Size(25, 40)
+		);
+		imagePreProd = new google.maps.MarkerImage(pinImgPreProd,
+			new google.maps.Size(50, 80),
+			new google.maps.Point(0, 0),
+			new google.maps.Point(12, 40),
+			new google.maps.Size(25, 40)
+		);
 
 		var styleArray = [ {
 			featureType : "all",
@@ -126,12 +134,10 @@
 									marker,
 									'click',
 									function() {
-										infoWindow.setContent ( "<div><h4>"
+										infoWindow.setContent ( "<div" + (jsonMarker.stage == 1 ? '' : ' class="preproduction"') + "><h4>"
 												+ jsonMarker.inst
 												+ "</h4>"
-												+
-
-												"<div class='tabbable'>"
+												+ "<div class='tabbable'>"
 												+ "<ul class='nav nav-tabs'>"
 												+ "<li class='active'><a href='#tab1' data-toggle='tab'>Info</a></li>"
 												+ "<li><a href='#tab2' data-toggle='tab'>More...</a></li>"
@@ -153,7 +159,9 @@
 												+ "&nbsp;</dd>"
 												+ "<dt>Number of APs</dt><dd>"
 												+ jsonMarker.AP_no
-												+ "&nbsp;</dd></dl>"
+												+ "&nbsp;</dd>"
+												+ (jsonMarker.stage == 1 ? '' : '<dt class="preproduction">Stage</dt><dd class="preproduction">Testing/Preproduction</dd>')
+												+ "</dl>"
 												+ "</div>"
 												+ "<div class='tab-pane' id='tab2'>"
 												+ "<dl class='dl-horizontal'>"
@@ -203,7 +211,7 @@
 			'map' : map,
 			'title' : title,
 			'address' : address,
-			'icon' : pinImg,
+			'icon' : markerObj.stage == 1 ? image : imagePreProd,
 		});
 		return marker
 	}
@@ -350,6 +358,7 @@
 		image = '';
 		infoWindow;
 		pinImg = mapDiv.data("pin");
+		pinImgPreProd = mapDiv.data("pin-preprod");
 		pinGrpImg = mapDiv.data("group-pin");
 		addr = {};
 		styles = [{
