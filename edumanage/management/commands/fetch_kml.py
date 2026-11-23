@@ -42,7 +42,13 @@ class Command(BaseCommand):
         eduroam_kml_url = "%s?gmaprnd=%s" % (eduroam_kml_url, rnd)
         write('Fetching data from %s...\n'%eduroam_kml_url)
         file = settings.KML_FILE
-        six.moves.urllib.request.urlretrieve(eduroam_kml_url, file)
+        try:
+            six.moves.urllib.request.urlretrieve(eduroam_kml_url, file)
+        except Exception as e:
+            self.stderr.write(
+                self.style.ERROR(f'Error fetching KML file from {eduroam_kml_url}: {e}')
+            )
+            return False
         write('Done fetching!\n')
         write('Updating cache\n')
         self.refresh_cache(file)
@@ -54,7 +60,9 @@ class Command(BaseCommand):
         try:
             doc = ElementTree.parse(file)
         except ElementTree.ParseError as e:
-            write(f'Error parsing file {file}: {e}')
+            self.stderr.write(
+                self.style.ERROR(f'Error parsing file {file}: {e}')
+            )
             return False
         root = doc.getroot()
         r = list(root)[0]

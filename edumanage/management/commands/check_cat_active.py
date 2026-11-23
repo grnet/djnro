@@ -19,9 +19,13 @@ class Command(BaseCommand):
         not_active_cat_entries = CatEnrollment.objects.filter(~Q(url='ACTIVE'))
         for catentry in not_active_cat_entries:
             instance = catentry.cat_instance
-            cat_instance = settings.CAT_AUTH[instance]
-            cat_api_key = cat_instance['CAT_API_KEY']
-            cat_api_url = cat_instance['CAT_API_URL']
+            try:
+                cat_instance = settings.CAT_AUTH[instance]
+                cat_api_key = cat_instance['CAT_API_KEY']
+                cat_api_url = cat_instance['CAT_API_URL']
+            except KeyError:
+                self.stdout.write(self.style.WARNING(f"CAT instance {instance} (for {catentry.inst}) not found in settings"))
+                continue
             inst_uid = catentry.cat_inst_id
             params = {"INST_IDENTIFIER": inst_uid}
             c = CatQuery(cat_api_key, cat_api_url)
